@@ -1,0 +1,123 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@layer base {
+  :root {
+    /* Dark theme (default) */
+    --background: 222 47% 7%;        /* #0B0F19 */
+    --foreground: 210 40% 96%;       /* #F3F4F6 */
+    --surface: 221 39% 11%;          /* #111827 */
+    --elevated: 217 33% 17%;         /* #1F2937 */
+    --card: 221 39% 11%;
+    --card-foreground: 210 40% 96%;
+    --border: 216 28% 25%;           /* #374151 */
+    --input: 216 28% 25%;
+    --primary: 221 83% 53%;          /* #2563EB */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 96%;
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%; /* #9CA3AF */
+    --accent: 221 83% 53%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 72% 51%;        /* #EF4444 */
+    --destructive-foreground: 0 0% 100%;
+    --ring: 221 83% 53%;
+    --radius: 0.5rem;
+    --success: 142 71% 45%;          /* #22C55E */
+    --warning: 38 92% 50%;           /* #F59E0B */
+  }
+
+  .light {
+    --background: 210 40% 98%;       /* #F8FAFC */
+    --foreground: 222 47% 11%;       /* #0F172A */
+    --surface: 0 0% 100%;
+    --elevated: 210 40% 95%;         /* #F1F5F9 */
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --border: 214 32% 91%;           /* #E2E8F0 */
+    --input: 214 32% 91%;
+    --primary: 221 83% 53%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 40% 95%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 210 40% 95%;
+    --muted-foreground: 215 16% 47%; /* #64748B */
+    --accent: 221 83% 53%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --ring: 221 83% 53%;
+  }
+}
+
+@layer base {
+  * { @apply border-border; }
+  body {
+    @apply bg-background text-foreground font-sans;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { @apply bg-border rounded-full; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-muted-foreground; }
+}
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+
+  .glass {
+    @apply bg-surface/80 backdrop-blur-md border border-border;
+  }
+
+  .shadow-glow-blue {
+    box-shadow: 0 0 0 2px hsl(var(--surface)), 0 0 0 4px hsl(var(--primary) / 0.4);
+  }
+
+  .shadow-glow-red {
+    box-shadow: 0 0 0 2px hsl(var(--surface)), 0 0 0 4px hsl(var(--destructive) / 0.4), 0 0 15px hsl(var(--destructive) / 0.3);
+  }
+}
+
+/* Gantt specific styles */
+.gantt-bar {
+  @apply rounded-md flex items-center text-xs font-semibold text-white shadow-sm transition-all;
+}
+.gantt-bar:hover {
+  @apply shadow-md brightness-110;
+  transform: scale(1.02);
+}
+.gantt-bar.conflict {
+  @apply shadow-glow-red;
+}
+
+/* Chat bubbles */
+.bubble-mine {
+  @apply bg-primary text-white rounded-2xl rounded-br-sm;
+}
+.bubble-other {
+  @apply bg-surface text-foreground rounded-2xl rounded-bl-sm border border-border;
+}
+
+/* Task panel slide-in */
+.task-panel-enter {
+  animation: slideInRight 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+/* Status badge colors */
+.status-todo      { @apply bg-muted text-muted-foreground; }
+.status-progress  { @apply bg-primary/15 text-primary; }
+.status-blocked   { @apply bg-destructive/15 text-destructive; }
+.status-review    { @apply bg-warning/15 text-yellow-500; }
+.status-done      { @apply bg-success/15 text-green-500; }
+.status-validated { @apply bg-green-500/20 text-green-400; }
