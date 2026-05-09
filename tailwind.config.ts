@@ -46,6 +46,8 @@ const config: Config = {
         },
         surface: 'hsl(var(--surface))',
         elevated: 'hsl(var(--elevated))',
+        warning: 'hsl(var(--warning))',
+        success: 'hsl(var(--success))',
       },
       borderRadius: {
         lg: 'var(--radius)',
