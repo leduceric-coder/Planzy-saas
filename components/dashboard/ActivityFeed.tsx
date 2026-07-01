@@ -22,7 +22,7 @@ const entityLabel: Record<string, string> = {
 }
 
 interface Props {
-  logs: (ActivityLog & { profile?: { full_name: string } | null })[]
+  logs: (ActivityLog & { profile?: { full_name: string | null } | null })[]
 }
 
 export function ActivityFeed({ logs }: Props) {

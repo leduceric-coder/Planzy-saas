@@ -10,8 +10,8 @@ export default async function EquipesPage() {
   const { data: profile } = await supabase.from('profiles').select('org_id').eq('id', user.id).single()
 
   const [{ data: teams }, { data: artisans }] = await Promise.all([
-    supabase.from('teams').select('*, lead:artisans!lead_id(full_name,trade), members:team_members(*, artisan:artisans(id,full_name,trade,color))').eq('org_id', profile?.org_id),
-    supabase.from('artisans').select('*').eq('org_id', profile?.org_id).order('full_name'),
+    supabase.from('teams').select('*, lead:artisans!lead_id(full_name,trade), members:team_members(*, artisan:artisans(id,full_name,trade,color))').eq('org_id', profile?.org_id ?? ''),
+    supabase.from('artisans').select('*').eq('org_id', profile?.org_id ?? '').order('full_name'),
   ])
 
   return (

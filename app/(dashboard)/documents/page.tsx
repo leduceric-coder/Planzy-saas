@@ -12,9 +12,9 @@ export default async function DocumentsPage() {
 
   const [{ data: documents }, { data: photos }] = await Promise.all([
     supabase.from('documents').select('*, project:projects(name,color), uploader:profiles!uploaded_by(full_name)')
-      .eq('org_id', profile?.org_id).order('created_at', { ascending: false }),
+      .eq('org_id', profile?.org_id ?? '').order('created_at', { ascending: false }),
     supabase.from('photos').select('*, project:projects(name)')
-      .eq('org_id', profile?.org_id).order('taken_at', { ascending: false }).limit(40),
+      .eq('org_id', profile?.org_id ?? '').order('taken_at', { ascending: false }).limit(40),
   ])
 
   const categories = [...new Set(documents?.map(d => d.category ?? 'Autre').filter(Boolean))]

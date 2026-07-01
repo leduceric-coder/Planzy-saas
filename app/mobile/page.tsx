@@ -21,7 +21,7 @@ export default async function MobilePage() {
   const { data: tasks } = await supabase
     .from('tasks')
     .select('*, project:projects(id,name,color)')
-    .eq('assigned_to', artisan?.id)
+    .eq('assigned_to', artisan?.id ?? '')
     .not('status', 'in', '(done,validated)')
     .order('end_date', { ascending: true })
 
@@ -29,7 +29,7 @@ export default async function MobilePage() {
   const { data: messages } = await supabase
     .from('messages')
     .select('*, sender:profiles!sender_id(full_name,avatar_url), project:projects(name,color)')
-    .eq('org_id', profile?.org_id)
+    .eq('org_id', profile?.org_id ?? '')
     .order('created_at', { ascending: false })
     .limit(20)
 

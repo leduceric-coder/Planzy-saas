@@ -1,31 +1,68 @@
 'use client'
 
-import { useState, useMemo, useRef } from 'react'
+import { useState, useMemo, useRef, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { addDays, format, differenceInDays, startOfDay, eachDayOfInterval, eachWeekOfInterval, startOfWeek } from 'date-fns'
 import { fr } from 'date-fns/locale'
-import { ZoomIn, ZoomOut, ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react'
+import { ZoomIn, ZoomOut, ChevronLeft, ChevronRight, Maximize2, Plus, Pencil } from 'lucide-react'
 import { cn, taskStatusColor, taskStatusLabel, formatDate } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { TaskFormModal, type ProjectOption, type ArtisanOption, type TeamOption } from '@/components/tasks/TaskFormModal'
+import type { TaskWithRelations } from '@/lib/actions/tasks'
 import type { Task } from '@/lib/types'
 
-type GanttTask = Task & {
-  assignee?: { id: string; full_name: string; color: string } | null
+export type GanttTask = Task & {
+  assignee?: { id: string; full_name: string; color: string; trade?: string } | null
+  team?: { id: string; name: string; color: string } | null
   project?: { id: string; name: string; color: string } | null
 }
 
 interface Props {
   tasks: GanttTask[]
-  projects: { id: string; name: string; color: string }[]
+  projects: ProjectOption[]
+  artisans: ArtisanOption[]
+  teams: TeamOption[]
 }
 
 const DAY_WIDTH = { day: 40, week: 16, month: 6 }
 const ROW_H = 44
 
-export function GanttView({ tasks, projects }: Props) {
+export function GanttView({ tasks, projects, artisans, teams }: Props) {
+  const router = useRouter()
+  const searchParams = useSearchParams()
   const [zoom, setZoom] = useState<'day' | 'week' | 'month'>('week')
+  const [localTasks, setLocalTasks] = useState<GanttTask[]>(tasks)
   const [selectedTask, setSelectedTask] = useState<GanttTask | null>(null)
   const [filterProject, setFilterProject] = useState<string>('all')
+  const [modalMode, setModalMode] = useState<'create' | 'edit' | null>(() => (searchParams.get('new') === 'task' ? 'create' : null))
+  const [modalDefaultProjectId, setModalDefaultProjectId] = useState<string | undefined>(undefined)
   const today = startOfDay(new Date())
   const dayW = DAY_WIDTH[zoom]
+
+  function upsertLocalTask(updated: TaskWithRelations) {
+    setLocalTasks(prev => {
+      const exists = prev.some(t => t.id === updated.id)
+      const merged = { ...updated } as GanttTask
+      return exists ? prev.map(t => (t.id === updated.id ? merged : t)) : [...prev, merged]
+    })
+    setSelectedTask(prev => (prev && prev.id === updated.id ? ({ ...updated } as GanttTask) : prev))
+    router.refresh()
+  }
+
+  function openCreateModal(defaultProjectId?: string) {
+    setModalDefaultProjectId(defaultProjectId)
+    setModalMode('create')
+  }
+
+  // Ouverture directe depuis le raccourci "Nouveau > Tâche" de la barre latérale
+  // (l'ouverture elle-même vient de l'état initial paresseux ci-dessus ; on ne
+  // fait ici que nettoyer l'URL, sans déclencher de nouveau rendu)
+  useEffect(() => {
+    if (searchParams.get('new') === 'task') {
+      router.replace('/planning')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // Date range : 2 weeks before today → 3 months ahead
   const rangeStart = addDays(today, -14)
@@ -33,8 +70,8 @@ export function GanttView({ tasks, projects }: Props) {
   const totalDays = differenceInDays(rangeEnd, rangeStart)
 
   const filteredTasks = useMemo(() =>
-    tasks.filter(t => filterProject === 'all' || t.project_id === filterProject),
-    [tasks, filterProject]
+    localTasks.filter(t => filterProject === 'all' || t.project_id === filterProject),
+    [localTasks, filterProject]
   )
 
   const groupedByProject = useMemo(() => {
@@ -90,6 +127,11 @@ export function GanttView({ tasks, projects }: Props) {
             </button>
           ))}
         </div>
+
+        <Button size="sm" onClick={() => openCreateModal(filterProject !== 'all' ? filterProject : undefined)} className="gap-1.5 shrink-0">
+          <Plus className="h-4 w-4" />
+          Nouvelle tâche
+        </Button>
       </div>
 
       {/* Gantt body */}
@@ -109,7 +151,17 @@ export function GanttView({ tasks, projects }: Props) {
                   className="h-[44px] flex items-center px-5 gap-2 border-b border-border bg-background/50"
                   style={{ borderLeft: `3px solid ${project?.color ?? '#2563EB'}` }}
                 >
-                  <span className="text-xs font-700 text-foreground truncate">{project?.name ?? 'Chantier'}</span>
+                  <span className="text-xs font-700 text-foreground truncate flex-1">{project?.name ?? 'Chantier'}</span>
+                  {project?.id && (
+                    <button
+                      onClick={() => openCreateModal(project.id)}
+                      className="p-1 rounded-md text-muted-foreground hover:bg-elevated hover:text-primary transition-colors shrink-0"
+                      aria-label={`Nouvelle tâche sur ${project.name}`}
+                      title={`Nouvelle tâche sur ${project.name}`}
+                    >
+                      <Plus className="h-3.5 w-3.5" />
+                    </button>
+                  )}
                 </div>
                 {/* Task rows */}
                 {grpTasks.map(task => (
@@ -141,8 +193,11 @@ export function GanttView({ tasks, projects }: Props) {
             ))}
 
             {filteredTasks.length === 0 && (
-              <div className="flex items-center justify-center h-32 text-sm text-muted-foreground">
-                Aucune tâche planifiée
+              <div className="flex flex-col items-center justify-center h-40 gap-3 text-sm text-muted-foreground px-4 text-center">
+                <span>Aucune tâche planifiée</span>
+                <Button size="sm" variant="outline" onClick={() => openCreateModal(filterProject !== 'all' ? filterProject : undefined)} className="gap-1.5">
+                  <Plus className="h-4 w-4" />Créer une première tâche
+                </Button>
               </div>
             )}
           </div>
@@ -275,6 +330,10 @@ export function GanttView({ tasks, projects }: Props) {
                   <p className="font-500 text-foreground">{selectedTask.assignee.full_name}</p>
                 </div>
               )}
+              <Button size="sm" variant="secondary" onClick={() => setModalMode('edit')} className="gap-1.5">
+                <Pencil className="h-3.5 w-3.5" />
+                Modifier
+              </Button>
               <button
                 onClick={() => setSelectedTask(null)}
                 className="text-muted-foreground hover:text-foreground transition-colors text-lg font-300"
@@ -284,6 +343,20 @@ export function GanttView({ tasks, projects }: Props) {
             </div>
           </div>
         </div>
+      )}
+
+      {modalMode && (
+        <TaskFormModal
+          key={modalMode === 'edit' ? selectedTask?.id : `create-${modalDefaultProjectId ?? 'any'}`}
+          mode={modalMode}
+          task={modalMode === 'edit' && selectedTask ? (selectedTask as TaskWithRelations) : undefined}
+          projects={projects}
+          artisans={artisans}
+          teams={teams}
+          defaultProjectId={modalDefaultProjectId}
+          onClose={() => { setModalMode(null); setModalDefaultProjectId(undefined) }}
+          onSaved={upsertLocalTask}
+        />
       )}
     </div>
   )

@@ -14,9 +14,9 @@ export default async function RapportsPage() {
 
   const [{ data: reports }, { data: projects }] = await Promise.all([
     supabase.from('reports').select('*, project:projects(name,color), author:profiles!generated_by(full_name)')
-      .eq('org_id', profile?.org_id).order('created_at', { ascending: false }),
+      .eq('org_id', profile?.org_id ?? '').order('created_at', { ascending: false }),
     supabase.from('projects').select('id, name, progress, status, start_date, end_date')
-      .eq('org_id', profile?.org_id).eq('status', 'active'),
+      .eq('org_id', profile?.org_id ?? '').eq('status', 'active'),
   ])
 
   return (

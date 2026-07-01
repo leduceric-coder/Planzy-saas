@@ -15,7 +15,7 @@ export default async function ChantiersPage() {
   const { data: projects } = await supabase
     .from('projects')
     .select('*')
-    .eq('org_id', profile?.org_id)
+    .eq('org_id', profile?.org_id ?? '')
     .order('updated_at', { ascending: false })
 
   const active = projects?.filter(p => p.status === 'active') ?? []

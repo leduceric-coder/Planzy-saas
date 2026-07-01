@@ -10,6 +10,11 @@ export default async function ChantierPage({ params }: Props) {
   const { id } = await params
   const supabase = await createClient()
 
+  const { data: { user } } = await supabase.auth.getUser()
+  const { data: profile } = user
+    ? await supabase.from('profiles').select('org_id').eq('id', user.id).single()
+    : { data: null }
+
   const [
     { data: project },
     { data: tasks },
@@ -21,6 +26,9 @@ export default async function ChantierPage({ params }: Props) {
     { data: deliveries },
     { data: reports },
     { data: logs },
+    { data: projects },
+    { data: artisans },
+    { data: teams },
   ] = await Promise.all([
     supabase.from('projects').select('*').eq('id', id).single(),
     supabase.from('tasks').select('*, assignee:artisans(id,full_name,color,trade), team:teams(id,name,color)').eq('project_id', id).order('position'),
@@ -32,6 +40,9 @@ export default async function ChantierPage({ params }: Props) {
     supabase.from('deliveries').select('*').eq('project_id', id).order('scheduled_date'),
     supabase.from('reports').select('*').eq('project_id', id).order('created_at', { ascending: false }),
     supabase.from('activity_logs').select('*, profile:profiles!user_id(full_name)').eq('project_id', id).order('created_at', { ascending: false }).limit(20),
+    supabase.from('projects').select('id, name, color').eq('org_id', profile?.org_id ?? '').order('name'),
+    supabase.from('artisans').select('id, full_name, trade, color').eq('org_id', profile?.org_id ?? '').order('full_name'),
+    supabase.from('teams').select('id, name, color').eq('org_id', profile?.org_id ?? '').order('name'),
   ])
 
   if (!project) notFound()
@@ -48,6 +59,9 @@ export default async function ChantierPage({ params }: Props) {
       deliveries={deliveries ?? []}
       reports={reports ?? []}
       logs={logs ?? []}
+      projects={projects ?? []}
+      artisans={artisans ?? []}
+      teams={teams ?? []}
     />
   )
 }

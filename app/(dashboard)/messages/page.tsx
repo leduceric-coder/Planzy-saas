@@ -11,13 +11,13 @@ export default async function MessagesPage() {
   const { data: threads } = await supabase
     .from('message_threads')
     .select('*, project:projects(id,name,color)')
-    .eq('org_id', profile?.org_id)
+    .eq('org_id', profile?.org_id ?? '')
     .order('created_at', { ascending: false })
 
   const { data: recentMessages } = await supabase
     .from('messages')
     .select('*, sender:profiles!sender_id(id,full_name,avatar_url)')
-    .eq('org_id', profile?.org_id)
+    .eq('org_id', profile?.org_id ?? '')
     .order('created_at', { ascending: false })
     .limit(50)
 

@@ -17,7 +17,7 @@ export default async function DashboardPage() {
   const { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single()
 
   // KPIs
-  const orgId = profile?.org_id
+  const orgId = profile?.org_id ?? ''
 
   const [
     { data: projects },

@@ -1,9 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { X, Save, User, Calendar, Clock, AlertTriangle, CheckCircle, Flag } from 'lucide-react'
-import { cn, taskStatusColor, taskStatusLabel, formatDate } from '@/lib/utils'
+import { X, Pencil, User, Calendar, Clock, AlertTriangle, CheckCircle, Flag, Loader2 } from 'lucide-react'
+import { cn, taskStatusColor, taskStatusLabel, formatDate, priorityLabel } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
+import { updateTask, type TaskWithRelations } from '@/lib/actions/tasks'
 import type { Task, TaskStatus } from '@/lib/types'
 
 const STATUSES: TaskStatus[] = ['todo', 'in_progress', 'blocked', 'review', 'done', 'validated']
@@ -11,16 +12,29 @@ const STATUSES: TaskStatus[] = ['todo', 'in_progress', 'blocked', 'review', 'don
 interface Props {
   task: Task & { assignee?: any; team?: any }
   onClose: () => void
-  onUpdate?: (updates: Partial<Task>) => void
+  onEdit: () => void
+  onStatusChanged?: (updated: TaskWithRelations) => void
 }
 
-export function TaskPanel({ task, onClose, onUpdate }: Props) {
+export function TaskPanel({ task, onClose, onEdit, onStatusChanged }: Props) {
   const [status, setStatus] = useState<TaskStatus>(task.status)
   const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  const handleStatusChange = (s: TaskStatus) => {
+  const handleStatusChange = async (s: TaskStatus) => {
+    if (s === status || saving) return
+    const previous = status
     setStatus(s)
-    onUpdate?.({ status: s })
+    setSaving(true)
+    setError(null)
+    const result = await updateTask(task.id, { status: s })
+    setSaving(false)
+    if (result.error || !result.data) {
+      setStatus(previous)
+      setError(result.error ?? 'La mise à jour du statut a échoué.')
+      return
+    }
+    onStatusChanged?.(result.data)
   }
 
   return (
@@ -34,14 +48,28 @@ export function TaskPanel({ task, onClose, onUpdate }: Props) {
           <span className={cn('text-xs px-2.5 py-1 rounded-full font-600', taskStatusColor(status))}>
             {taskStatusLabel(status)}
           </span>
+          {saving && <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />}
         </div>
-        <button
-          onClick={onClose}
-          className="p-2 rounded-lg text-muted-foreground hover:bg-destructive hover:text-white hover:rotate-90 transition-all duration-300"
-        >
-          <X className="h-4 w-4" />
-        </button>
+        <div className="flex items-center gap-2">
+          <Button size="sm" variant="secondary" onClick={onEdit} className="gap-1.5">
+            <Pencil className="h-3.5 w-3.5" />
+            Modifier la tâche
+          </Button>
+          <button
+            onClick={onClose}
+            className="p-2 rounded-lg text-muted-foreground hover:bg-destructive hover:text-white hover:rotate-90 transition-all duration-300"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
       </div>
+
+      {error && (
+        <div className="mx-8 mb-4 flex items-center gap-2 bg-destructive/10 border border-destructive/30 rounded-lg p-3 text-xs text-destructive">
+          <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
+          {error}
+        </div>
+      )}
 
       {/* Body */}
       <div className="flex-1 overflow-y-auto px-8 pb-8">
@@ -159,7 +187,7 @@ export function TaskPanel({ task, onClose, onUpdate }: Props) {
             'bg-destructive/15 text-destructive': task.priority === 'critical',
           })}>
             <Flag className="h-3 w-3" />
-            {task.priority === 'low' ? 'Basse' : task.priority === 'medium' ? 'Normale' : task.priority === 'high' ? 'Haute' : 'Critique'}
+            {priorityLabel(task.priority)}
           </div>
         </div>
       </div>

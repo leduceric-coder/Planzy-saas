@@ -1,18 +1,24 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Building2, CheckSquare, MessageSquare, Image, FileText, Package, AlertTriangle, BarChart3, Activity } from 'lucide-react'
+import { ArrowLeft, Building2, CheckSquare, MessageSquare, Image, FileText, Package, AlertTriangle, BarChart3, Activity, Plus } from 'lucide-react'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
+import { Button } from '@/components/ui/button'
 import { TaskPanel } from '@/components/tasks/TaskPanel'
+import { TaskFormModal, type ProjectOption, type ArtisanOption, type TeamOption } from '@/components/tasks/TaskFormModal'
+import type { TaskWithRelations } from '@/lib/actions/tasks'
 import { cn, formatDate, taskStatusColor, taskStatusLabel, issueStatusLabel, projectStatusLabel } from '@/lib/utils'
 import type { Project, Task, Issue, Photo, Document, Message, Material, Delivery, Report, ActivityLog } from '@/lib/types'
 
+type ChantierTask = Task & { assignee?: any; team?: any }
+
 interface Props {
   project: Project
-  tasks: (Task & { assignee?: any; team?: any })[]
+  tasks: ChantierTask[]
   issues: (Issue & { artisan?: any })[]
   photos: (Photo & { taken_by_profile?: any })[]
   documents: Document[]
@@ -21,16 +27,36 @@ interface Props {
   deliveries: Delivery[]
   reports: Report[]
   logs: (ActivityLog & { profile?: any })[]
+  projects: ProjectOption[]
+  artisans: ArtisanOption[]
+  teams: TeamOption[]
 }
 
-export function ChantierDetail({ project, tasks, issues, photos, documents, messages, materials, deliveries, reports, logs }: Props) {
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null)
+export function ChantierDetail({ project, tasks, issues, photos, documents, messages, materials, deliveries, reports, logs, projects, artisans, teams }: Props) {
+  const router = useRouter()
+  const [localTasks, setLocalTasks] = useState<ChantierTask[]>(tasks)
+  const [selectedTask, setSelectedTask] = useState<ChantierTask | null>(null)
+  const [modalMode, setModalMode] = useState<'create' | 'edit' | null>(null)
 
   const tasksByStatus = {
-    todo: tasks.filter(t => t.status === 'todo').length,
-    in_progress: tasks.filter(t => t.status === 'in_progress').length,
-    blocked: tasks.filter(t => t.status === 'blocked').length,
-    done: tasks.filter(t => t.status === 'done' || t.status === 'validated').length,
+    todo: localTasks.filter(t => t.status === 'todo').length,
+    in_progress: localTasks.filter(t => t.status === 'in_progress').length,
+    blocked: localTasks.filter(t => t.status === 'blocked').length,
+    done: localTasks.filter(t => t.status === 'done' || t.status === 'validated').length,
+  }
+
+  function upsertLocalTask(updated: TaskWithRelations) {
+    setLocalTasks(prev => {
+      if (updated.project_id !== project.id) return prev.filter(t => t.id !== updated.id)
+      const exists = prev.some(t => t.id === updated.id)
+      const merged = { ...updated } as ChantierTask
+      return exists ? prev.map(t => (t.id === updated.id ? merged : t)) : [...prev, merged]
+    })
+    setSelectedTask(prev => {
+      if (!prev || prev.id !== updated.id) return prev
+      return updated.project_id === project.id ? ({ ...updated } as ChantierTask) : null
+    })
+    router.refresh()
   }
 
   return (
@@ -86,7 +112,7 @@ export function ChantierDetail({ project, tasks, issues, photos, documents, mess
           <div className="shrink-0 px-10 py-3 border-b border-border">
             <TabsList className="h-9">
               <TabsTrigger value="tasks" className="text-xs gap-1.5">
-                <CheckSquare className="h-3.5 w-3.5" />Tâches ({tasks.length})
+                <CheckSquare className="h-3.5 w-3.5" />Tâches ({localTasks.length})
               </TabsTrigger>
               <TabsTrigger value="messages" className="text-xs gap-1.5">
                 <MessageSquare className="h-3.5 w-3.5" />Messages ({messages.length})
@@ -112,14 +138,23 @@ export function ChantierDetail({ project, tasks, issues, photos, documents, mess
           <div className="flex-1 overflow-y-auto px-10 py-6">
             {/* TASKS */}
             <TabsContent value="tasks" className="mt-0">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xs font-700 uppercase tracking-wider text-muted-foreground">Tâches du chantier</h2>
+                <Button size="sm" onClick={() => { setSelectedTask(null); setModalMode('create') }} className="gap-1.5">
+                  <Plus className="h-4 w-4" />Nouvelle tâche
+                </Button>
+              </div>
               <div className="bg-surface border border-border rounded-xl overflow-hidden">
-                {tasks.length === 0 && (
-                  <div className="py-12 text-center text-sm text-muted-foreground">
-                    Aucune tâche sur ce chantier
+                {localTasks.length === 0 && (
+                  <div className="py-12 flex flex-col items-center justify-center gap-3 text-center">
+                    <p className="text-sm text-muted-foreground">Aucune tâche sur ce chantier</p>
+                    <Button size="sm" variant="outline" onClick={() => { setSelectedTask(null); setModalMode('create') }} className="gap-1.5">
+                      <Plus className="h-4 w-4" />Créer une première tâche
+                    </Button>
                   </div>
                 )}
                 <div className="divide-y divide-border">
-                  {tasks.map(task => (
+                  {localTasks.map(task => (
                     <div
                       key={task.id}
                       className="flex items-center gap-3 px-5 py-3.5 cursor-pointer hover:bg-elevated transition-colors group"
@@ -301,6 +336,22 @@ export function ChantierDetail({ project, tasks, issues, photos, documents, mess
         <TaskPanel
           task={selectedTask}
           onClose={() => setSelectedTask(null)}
+          onEdit={() => setModalMode('edit')}
+          onStatusChanged={upsertLocalTask}
+        />
+      )}
+
+      {modalMode && (
+        <TaskFormModal
+          key={modalMode === 'edit' ? selectedTask?.id : 'create'}
+          mode={modalMode}
+          task={modalMode === 'edit' && selectedTask ? (selectedTask as TaskWithRelations) : undefined}
+          projects={projects}
+          artisans={artisans}
+          teams={teams}
+          defaultProjectId={project.id}
+          onClose={() => setModalMode(null)}
+          onSaved={upsertLocalTask}
         />
       )}
     </div>

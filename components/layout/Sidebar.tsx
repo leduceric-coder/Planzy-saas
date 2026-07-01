@@ -111,7 +111,7 @@ export function Sidebar({ profile, onLogout, onThemeToggle, isDark, projects = [
           <div className="absolute top-full left-3 right-3 mt-1 bg-elevated border border-border rounded-xl shadow-lg z-50 overflow-hidden">
             {[
               { icon: Building2, label: 'Chantier', href: '/chantiers/nouveau' },
-              { icon: Calendar, label: 'Tâche', href: '#' },
+              { icon: Calendar, label: 'Tâche', href: '/planning?new=task' },
               { icon: MessageSquare, label: 'Message', href: '/messages' },
               { icon: AlertTriangle, label: 'Problème', href: '#' },
             ].map(item => (

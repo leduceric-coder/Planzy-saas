@@ -92,6 +92,26 @@ export function projectStatusColor(status: ProjectStatus): string {
   return colors[status] ?? 'bg-muted text-muted-foreground'
 }
 
+export function priorityLabel(priority: 'low' | 'medium' | 'high' | 'critical'): string {
+  const labels: Record<string, string> = {
+    low: 'Basse',
+    medium: 'Normale',
+    high: 'Haute',
+    critical: 'Critique',
+  }
+  return labels[priority] ?? priority
+}
+
+export function occupancyLevelColor(level: 'disponible' | 'partiel' | 'occupe' | 'surcharge'): string {
+  const colors: Record<string, string> = {
+    disponible: 'bg-green-500/15 text-green-500',
+    partiel: 'bg-primary/10 text-primary',
+    occupe: 'bg-yellow-500/15 text-yellow-500',
+    surcharge: 'bg-destructive/15 text-destructive',
+  }
+  return colors[level] ?? 'bg-muted text-muted-foreground'
+}
+
 export function messageTypeLabel(type: string): string {
   const labels: Record<string, string> = {
     text: 'Message',
