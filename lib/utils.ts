@@ -92,47 +92,30 @@ export function projectStatusColor(status: ProjectStatus): string {
   return colors[status] ?? 'bg-muted text-muted-foreground'
 }
 
-export function priorityLabel(priority: 'low' | 'medium' | 'high' | 'critical'): string {
-  const labels: Record<string, string> = {
-    low: 'Basse',
-    medium: 'Normale',
-    high: 'Haute',
-    critical: 'Critique',
-  }
-  return labels[priority] ?? priority
-}
-
-export function occupancyLevelColor(level: 'disponible' | 'partiel' | 'occupe' | 'surcharge'): string {
-  const colors: Record<string, string> = {
-    disponible: 'bg-green-500/15 text-green-500',
-    partiel: 'bg-primary/10 text-primary',
-    occupe: 'bg-yellow-500/15 text-yellow-500',
-    surcharge: 'bg-destructive/15 text-destructive',
-  }
-  return colors[level] ?? 'bg-muted text-muted-foreground'
-}
-
 export function messageTypeLabel(type: string): string {
   const labels: Record<string, string> = {
     text: 'Message',
     consigne: 'Consigne',
-    probleme: 'Problème',
+    probleme: 'Blocage',
     question: 'Question',
     photo: 'Photo',
     livraison_absente: 'Livraison absente',
     tache_terminee: 'Tâche terminée',
-    validation_demandee: 'Validation demandée',
+    validation_demandee: 'Validation',
+    decision: 'Décision',
   }
   return labels[type] ?? type
 }
 
 export function messageTypeColor(type: string): string {
   const colors: Record<string, string> = {
-    consigne: 'text-primary bg-primary/8',
-    probleme: 'text-destructive bg-destructive/8',
-    question: 'text-yellow-500 bg-yellow-500/8',
-    validation_demandee: 'text-yellow-500 bg-yellow-500/8',
-    tache_terminee: 'text-green-500 bg-green-500/8',
+    consigne: 'text-blue-600 bg-blue-500/10 dark:text-blue-400',
+    probleme: 'text-red-600 bg-red-500/10 dark:text-red-400',
+    question: 'text-yellow-600 bg-yellow-500/10 dark:text-yellow-400',
+    validation_demandee: 'text-orange-600 bg-orange-500/10 dark:text-orange-400',
+    tache_terminee: 'text-green-600 bg-green-500/10 dark:text-green-400',
+    decision: 'text-green-600 bg-green-500/10 dark:text-green-400',
+    livraison_absente: 'text-red-600 bg-red-500/10 dark:text-red-400',
   }
   return colors[type] ?? ''
 }
@@ -144,6 +127,17 @@ export const TASK_COLORS = [
 
 export function getProjectColor(index: number): string {
   return TASK_COLORS[index % TASK_COLORS.length]
+}
+
+/** Convert a hex color to rgba with the given alpha (0–1). */
+export function hexToRgba(hex: string, alpha: number): string {
+  const h = (hex ?? '').replace('#', '')
+  if (h.length < 6) return `rgba(99,102,241,${alpha})`
+  const r = parseInt(h.slice(0, 2), 16)
+  const g = parseInt(h.slice(2, 4), 16)
+  const b = parseInt(h.slice(4, 6), 16)
+  if (isNaN(r) || isNaN(g) || isNaN(b)) return `rgba(99,102,241,${alpha})`
+  return `rgba(${r},${g},${b},${alpha})`
 }
 
 export function daysUntil(date: string | null | undefined): number | null {

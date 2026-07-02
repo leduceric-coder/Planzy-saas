@@ -1,5 +1,6 @@
+import { Suspense } from 'react'
 import { LoginForm } from './LoginForm'
-import { Zap } from 'lucide-react'
+import { KanvixMark, KanvixLogo } from '@/components/brand/KanvixLogo'
 
 export default function LoginPage() {
   return (
@@ -8,10 +9,8 @@ export default function LoginPage() {
         {/* Logo */}
         <div className="flex justify-center mb-8">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg">
-              <Zap className="h-5 w-5 text-white" />
-            </div>
-            <span className="text-2xl font-700 tracking-tight text-foreground">Planzy</span>
+            <KanvixMark size={36} />
+            <KanvixLogo width={160} />
           </div>
         </div>
 
@@ -21,11 +20,13 @@ export default function LoginPage() {
           <p className="text-sm text-muted-foreground text-center mb-8">
             Gérez vos chantiers, coordonnez vos équipes.
           </p>
-          <LoginForm />
+          <Suspense>
+            <LoginForm />
+          </Suspense>
         </div>
 
         <p className="text-xs text-muted-foreground text-center mt-6">
-          Planzy — Plateforme BTP professionnelle
+          Kanvix — Plateforme BTP professionnelle
         </p>
       </div>
     </div>

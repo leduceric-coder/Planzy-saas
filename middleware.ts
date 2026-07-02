@@ -1,16 +1,17 @@
-import { createServerClient } from '@supabase/ssr'
+import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import type { Database } from '@/lib/types'
 
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
 
-  const supabase = createServerClient(
+  const supabase = createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
         getAll() { return request.cookies.getAll() },
-        setAll(cookiesToSet) {
+        setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
           cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
           supabaseResponse = NextResponse.next({ request })
           cookiesToSet.forEach(({ name, value, options }) =>
@@ -25,22 +26,26 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl
 
-  // Auth routes — redirect to dashboard if already logged in
+  // Auth routes — redirect to dashboard if already logged in (respect ?redirect= param)
   const isAuthRoute = pathname.startsWith('/login') || pathname.startsWith('/signup')
   if (isAuthRoute && user) {
-    return NextResponse.redirect(new URL('/', request.url))
+    const redirectTo = request.nextUrl.searchParams.get('redirect') ?? '/'
+    return NextResponse.redirect(new URL(redirectTo, request.url))
   }
 
-  // Protected routes — redirect to login if not logged in
-  const isProtectedRoute =
-    !isAuthRoute &&
-    !pathname.startsWith('/api/auth') &&
-    !pathname.startsWith('/_next') &&
-    !pathname.startsWith('/favicon') &&
-    pathname !== '/login' &&
-    pathname !== '/signup'
+  // Public routes that don't require a session
+  const isPublicRoute =
+    isAuthRoute ||
+    pathname.startsWith('/landing') ||
+    pathname.startsWith('/reset-password') ||
+    pathname.startsWith('/update-password') ||
+    pathname.startsWith('/api/auth') ||
+    pathname.startsWith('/invite') ||
+    pathname.startsWith('/_next') ||
+    pathname.startsWith('/favicon')
 
-  if (isProtectedRoute && !user) {
+  // Protected routes — redirect to login if not logged in
+  if (!isPublicRoute && !user) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 

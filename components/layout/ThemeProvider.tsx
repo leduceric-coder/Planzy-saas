@@ -1,38 +1,70 @@
 'use client'
 
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState, useCallback } from 'react'
 
-type Theme = 'dark' | 'light'
+export type Theme = 'dark' | 'light' | 'system'
 
 interface ThemeContextType {
   theme: Theme
-  toggleTheme: () => void
+  setTheme: (t: Theme) => void
+  toggleTheme: () => void  // backward compat: cycles dark ↔ light
 }
 
-const ThemeContext = createContext<ThemeContextType>({ theme: 'dark', toggleTheme: () => {} })
+const ThemeContext = createContext<ThemeContextType>({
+  theme: 'dark',
+  setTheme: () => {},
+  toggleTheme: () => {},
+})
+
+function applyTheme(theme: Theme) {
+  const root = document.documentElement
+  if (theme === 'light') {
+    root.classList.add('light')
+  } else if (theme === 'dark') {
+    root.classList.remove('light')
+  } else {
+    // system: follow OS preference
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      root.classList.remove('light')
+    } else {
+      root.classList.add('light')
+    }
+  }
+}
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>('dark')
+  const [theme, setThemeState] = useState<Theme>('dark')
 
+  // Read stored theme on mount
   useEffect(() => {
-    const stored = localStorage.getItem('planzy-theme') as Theme | null
-    if (stored) setTheme(stored)
+    try {
+      const stored = localStorage.getItem('planzy-theme') as Theme | null
+      if (stored === 'light' || stored === 'dark' || stored === 'system') {
+        setThemeState(stored)
+      }
+    } catch {}
   }, [])
 
+  // Apply theme and persist whenever it changes
   useEffect(() => {
-    const root = document.documentElement
-    if (theme === 'light') {
-      root.classList.add('light')
-    } else {
-      root.classList.remove('light')
-    }
-    localStorage.setItem('planzy-theme', theme)
+    applyTheme(theme)
+    try { localStorage.setItem('planzy-theme', theme) } catch {}
   }, [theme])
 
-  const toggleTheme = () => setTheme(t => t === 'dark' ? 'light' : 'dark')
+  // Listen to OS preference changes when in system mode
+  useEffect(() => {
+    if (theme !== 'system') return
+    const mq = window.matchMedia('(prefers-color-scheme: dark)')
+    const handler = () => applyTheme('system')
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [theme])
+
+  const setTheme = useCallback((t: Theme) => setThemeState(t), [])
+  const toggleTheme = useCallback(() => setThemeState(t => t === 'dark' ? 'light' : 'dark'), [])
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   )
