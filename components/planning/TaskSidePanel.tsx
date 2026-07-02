@@ -416,13 +416,22 @@ export function TaskSidePanel({
     setLocalStatus(s)
     setSaving(true)
     try {
-      const { error } = await mutationClient()
+      // LOT 27C — on demande les lignes affectées (.select) : un UPDATE filtré par
+      // RLS renvoie error=null MAIS 0 ligne. Sans ce contrôle, l'app affichait un
+      // faux succès puis la valeur revenait au reload (bug d'édition signalé).
+      const { data: updatedRows, error } = await mutationClient()
         .from('tasks')
         .update({ status: s })
         .eq('id', task.id)
-      if (error) {
+        .select('id')
+      if (error || !updatedRows || updatedRows.length === 0) {
         setLocalStatus(prevStatus)
-        toast('Erreur : statut non sauvegardé', 'error')
+        toast(
+          error
+            ? 'Erreur : statut non sauvegardé'
+            : "Statut non enregistré : droits insuffisants ou tâche hors de votre organisation.",
+          'error',
+        )
         return
       }
       onTaskUpdated?.(task.id, { status: s })
@@ -508,7 +517,10 @@ export function TaskSidePanel({
       const assignedTeamValue = editAssignment.assigned_team
       const descriptionValue = editDescription || null
 
-      const { error } = await mutationClient()
+      // LOT 27C — .select() pour connaître les lignes réellement modifiées.
+      // Un UPDATE bloqué par RLS renvoie error=null avec 0 ligne : on le traite
+      // comme un échec (pas de faux succès, pas de merge local, message visible).
+      const { data: updatedRows, error } = await mutationClient()
         .from('tasks')
         .update({
           title,
@@ -521,9 +533,13 @@ export function TaskSidePanel({
           updated_at: new Date().toISOString(),
         })
         .eq('id', task.id)
+        .select('id')
 
-      if (error) {
-        setEditError(error.message || 'Erreur lors de la sauvegarde')
+      if (error || !updatedRows || updatedRows.length === 0) {
+        setEditError(
+          error?.message ||
+            "Modification refusée : droits insuffisants ou tâche hors de votre organisation.",
+        )
         toast('Modification non sauvegardée', 'error')
         return
       }
