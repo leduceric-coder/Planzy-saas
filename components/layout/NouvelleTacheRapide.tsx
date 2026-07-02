@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useToast } from '@/components/ui/toast-context'
 import { SlidePanel } from '@/components/ui/SlidePanel'
+import { DurationField } from '@/components/ui/DurationField'
 import { AssignmentPicker, type AssignValue, type TeamOption, type ArtisanOption } from '@/components/ui/AssignmentPicker'
 
 interface Props {
@@ -139,6 +140,9 @@ export function NouvelleTacheRapide({ projects, artisans, teams, orgId, onClose 
             </p>
           )}
         </div>
+
+        {/* Durée (jours / semaines) — pilote la date de fin */}
+        <DurationField startDate={startDate} endDate={endDate} onEndDateChange={setEndDate} />
 
         {/* Assignation */}
         <AssignmentPicker

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useToast } from '@/components/ui/toast-context'
 import { SlidePanel } from '@/components/ui/SlidePanel'
+import { DurationField } from '@/components/ui/DurationField'
 import type { Task } from '@/lib/types'
 
 interface Artisan {
@@ -116,6 +117,9 @@ export function EditTacheModal({ task, projectId, artisans, onClose }: Props) {
             </p>
           )}
         </div>
+
+        {/* Durée (jours / semaines) — pilote la date de fin */}
+        <DurationField startDate={startDate} endDate={endDate} onEndDateChange={setEndDate} />
 
         {/* Artisan */}
         {artisans.length > 0 && (

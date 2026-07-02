@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { Header } from '@/components/layout/Header'
-import { GanttView } from '@/components/planning/GanttView'
+import { PlanningTabs } from '@/components/planning/PlanningTabs'
 import type { Task } from '@/lib/types'
 
 type GanttTask = Task & {
@@ -11,7 +11,7 @@ type GanttTask = Task & {
 }
 
 type GanttProject = { id: string; name: string; color: string }
-type GanttArtisan = { id: string; full_name: string; color: string }
+type GanttArtisan = { id: string; full_name: string; trade: string; color: string }
 
 interface PageProps {
   searchParams: Promise<{ focus?: string; id?: string }>
@@ -75,7 +75,7 @@ export default async function PlanningPage({ searchParams }: PageProps) {
       : Promise.resolve({ data: [] } as any),
     supabase
       .from('artisans')
-      .select('id, full_name, color')
+      .select('id, full_name, color, trade')
       .eq('org_id', orgId)
       .eq('is_archived', false)
       .order('full_name'),
@@ -101,13 +101,14 @@ export default async function PlanningPage({ searchParams }: PageProps) {
         subtitle="Vue Gantt de tous les chantiers actifs"
       />
       <div className="flex-1 overflow-hidden px-6 pb-6">
-        <GanttView
+        <PlanningTabs
           tasks={tasks}
           projects={projects}
           artisans={artisans}
           teams={teams}
           undatedTasks={undatedTasks}
           initialFocusTaskId={initialFocusTaskId}
+          orgId={orgId}
         />
       </div>
     </div>
