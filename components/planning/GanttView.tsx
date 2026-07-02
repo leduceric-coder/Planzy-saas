@@ -5,7 +5,7 @@ import { addDays, format, differenceInDays, startOfDay, eachDayOfInterval, getIS
 import { fr } from 'date-fns/locale'
 import {
   ChevronLeft, ChevronRight, Calendar, ChevronDown,
-  ChevronRight as ChevronRightSm, AlertTriangle,
+  ChevronRight as ChevronRightSm, AlertTriangle, Check,
   Maximize2, Minimize2, Undo2, Redo2, SlidersHorizontal,
 } from 'lucide-react'
 import { cn, taskStatusColor, taskStatusLabel, formatDate, hexToRgba } from '@/lib/utils'
@@ -690,19 +690,31 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
   // ─── Flat rows model ─────────────────────────────────────────────────────────
 
   type GanttRow =
-    | { type: 'group'; project: GanttTask['project'] }
+    | { type: 'group'; project: GanttTask['project']; taskCount: number; doneCount: number }
     | { type: 'task'; task: GanttTask; project: GanttTask['project'] }
+
+  // LOT 27C — regroupements repliables. On filtre à la source unique (ganttRows)
+  // pour que taskLayout, le rendu et les flèches de dépendance restent cohérents.
+  const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set())
+  const toggleGroup = (projectId: string) =>
+    setCollapsedGroups(prev => {
+      const next = new Set(prev)
+      next.has(projectId) ? next.delete(projectId) : next.add(projectId)
+      return next
+    })
 
   const ganttRows = useMemo((): GanttRow[] => {
     const rows: GanttRow[] = []
     for (const { project, tasks: grpTasks } of groupedByProject) {
-      rows.push({ type: 'group', project })
+      const doneCount = grpTasks.filter(isTaskCompleted).length
+      rows.push({ type: 'group', project, taskCount: grpTasks.length, doneCount })
+      if (project && collapsedGroups.has(project.id)) continue // replié : tâches masquées
       for (const task of grpTasks) {
         rows.push({ type: 'task', task, project })
       }
     }
     return rows
-  }, [groupedByProject])
+  }, [groupedByProject, collapsedGroups])
 
   // ─── Bar render (read-only, click opens sidewindow) ──────────────────────────
 
@@ -804,6 +816,10 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
       >
         {showAlertIcon && (
           <AlertTriangle className="shrink-0 h-3 w-3 ml-1.5" style={{ color: stripeColor }} />
+        )}
+        {/* LOT 27C — coche « terminé » (statut réel, pas de progression fabriquée) */}
+        {(task.status === 'done' || task.status === 'validated') && (
+          <Check className="shrink-0 h-3 w-3 ml-1.5" style={{ color: effectiveTextColor }} />
         )}
         <span className="truncate px-1.5 flex-1">{task.title}</span>
       </div>
@@ -1324,6 +1340,10 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                   }}
                 >
                   <div className="w-2 h-2 rounded-full bg-yellow-500 -translate-x-0.5 -translate-y-1" />
+                  {/* LOT 27C — libellé de la ligne du jour */}
+                  <span className="absolute top-0 left-1 -translate-y-1/2 whitespace-nowrap text-[9px] font-700 text-white bg-yellow-500 px-1 py-0.5 rounded shadow-sm">
+                    Aujourd&apos;hui
+                  </span>
                 </div>
               )}
 
@@ -1331,13 +1351,23 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                   Both cells share the SAME parent flex row → identical height guaranteed. */}
               {ganttRows.map(row => {
                 if (row.type === 'group') {
+                  const groupKey = row.project?.id ?? 'unknown'
+                  const isCollapsed = collapsedGroups.has(groupKey)
                   return (
-                    <div key={`g-${row.project?.id ?? 'unknown'}`} className="flex" style={{ height: ROW_HEIGHT }}>
+                    <div key={`g-${groupKey}`} className="flex" style={{ height: ROW_HEIGHT }}>
                       <div
-                        className="sticky left-0 z-20 shrink-0 bg-background border-r border-b border-border flex items-center px-4 overflow-hidden"
+                        className="sticky left-0 z-20 shrink-0 bg-background border-r border-b border-border flex items-center gap-2 px-4 overflow-hidden cursor-pointer hover:bg-elevated/50 transition-colors"
                         style={{ width: LEFT_COL_WIDTH, height: ROW_HEIGHT, borderLeft: `3px solid ${row.project?.color ?? '#2563EB'}` }}
+                        onClick={() => toggleGroup(groupKey)}
+                        title={isCollapsed ? 'Déplier le chantier' : 'Replier le chantier'}
                       >
-                        <span className="text-xs font-700 text-foreground truncate min-w-0">{row.project?.name ?? 'Chantier'}</span>
+                        {isCollapsed
+                          ? <ChevronRightSm className="h-4 w-4 shrink-0 text-muted-foreground" />
+                          : <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground" />}
+                        <span className="text-xs font-700 text-foreground truncate min-w-0 flex-1">{row.project?.name ?? 'Chantier'}</span>
+                        <span className="shrink-0 text-[10px] font-600 text-muted-foreground tabular-nums" title="Tâches terminées / total">
+                          {row.doneCount}/{row.taskCount}
+                        </span>
                       </div>
                       <div className="relative border-b border-border bg-background/30" style={{ width: totalDays * dayW, height: ROW_HEIGHT }}>
                         {monthSegments.map((seg, idx) => (
