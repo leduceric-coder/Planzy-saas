@@ -286,7 +286,10 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
       if (filterProject !== 'all' && t.project_id !== filterProject) continue
       if (filterArtisan !== 'all' && t.assignee?.id !== filterArtisan) continue
       if (filterStatus !== 'all' && t.status !== filterStatus) continue
-      if (!showCompleted && (t.status === 'done' || t.status === 'validated')) continue
+      // LOT 27D — la case additive « terminées » ne s'applique que si AUCUN statut
+      // explicite n'est choisi : sélectionner « Terminée » affiche alors UNIQUEMENT
+      // les terminées (filtrage strict par statut).
+      if (filterStatus === 'all' && !showCompleted && (t.status === 'done' || t.status === 'validated')) continue
       if (!t.start_date || !t.end_date) continue
       const s = parseDBDate(t.start_date)
       const e = parseDBDate(t.end_date)
@@ -363,7 +366,7 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
       if (filterProject !== 'all' && t.project_id !== filterProject) return false
       if (filterArtisan !== 'all' && t.assignee?.id !== filterArtisan) return false
       if (filterStatus !== 'all' && t.status !== filterStatus) return false
-      if (!showCompleted && (t.status === 'done' || t.status === 'validated')) return false
+      if (filterStatus === 'all' && !showCompleted && (t.status === 'done' || t.status === 'validated')) return false
       return true
     }),
     [localTasks, filterProject, filterArtisan, filterStatus, showCompleted]
@@ -1166,6 +1169,9 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                           <option value="done">Terminée</option>
                           <option value="validated">Validée</option>
                         </select>
+                        <span className="text-[10px] text-muted-foreground/60 leading-tight">
+                          Sélectionner un statut affiche <span className="font-700">uniquement</span> ces tâches (masque les autres).
+                        </span>
                       </div>
 
                       <div className="flex flex-col gap-2 pt-2 border-t border-border/20">

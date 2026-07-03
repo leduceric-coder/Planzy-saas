@@ -67,14 +67,18 @@ export default async function DashboardPage() {
     kpiTeamMembers,
     kpiMessages,
     kpiPhotosRaw,
+    kpiTeams,
   ] = await Promise.all([
     // All non-done tasks (broad: for week planning + artisan assignments)
     activeProjectIds.length > 0
       ? supabase
           .from('tasks')
+          // LOT 27D — sélection complète (+ ids dans les jointures) pour alimenter
+          // correctement TaskSidePanel en édition depuis le dashboard (priority,
+          // description, etc. — sinon la sauvegarde les écraserait).
           .select(
-            'id, title, status, start_date, end_date, project_id, assigned_to, assigned_team,' +
-            'assignee:artisans!assigned_to(full_name, color), team:teams!assigned_team(name, color), project:projects!project_id(name, color)',
+            '*,' +
+            'assignee:artisans!assigned_to(id, full_name, color), team:teams!assigned_team(id, name, color), project:projects!project_id(id, name, color)',
           )
           .in('project_id', activeProjectIds)
           .not('status', 'in', '(done,validated)')
@@ -142,6 +146,13 @@ export default async function DashboardPage() {
           .order('created_at', { ascending: false })
           .limit(6)
       : Promise.resolve({ data: [], error: null } as any),
+
+    // LOT 27D — teams for the dashboard sidewindow assignment editor
+    supabase
+      .from('teams')
+      .select('id, name, color, type, members:team_members(artisan_id)')
+      .eq('org_id', orgId)
+      .order('name'),
   ])
 
   // ── Signed URLs for photos ────────────────────────────────────────────────────
@@ -179,9 +190,9 @@ export default async function DashboardPage() {
     end_date: string | null
     assigned_to: string | null
     assigned_team: string | null
-    project?: { name: string; color: string } | null
-    assignee?: { full_name: string | null; color: string | null } | null
-    team?: { name: string; color: string | null } | null
+    project?: { id: string; name: string; color: string } | null
+    assignee?: { id: string; full_name: string | null; color: string | null } | null
+    team?: { id: string; name: string; color: string | null } | null
   }
 
   const tasks = (kpiTasks.data ?? []) as unknown as RichTask[]
@@ -195,6 +206,11 @@ export default async function DashboardPage() {
   const teamMembers = (kpiTeamMembers.data ?? []) as unknown as {
     team_id: string; artisan_id: string
   }[]
+  // LOT 27D — teams shaped for TaskSidePanel (dashboard sidewindow assignment editor)
+  const teams = ((kpiTeams.data ?? []) as unknown as Array<{
+    id: string; name: string; color: string | null; type: string | null
+    members: { artisan_id: string }[]
+  }>).map(t => ({ id: t.id, name: t.name, color: t.color, type: t.type, memberCount: t.members?.length ?? 0 }))
   const messages = (kpiMessages.data ?? []) as unknown as {
     id: string; content: string; type: string; created_at: string; project_id: string | null;
     project?: { name: string } | null; sender?: { full_name: string | null } | null
@@ -308,7 +324,7 @@ export default async function DashboardPage() {
 
             {/* ── Ligne 1 : Planning (2/3) + À traiter (1/3) ── */}
             <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-5 items-stretch">
-              <WeekByDay tasks={weekTasks as any[]} today={today} />
+              <WeekByDay tasks={weekTasks as any[]} today={today} artisans={artisans} teams={teams} />
               <TodayFocus
                 lateTasks={lateTasks as any[]}
                 blockedTasks={blockedTasks as any[]}

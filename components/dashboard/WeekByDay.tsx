@@ -1,10 +1,11 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect, type ComponentProps } from 'react'
 import Link from 'next/link'
 import { Calendar, Search, ArrowRight, AlertTriangle, X, CheckCircle } from 'lucide-react'
 import { cn, taskStatusLabel, taskStatusColor, hexToRgba } from '@/lib/utils'
 import type { TaskStatus } from '@/lib/types'
+import { TaskSidePanel, type TaskUpdatePatch } from '@/components/planning/TaskSidePanel'
 
 export type WeekDayTask = {
   id: string
@@ -21,9 +22,14 @@ export type WeekDayTask = {
 interface Props {
   tasks: WeekDayTask[]
   today: string
+  artisans?: { id: string; full_name: string; trade?: string | null; color: string }[]
+  teams?: { id: string; name: string; color: string | null; type: string | null; memberCount: number }[]
 }
 
 type ViewMode = 'gantt' | 'kanban'
+
+// Type exact de la prop `task` attendue par TaskSidePanel (non exporté côté panneau).
+type PanelTask = ComponentProps<typeof TaskSidePanel>['task']
 
 // ─── Date helpers ─────────────────────────────────────────────────────────────
 
@@ -94,6 +100,7 @@ function MiniGantt({
   compact = true,
   labelWidth,
   onLabelResize,
+  onTaskClick,
 }: {
   tasks: WeekDayTask[]
   today: string
@@ -101,6 +108,7 @@ function MiniGantt({
   compact?: boolean
   labelWidth: number
   onLabelResize?: (w: number) => void
+  onTaskClick?: (task: WeekDayTask) => void
 }) {
   const dragging = useRef(false)
   const startX = useRef(0)
@@ -199,9 +207,6 @@ function MiniGantt({
               const isDone = task.status === 'done' || task.status === 'validated'
               const hasAlert = isLate || isBlocked
               const color = task.project?.color ?? '#6366f1'
-              const href = task.project_id
-                ? `/chantiers/${task.project_id}?focus=task&id=${task.id}`
-                : '/planning'
 
               const barBg = hexToRgba(color, 0.26)
               const barBorderColor = hexToRgba(color, 0.46)
@@ -209,10 +214,11 @@ function MiniGantt({
               const barText = hexToRgba(color, 1.0)
 
               return (
-                <Link
+                <button
                   key={task.id}
-                  href={href}
-                  className="flex items-center border-b border-border/25 hover:bg-foreground/[0.02] transition-colors"
+                  type="button"
+                  onClick={() => onTaskClick?.(task)}
+                  className="w-full text-left flex items-center border-b border-border/25 hover:bg-foreground/[0.02] transition-colors"
                   style={{ height: ROW_H }}
                 >
                   {/* Label column */}
@@ -292,7 +298,7 @@ function MiniGantt({
                       )}
                     </div>
                   </div>
-                </Link>
+                </button>
               )
             })}
           </div>
@@ -322,7 +328,7 @@ function MiniGantt({
 
 // ─── Kanban ───────────────────────────────────────────────────────────────────
 
-function KanbanGrid({ tasks, today }: { tasks: WeekDayTask[]; today: string }) {
+function KanbanGrid({ tasks, today, onTaskClick }: { tasks: WeekDayTask[]; today: string; onTaskClick?: (task: WeekDayTask) => void }) {
   const sections = [
     {
       key: 'todo',
@@ -374,14 +380,12 @@ function KanbanGrid({ tasks, today }: { tasks: WeekDayTask[]; today: string }) {
             <div className="flex flex-col gap-1">
               {section.tasks.slice(0, 4).map(task => {
                 const assignee = task.team?.name ?? task.assignee?.full_name
-                const href = task.project_id
-                  ? `/chantiers/${task.project_id}?focus=task&id=${task.id}`
-                  : '/planning'
                 return (
-                  <Link
+                  <button
                     key={task.id}
-                    href={href}
-                    className="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-elevated/50 hover:bg-elevated transition-colors"
+                    type="button"
+                    onClick={() => onTaskClick?.(task)}
+                    className="w-full text-left flex items-center gap-2.5 px-3 py-2 rounded-xl bg-elevated/50 hover:bg-elevated transition-colors"
                   >
                     {task.project?.color && (
                       <span className="w-2 h-2 rounded-full shrink-0" style={{ background: task.project.color }} />
@@ -393,7 +397,7 @@ function KanbanGrid({ tasks, today }: { tasks: WeekDayTask[]; today: string }) {
                     <span className={cn('text-[9px] font-700 px-1.5 py-px rounded uppercase tracking-wide shrink-0', taskStatusColor(task.status as TaskStatus))}>
                       {taskStatusLabel(task.status as TaskStatus)}
                     </span>
-                  </Link>
+                  </button>
                 )
               })}
             </div>
@@ -410,10 +414,12 @@ function WeekModal({
   tasks,
   today,
   onClose,
+  onTaskClick,
 }: {
   tasks: WeekDayTask[]
   today: string
   onClose: () => void
+  onTaskClick?: (task: WeekDayTask) => void
 }) {
   const [modalLabelW, setModalLabelW] = useState(260)
   const [mode, setMode] = useState<ViewMode>('gantt')
@@ -495,9 +501,10 @@ function WeekModal({
               compact={false}
               labelWidth={modalLabelW}
               onLabelResize={setModalLabelW}
+              onTaskClick={onTaskClick}
             />
           ) : (
-            <KanbanGrid tasks={tasks} today={today} />
+            <KanbanGrid tasks={tasks} today={today} onTaskClick={onTaskClick} />
           )}
         </div>
       </div>
@@ -507,10 +514,36 @@ function WeekModal({
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
-export function WeekByDay({ tasks, today }: Props) {
+export function WeekByDay({ tasks, today, artisans = [], teams = [] }: Props) {
   const [mode, setMode] = useState<ViewMode>('gantt')
   const [modalOpen, setModalOpen] = useState(false)
   const [labelWidth, setLabelWidth] = useState(220)
+
+  // LOT 27D — sidewindow locale : le clic sur une tâche ouvre TaskSidePanel
+  // AU-DESSUS du dashboard, sans navigation ni changement d'URL.
+  const [localTasks, setLocalTasks] = useState<WeekDayTask[]>(tasks)
+  const [selectedId, setSelectedId] = useState<string | null>(null)
+  useEffect(() => { setLocalTasks(tasks) }, [tasks])
+
+  const selectedTask = selectedId ? localTasks.find(t => t.id === selectedId) ?? null : null
+
+  const handleTaskClick = (task: WeekDayTask) => {
+    setSelectedId(task.id)
+    setModalOpen(false) // on ferme la vue agrandie pour rester sur le dashboard
+  }
+
+  // Merge d'un patch renvoyé par TaskSidePanel → mise à jour locale du dashboard.
+  const handleTaskUpdated = (taskId: string, patch: TaskUpdatePatch) => {
+    setLocalTasks(prev => prev.map(t => (t.id === taskId ? ({ ...t, ...patch } as WeekDayTask) : t)))
+  }
+
+  // Fermeture par Escape (en plus du X du panneau).
+  useEffect(() => {
+    if (!selectedId) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setSelectedId(null) }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [selectedId])
 
   return (
     <>
@@ -570,22 +603,34 @@ export function WeekByDay({ tasks, today }: Props) {
         <div className="flex-1 overflow-hidden flex flex-col min-h-0">
           {mode === 'gantt' ? (
             <MiniGantt
-              tasks={tasks}
+              tasks={localTasks}
               today={today}
               maxRows={10}
               compact
               labelWidth={labelWidth}
               onLabelResize={setLabelWidth}
+              onTaskClick={handleTaskClick}
             />
           ) : (
-            <KanbanGrid tasks={tasks} today={today} />
+            <KanbanGrid tasks={localTasks} today={today} onTaskClick={handleTaskClick} />
           )}
         </div>
       </section>
 
       {modalOpen && (
-        <WeekModal tasks={tasks} today={today} onClose={() => setModalOpen(false)} />
+        <WeekModal tasks={localTasks} today={today} onClose={() => setModalOpen(false)} onTaskClick={handleTaskClick} />
       )}
+
+      {/* LOT 27D — sidewindow locale du dashboard : réutilise TaskSidePanel
+          (mêmes bouton « Modifier », édition RLS-safe et lien « Ouvrir le chantier »). */}
+      <TaskSidePanel
+        task={selectedTask as unknown as PanelTask}
+        artisans={artisans}
+        teams={teams}
+        availableTasks={localTasks as unknown as ComponentProps<typeof TaskSidePanel>['availableTasks']}
+        onClose={() => setSelectedId(null)}
+        onTaskUpdated={handleTaskUpdated}
+      />
     </>
   )
 }
