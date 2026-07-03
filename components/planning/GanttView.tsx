@@ -7,7 +7,7 @@ import {
   ChevronLeft, ChevronRight, Calendar, ChevronDown,
   ChevronRight as ChevronRightSm, AlertTriangle, Check,
   Maximize2, Minimize2, Undo2, Redo2, SlidersHorizontal,
-  Plus, RotateCcw, Inbox,
+  Plus, RotateCcw, Inbox, Crosshair,
 } from 'lucide-react'
 import { cn, taskStatusColor, taskStatusLabel, formatDate, hexToRgba } from '@/lib/utils'
 import type { Task, TaskStatus } from '@/lib/types'
@@ -58,6 +58,19 @@ function getMonthBandIndex(date: Date): number {
 // ils ne génèrent plus d'alertes de chevauchement ou de retard.
 function isTaskCompleted(t: { status: string }): boolean {
   return t.status === 'done' || t.status === 'validated'
+}
+
+// ─── LOT 27G — couleur d'identité chantier ──────────────────────────────────────
+// Réutilise project.color si disponible ; sinon palette DÉTERMINISTE dérivée de
+// l'id (jamais aléatoire, stable d'un rendu à l'autre).
+const FALLBACK_PALETTE = ['#2563EB', '#16A34A', '#9333EA', '#EA580C', '#0891B2', '#DB2777', '#CA8A04', '#4F46E5']
+function colorFromId(id: string): string {
+  let h = 0
+  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0
+  return FALLBACK_PALETTE[h % FALLBACK_PALETTE.length]
+}
+function projectColor(p: { id?: string; color?: string } | null | undefined): string {
+  return p?.color || (p?.id ? colorFromId(p.id) : '#2563EB')
 }
 
 // ─── Conflict detection ────────────────────────────────────────────────────────
@@ -1375,25 +1388,41 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                 if (row.type === 'group') {
                   const groupKey = row.project?.id ?? 'unknown'
                   const isCollapsed = collapsedGroups.has(groupKey)
+                  const grpColor = projectColor(row.project)
+                  const canFocus = !!row.project?.id
                   return (
-                    <div key={`g-${groupKey}`} className="flex" style={{ height: ROW_HEIGHT }}>
+                    // LOT 27G — séparateur entre chantiers (border-top, hauteur inchangée
+                    // en border-box → taskLayout non impacté).
+                    <div key={`g-${groupKey}`} className="flex group/grp border-t-2 border-border/70" style={{ height: ROW_HEIGHT }}>
                       <div
-                        className="sticky left-0 z-20 shrink-0 bg-background border-r border-b border-border flex items-center gap-2 pl-3 pr-4 overflow-hidden cursor-pointer hover:bg-elevated/50 transition-colors"
-                        style={{ width: LEFT_COL_WIDTH, height: ROW_HEIGHT, borderLeft: `6px solid ${row.project?.color ?? '#2563EB'}` }}
+                        className="sticky left-0 z-20 shrink-0 bg-background border-r border-b border-border flex items-center gap-2 pl-3 pr-3 overflow-hidden cursor-pointer hover:bg-elevated/50 transition-colors"
+                        style={{ width: LEFT_COL_WIDTH, height: ROW_HEIGHT, borderLeft: `6px solid ${grpColor}` }}
                         onClick={() => toggleGroup(groupKey)}
                         title={isCollapsed ? 'Déplier le chantier' : 'Replier le chantier'}
                       >
                         {/* teinte chantier — au-dessus du fond opaque, derrière le contenu */}
-                        <div className="absolute inset-0 pointer-events-none z-[-1]" style={{ background: hexToRgba(row.project?.color ?? '#2563EB', 0.06) }} />
+                        <div className="absolute inset-0 pointer-events-none z-[-1]" style={{ background: hexToRgba(grpColor, 0.06) }} />
                         {isCollapsed
                           ? <ChevronRightSm className="h-4 w-4 shrink-0 text-muted-foreground" />
                           : <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground" />}
                         <span className="text-xs font-800 uppercase tracking-wide text-foreground truncate min-w-0 flex-1">{row.project?.name ?? 'Chantier'}</span>
+                        {canFocus && (
+                          <button
+                            onClick={e => { e.stopPropagation(); setFilterProject(filterProject === groupKey ? 'all' : groupKey) }}
+                            className={cn(
+                              'shrink-0 p-1 rounded-md transition-colors md:opacity-0 md:group-hover/grp:opacity-100',
+                              filterProject === groupKey ? 'text-primary md:opacity-100' : 'text-muted-foreground/60 hover:text-primary',
+                            )}
+                            title={filterProject === groupKey ? 'Afficher tous les chantiers' : 'Voir uniquement ce chantier'}
+                          >
+                            <Crosshair className="h-3.5 w-3.5" />
+                          </button>
+                        )}
                         <span className="shrink-0 text-[10px] font-600 text-muted-foreground tabular-nums" title="Tâches terminées / total">
                           {row.doneCount}/{row.taskCount}
                         </span>
                       </div>
-                      <div className="relative border-b border-border" style={{ width: totalDays * dayW, height: ROW_HEIGHT, background: hexToRgba(row.project?.color ?? '#2563EB', 0.05) }}>
+                      <div className="relative border-b border-border" style={{ width: totalDays * dayW, height: ROW_HEIGHT, background: hexToRgba(grpColor, 0.05) }}>
                         {monthSegments.map((seg, idx) => (
                           <div key={idx} className="absolute inset-y-0 pointer-events-none" style={{ left: seg.left, width: seg.width }}>
                             {seg.isOdd && <div className="absolute inset-0 bg-foreground/[0.02]" />}
@@ -1406,7 +1435,9 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                         {/* LOT 27G — résumé chantier « pleine largeur » (données fiables) */}
                         <span className="absolute left-3 top-1/2 -translate-y-1/2 whitespace-nowrap text-[11px] font-600 text-muted-foreground pointer-events-none">
                           {row.doneCount}/{row.taskCount} terminée{row.taskCount > 1 ? 's' : ''} · {row.taskCount} tâche{row.taskCount > 1 ? 's' : ''}
-                          {row.minStart && row.maxEnd && ` · ${format(parseDBDate(row.minStart), 'd MMM', { locale: fr })} → ${format(parseDBDate(row.maxEnd), 'd MMM', { locale: fr })}`}
+                          {row.minStart && row.maxEnd
+                            ? ` · ${format(parseDBDate(row.minStart), 'd MMM', { locale: fr })} → ${format(parseDBDate(row.maxEnd), 'd MMM', { locale: fr })}`
+                            : ' · Dates à définir'}
                         </span>
                       </div>
                     </div>
@@ -1427,12 +1458,14 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                         Tint overlay is -z-[1] (behind flex children, above the bg). */}
                     <div
                       className={cn(
-                        'sticky left-0 z-[25] shrink-0 border-r border-b border-border flex items-center pl-4 pr-4 gap-2 cursor-pointer overflow-hidden bg-surface transition-colors',
+                        'sticky left-0 z-[25] shrink-0 border-r border-b border-border flex items-center pl-7 pr-4 gap-2 cursor-pointer overflow-hidden bg-surface transition-colors',
                         !isSelected && !isLate && !isBlocked && !hasOverlap && 'group-hover:bg-elevated',
                       )}
-                      style={{ width: LEFT_COL_WIDTH, height: ROW_HEIGHT, borderLeft: `6px solid ${hexToRgba(project?.color ?? '#2563EB', 0.55)}` }}
+                      style={{ width: LEFT_COL_WIDTH, height: ROW_HEIGHT, borderLeft: `6px solid ${hexToRgba(projectColor(project), 0.55)}` }}
                       onClick={() => handleTaskClick(task)}
                     >
+                      {/* LOT 27G — fond alterné : teinte chantier de base (derrière l'éventuelle teinte d'alerte) */}
+                      <div className="absolute inset-0 pointer-events-none z-[-1]" style={{ background: hexToRgba(projectColor(project), 0.03) }} />
                       {/* Tint overlay — behind all flex content */}
                       {(isSelected || isLate || isBlocked || hasOverlap) && (
                         <div className={cn(
@@ -1446,7 +1479,7 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                             : 'bg-yellow-500/[0.03] group-hover:bg-yellow-500/[0.05]',
                         )} />
                       )}
-                      <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: project?.color ?? '#2563EB' }} />
+                      <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: projectColor(project) }} />
                       <span className={cn('text-sm text-foreground truncate min-w-0 flex-1', (task.status === 'done' || task.status === 'validated') && 'line-through text-muted-foreground')}>
                         {task.title}
                       </span>
@@ -1489,6 +1522,8 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                       )}
                       style={{ width: totalDays * dayW, height: ROW_HEIGHT }}
                     >
+                      {/* LOT 27G — fond alterné : teinte chantier de base sur la timeline */}
+                      <div className="absolute inset-0 pointer-events-none" style={{ background: hexToRgba(projectColor(project), 0.025) }} />
                       {monthSegments.map((seg, idx) => (
                         <div key={idx} className="absolute inset-y-0 pointer-events-none" style={{ left: seg.left, width: seg.width }}>
                           {seg.isOdd && <div className="absolute inset-0 bg-foreground/[0.02]" />}
@@ -2039,6 +2074,21 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
           )}{/* end right aside */}
 
         </div>{/* end horizontal body */}
+
+        {/* LOT 27G — légende repliable (discrète, hauteur minimale repliée) */}
+        {ganttMode === 'project' && (
+          <details className="shrink-0 border-t border-border bg-surface px-4 py-1.5 text-[11px]">
+            <summary className="cursor-pointer w-fit font-600 text-muted-foreground hover:text-foreground select-none">Légende</summary>
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 pt-2 pb-1 text-muted-foreground">
+              <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-primary/70" /> Couleur = chantier</span>
+              <span className="flex items-center gap-1.5"><AlertTriangle className="h-3 w-3 text-yellow-500" /> Avertissement</span>
+              <span className="flex items-center gap-1.5"><span className="w-4 h-1 rounded-full bg-red-500" /> Retard / bloqué</span>
+              <span className="flex items-center gap-1.5"><span className="w-4 h-4 rounded bg-slate-400 text-white text-[8px] font-700 flex items-center justify-center">A</span> Artisan affecté</span>
+              <span className="flex items-center gap-1"><span className="w-3 h-px bg-slate-400" /><span className="text-slate-400 leading-none">▸</span> Dépendance</span>
+              <span className="flex items-center gap-1.5"><Check className="h-3 w-3 text-green-600" /> Terminée</span>
+            </div>
+          </details>
+        )}
 
       </div>{/* end planning card */}
 
