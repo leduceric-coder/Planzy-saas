@@ -193,66 +193,6 @@ const summaryLabel: Record<PlanningAlertKind, (n: number) => string> = {
 // RANGE : rangeStart/rangeEnd doivent toujours couvrir toutes les tâches
 // visibles (taskBounds). Ne pas revenir à une fenêtre fixe [today-14, today+90].
 
-// LOT 27F — badge « Aujourd'hui » en overlay du viewport visible. Sa position est
-// clampée dans la zone timeline [colonne Tâche → bord droit] et suit le scroll
-// horizontal : il n'empiète JAMAIS sur la colonne fixe. La ligne verticale reste à
-// sa vraie position ; seul le badge se décale, avec un pointeur qui vise la ligne.
-function TodayBadge({
-  scrollRef,
-  rawX,
-  leftColWidth,
-  headerHeight,
-}: {
-  scrollRef: { current: HTMLDivElement | null }
-  rawX: number
-  leftColWidth: number
-  headerHeight: number
-}) {
-  const [pos, setPos] = useState<{ x: number; dx: number } | null>(null)
-  useEffect(() => {
-    const el = scrollRef.current
-    if (!el) return
-    const BADGE_HALF = 36
-    const MARGIN = 8
-    let raf = 0
-    const compute = () => {
-      raf = 0
-      const vw = el.clientWidth
-      const lineScreenX = leftColWidth + rawX - el.scrollLeft
-      const minX = leftColWidth + BADGE_HALF + MARGIN
-      const maxX = Math.max(minX, vw - BADGE_HALF - MARGIN)
-      const x = Math.max(minX, Math.min(lineScreenX, maxX))
-      const dx = Math.max(-(BADGE_HALF - 8), Math.min(BADGE_HALF - 8, lineScreenX - x))
-      setPos({ x, dx })
-    }
-    const onScroll = () => { if (!raf) raf = requestAnimationFrame(compute) }
-    compute()
-    el.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('resize', onScroll)
-    return () => {
-      el.removeEventListener('scroll', onScroll)
-      window.removeEventListener('resize', onScroll)
-      if (raf) cancelAnimationFrame(raf)
-    }
-  }, [scrollRef, rawX, leftColWidth])
-
-  if (!pos) return null
-  return (
-    <div
-      className="absolute z-[12] pointer-events-none"
-      style={{ top: headerHeight, left: pos.x, transform: 'translate(-50%, 3px)' }}
-    >
-      <span className="relative block whitespace-nowrap text-[9px] font-800 leading-none text-white bg-yellow-500 px-1.5 py-0.5 rounded-full shadow-sm ring-1 ring-black/10">
-        Aujourd&apos;hui
-        <span
-          className="absolute top-full h-0 w-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-yellow-500"
-          style={{ left: `calc(50% + ${pos.dx}px)`, transform: 'translateX(-50%)' }}
-        />
-      </span>
-    </div>
-  )
-}
-
 export function GanttView({ tasks, projects, artisans = [], teams = [], undatedTasks = [], initialFocusTaskId, onNewTask }: Props) {
   // Local tasks state — optimistic updates from sidewindow edits
   const [localTasks, setLocalTasks] = useState<GanttTask[]>(tasks)
@@ -756,7 +696,7 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
   // ─── Flat rows model ─────────────────────────────────────────────────────────
 
   type GanttRow =
-    | { type: 'group'; project: GanttTask['project']; taskCount: number; doneCount: number }
+    | { type: 'group'; project: GanttTask['project']; taskCount: number; doneCount: number; minStart: string | null; maxEnd: string | null }
     | { type: 'task'; task: GanttTask; project: GanttTask['project'] }
 
   // LOT 27C — regroupements repliables. On filtre à la source unique (ganttRows)
@@ -773,7 +713,14 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
     const rows: GanttRow[] = []
     for (const { project, tasks: grpTasks } of groupedByProject) {
       const doneCount = grpTasks.filter(isTaskCompleted).length
-      rows.push({ type: 'group', project, taskCount: grpTasks.length, doneCount })
+      // LOT 27G — période globale du chantier (min start / max end des tâches datées)
+      let minStart: string | null = null
+      let maxEnd: string | null = null
+      for (const t of grpTasks) {
+        if (t.start_date && (!minStart || t.start_date < minStart)) minStart = t.start_date
+        if (t.end_date && (!maxEnd || t.end_date > maxEnd)) maxEnd = t.end_date
+      }
+      rows.push({ type: 'group', project, taskCount: grpTasks.length, doneCount, minStart, maxEnd })
       if (project && collapsedGroups.has(project.id)) continue // replié : tâches masquées
       for (const task of grpTasks) {
         rows.push({ type: 'task', task, project })
@@ -1401,7 +1348,12 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                 </div>
               </div>
 
-              {/* Today line — absolute, spans from below header to bottom of all rows */}
+              {/* Today line + badge — LOT 27G : à leur VRAIE position temporelle,
+                  dans le canvas (z-5). Aucun clamp. La colonne Tâche sticky (cellules
+                  z-20/z-25, opaques) passe naturellement au-dessus et masque la ligne
+                  et le badge lorsqu'ils défilent derrière elle ; ils réapparaissent
+                  quand la timeline revient dans la zone visible. Le badge reste juste
+                  sous l'en-tête (top:0 = HEADER_HEIGHT) pour ne pas être coupé par lui. */}
               {todayOffset >= 0 && todayOffset <= totalDays && (
                 <div
                   className="absolute w-0.5 bg-yellow-500 z-[5] pointer-events-none"
@@ -1411,7 +1363,9 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                     left: LEFT_COL_WIDTH + todayOffset * dayW + dayW / 2,
                   }}
                 >
-                  <div className="w-2 h-2 rounded-full bg-yellow-500 -translate-x-0.5 -translate-y-1" />
+                  <span className="absolute left-1/2 top-0 -translate-x-1/2 whitespace-nowrap text-[9px] font-800 leading-none text-white bg-yellow-500 px-1.5 py-0.5 rounded-full shadow-sm ring-1 ring-black/10">
+                    Aujourd&apos;hui
+                  </span>
                 </div>
               )}
 
@@ -1424,20 +1378,22 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                   return (
                     <div key={`g-${groupKey}`} className="flex" style={{ height: ROW_HEIGHT }}>
                       <div
-                        className="sticky left-0 z-20 shrink-0 bg-background border-r border-b border-border flex items-center gap-2 px-4 overflow-hidden cursor-pointer hover:bg-elevated/50 transition-colors"
-                        style={{ width: LEFT_COL_WIDTH, height: ROW_HEIGHT, borderLeft: `3px solid ${row.project?.color ?? '#2563EB'}` }}
+                        className="sticky left-0 z-20 shrink-0 bg-background border-r border-b border-border flex items-center gap-2 pl-3 pr-4 overflow-hidden cursor-pointer hover:bg-elevated/50 transition-colors"
+                        style={{ width: LEFT_COL_WIDTH, height: ROW_HEIGHT, borderLeft: `6px solid ${row.project?.color ?? '#2563EB'}` }}
                         onClick={() => toggleGroup(groupKey)}
                         title={isCollapsed ? 'Déplier le chantier' : 'Replier le chantier'}
                       >
+                        {/* teinte chantier — au-dessus du fond opaque, derrière le contenu */}
+                        <div className="absolute inset-0 pointer-events-none z-[-1]" style={{ background: hexToRgba(row.project?.color ?? '#2563EB', 0.06) }} />
                         {isCollapsed
                           ? <ChevronRightSm className="h-4 w-4 shrink-0 text-muted-foreground" />
                           : <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground" />}
-                        <span className="text-xs font-700 text-foreground truncate min-w-0 flex-1">{row.project?.name ?? 'Chantier'}</span>
+                        <span className="text-xs font-800 uppercase tracking-wide text-foreground truncate min-w-0 flex-1">{row.project?.name ?? 'Chantier'}</span>
                         <span className="shrink-0 text-[10px] font-600 text-muted-foreground tabular-nums" title="Tâches terminées / total">
                           {row.doneCount}/{row.taskCount}
                         </span>
                       </div>
-                      <div className="relative border-b border-border bg-background/30" style={{ width: totalDays * dayW, height: ROW_HEIGHT }}>
+                      <div className="relative border-b border-border" style={{ width: totalDays * dayW, height: ROW_HEIGHT, background: hexToRgba(row.project?.color ?? '#2563EB', 0.05) }}>
                         {monthSegments.map((seg, idx) => (
                           <div key={idx} className="absolute inset-y-0 pointer-events-none" style={{ left: seg.left, width: seg.width }}>
                             {seg.isOdd && <div className="absolute inset-0 bg-foreground/[0.02]" />}
@@ -1447,6 +1403,11 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                         {weekStarts.map(left => (
                           <div key={`w-${left}`} className="absolute top-0 bottom-0 w-px bg-border/20 pointer-events-none" style={{ left }} />
                         ))}
+                        {/* LOT 27G — résumé chantier « pleine largeur » (données fiables) */}
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 whitespace-nowrap text-[11px] font-600 text-muted-foreground pointer-events-none">
+                          {row.doneCount}/{row.taskCount} terminée{row.taskCount > 1 ? 's' : ''} · {row.taskCount} tâche{row.taskCount > 1 ? 's' : ''}
+                          {row.minStart && row.maxEnd && ` · ${format(parseDBDate(row.minStart), 'd MMM', { locale: fr })} → ${format(parseDBDate(row.maxEnd), 'd MMM', { locale: fr })}`}
+                        </span>
                       </div>
                     </div>
                   )
@@ -1466,10 +1427,10 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                         Tint overlay is -z-[1] (behind flex children, above the bg). */}
                     <div
                       className={cn(
-                        'sticky left-0 z-[25] shrink-0 border-r border-b border-border flex items-center px-4 gap-2 cursor-pointer overflow-hidden bg-surface transition-colors',
+                        'sticky left-0 z-[25] shrink-0 border-r border-b border-border flex items-center pl-4 pr-4 gap-2 cursor-pointer overflow-hidden bg-surface transition-colors',
                         !isSelected && !isLate && !isBlocked && !hasOverlap && 'group-hover:bg-elevated',
                       )}
-                      style={{ width: LEFT_COL_WIDTH, height: ROW_HEIGHT }}
+                      style={{ width: LEFT_COL_WIDTH, height: ROW_HEIGHT, borderLeft: `6px solid ${hexToRgba(project?.color ?? '#2563EB', 0.55)}` }}
                       onClick={() => handleTaskClick(task)}
                     >
                       {/* Tint overlay — behind all flex content */}
@@ -1745,15 +1706,6 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
             )
           })()}
 
-          {/* LOT 27F — badge « Aujourd'hui » clampé au viewport (jamais sur la colonne Tâche) */}
-          {ganttMode === 'project' && todayOffset >= 0 && todayOffset <= totalDays && (
-            <TodayBadge
-              scrollRef={scrollContainerRef}
-              rawX={todayOffset * dayW + dayW / 2}
-              leftColWidth={LEFT_COL_WIDTH}
-              headerHeight={HEADER_HEIGHT}
-            />
-          )}
           </div>{/* end gantt viewport */}
 
           {/* ── Right aside — Analyse & résolution ────────────────────────────── */}
