@@ -14,7 +14,7 @@ import { mutationClient } from '@/lib/supabase/mutate'
 import { useToast } from '@/components/ui/toast-context'
 import { Progress } from '@/components/ui/progress'
 import { Button } from '@/components/ui/button'
-import { TaskPanel } from '@/components/tasks/TaskPanel'
+import { TaskSidePanel, type TaskUpdatePatch } from '@/components/planning/TaskSidePanel'
 import { NouvelleTacheModal } from '@/components/chantiers/NouvelleTacheModal'
 import { EditTacheModal } from '@/components/chantiers/EditTacheModal'
 import { EditChantierModal } from '@/components/chantiers/EditChantierModal'
@@ -152,6 +152,13 @@ export function ChantierDetail({
     router.refresh()
   }
 
+  // LOT 27K — merge immédiat du patch dans le panneau ouvert après une sauvegarde
+  // réussie de TaskSidePanel (le reste de la page — listes, KPIs — se remet à jour
+  // via le router.refresh() déjà déclenché en interne par TaskSidePanel).
+  const handleTaskUpdated = (taskId: string, patch: TaskUpdatePatch) => {
+    setSelectedTask(prev => (prev && prev.id === taskId ? ({ ...prev, ...patch } as typeof prev) : prev))
+  }
+
   // ── Computed KPIs ────────────────────────────────────────────────────────────
   const tasksDone   = tasks.filter(t => t.status === 'done' || t.status === 'validated').length
   const suggestedProgress = tasks.length > 0 ? Math.round((tasksDone / tasks.length) * 100) : undefined
@@ -224,7 +231,8 @@ export function ChantierDetail({
 
   return (
     <div className={cn('flex h-full overflow-hidden', selectedTask && '')}>
-      <div className={cn('flex flex-col flex-1 overflow-hidden transition-all duration-200', selectedTask && 'mr-[460px]')}>
+      {/* LOT 27K — 420px, largeur réelle de TaskSidePanel (l'ancien TaskPanel faisait 460px) */}
+      <div className={cn('flex flex-col flex-1 overflow-hidden transition-all duration-200', selectedTask && 'mr-[420px]')}>
 
         {/* ── Header ──────────────────────────────────────────────────────────── */}
         <div className="shrink-0">
@@ -419,8 +427,17 @@ export function ChantierDetail({
         </div>
       </div>
 
-      {/* Task side panel */}
-      {selectedTask && <TaskPanel task={selectedTask} onClose={() => setSelectedTask(null)} />}
+      {/* Task side panel — LOT 27K : réutilise le TaskSidePanel riche (même parcours
+          d'édition que le dashboard, le planning général et la Vue ressources ;
+          persistance réelle, détection d'un update à 0 ligne, bouton Modifier). */}
+      <TaskSidePanel
+        task={selectedTask as unknown as Parameters<typeof TaskSidePanel>[0]['task']}
+        artisans={artisans.map(a => ({ ...a, full_name: a.full_name ?? 'Artisan', color: a.color ?? '#6B7280' }))}
+        teams={teams}
+        availableTasks={tasks as unknown as Parameters<typeof TaskSidePanel>[0]['availableTasks']}
+        onClose={() => setSelectedTask(null)}
+        onTaskUpdated={handleTaskUpdated}
+      />
 
       {/* Modals */}
       {showNewTask && (
@@ -828,7 +845,9 @@ function PhotosTab({ photos, documents }: { photos: (Photo & { taken_by_profile?
           </div>
         ) : (
           <div className="p-4">
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
+            {/* LOT 27K — grille intrinsèque (auto-fill/minmax) au lieu de paliers
+                grid-cols-N par breakpoint (même correction que Documents & photos) */}
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-2">
               {photos.map(photo => (
                 <PhotoCard key={photo.id} photo={photo} />
               ))}

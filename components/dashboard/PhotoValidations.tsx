@@ -72,7 +72,9 @@ export function PhotoValidations({ photos, openIssuesCount }: Props) {
         </div>
       ) : (
         <div className="flex-1 p-4">
-          <div className="grid grid-cols-3 gap-2">
+          {/* LOT 27K — même correction que Documents & photos : grille intrinsèque
+              (auto-fill/minmax) au lieu d'un nombre de colonnes fixe. */}
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(90px,1fr))] gap-2">
             {photos.slice(0, 6).map(photo => {
               const badge = photoBadge(photo.issue_status)
               return (

@@ -459,7 +459,11 @@ export function DocumentsClient({ orgId, documents, photos, projects, issues, to
                   {alertPhotos.length}
                 </span>
               </div>
-              <div className="p-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+              {/* LOT 27K — grille intrinsèque (auto-fill/minmax) au lieu de paliers
+                  grid-cols-N par breakpoint : le nombre de colonnes se recalcule en
+                  continu selon la largeur réelle du conteneur (donc au zoom navigateur
+                  aussi), les cartes grandissent au lieu d'être compressées. */}
+              <div className="p-4 grid grid-cols-[repeat(auto-fill,minmax(130px,1fr))] gap-2">
                 {alertPhotos.map(photo => {
                   const s = getPhotoStatus(photo, issueById)
                   const badge = STATUS_BADGE[s]
@@ -608,8 +612,9 @@ export function DocumentsClient({ orgId, documents, photos, projects, issues, to
             <h2 className="text-[11px] font-800 uppercase tracking-widest text-muted-foreground mb-3">
               Photos ({filteredPhotos.length})
             </h2>
+            {/* LOT 27K — grille intrinsèque (auto-fill/minmax), voir commentaire ci-dessus */}
             {filteredPhotos.length > 0 ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2.5">
+              <div className="grid grid-cols-[repeat(auto-fill,minmax(190px,1fr))] gap-2.5">
                 {filteredPhotos.map(photo => (
                   <PhotoCard
                     key={photo.id}

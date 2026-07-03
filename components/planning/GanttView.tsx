@@ -1518,28 +1518,29 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                         {weekStarts.map(left => (
                           <div key={`w-${left}`} className="absolute top-0 bottom-0 w-px bg-border/20 pointer-events-none" style={{ left }} />
                         ))}
-                        {/* LOT 27J — métadonnées structurées en une seule ligne homogène :
-                            pilule compacte pour la progression (seule info en relief,
-                            information de progression unique — cf. suppression de la
-                            pilule de la colonne gauche), puis texte simple séparé par des
-                            points médians pour un espacement régulier, sans saut visuel
-                            entre les segments. */}
-                        <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center gap-1 pointer-events-none max-w-[calc(100%-24px)] overflow-hidden">
-                          <span className="shrink-0 whitespace-nowrap text-[11px] font-700 text-foreground/85 bg-background/60 px-1.5 py-px rounded-md">
+                        {/* LOT 27K — alignement corrigé : même mécanisme de centrage que la
+                            colonne gauche (flex + align-items:center sur toute la hauteur
+                            de la ligne, height inchangée), au lieu de l'ancien
+                            absolute/top-50%/translateY qui produisait un axe optique
+                            légèrement différent (sensible au line-height + au py-px
+                            asymétrique de la pilule). leading-none uniformisé sur tous
+                            les segments pour éliminer toute variation de line-height. */}
+                        <div className="absolute inset-0 flex items-center gap-1 pl-3 pointer-events-none max-w-full overflow-hidden">
+                          <span className="shrink-0 whitespace-nowrap leading-none text-[11px] font-700 text-foreground/85 bg-background/60 px-1.5 py-1 rounded-md">
                             {row.doneCount}/{row.taskCount} terminée{row.taskCount > 1 ? 's' : ''}
                           </span>
-                          <span className="shrink-0 text-[11px] text-muted-foreground/40">·</span>
-                          <span className="shrink-0 whitespace-nowrap text-[11px] font-600 text-muted-foreground">
+                          <span className="shrink-0 leading-none text-[11px] text-muted-foreground/40">·</span>
+                          <span className="shrink-0 whitespace-nowrap leading-none text-[11px] font-600 text-muted-foreground">
                             {row.taskCount} tâche{row.taskCount > 1 ? 's' : ''}
                           </span>
-                          <span className="shrink-0 text-[11px] text-muted-foreground/40">·</span>
-                          <span className="whitespace-nowrap text-[11px] font-600 text-muted-foreground truncate">
+                          <span className="shrink-0 leading-none text-[11px] text-muted-foreground/40">·</span>
+                          <span className="whitespace-nowrap leading-none text-[11px] font-600 text-muted-foreground truncate">
                             {periodLabel}
                           </span>
                           {row.alertCount > 0 && (
                             <>
-                              <span className="shrink-0 text-[11px] text-muted-foreground/40">·</span>
-                              <span className="shrink-0 whitespace-nowrap text-[11px] font-700 text-orange-600 dark:text-orange-400 flex items-center gap-1">
+                              <span className="shrink-0 leading-none text-[11px] text-muted-foreground/40">·</span>
+                              <span className="shrink-0 whitespace-nowrap leading-none text-[11px] font-700 text-orange-600 dark:text-orange-400 flex items-center gap-1">
                                 <AlertTriangle className="h-3 w-3" />
                                 {row.alertCount} alerte{row.alertCount > 1 ? 's' : ''}
                               </span>
