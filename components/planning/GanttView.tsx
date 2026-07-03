@@ -193,6 +193,66 @@ const summaryLabel: Record<PlanningAlertKind, (n: number) => string> = {
 // RANGE : rangeStart/rangeEnd doivent toujours couvrir toutes les tâches
 // visibles (taskBounds). Ne pas revenir à une fenêtre fixe [today-14, today+90].
 
+// LOT 27F — badge « Aujourd'hui » en overlay du viewport visible. Sa position est
+// clampée dans la zone timeline [colonne Tâche → bord droit] et suit le scroll
+// horizontal : il n'empiète JAMAIS sur la colonne fixe. La ligne verticale reste à
+// sa vraie position ; seul le badge se décale, avec un pointeur qui vise la ligne.
+function TodayBadge({
+  scrollRef,
+  rawX,
+  leftColWidth,
+  headerHeight,
+}: {
+  scrollRef: { current: HTMLDivElement | null }
+  rawX: number
+  leftColWidth: number
+  headerHeight: number
+}) {
+  const [pos, setPos] = useState<{ x: number; dx: number } | null>(null)
+  useEffect(() => {
+    const el = scrollRef.current
+    if (!el) return
+    const BADGE_HALF = 36
+    const MARGIN = 8
+    let raf = 0
+    const compute = () => {
+      raf = 0
+      const vw = el.clientWidth
+      const lineScreenX = leftColWidth + rawX - el.scrollLeft
+      const minX = leftColWidth + BADGE_HALF + MARGIN
+      const maxX = Math.max(minX, vw - BADGE_HALF - MARGIN)
+      const x = Math.max(minX, Math.min(lineScreenX, maxX))
+      const dx = Math.max(-(BADGE_HALF - 8), Math.min(BADGE_HALF - 8, lineScreenX - x))
+      setPos({ x, dx })
+    }
+    const onScroll = () => { if (!raf) raf = requestAnimationFrame(compute) }
+    compute()
+    el.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+    return () => {
+      el.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+      if (raf) cancelAnimationFrame(raf)
+    }
+  }, [scrollRef, rawX, leftColWidth])
+
+  if (!pos) return null
+  return (
+    <div
+      className="absolute z-[12] pointer-events-none"
+      style={{ top: headerHeight, left: pos.x, transform: 'translate(-50%, 3px)' }}
+    >
+      <span className="relative block whitespace-nowrap text-[9px] font-800 leading-none text-white bg-yellow-500 px-1.5 py-0.5 rounded-full shadow-sm ring-1 ring-black/10">
+        Aujourd&apos;hui
+        <span
+          className="absolute top-full h-0 w-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-yellow-500"
+          style={{ left: `calc(50% + ${pos.dx}px)`, transform: 'translateX(-50%)' }}
+        />
+      </span>
+    </div>
+  )
+}
+
 export function GanttView({ tasks, projects, artisans = [], teams = [], undatedTasks = [], initialFocusTaskId, onNewTask }: Props) {
   // Local tasks state — optimistic updates from sidewindow edits
   const [localTasks, setLocalTasks] = useState<GanttTask[]>(tasks)
@@ -1334,20 +1394,9 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                         </div>
                       )
                     })}
-                    {/* LOT 27E — badge « Aujourd'hui » rendu DANS l'en-tête sticky
-                        (z-30, jamais clippé), aligné sur la colonne du jour et
-                        suspendu juste sous l'en-tête temporel. Toujours visible en
-                        Jour / Semaine / Mois, ne masque pas les tâches. */}
-                    {todayOffset >= 0 && todayOffset <= totalDays && (
-                      <div
-                        className="absolute z-[6] pointer-events-none"
-                        style={{ left: todayOffset * dayW + dayW / 2, top: '100%', transform: 'translate(-50%, 1px)' }}
-                      >
-                        <span className="whitespace-nowrap text-[9px] font-800 leading-none text-white bg-yellow-500 px-1.5 py-0.5 rounded-full shadow-sm ring-1 ring-black/10">
-                          Aujourd&apos;hui
-                        </span>
-                      </div>
-                    )}
+                    {/* LOT 27F — le badge « Aujourd'hui » n'est plus dans l'en-tête
+                        (il débordait sur la colonne Tâche au scroll). Il est rendu par
+                        <TodayBadge>, en overlay du viewport, clampé au viewport visible. */}
                   </div>
                 </div>
               </div>
@@ -1695,6 +1744,16 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
               </div>
             )
           })()}
+
+          {/* LOT 27F — badge « Aujourd'hui » clampé au viewport (jamais sur la colonne Tâche) */}
+          {ganttMode === 'project' && todayOffset >= 0 && todayOffset <= totalDays && (
+            <TodayBadge
+              scrollRef={scrollContainerRef}
+              rawX={todayOffset * dayW + dayW / 2}
+              leftColWidth={LEFT_COL_WIDTH}
+              headerHeight={HEADER_HEIGHT}
+            />
+          )}
           </div>{/* end gantt viewport */}
 
           {/* ── Right aside — Analyse & résolution ────────────────────────────── */}
