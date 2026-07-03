@@ -1491,6 +1491,10 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                         >
                           {row.project?.name ?? 'Chantier'}
                         </span>
+                        {/* LOT 27J — colonne gauche : nom chantier + chevron uniquement.
+                            La progression (X/Y) est retirée d'ici pour éliminer la
+                            redondance avec la pilule « X/Y terminées » de la timeline
+                            (seule information de progression conservée, source unique). */}
                         {canFocus && (
                           <button
                             onClick={e => { e.stopPropagation(); setFilterProject(filterProject === groupKey ? 'all' : groupKey) }}
@@ -1503,12 +1507,6 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                             <Crosshair className="h-3.5 w-3.5" />
                           </button>
                         )}
-                        <span
-                          className="shrink-0 text-[10px] font-700 tabular-nums px-1.5 py-0.5 rounded-full bg-foreground/[0.06] text-foreground/70"
-                          title="Tâches terminées / total"
-                        >
-                          {row.doneCount}/{row.taskCount}
-                        </span>
                       </div>
                       <div className="relative border-b border-border" style={{ width: totalDays * dayW, height: ROW_HEIGHT, background: hexToRgba(grpColor, 0.11) }}>
                         {monthSegments.map((seg, idx) => (
@@ -1520,23 +1518,32 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                         {weekStarts.map(left => (
                           <div key={`w-${left}`} className="absolute top-0 bottom-0 w-px bg-border/20 pointer-events-none" style={{ left }} />
                         ))}
-                        {/* LOT 27I — métadonnées structurées en badges alignés (au lieu d'une
-                            phrase flottante) : progression, nb tâches, période, alertes. */}
-                        <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5 flex-wrap pointer-events-none max-w-[calc(100%-24px)]">
-                          <span className="whitespace-nowrap text-[11px] font-700 text-foreground/85 bg-background/60 px-1.5 py-0.5 rounded-md">
+                        {/* LOT 27J — métadonnées structurées en une seule ligne homogène :
+                            pilule compacte pour la progression (seule info en relief,
+                            information de progression unique — cf. suppression de la
+                            pilule de la colonne gauche), puis texte simple séparé par des
+                            points médians pour un espacement régulier, sans saut visuel
+                            entre les segments. */}
+                        <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center gap-1 pointer-events-none max-w-[calc(100%-24px)] overflow-hidden">
+                          <span className="shrink-0 whitespace-nowrap text-[11px] font-700 text-foreground/85 bg-background/60 px-1.5 py-px rounded-md">
                             {row.doneCount}/{row.taskCount} terminée{row.taskCount > 1 ? 's' : ''}
                           </span>
-                          <span className="whitespace-nowrap text-[11px] font-600 text-muted-foreground">
+                          <span className="shrink-0 text-[11px] text-muted-foreground/40">·</span>
+                          <span className="shrink-0 whitespace-nowrap text-[11px] font-600 text-muted-foreground">
                             {row.taskCount} tâche{row.taskCount > 1 ? 's' : ''}
                           </span>
-                          <span className="whitespace-nowrap text-[11px] font-600 text-muted-foreground">
+                          <span className="shrink-0 text-[11px] text-muted-foreground/40">·</span>
+                          <span className="whitespace-nowrap text-[11px] font-600 text-muted-foreground truncate">
                             {periodLabel}
                           </span>
                           {row.alertCount > 0 && (
-                            <span className="whitespace-nowrap text-[11px] font-700 text-orange-600 dark:text-orange-400 bg-orange-500/10 px-1.5 py-0.5 rounded-md flex items-center gap-1">
-                              <AlertTriangle className="h-3 w-3" />
-                              {row.alertCount} alerte{row.alertCount > 1 ? 's' : ''}
-                            </span>
+                            <>
+                              <span className="shrink-0 text-[11px] text-muted-foreground/40">·</span>
+                              <span className="shrink-0 whitespace-nowrap text-[11px] font-700 text-orange-600 dark:text-orange-400 flex items-center gap-1">
+                                <AlertTriangle className="h-3 w-3" />
+                                {row.alertCount} alerte{row.alertCount > 1 ? 's' : ''}
+                              </span>
+                            </>
                           )}
                         </div>
                       </div>
