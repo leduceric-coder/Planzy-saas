@@ -7,9 +7,10 @@ import {
   ChevronLeft, ChevronRight, Calendar, ChevronDown,
   ChevronRight as ChevronRightSm, AlertTriangle, Check,
   Maximize2, Minimize2, Undo2, Redo2, SlidersHorizontal,
+  Plus, RotateCcw, Inbox,
 } from 'lucide-react'
 import { cn, taskStatusColor, taskStatusLabel, formatDate, hexToRgba } from '@/lib/utils'
-import type { Task } from '@/lib/types'
+import type { Task, TaskStatus } from '@/lib/types'
 import { TaskSidePanel, type TaskUpdatePatch } from '@/components/planning/TaskSidePanel'
 import { useUndoHistory } from '@/lib/hooks/useUndoHistory'
 import { GanttArtisanView } from '@/components/planning/GanttArtisanView'
@@ -32,6 +33,8 @@ interface Props {
   undatedTasks?: GanttTask[]
   /** Deep-link: open this task's side-window on mount (from dashboard / week preview). */
   initialFocusTaskId?: string
+  /** LOT 27E — ouvre la modale « Nouvelle tâche » (fournie par PlanningTabs) depuis l'état vide. */
+  onNewTask?: () => void
 }
 
 const DAY_WIDTH = { day: 40, week: 16, month: 6 }
@@ -190,7 +193,7 @@ const summaryLabel: Record<PlanningAlertKind, (n: number) => string> = {
 // RANGE : rangeStart/rangeEnd doivent toujours couvrir toutes les tâches
 // visibles (taskBounds). Ne pas revenir à une fenêtre fixe [today-14, today+90].
 
-export function GanttView({ tasks, projects, artisans = [], teams = [], undatedTasks = [], initialFocusTaskId }: Props) {
+export function GanttView({ tasks, projects, artisans = [], teams = [], undatedTasks = [], initialFocusTaskId, onNewTask }: Props) {
   // Local tasks state — optimistic updates from sidewindow edits
   const [localTasks, setLocalTasks] = useState<GanttTask[]>(tasks)
   // Sync with server after refresh
@@ -1331,6 +1334,20 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                         </div>
                       )
                     })}
+                    {/* LOT 27E — badge « Aujourd'hui » rendu DANS l'en-tête sticky
+                        (z-30, jamais clippé), aligné sur la colonne du jour et
+                        suspendu juste sous l'en-tête temporel. Toujours visible en
+                        Jour / Semaine / Mois, ne masque pas les tâches. */}
+                    {todayOffset >= 0 && todayOffset <= totalDays && (
+                      <div
+                        className="absolute z-[6] pointer-events-none"
+                        style={{ left: todayOffset * dayW + dayW / 2, top: '100%', transform: 'translate(-50%, 1px)' }}
+                      >
+                        <span className="whitespace-nowrap text-[9px] font-800 leading-none text-white bg-yellow-500 px-1.5 py-0.5 rounded-full shadow-sm ring-1 ring-black/10">
+                          Aujourd&apos;hui
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -1346,10 +1363,6 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                   }}
                 >
                   <div className="w-2 h-2 rounded-full bg-yellow-500 -translate-x-0.5 -translate-y-1" />
-                  {/* LOT 27C — libellé de la ligne du jour */}
-                  <span className="absolute top-0 left-1 -translate-y-1/2 whitespace-nowrap text-[9px] font-700 text-white bg-yellow-500 px-1 py-0.5 rounded shadow-sm">
-                    Aujourd&apos;hui
-                  </span>
                 </div>
               )}
 
@@ -1597,14 +1610,91 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                 </svg>
               )}
 
-              {ganttRows.length === 0 && (
-                <div className="flex items-center justify-center text-sm text-muted-foreground" style={{ height: 128 }}>
-                  Aucune tâche planifiée
-                </div>
-              )}
+              {/* LOT 27E — l'état vide est rendu en overlay du viewport (largeur
+                  visible), voir plus bas, pour rester centré à l'écran. */}
             </div>
           </div>
         )}
+
+          {/* LOT 27E — état vide (overlay du viewport, largeur visible, centré) */}
+          {ganttMode === 'project' && ganttRows.length === 0 && (() => {
+            const totalTasks = localTasks.length + undatedTasks.length
+            const activeChips: { label: string; value: string }[] = []
+            if (filterProject !== 'all') activeChips.push({ label: 'Chantier', value: projects.find(p => p.id === filterProject)?.name ?? '—' })
+            if (filterArtisan !== 'all') activeChips.push({ label: 'Artisan', value: artisans.find(a => a.id === filterArtisan)?.full_name ?? '—' })
+            if (filterStatus !== 'all') activeChips.push({ label: 'Statut', value: taskStatusLabel(filterStatus as TaskStatus) })
+            if (showCompleted) activeChips.push({ label: 'Options', value: 'Terminées incluses' })
+
+            let content
+            if (totalTasks === 0) {
+              // Cas C — aucune tâche du tout
+              content = (
+                <>
+                  <span className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center"><Inbox className="h-5 w-5 text-primary" /></span>
+                  <h3 className="text-base font-700 text-foreground">Votre planning est vide</h3>
+                  <p className="text-sm text-muted-foreground">Créez votre première tâche pour commencer à planifier vos chantiers.</p>
+                  {onNewTask && (
+                    <button onClick={onNewTask} className="mt-1 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-sm font-600 bg-primary text-white hover:bg-primary/90 transition-colors">
+                      <Plus className="h-4 w-4" /> Nouvelle tâche
+                    </button>
+                  )}
+                </>
+              )
+            } else if (hasActiveFilters) {
+              // Cas A — aucun résultat à cause des filtres
+              content = (
+                <>
+                  <span className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center"><SlidersHorizontal className="h-5 w-5 text-primary" /></span>
+                  <h3 className="text-base font-700 text-foreground">Aucune tâche ne correspond à vos filtres</h3>
+                  <p className="text-sm text-muted-foreground">Modifiez les filtres ou réinitialisez-les pour afficher davantage de tâches.</p>
+                  {activeChips.length > 0 && (
+                    <div className="flex flex-wrap items-center justify-center gap-1.5 mt-0.5">
+                      {activeChips.map((c, i) => (
+                        <span key={i} className="text-[11px] font-600 px-2 py-0.5 rounded-full bg-elevated border border-border text-foreground">
+                          <span className="text-muted-foreground/70">{c.label} : </span>{c.value}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  <div className="flex flex-wrap items-center justify-center gap-2 mt-1">
+                    <button onClick={resetFilters} className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-sm font-600 bg-primary text-white hover:bg-primary/90 transition-colors">
+                      <RotateCcw className="h-3.5 w-3.5" /> Réinitialiser les filtres
+                    </button>
+                    <button onClick={() => { resetFilters(); setShowCompleted(true); setShowUndated(true) }} className="inline-flex items-center px-3 py-2 rounded-lg text-sm font-600 border border-border text-muted-foreground hover:text-foreground hover:bg-elevated transition-colors">
+                      Afficher toutes les tâches
+                    </button>
+                  </div>
+                </>
+              )
+            } else {
+              // Cas B — pas de tâche datée sur la période visible
+              content = (
+                <>
+                  <span className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center"><Calendar className="h-5 w-5 text-primary" /></span>
+                  <h3 className="text-base font-700 text-foreground">Aucune tâche sur cette période</h3>
+                  <p className="text-sm text-muted-foreground">Naviguez vers une autre période ou créez une nouvelle tâche.</p>
+                  <div className="flex flex-wrap items-center justify-center gap-2 mt-1">
+                    <button onClick={navigateToday} className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-sm font-600 bg-primary text-white hover:bg-primary/90 transition-colors">
+                      <Calendar className="h-3.5 w-3.5" /> Aujourd&apos;hui
+                    </button>
+                    {onNewTask && (
+                      <button onClick={onNewTask} className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-600 border border-border text-muted-foreground hover:text-foreground hover:bg-elevated transition-colors">
+                        <Plus className="h-3.5 w-3.5" /> Nouvelle tâche
+                      </button>
+                    )}
+                  </div>
+                </>
+              )
+            }
+
+            return (
+              <div className="absolute inset-x-0 z-[10] flex items-start justify-center px-6 pt-12 pointer-events-none" style={{ top: HEADER_HEIGHT, bottom: 0 }}>
+                <div className="max-w-sm w-full text-center bg-surface border border-border rounded-2xl shadow-sm px-6 py-8 flex flex-col items-center gap-3 pointer-events-auto">
+                  {content}
+                </div>
+              </div>
+            )
+          })()}
           </div>{/* end gantt viewport */}
 
           {/* ── Right aside — Analyse & résolution ────────────────────────────── */}

@@ -76,6 +76,7 @@ export function PlanningTabs({ tasks, projects, artisans, teams, undatedTasks, i
             teams={teams}
             undatedTasks={undatedTasks}
             initialFocusTaskId={initialFocusTaskId}
+            onNewTask={() => setShowNew(true)}
           />
         ) : (
           <ResourceOccupancyView tasks={tasks} projects={projects} artisans={artisans} teams={teams} />
