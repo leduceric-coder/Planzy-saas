@@ -44,10 +44,10 @@ const MONTH_ROW_HEIGHT = 20
 const DAY_ROW_HEIGHT = 36
 const HEADER_HEIGHT = MONTH_ROW_HEIGHT + DAY_ROW_HEIGHT // 56 — unchanged
 const ROW_HEIGHT = 44
-// LOT 27H — colonne Tâche élargie (340px, cible 340-380) + redimensionnable.
-const DEFAULT_LEFT_COL_WIDTH = 340
+// LOT 27I — colonne Tâche élargie (420px, cible 400-440) + redimensionnable.
+const DEFAULT_LEFT_COL_WIDTH = 420
 const MIN_LEFT_COL_WIDTH = 280
-const MAX_LEFT_COL_WIDTH = 460
+const MAX_LEFT_COL_WIDTH = 560
 
 // ─── Month helpers ─────────────────────────────────────────────────────────────
 
@@ -735,7 +735,7 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
   // ─── Flat rows model ─────────────────────────────────────────────────────────
 
   type GanttRow =
-    | { type: 'group'; project: GanttTask['project']; taskCount: number; doneCount: number; minStart: string | null; maxEnd: string | null }
+    | { type: 'group'; project: GanttTask['project']; taskCount: number; doneCount: number; minStart: string | null; maxEnd: string | null; alertCount: number }
     | { type: 'task'; task: GanttTask; project: GanttTask['project'] }
 
   // LOT 27C — regroupements repliables. On filtre à la source unique (ganttRows)
@@ -759,14 +759,21 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
         if (t.start_date && (!minStart || t.start_date < minStart)) minStart = t.start_date
         if (t.end_date && (!maxEnd || t.end_date > maxEnd)) maxEnd = t.end_date
       }
-      rows.push({ type: 'group', project, taskCount: grpTasks.length, doneCount, minStart, maxEnd })
+      // LOT 27I — alertes réelles du chantier (mêmes critères que l'icône de ligne :
+      // retard/chevauchement détecté, ou statut bloqué). Recalculé sur les tâches
+      // visibles (déjà filtrées en amont).
+      const alertCount = grpTasks.filter(t => {
+        const c = taskConflictMap.get(t.id)
+        return t.status === 'blocked' || (c && c.some(x => x.type === 'late' || x.type === 'overlap'))
+      }).length
+      rows.push({ type: 'group', project, taskCount: grpTasks.length, doneCount, minStart, maxEnd, alertCount })
       if (project && collapsedGroups.has(project.id)) continue // replié : tâches masquées
       for (const task of grpTasks) {
         rows.push({ type: 'task', task, project })
       }
     }
     return rows
-  }, [groupedByProject, collapsedGroups])
+  }, [groupedByProject, collapsedGroups, taskConflictMap])
 
   // ─── Bar render (read-only, click opens sidewindow) ──────────────────────────
 
@@ -1455,24 +1462,31 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                   const isCollapsed = collapsedGroups.has(groupKey)
                   const grpColor = projectColor(row.project)
                   const canFocus = !!row.project?.id
+                  const periodLabel = row.minStart && row.maxEnd
+                    ? `${format(parseDBDate(row.minStart), 'd MMM', { locale: fr })} → ${format(parseDBDate(row.maxEnd), 'd MMM', { locale: fr })}`
+                    : 'Dates à définir'
                   return (
-                    // LOT 27G — séparateur entre chantiers (border-top, hauteur inchangée
-                    // en border-box → taskLayout non impacté).
-                    <div key={`g-${groupKey}`} className="flex group/grp border-t-2 border-border/70" style={{ height: ROW_HEIGHT }}>
+                    // LOT 27I — séparateur ENTRE chantiers plus marqué (border 3px, pleine
+                    // opacité) — alternative sans marge/gap, pour ne jamais faire varier la
+                    // hauteur réelle de la ligne (taskLayout / flèches de dépendance
+                    // reposent sur idx * ROW_HEIGHT, inchangé ici : ROW_HEIGHT n'est pas
+                    // modifié — voir rapport LOT 27I sur la hauteur d'en-tête).
+                    <div key={`g-${groupKey}`} className="flex group/grp border-t-[3px] border-border" style={{ height: ROW_HEIGHT }}>
                       <div
-                        className="sticky left-0 z-20 shrink-0 bg-background border-r border-b border-border flex items-center gap-2 pl-3 pr-3 overflow-hidden cursor-pointer hover:bg-elevated/50 transition-colors"
+                        className="sticky left-0 z-20 shrink-0 bg-background border-r border-b border-border flex items-center gap-2.5 pl-4 pr-3 overflow-hidden cursor-pointer hover:bg-elevated/50 transition-colors"
                         style={{ width: leftColWidth, height: ROW_HEIGHT, borderLeft: `6px solid ${grpColor}` }}
                         onClick={() => toggleGroup(groupKey)}
                         title={isCollapsed ? 'Déplier le chantier' : 'Replier le chantier'}
                       >
-                        {/* LOT 27H — teinte d'en-tête renforcée (lignes de tâches restent très légères) */}
-                        <div className="absolute inset-0 pointer-events-none z-[-1]" style={{ background: hexToRgba(grpColor, 0.10) }} />
+                        {/* LOT 27I — teinte d'en-tête renforcée (lignes de tâches restent très légères) */}
+                        <div className="absolute inset-0 pointer-events-none z-[-1]" style={{ background: hexToRgba(grpColor, 0.14) }} />
                         {isCollapsed
                           ? <ChevronRightSm className="h-4 w-4 shrink-0 text-muted-foreground" />
                           : <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground" />}
-                        {/* LOT 27H — jusqu'à 2 lignes (plus de troncature excessive) + tooltip nom complet */}
+                        {/* LOT 27I — casse normale (l'uppercase nuisait à la lecture des noms
+                            longs), poids fort conservé, jusqu'à 2 lignes + tooltip complet */}
                         <span
-                          className="text-xs font-800 uppercase tracking-wide text-foreground line-clamp-2 leading-tight min-w-0 flex-1"
+                          className="text-[13px] font-800 text-foreground line-clamp-2 leading-tight min-w-0 flex-1"
                           title={row.project?.name ?? 'Chantier'}
                         >
                           {row.project?.name ?? 'Chantier'}
@@ -1489,11 +1503,14 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                             <Crosshair className="h-3.5 w-3.5" />
                           </button>
                         )}
-                        <span className="shrink-0 text-[10px] font-600 text-muted-foreground tabular-nums" title="Tâches terminées / total">
+                        <span
+                          className="shrink-0 text-[10px] font-700 tabular-nums px-1.5 py-0.5 rounded-full bg-foreground/[0.06] text-foreground/70"
+                          title="Tâches terminées / total"
+                        >
                           {row.doneCount}/{row.taskCount}
                         </span>
                       </div>
-                      <div className="relative border-b border-border" style={{ width: totalDays * dayW, height: ROW_HEIGHT, background: hexToRgba(grpColor, 0.08) }}>
+                      <div className="relative border-b border-border" style={{ width: totalDays * dayW, height: ROW_HEIGHT, background: hexToRgba(grpColor, 0.11) }}>
                         {monthSegments.map((seg, idx) => (
                           <div key={idx} className="absolute inset-y-0 pointer-events-none" style={{ left: seg.left, width: seg.width }}>
                             {seg.isOdd && <div className="absolute inset-0 bg-foreground/[0.02]" />}
@@ -1503,13 +1520,25 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                         {weekStarts.map(left => (
                           <div key={`w-${left}`} className="absolute top-0 bottom-0 w-px bg-border/20 pointer-events-none" style={{ left }} />
                         ))}
-                        {/* LOT 27H — résumé chantier « pleine largeur », contraste renforcé */}
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 whitespace-nowrap text-[11px] font-700 text-foreground/80 pointer-events-none">
-                          {row.doneCount}/{row.taskCount} terminée{row.taskCount > 1 ? 's' : ''} · {row.taskCount} tâche{row.taskCount > 1 ? 's' : ''}
-                          {row.minStart && row.maxEnd
-                            ? ` · ${format(parseDBDate(row.minStart), 'd MMM', { locale: fr })} → ${format(parseDBDate(row.maxEnd), 'd MMM', { locale: fr })}`
-                            : ' · Dates à définir'}
-                        </span>
+                        {/* LOT 27I — métadonnées structurées en badges alignés (au lieu d'une
+                            phrase flottante) : progression, nb tâches, période, alertes. */}
+                        <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5 flex-wrap pointer-events-none max-w-[calc(100%-24px)]">
+                          <span className="whitespace-nowrap text-[11px] font-700 text-foreground/85 bg-background/60 px-1.5 py-0.5 rounded-md">
+                            {row.doneCount}/{row.taskCount} terminée{row.taskCount > 1 ? 's' : ''}
+                          </span>
+                          <span className="whitespace-nowrap text-[11px] font-600 text-muted-foreground">
+                            {row.taskCount} tâche{row.taskCount > 1 ? 's' : ''}
+                          </span>
+                          <span className="whitespace-nowrap text-[11px] font-600 text-muted-foreground">
+                            {periodLabel}
+                          </span>
+                          {row.alertCount > 0 && (
+                            <span className="whitespace-nowrap text-[11px] font-700 text-orange-600 dark:text-orange-400 bg-orange-500/10 px-1.5 py-0.5 rounded-md flex items-center gap-1">
+                              <AlertTriangle className="h-3 w-3" />
+                              {row.alertCount} alerte{row.alertCount > 1 ? 's' : ''}
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
                   )
@@ -1529,10 +1558,10 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                         Tint overlay is -z-[1] (behind flex children, above the bg). */}
                     <div
                       className={cn(
-                        'sticky left-0 z-[25] shrink-0 border-r border-b border-border flex items-center pl-7 pr-4 gap-2 cursor-pointer overflow-hidden bg-surface transition-colors',
+                        'sticky left-0 z-[25] shrink-0 border-r border-b border-border/50 flex items-center pl-8 pr-4 gap-2 cursor-pointer overflow-hidden bg-surface transition-colors',
                         !isSelected && !isLate && !isBlocked && !hasOverlap && 'group-hover:bg-elevated',
                       )}
-                      style={{ width: leftColWidth, height: ROW_HEIGHT, borderLeft: `6px solid ${hexToRgba(projectColor(project), 0.55)}` }}
+                      style={{ width: leftColWidth, height: ROW_HEIGHT, borderLeft: `6px solid ${hexToRgba(projectColor(project), 0.45)}` }}
                       onClick={() => handleTaskClick(task)}
                     >
                       {/* LOT 27G — fond alterné : teinte chantier de base (derrière l'éventuelle teinte d'alerte) */}
@@ -1550,7 +1579,8 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                             : 'bg-yellow-500/[0.03] group-hover:bg-yellow-500/[0.05]',
                         )} />
                       )}
-                      <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: projectColor(project) }} />
+                      {/* LOT 27I — point d'identité chantier plus visible */}
+                      <div className="w-2 h-2 rounded-full shrink-0" style={{ background: projectColor(project) }} />
                       {/* LOT 27H — ligne unique conservée + tooltip nom complet si tronqué */}
                       <span
                         className={cn('text-sm text-foreground truncate min-w-0 flex-1', (task.status === 'done' || task.status === 'validated') && 'line-through text-muted-foreground')}
@@ -1586,7 +1616,8 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                         More reliable than overflow:clip for shadow clipping across browsers. */}
                     <div
                       className={cn(
-                        'relative border-b border-border transition-colors [clip-path:inset(0)]',
+                        // LOT 27I — ligne de tâche plus discrète (border-border/50, cf. cellule gauche)
+                        'relative border-b border-border/50 transition-colors [clip-path:inset(0)]',
                         isLate
                           ? 'bg-red-500/[0.02] group-hover:bg-red-500/[0.04]'
                           : isBlocked
