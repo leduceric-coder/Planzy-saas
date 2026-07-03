@@ -7,7 +7,7 @@ import {
   ChevronLeft, ChevronRight, Calendar, ChevronDown,
   ChevronRight as ChevronRightSm, AlertTriangle, Check,
   Maximize2, Minimize2, Undo2, Redo2, SlidersHorizontal,
-  Plus, RotateCcw, Inbox, Crosshair,
+  Plus, RotateCcw, Inbox, Crosshair, ListFilter,
 } from 'lucide-react'
 import { cn, taskStatusColor, taskStatusLabel, formatDate, hexToRgba } from '@/lib/utils'
 import type { Task, TaskStatus } from '@/lib/types'
@@ -44,7 +44,10 @@ const MONTH_ROW_HEIGHT = 20
 const DAY_ROW_HEIGHT = 36
 const HEADER_HEIGHT = MONTH_ROW_HEIGHT + DAY_ROW_HEIGHT // 56 — unchanged
 const ROW_HEIGHT = 44
-const LEFT_COL_WIDTH = 280
+// LOT 27H — colonne Tâche élargie (340px, cible 340-380) + redimensionnable.
+const DEFAULT_LEFT_COL_WIDTH = 340
+const MIN_LEFT_COL_WIDTH = 280
+const MAX_LEFT_COL_WIDTH = 460
 
 // ─── Month helpers ─────────────────────────────────────────────────────────────
 
@@ -256,10 +259,33 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
   const [pendingScrollTaskId, setPendingScrollTaskId] = useState<string | null>(null)
   const [filtersOpen, setFiltersOpen] = useState(false)
   const [activeKindFilter, setActiveKindFilter] = useState<PlanningAlertKind | null>(null)
+  // LOT 27H — colonne Tâche redimensionnable (poignée sur la cellule d'angle)
+  const [leftColWidth, setLeftColWidth] = useState(DEFAULT_LEFT_COL_WIDTH)
+  const [legendOpen, setLegendOpen] = useState(false)
+  const colResizeRef = useRef<{ dragging: boolean; startX: number; startW: number }>({ dragging: false, startX: 0, startW: 0 })
   const scrollContainerRef = useRef<HTMLDivElement | null>(null)
   const analysisPanelRef = useRef<HTMLDivElement | null>(null)
   const { push: historyPush, handleUndo, handleRedo, canUndo, canRedo, undoLabel, redoLabel } = useUndoHistory()
   const { toast } = useToast()
+
+  // LOT 27H — drag de la poignée de redimensionnement de la colonne Tâche.
+  const handleColResizeStart = useCallback((e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    colResizeRef.current = { dragging: true, startX: e.clientX, startW: leftColWidth }
+    const onMove = (me: MouseEvent) => {
+      if (!colResizeRef.current.dragging) return
+      const next = colResizeRef.current.startW + (me.clientX - colResizeRef.current.startX)
+      setLeftColWidth(Math.min(MAX_LEFT_COL_WIDTH, Math.max(MIN_LEFT_COL_WIDTH, next)))
+    }
+    const onUp = () => {
+      colResizeRef.current.dragging = false
+      window.removeEventListener('mousemove', onMove)
+      window.removeEventListener('mouseup', onUp)
+    }
+    window.addEventListener('mousemove', onMove)
+    window.addEventListener('mouseup', onUp)
+  }, [leftColWidth])
 
   const fetchDependencies = useCallback(async () => {
     const { data, error } = await mutationClient()
@@ -852,11 +878,11 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
     )
   }
 
-  const totalWidth = LEFT_COL_WIDTH + totalDays * dayW
+  const totalWidth = leftColWidth + totalDays * dayW
 
   // Layout map for dependency arrows — only project view (vue Global).
   // Row index corresponds to ganttRows[idx]; coords are relative to the
-  // right zone (i.e., add LEFT_COL_WIDTH for absolute position in the inner div).
+  // right zone (i.e., add leftColWidth for absolute position in the inner div).
   const taskLayout = useMemo(() => {
     const map = new Map<string, { startX: number; endX: number; centerY: number }>()
     ganttRows.forEach((row, idx) => {
@@ -890,11 +916,11 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
     const minX = Math.min(...layouts.map(l => l.startX))
     const maxX = Math.max(...layouts.map(l => l.endX))
     const midX = (minX + maxX) / 2
-    const targetLeft = Math.max(0, LEFT_COL_WIDTH + midX - el.clientWidth / 2)
+    const targetLeft = Math.max(0, leftColWidth + midX - el.clientWidth / 2)
     const midY = layouts.reduce((sum, l) => sum + l.centerY, 0) / layouts.length
     const targetTop = Math.max(0, HEADER_HEIGHT + midY - el.clientHeight / 2)
     el.scrollTo({ left: targetLeft, top: targetTop, behavior: 'smooth' })
-  }, [activeAlert, taskLayout, ganttMode])
+  }, [activeAlert, taskLayout, ganttMode, leftColWidth])
 
   // LOT 21.E — Scroll the analysis panel into view when an overlap is selected.
   useEffect(() => {
@@ -967,20 +993,20 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
     const layout = taskLayout.get(pendingScrollTaskId)
     const el = scrollContainerRef.current
     if (!layout || !el) { setPendingScrollTaskId(null); return }
-    // Bar absolute X in the inner div = LEFT_COL_WIDTH + layout.startX
+    // Bar absolute X in the inner div = leftColWidth + layout.startX
     // Visible area excludes the sticky left column.
-    const barAbsLeft = LEFT_COL_WIDTH + layout.startX
-    const barAbsRight = LEFT_COL_WIDTH + layout.endX
-    const visibleLeft = el.scrollLeft + LEFT_COL_WIDTH
+    const barAbsLeft = leftColWidth + layout.startX
+    const barAbsRight = leftColWidth + layout.endX
+    const visibleLeft = el.scrollLeft + leftColWidth
     const visibleRight = el.scrollLeft + el.clientWidth
     if (barAbsRight < visibleLeft + 40 || barAbsLeft > visibleRight - 40) {
       // Center-ish target: keep the bar a bit right of the sticky column
-      const target = Math.max(0, barAbsLeft - LEFT_COL_WIDTH - 80)
+      const target = Math.max(0, barAbsLeft - leftColWidth - 80)
       el.scrollTo({ left: target, behavior: 'smooth' })
       toast('Vue ajustée pour afficher la tâche modifiée.')
     }
     setPendingScrollTaskId(null)
-  }, [pendingScrollTaskId, taskLayout, ganttMode, toast])
+  }, [pendingScrollTaskId, taskLayout, ganttMode, toast, leftColWidth])
 
   // LOT 15.E.1 — "Aujourd'hui" scroll: center the viewport on the today line after
   // viewOffset resets to 0. Runs after the render so todayOffset is already correct.
@@ -989,13 +1015,13 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
     setPendingScrollToToday(false)
     const el = scrollContainerRef.current
     if (!el) return
-    const todayAbsX = LEFT_COL_WIDTH + todayOffset * dayW
-    if (todayAbsX < LEFT_COL_WIDTH || todayOffset < 0 || todayOffset > totalDays) {
+    const todayAbsX = leftColWidth + todayOffset * dayW
+    if (todayAbsX < leftColWidth || todayOffset < 0 || todayOffset > totalDays) {
       toast("Aujourd'hui est hors de la plage visible", 'error')
       return
     }
     el.scrollTo({ left: Math.max(0, todayAbsX - el.clientWidth / 2), behavior: 'smooth' })
-  }, [pendingScrollToToday, todayOffset, dayW, totalDays, toast])
+  }, [pendingScrollToToday, todayOffset, dayW, totalDays, toast, leftColWidth])
 
   // ─── Return ───────────────────────────────────────────────────────────────────
 
@@ -1235,6 +1261,40 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
               )}
             </div>
 
+            {/* LOT 27H — Légende, déplacée de « bas de Gantt » vers un popover de
+                toolbar (n'ajoute aucune hauteur permanente). Vue Global uniquement. */}
+            {ganttMode === 'project' && (
+              <div className="relative shrink-0">
+                <button
+                  onClick={() => setLegendOpen(o => !o)}
+                  className={cn(
+                    'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-600 border transition-colors',
+                    legendOpen
+                      ? 'bg-primary/10 text-primary border-primary/30'
+                      : 'bg-elevated border-border/60 text-muted-foreground hover:text-foreground',
+                  )}
+                  title="Légende"
+                >
+                  <ListFilter className="h-3.5 w-3.5" />
+                  <span className="hidden lg:inline">Légende</span>
+                </button>
+                {legendOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setLegendOpen(false)} />
+                    <div className="absolute right-0 top-full mt-2 w-64 bg-elevated border border-border rounded-xl shadow-xl z-50 p-3.5 flex flex-col gap-2 text-[11px]">
+                      <span className="text-[10px] font-700 uppercase tracking-widest text-muted-foreground/40">Légende</span>
+                      <span className="flex items-center gap-1.5 text-muted-foreground"><span className="w-3 h-3 rounded-sm bg-primary/70" /> Couleur = chantier</span>
+                      <span className="flex items-center gap-1.5 text-muted-foreground"><AlertTriangle className="h-3 w-3 text-yellow-500" /> Avertissement</span>
+                      <span className="flex items-center gap-1.5 text-muted-foreground"><span className="w-4 h-1 rounded-full bg-red-500" /> Retard / bloqué</span>
+                      <span className="flex items-center gap-1.5 text-muted-foreground"><span className="w-4 h-4 rounded bg-slate-400 text-white text-[8px] font-700 flex items-center justify-center">A</span> Artisan affecté</span>
+                      <span className="flex items-center gap-1 text-muted-foreground"><span className="w-3 h-px bg-slate-400" /><span className="text-slate-400 leading-none">▸</span> Dépendance</span>
+                      <span className="flex items-center gap-1.5 text-muted-foreground"><Check className="h-3 w-3 text-green-600" /> Terminée</span>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+
             {/* Alertes planning — ouvre le panneau « Alertes & résolution » */}
             {planningAlerts.length > 0 && (
               <button
@@ -1294,10 +1354,18 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
               <div className="flex sticky top-0 z-30" style={{ height: HEADER_HEIGHT }}>
                 {/* Corner — sticky both axes */}
                 <div
-                  className="sticky left-0 z-40 shrink-0 bg-surface border-r border-b border-border flex items-center px-4"
-                  style={{ width: LEFT_COL_WIDTH, height: HEADER_HEIGHT }}
+                  className="sticky left-0 z-40 shrink-0 bg-surface border-r border-b border-border flex items-center px-4 relative"
+                  style={{ width: leftColWidth, height: HEADER_HEIGHT }}
                 >
                   <span className="text-xs font-700 uppercase tracking-wider text-muted-foreground">Tâche</span>
+                  {/* LOT 27H — poignée de redimensionnement de la colonne Tâche */}
+                  <div
+                    onMouseDown={handleColResizeStart}
+                    className="absolute right-0 top-0 bottom-0 w-2.5 flex items-center justify-center cursor-col-resize group/resize z-10"
+                    title="Redimensionner la colonne"
+                  >
+                    <div className="w-0.5 h-5 bg-border group-hover/resize:bg-primary/60 transition-colors rounded" />
+                  </div>
                 </div>
                 {/* Date columns — two stacked rows */}
                 <div className="flex flex-col border-b border-border bg-surface" style={{ width: totalDays * dayW }}>
@@ -1354,9 +1422,6 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                         </div>
                       )
                     })}
-                    {/* LOT 27F — le badge « Aujourd'hui » n'est plus dans l'en-tête
-                        (il débordait sur la colonne Tâche au scroll). Il est rendu par
-                        <TodayBadge>, en overlay du viewport, clampé au viewport visible. */}
                   </div>
                 </div>
               </div>
@@ -1373,7 +1438,7 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                   style={{
                     top: HEADER_HEIGHT,
                     bottom: 0,
-                    left: LEFT_COL_WIDTH + todayOffset * dayW + dayW / 2,
+                    left: leftColWidth + todayOffset * dayW + dayW / 2,
                   }}
                 >
                   <span className="absolute left-1/2 top-0 -translate-x-1/2 whitespace-nowrap text-[9px] font-800 leading-none text-white bg-yellow-500 px-1.5 py-0.5 rounded-full shadow-sm ring-1 ring-black/10">
@@ -1396,16 +1461,22 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                     <div key={`g-${groupKey}`} className="flex group/grp border-t-2 border-border/70" style={{ height: ROW_HEIGHT }}>
                       <div
                         className="sticky left-0 z-20 shrink-0 bg-background border-r border-b border-border flex items-center gap-2 pl-3 pr-3 overflow-hidden cursor-pointer hover:bg-elevated/50 transition-colors"
-                        style={{ width: LEFT_COL_WIDTH, height: ROW_HEIGHT, borderLeft: `6px solid ${grpColor}` }}
+                        style={{ width: leftColWidth, height: ROW_HEIGHT, borderLeft: `6px solid ${grpColor}` }}
                         onClick={() => toggleGroup(groupKey)}
                         title={isCollapsed ? 'Déplier le chantier' : 'Replier le chantier'}
                       >
-                        {/* teinte chantier — au-dessus du fond opaque, derrière le contenu */}
-                        <div className="absolute inset-0 pointer-events-none z-[-1]" style={{ background: hexToRgba(grpColor, 0.06) }} />
+                        {/* LOT 27H — teinte d'en-tête renforcée (lignes de tâches restent très légères) */}
+                        <div className="absolute inset-0 pointer-events-none z-[-1]" style={{ background: hexToRgba(grpColor, 0.10) }} />
                         {isCollapsed
                           ? <ChevronRightSm className="h-4 w-4 shrink-0 text-muted-foreground" />
                           : <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground" />}
-                        <span className="text-xs font-800 uppercase tracking-wide text-foreground truncate min-w-0 flex-1">{row.project?.name ?? 'Chantier'}</span>
+                        {/* LOT 27H — jusqu'à 2 lignes (plus de troncature excessive) + tooltip nom complet */}
+                        <span
+                          className="text-xs font-800 uppercase tracking-wide text-foreground line-clamp-2 leading-tight min-w-0 flex-1"
+                          title={row.project?.name ?? 'Chantier'}
+                        >
+                          {row.project?.name ?? 'Chantier'}
+                        </span>
                         {canFocus && (
                           <button
                             onClick={e => { e.stopPropagation(); setFilterProject(filterProject === groupKey ? 'all' : groupKey) }}
@@ -1422,7 +1493,7 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                           {row.doneCount}/{row.taskCount}
                         </span>
                       </div>
-                      <div className="relative border-b border-border" style={{ width: totalDays * dayW, height: ROW_HEIGHT, background: hexToRgba(grpColor, 0.05) }}>
+                      <div className="relative border-b border-border" style={{ width: totalDays * dayW, height: ROW_HEIGHT, background: hexToRgba(grpColor, 0.08) }}>
                         {monthSegments.map((seg, idx) => (
                           <div key={idx} className="absolute inset-y-0 pointer-events-none" style={{ left: seg.left, width: seg.width }}>
                             {seg.isOdd && <div className="absolute inset-0 bg-foreground/[0.02]" />}
@@ -1432,8 +1503,8 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                         {weekStarts.map(left => (
                           <div key={`w-${left}`} className="absolute top-0 bottom-0 w-px bg-border/20 pointer-events-none" style={{ left }} />
                         ))}
-                        {/* LOT 27G — résumé chantier « pleine largeur » (données fiables) */}
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 whitespace-nowrap text-[11px] font-600 text-muted-foreground pointer-events-none">
+                        {/* LOT 27H — résumé chantier « pleine largeur », contraste renforcé */}
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 whitespace-nowrap text-[11px] font-700 text-foreground/80 pointer-events-none">
                           {row.doneCount}/{row.taskCount} terminée{row.taskCount > 1 ? 's' : ''} · {row.taskCount} tâche{row.taskCount > 1 ? 's' : ''}
                           {row.minStart && row.maxEnd
                             ? ` · ${format(parseDBDate(row.minStart), 'd MMM', { locale: fr })} → ${format(parseDBDate(row.maxEnd), 'd MMM', { locale: fr })}`
@@ -1461,7 +1532,7 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                         'sticky left-0 z-[25] shrink-0 border-r border-b border-border flex items-center pl-7 pr-4 gap-2 cursor-pointer overflow-hidden bg-surface transition-colors',
                         !isSelected && !isLate && !isBlocked && !hasOverlap && 'group-hover:bg-elevated',
                       )}
-                      style={{ width: LEFT_COL_WIDTH, height: ROW_HEIGHT, borderLeft: `6px solid ${hexToRgba(projectColor(project), 0.55)}` }}
+                      style={{ width: leftColWidth, height: ROW_HEIGHT, borderLeft: `6px solid ${hexToRgba(projectColor(project), 0.55)}` }}
                       onClick={() => handleTaskClick(task)}
                     >
                       {/* LOT 27G — fond alterné : teinte chantier de base (derrière l'éventuelle teinte d'alerte) */}
@@ -1480,7 +1551,11 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                         )} />
                       )}
                       <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: projectColor(project) }} />
-                      <span className={cn('text-sm text-foreground truncate min-w-0 flex-1', (task.status === 'done' || task.status === 'validated') && 'line-through text-muted-foreground')}>
+                      {/* LOT 27H — ligne unique conservée + tooltip nom complet si tronqué */}
+                      <span
+                        className={cn('text-sm text-foreground truncate min-w-0 flex-1', (task.status === 'done' || task.status === 'validated') && 'line-through text-muted-foreground')}
+                        title={task.title}
+                      >
                         {task.title}
                       </span>
                       {/* Alert-mode badge — simple pill, overrides generic warning icon */}
@@ -1551,7 +1626,7 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                 <svg
                   className="absolute"
                   style={{
-                    left: LEFT_COL_WIDTH,
+                    left: leftColWidth,
                     top: HEADER_HEIGHT,
                     width: totalDays * dayW,
                     height: ganttRows.length * ROW_HEIGHT,
@@ -2074,21 +2149,6 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
           )}{/* end right aside */}
 
         </div>{/* end horizontal body */}
-
-        {/* LOT 27G — légende repliable (discrète, hauteur minimale repliée) */}
-        {ganttMode === 'project' && (
-          <details className="shrink-0 border-t border-border bg-surface px-4 py-1.5 text-[11px]">
-            <summary className="cursor-pointer w-fit font-600 text-muted-foreground hover:text-foreground select-none">Légende</summary>
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 pt-2 pb-1 text-muted-foreground">
-              <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-primary/70" /> Couleur = chantier</span>
-              <span className="flex items-center gap-1.5"><AlertTriangle className="h-3 w-3 text-yellow-500" /> Avertissement</span>
-              <span className="flex items-center gap-1.5"><span className="w-4 h-1 rounded-full bg-red-500" /> Retard / bloqué</span>
-              <span className="flex items-center gap-1.5"><span className="w-4 h-4 rounded bg-slate-400 text-white text-[8px] font-700 flex items-center justify-center">A</span> Artisan affecté</span>
-              <span className="flex items-center gap-1"><span className="w-3 h-px bg-slate-400" /><span className="text-slate-400 leading-none">▸</span> Dépendance</span>
-              <span className="flex items-center gap-1.5"><Check className="h-3 w-3 text-green-600" /> Terminée</span>
-            </div>
-          </details>
-        )}
 
       </div>{/* end planning card */}
 
