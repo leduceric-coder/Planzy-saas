@@ -7,6 +7,9 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+import { CompactKpiCard } from '@/components/ui/CompactKpiCard'
+import { PageSection } from '@/components/ui/PageSection'
+import { EmptyState } from '@/components/ui/EmptyState'
 import { ChantierRichCard } from './ChantierRichCard'
 import { cn, formatDateShort } from '@/lib/utils'
 import type { Project } from '@/lib/types'
@@ -44,41 +47,6 @@ interface Props {
   today: string
 }
 
-// ── KPI tile ──────────────────────────────────────────────────────────────────
-
-function KpiTile({
-  value, label, icon: Icon, sub, accent = false,
-}: {
-  value: React.ReactNode
-  label: string
-  icon: React.ElementType
-  sub?: string | null
-  accent?: boolean
-}) {
-  return (
-    <div className="bg-surface rounded-xl border border-border/40 dark:border-white/[0.08] px-4 py-3.5 flex items-center gap-3.5 shadow-[0_1px_4px_rgba(0,0,0,0.05)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.4)]">
-      <div className={cn(
-        'w-9 h-9 rounded-xl flex items-center justify-center shrink-0',
-        accent ? 'bg-orange-500/12 text-orange-500' : 'bg-primary/10 text-primary',
-      )}>
-        <Icon className="h-4 w-4" />
-      </div>
-      <div className="min-w-0">
-        <p className="text-[22px] font-800 text-foreground leading-none tabular-nums">{value}</p>
-        <p className="text-[11px] text-muted-foreground mt-0.5">{label}</p>
-        {sub && (
-          <p className={cn(
-            'text-[10px] mt-0.5 truncate',
-            accent ? 'text-orange-500/80' : 'text-muted-foreground/55',
-          )}>
-            {sub}
-          </p>
-        )}
-      </div>
-    </div>
-  )
-}
-
 // ── At-risk compact card ──────────────────────────────────────────────────────
 
 function AtRiskCard({ project }: { project: EnrichedProject }) {
@@ -100,12 +68,12 @@ function AtRiskCard({ project }: { project: EnrichedProject }) {
   return (
     <Link
       href={`/chantiers/${project.id}`}
-      className="group flex items-center gap-3 px-4 py-3 rounded-xl border border-orange-500/20 bg-orange-500/[0.03] hover:bg-orange-500/[0.06] transition-colors"
+      className="group flex items-center gap-3 px-4 py-3.5 rounded-xl border border-orange-500/20 bg-orange-500/[0.03] hover:bg-orange-500/[0.06] transition-colors min-h-[64px]"
     >
-      <div className="w-1.5 h-8 rounded-full shrink-0" style={{ background: project.color }} />
+      <div className="w-1.5 h-9 rounded-full shrink-0" style={{ background: project.color }} />
       <div className="flex-1 min-w-0">
-        <p className="text-[12.5px] font-700 text-foreground truncate">{project.name}</p>
-        <p className="text-[11px] text-orange-600 dark:text-orange-400 font-600 mt-0.5">
+        <p className="text-[14px] font-700 text-foreground truncate">{project.name}</p>
+        <p className="text-[12px] text-orange-600 dark:text-orange-400 font-600 mt-0.5 truncate">
           {mainSignal}
           {moreCount > 0 && (
             <span className="text-muted-foreground/50 ml-1 font-500">
@@ -114,8 +82,8 @@ function AtRiskCard({ project }: { project: EnrichedProject }) {
           )}
         </p>
       </div>
-      <span className="shrink-0 flex items-center gap-0.5 text-[11px] font-600 text-primary/65 group-hover:text-primary group-hover:gap-1 transition-all">
-        Voir <ChevronRight className="h-3.5 w-3.5" />
+      <span className="shrink-0 flex items-center gap-0.5 text-[12px] font-600 text-primary/65 group-hover:text-primary group-hover:gap-1 transition-all">
+        Voir <ChevronRight className="h-4 w-4" />
       </span>
     </Link>
   )
@@ -153,7 +121,7 @@ export function ChantiersClient({ projects, today }: Props) {
     return projects
       .filter(p => p.stats.isAtRisk && p.status === 'active')
       .sort((a, b) => score(b) - score(a))
-      .slice(0, 4)
+      .slice(0, 3)
   }, [projects])
 
   // Filtered list
@@ -191,49 +159,51 @@ export function ChantiersClient({ projects, today }: Props) {
   // Empty-database state
   if (projects.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-32 gap-4 px-6">
-        <div className="w-16 h-16 rounded-2xl bg-elevated flex items-center justify-center">
-          <Building2 className="h-8 w-8 text-muted-foreground/30" />
-        </div>
-        <div className="text-center">
-          <h3 className="text-lg font-700 text-foreground mb-1">Aucun chantier</h3>
-          <p className="text-sm text-muted-foreground mb-5 max-w-xs">
-            Créez votre premier chantier pour commencer à planifier.
-          </p>
-          <Link href="/chantiers/nouveau">
-            <Button size="sm">
-              <Plus className="h-4 w-4" />
-              Créer un chantier
-            </Button>
-          </Link>
-        </div>
+      <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-10 py-16">
+        <EmptyState
+          icon={Building2}
+          title="Aucun chantier"
+          description="Créez votre premier chantier pour commencer à planifier."
+          size="lg"
+          action={
+            <Link href="/chantiers/nouveau">
+              <Button size="sm">
+                <Plus className="h-4 w-4" />
+                Créer un chantier
+              </Button>
+            </Link>
+          }
+        />
       </div>
     )
   }
 
   return (
-    <div className="px-6 lg:px-10 py-6 flex flex-col gap-6">
+    <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-10 py-6 flex flex-col gap-7">
 
       {/* ── KPI bar ── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <KpiTile
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <CompactKpiCard
           icon={Building2}
           value={kpis.activeCount}
           label="Chantiers actifs"
+          tone="blue"
           sub={`${projects.length} au total`}
         />
-        <KpiTile
+        <CompactKpiCard
           icon={AlertTriangle}
           value={kpis.atRiskCount}
           label="À risque"
+          tone="orange"
           accent={kpis.atRiskCount > 0}
           sub={kpis.atRiskCount > 0 ? 'Actions requises' : 'Aucun problème'}
         />
-        <KpiTile
+        <CompactKpiCard
           icon={Flag}
           value={kpis.totalOpenIssues}
           label="Réserves ouvertes"
-          accent={kpis.totalCritical > 0}
+          tone={kpis.totalCritical > 0 ? 'red' : 'orange'}
+          accent={kpis.totalOpenIssues > 0}
           sub={
             kpis.totalCritical > 0
               ? `dont ${kpis.totalCritical} critique${kpis.totalCritical > 1 ? 's' : ''}`
@@ -241,35 +211,37 @@ export function ChantiersClient({ projects, today }: Props) {
               : null
           }
         />
-        <KpiTile
+        <CompactKpiCard
           icon={Calendar}
           value={kpis.nextDeadline ? formatDateShort(kpis.nextDeadline.end_date) : '—'}
           label="Prochaine échéance"
+          tone="blue"
           sub={kpis.nextDeadline?.name ?? null}
         />
       </div>
 
-      {/* ── "À surveiller" section ── */}
+      {/* ── "À surveiller" section (3 max) ── */}
       {showSurveiller && (
-        <section data-demo-target="chantiers-a-surveiller" className="bg-surface rounded-2xl border border-border/40 dark:border-white/[0.08] overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.4)]">
-          <div className="px-5 py-3 border-b border-border/25 flex items-center gap-2.5 bg-surface">
-            <AlertTriangle className="h-3.5 w-3.5 text-orange-500 shrink-0" />
-            <h2 className="text-[11px] font-800 uppercase tracking-widest text-muted-foreground flex-1">
-              Chantiers à surveiller
-            </h2>
-            <span className="min-w-[20px] h-5 rounded-full bg-orange-500/12 text-orange-600 dark:text-orange-400 text-[10px] font-700 flex items-center justify-center px-1.5 leading-none border border-orange-500/20">
-              {atRiskProjects.length}
-            </span>
-          </div>
-          <div className={cn(
-            'p-4 grid gap-2',
-            atRiskProjects.length === 1
-              ? 'grid-cols-1 max-w-[520px]'
-              : 'grid-cols-1 sm:grid-cols-2',
-          )}>
+        <div data-demo-target="chantiers-a-surveiller">
+          <PageSection
+            title="Chantiers à surveiller"
+            icon={AlertTriangle}
+            iconClassName="text-orange-500"
+            count={atRiskProjects.length}
+            countTone="orange"
+            action={kpis.atRiskCount > atRiskProjects.length ? (
+              <button
+                onClick={() => setFilter('at_risk')}
+                className="flex items-center gap-0.5 text-[11px] font-600 text-primary hover:text-primary/80 transition-colors whitespace-nowrap"
+              >
+                Voir tous ({kpis.atRiskCount}) <ChevronRight className="h-3 w-3" />
+              </button>
+            ) : undefined}
+            bodyClassName="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"
+          >
             {atRiskProjects.map(p => <AtRiskCard key={p.id} project={p} />)}
-          </div>
-        </section>
+          </PageSection>
+        </div>
       )}
 
       {/* ── All-clear banner ── */}
@@ -290,7 +262,7 @@ export function ChantiersClient({ projects, today }: Props) {
               key={f.value}
               onClick={() => setFilter(f.value)}
               className={cn(
-                'flex items-center gap-1.5 h-8 px-3 rounded-full text-[12px] font-600 transition-colors whitespace-nowrap border',
+                'flex items-center gap-1.5 h-9 px-3.5 rounded-full text-[13px] font-600 transition-colors whitespace-nowrap border',
                 filter === f.value
                   ? 'bg-primary text-primary-foreground border-primary shadow-sm'
                   : f.value === 'at_risk' && counts.at_risk > 0
@@ -342,39 +314,36 @@ export function ChantiersClient({ projects, today }: Props) {
             <ChantierRichCard key={p.id} project={p} today={today} />
           ))}
         </div>
+      ) : isFiltering ? (
+        <EmptyState
+          icon={Building2}
+          title="Aucun résultat"
+          description="Aucun chantier ne correspond à ce filtre."
+          size="lg"
+          action={
+            <button
+              onClick={() => { setFilter('all'); setSearch('') }}
+              className="text-sm font-600 text-primary hover:text-primary/80 hover:underline transition-colors"
+            >
+              Réinitialiser les filtres
+            </button>
+          }
+        />
       ) : (
-        <div className="flex flex-col items-center justify-center py-20 gap-4">
-          <div className="w-14 h-14 rounded-xl bg-elevated flex items-center justify-center">
-            <Building2 className="h-7 w-7 text-muted-foreground/25" />
-          </div>
-          {isFiltering ? (
-            <div className="text-center">
-              <h3 className="font-700 text-foreground mb-1">Aucun résultat</h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                Aucun chantier ne correspond à ce filtre.
-              </p>
-              <button
-                onClick={() => { setFilter('all'); setSearch('') }}
-                className="text-sm font-600 text-primary hover:text-primary/80 hover:underline transition-colors"
-              >
-                Réinitialiser les filtres
-              </button>
-            </div>
-          ) : (
-            <div className="text-center">
-              <h3 className="font-700 text-foreground mb-1">Aucun chantier</h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                Commencez par créer votre premier chantier.
-              </p>
-              <Link href="/chantiers/nouveau">
-                <Button size="sm">
-                  <Plus className="h-4 w-4" />
-                  Créer un chantier
-                </Button>
-              </Link>
-            </div>
-          )}
-        </div>
+        <EmptyState
+          icon={Building2}
+          title="Aucun chantier"
+          description="Commencez par créer votre premier chantier."
+          size="lg"
+          action={
+            <Link href="/chantiers/nouveau">
+              <Button size="sm">
+                <Plus className="h-4 w-4" />
+                Créer un chantier
+              </Button>
+            </Link>
+          }
+        />
       )}
 
     </div>
