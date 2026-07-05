@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, type RefObject } from 'react'
 import { format, differenceInDays, eachDayOfInterval, getISOWeek } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import { AlertTriangle } from 'lucide-react'
@@ -40,6 +40,9 @@ interface Props {
   filterArtisan: string
   onTaskClick: (task: GanttTask) => void
   onTooltipChange: (tooltip: { task: GanttTask; x: number; y: number } | null) => void
+  /** LOT 27M — conteneur de scroll partagé pour que les flèches de période
+   *  défilent aussi ce viewport en vue « Par artisan » (même unique overflow:auto). */
+  scrollRef?: RefObject<HTMLDivElement | null>
 }
 
 // SCROLL : même conteneur overflow:auto unique que GanttView — ne pas ajouter
@@ -62,6 +65,7 @@ export function GanttArtisanView({
   filterArtisan,
   onTaskClick,
   onTooltipChange,
+  scrollRef,
 }: Props) {
 
   type MonthSegment = { label: string; left: number; width: number; isOdd: boolean }
@@ -178,7 +182,7 @@ export function GanttArtisanView({
   const totalWidth = LEFT_COL_WIDTH + totalDays * dayW
 
   return (
-    <div className="h-full overflow-auto">
+    <div ref={scrollRef} className="h-full overflow-auto">
       <div className="relative" style={{ width: totalWidth }}>
 
         {/* Header row — sticky top */}

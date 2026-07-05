@@ -7,7 +7,7 @@ import {
   ChevronLeft, ChevronRight, Calendar, ChevronDown,
   ChevronRight as ChevronRightSm, AlertTriangle, Check,
   Maximize2, Minimize2, Undo2, Redo2, SlidersHorizontal,
-  Plus, RotateCcw, Inbox, Crosshair, ListFilter, X,
+  Plus, RotateCcw, Inbox, Crosshair, CircleHelp, X,
 } from 'lucide-react'
 import { cn, taskStatusColor, taskStatusLabel, formatDate, hexToRgba } from '@/lib/utils'
 import type { Task, TaskStatus } from '@/lib/types'
@@ -389,8 +389,24 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
     return offsets
   }, [rangeStart, rangeEnd, dayW])
 
-  const navigatePrev = () => setViewOffset(v => v - VIEW_STEP[zoom])
-  const navigateNext = () => setViewOffset(v => v + VIEW_STEP[zoom])
+  // LOT 27M — Audit des flèches : elles mutaient `viewOffset`, qui ne décale que la
+  // fenêtre de base [today-14, today+90] via baseStart/baseEnd. Or rangeStart/rangeEnd
+  // sont épinglés aux bornes des tâches (taskBounds) dès que celles-ci débordent cette
+  // fenêtre — le cas normal avec les données réelles/DEMO qui s'étalent sur plusieurs
+  // mois. viewOffset était donc INERTE : la plage rendue ne changeait pas et aucune
+  // action de défilement n'était déclenchée → « aucun déplacement visible ».
+  // La navigation réelle du Gantt se fait par défilement horizontal du viewport (unique
+  // conteneur overflow:auto) : c'est ainsi que « Aujourd'hui » fonctionne déjà (scrollTo).
+  // Les flèches défilent donc ce même viewport d'un pas cohérent avec l'échelle active
+  // (VIEW_STEP × largeur d'un jour). Ce n'est pas un contournement : le Gantt n'a pas de
+  // date de référence contrôlée pour la fenêtre visible, il est piloté par le scroll.
+  const navigateByStep = (dir: -1 | 1) => {
+    const el = scrollContainerRef.current
+    if (!el) return
+    el.scrollBy({ left: dir * VIEW_STEP[zoom] * dayW, behavior: 'smooth' })
+  }
+  const navigatePrev = () => navigateByStep(-1)
+  const navigateNext = () => navigateByStep(1)
   const navigateToday = () => { setViewOffset(0); setPendingScrollToToday(true) }
 
   const hasActiveFilters = filterProject !== 'all' || filterArtisan !== 'all' || filterStatus !== 'all' || showCompleted
@@ -740,6 +756,14 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
     document.addEventListener('keydown', onKey)
     return () => document.removeEventListener('keydown', onKey)
   }, [alertsPopover])
+
+  // LOT 27M — fermeture du popover « Codes du planning » par Escape.
+  useEffect(() => {
+    if (!legendOpen) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setLegendOpen(false) }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [legendOpen])
 
   const sidePanelTask = selectedTask
 
@@ -1119,6 +1143,7 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                 onClick={navigatePrev}
                 className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-border/20 transition-colors"
                 title="Période précédente"
+                aria-label="Période précédente"
               >
                 <ChevronLeft className="h-4 w-4" />
               </button>
@@ -1137,6 +1162,7 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                 onClick={navigateNext}
                 className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-border/20 transition-colors"
                 title="Période suivante"
+                aria-label="Période suivante"
               >
                 <ChevronRight className="h-4 w-4" />
               </button>
@@ -1307,41 +1333,9 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
               )}
             </div>
 
-            {/* LOT 27H — Légende, déplacée de « bas de Gantt » vers un popover de
-                toolbar (n'ajoute aucune hauteur permanente). Vue Global uniquement. */}
-            {ganttMode === 'project' && (
-              <div className="relative shrink-0">
-                <button
-                  onClick={() => setLegendOpen(o => !o)}
-                  className={cn(
-                    'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-600 border transition-colors',
-                    legendOpen
-                      ? 'bg-primary/10 text-primary border-primary/30'
-                      : 'bg-elevated border-border/60 text-muted-foreground hover:text-foreground',
-                  )}
-                  title="Légende"
-                >
-                  <ListFilter className="h-3.5 w-3.5" />
-                  <span className="hidden lg:inline">Légende</span>
-                </button>
-                {legendOpen && (
-                  <>
-                    <div className="fixed inset-0 z-40" onClick={() => setLegendOpen(false)} />
-                    <div className="absolute right-0 top-full mt-2 w-64 bg-elevated border border-border rounded-xl shadow-xl z-50 p-3.5 flex flex-col gap-2 text-[11px]">
-                      <span className="text-[10px] font-700 uppercase tracking-widest text-muted-foreground/40">Légende</span>
-                      <span className="flex items-center gap-1.5 text-muted-foreground"><span className="w-3 h-3 rounded-sm bg-primary/70" /> Couleur = chantier</span>
-                      <span className="flex items-center gap-1.5 text-muted-foreground"><AlertTriangle className="h-3 w-3 text-yellow-500" /> Avertissement</span>
-                      <span className="flex items-center gap-1.5 text-muted-foreground"><span className="w-4 h-1 rounded-full bg-red-500" /> Retard / bloqué</span>
-                      <span className="flex items-center gap-1.5 text-muted-foreground"><span className="w-4 h-4 rounded bg-slate-400 text-white text-[8px] font-700 flex items-center justify-center">A</span> Artisan affecté</span>
-                      <span className="flex items-center gap-1 text-muted-foreground"><span className="w-3 h-px bg-slate-400" /><span className="text-slate-400 leading-none">▸</span> Dépendance</span>
-                      <span className="flex items-center gap-1.5 text-muted-foreground"><Check className="h-3 w-3 text-green-600" /> Terminée</span>
-                    </div>
-                  </>
-                )}
-              </div>
-            )}
-
-            {/* Alertes planning — ouvre le panneau « Alertes & résolution » */}
+            {/* Alertes planning — ouvre le panneau « Alertes & résolution ».
+                LOT 27M — ordre toolbar : Filtres → Alertes → Codes du planning →
+                Plein écran (sépare commandes d'affichage / alertes / aide visuelle). */}
             {planningAlerts.length > 0 && (
               <button
                 data-demo-target="planning-alerts-button"
@@ -1352,6 +1346,62 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                 <AlertTriangle className="h-3.5 w-3.5" />
                 <span>{planningAlerts.length} alerte{planningAlerts.length > 1 ? 's' : ''} planning</span>
               </button>
+            )}
+
+            {/* LOT 27M — « Codes du planning » (anciennement « Légende »). Renommé +
+                icône pédagogique (CircleHelp) au lieu de ListFilter, qui évoquait un
+                second filtre. C'est de l'AIDE VISUELLE : ne filtre rien, ne change ni
+                période ni tâches. Popover en deux groupes (Couleurs / Symboles), ne
+                montrant que les codes réellement présents dans le Gantt. */}
+            {ganttMode === 'project' && (
+              <div className="relative shrink-0">
+                <button
+                  onClick={() => setLegendOpen(o => !o)}
+                  aria-label="Comprendre les codes du planning"
+                  aria-expanded={legendOpen}
+                  className={cn(
+                    'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-600 border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50',
+                    legendOpen
+                      ? 'bg-primary/10 text-primary border-primary/30'
+                      : 'bg-elevated border-border/60 text-muted-foreground hover:text-foreground',
+                  )}
+                  title="Comprendre les couleurs et symboles du planning"
+                >
+                  <CircleHelp className="h-3.5 w-3.5" />
+                  <span className="hidden lg:inline">Codes du planning</span>
+                </button>
+                {legendOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setLegendOpen(false)} />
+                    <div
+                      role="dialog"
+                      aria-label="Codes du planning"
+                      className="absolute right-0 top-full mt-2 w-72 bg-elevated border border-border rounded-xl shadow-xl z-50 p-4 flex flex-col gap-3 text-[11px]"
+                    >
+                      <div className="flex flex-col gap-0.5">
+                        <span className="text-[12px] font-700 text-foreground">Codes du planning</span>
+                        <span className="text-[10px] text-muted-foreground/60 leading-snug">Signification des couleurs et symboles utilisés dans le Gantt</span>
+                      </div>
+
+                      {/* Couleurs */}
+                      <div className="flex flex-col gap-1.5">
+                        <span className="text-[9px] font-700 uppercase tracking-widest text-muted-foreground/40">Couleurs</span>
+                        <span className="flex items-center gap-1.5 text-muted-foreground"><span className="w-3 h-3 rounded-sm bg-primary/70 shrink-0" /> Couleur = chantier</span>
+                        <span className="flex items-center gap-1.5 text-muted-foreground"><span className="w-4 h-1.5 rounded-full bg-red-500 shrink-0" /> Rouge = retard / bloqué</span>
+                        <span className="flex items-center gap-1.5 text-muted-foreground"><Check className="h-3 w-3 text-green-600 shrink-0" /> Vert / coche = terminée</span>
+                      </div>
+
+                      {/* Symboles */}
+                      <div className="flex flex-col gap-1.5">
+                        <span className="text-[9px] font-700 uppercase tracking-widest text-muted-foreground/40">Symboles</span>
+                        <span className="flex items-center gap-1.5 text-muted-foreground"><span className="w-4 h-4 rounded bg-slate-400 text-white text-[8px] font-700 flex items-center justify-center shrink-0">A</span> Badge à initiale = artisan affecté</span>
+                        <span className="flex items-center gap-1 text-muted-foreground"><span className="w-3 h-px bg-slate-400" /><span className="text-slate-400 leading-none">▸</span> Flèche = dépendance</span>
+                        <span className="flex items-center gap-1.5 text-muted-foreground"><AlertTriangle className="h-3 w-3 text-yellow-500 shrink-0" /> Triangle = alerte</span>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
             )}
 
             {/* Plein écran */}
@@ -1386,6 +1436,7 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
             filterArtisan={filterArtisan}
             onTaskClick={handleTaskClick}
             onTooltipChange={setTooltip}
+            scrollRef={scrollContainerRef}
           />
         ) : (
           // Unified single-scroll grid: one container scrolls both axes.
