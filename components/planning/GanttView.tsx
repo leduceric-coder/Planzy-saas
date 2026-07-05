@@ -7,7 +7,7 @@ import {
   ChevronLeft, ChevronRight, Calendar, ChevronDown,
   ChevronRight as ChevronRightSm, AlertTriangle, Check,
   Maximize2, Minimize2, Undo2, Redo2, SlidersHorizontal,
-  Plus, RotateCcw, Inbox, Crosshair, ListFilter,
+  Plus, RotateCcw, Inbox, Crosshair, ListFilter, X,
 } from 'lucide-react'
 import { cn, taskStatusColor, taskStatusLabel, formatDate, hexToRgba } from '@/lib/utils'
 import type { Task, TaskStatus } from '@/lib/types'
@@ -262,6 +262,9 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
   // LOT 27H — colonne Tâche redimensionnable (poignée sur la cellule d'angle)
   const [leftColWidth, setLeftColWidth] = useState(DEFAULT_LEFT_COL_WIDTH)
   const [legendOpen, setLegendOpen] = useState(false)
+  // LOT 27L — popover des alertes d'un chantier, ancré au badge « N alertes »
+  // (position fixe capturée au clic → jamais clippé par le conteneur de scroll).
+  const [alertsPopover, setAlertsPopover] = useState<{ groupKey: string; name: string; x: number; y: number } | null>(null)
   const colResizeRef = useRef<{ dragging: boolean; startX: number; startW: number }>({ dragging: false, startX: 0, startW: 0 })
   const scrollContainerRef = useRef<HTMLDivElement | null>(null)
   const analysisPanelRef = useRef<HTMLDivElement | null>(null)
@@ -730,6 +733,14 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
     return () => document.removeEventListener('keydown', handler)
   }, [canUndo, canRedo, executeUndo, executeRedo])
 
+  // LOT 27L — fermeture du popover d'alertes par Escape.
+  useEffect(() => {
+    if (!alertsPopover) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setAlertsPopover(null) }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [alertsPopover])
+
   const sidePanelTask = selectedTask
 
   // ─── Flat rows model ─────────────────────────────────────────────────────────
@@ -774,6 +785,34 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
     }
     return rows
   }, [groupedByProject, collapsedGroups, taskConflictMap])
+
+  // LOT 27L — lookup projectId → tâches visibles du chantier (pour le popover d'alertes).
+  const groupTasksByKey = useMemo(() => {
+    const m = new Map<string, GanttTask[]>()
+    for (const g of groupedByProject) m.set(g.project?.id ?? 'unknown', g.tasks)
+    return m
+  }, [groupedByProject])
+
+  // LOT 27L — détail des alertes d'un chantier, dérivé des mêmes données que le
+  // compteur (taskConflictMap + statut). Aucune catégorie inventée : seulement
+  // retard / bloquée / chevauchement (les réserves ne sont pas dans ce composant).
+  type GroupAlert = { task: GanttTask; taskTitle: string; labels: string[]; endDate: string | null; assigneeName: string | null }
+  const computeGroupAlerts = (grpTasks: GanttTask[]): GroupAlert[] => {
+    const out: GroupAlert[] = []
+    for (const t of grpTasks) {
+      const c = taskConflictMap.get(t.id) ?? []
+      const late = c.some(x => x.type === 'late')
+      const blocked = t.status === 'blocked'
+      const overlap = c.some(x => x.type === 'overlap')
+      if (!late && !blocked && !overlap) continue
+      const labels: string[] = []
+      if (blocked) labels.push('Bloquée')
+      if (late) labels.push('En retard')
+      if (overlap) labels.push('Chevauchement')
+      out.push({ task: t, taskTitle: t.title, labels, endDate: t.end_date ?? null, assigneeName: t.assignee?.full_name ?? null })
+    }
+    return out
+  }
 
   // ─── Bar render (read-only, click opens sidewindow) ──────────────────────────
 
@@ -1465,36 +1504,35 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                   const periodLabel = row.minStart && row.maxEnd
                     ? `${format(parseDBDate(row.minStart), 'd MMM', { locale: fr })} → ${format(parseDBDate(row.maxEnd), 'd MMM', { locale: fr })}`
                     : 'Dates à définir'
+                  // LOT 27L — fond d'en-tête IDENTIQUE des deux côtés (même base opaque
+                  // bg-background + même teinte), pour une barre continue sans seam.
+                  const headerTint = hexToRgba(grpColor, 0.12)
                   return (
-                    // LOT 27I — séparateur ENTRE chantiers plus marqué (border 3px, pleine
-                    // opacité) — alternative sans marge/gap, pour ne jamais faire varier la
-                    // hauteur réelle de la ligne (taskLayout / flèches de dépendance
-                    // reposent sur idx * ROW_HEIGHT, inchangé ici : ROW_HEIGHT n'est pas
-                    // modifié — voir rapport LOT 27I sur la hauteur d'en-tête).
-                    <div key={`g-${groupKey}`} className="flex group/grp border-t-[3px] border-border" style={{ height: ROW_HEIGHT }}>
+                    // LOT 27L — isolation entre chantiers : bordure haute épaisse en couleur
+                    // de PAGE (bg-background) → lue comme un espace/gouttière entre blocs,
+                    // sans margin réel (border-box → hauteur EXTÉRIEURE = ROW_HEIGHT
+                    // inchangée ; taskLayout / flèches reposent sur idx*ROW_HEIGHT, intact).
+                    // Les cellules internes passent en height:100% pour tenir dans la
+                    // content-box amputée de la bordure (aucun débordement).
+                    <div key={`g-${groupKey}`} className="flex group/grp border-t-4 border-background" style={{ height: ROW_HEIGHT }}>
+                      {/* Cellule gauche — sticky. Plus de border-r visible (seam supprimé) :
+                          la barre d'en-tête est continue jusque dans la timeline. */}
                       <div
-                        className="sticky left-0 z-20 shrink-0 bg-background border-r border-b border-border flex items-center gap-2.5 pl-4 pr-3 overflow-hidden cursor-pointer hover:bg-elevated/50 transition-colors"
-                        style={{ width: leftColWidth, height: ROW_HEIGHT, borderLeft: `6px solid ${grpColor}` }}
+                        className="sticky left-0 z-20 shrink-0 bg-background border-b border-border flex items-center gap-2 pl-4 pr-2 overflow-hidden cursor-pointer"
+                        style={{ width: leftColWidth, height: '100%', borderLeft: `6px solid ${grpColor}` }}
                         onClick={() => toggleGroup(groupKey)}
                         title={isCollapsed ? 'Déplier le chantier' : 'Replier le chantier'}
                       >
-                        {/* LOT 27I — teinte d'en-tête renforcée (lignes de tâches restent très légères) */}
-                        <div className="absolute inset-0 pointer-events-none z-[-1]" style={{ background: hexToRgba(grpColor, 0.14) }} />
+                        <div className="absolute inset-0 pointer-events-none z-[-1]" style={{ background: headerTint }} />
                         {isCollapsed
                           ? <ChevronRightSm className="h-4 w-4 shrink-0 text-muted-foreground" />
                           : <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground" />}
-                        {/* LOT 27I — casse normale (l'uppercase nuisait à la lecture des noms
-                            longs), poids fort conservé, jusqu'à 2 lignes + tooltip complet */}
                         <span
-                          className="text-[13px] font-800 text-foreground line-clamp-2 leading-tight min-w-0 flex-1"
+                          className="text-[13px] font-800 text-foreground truncate min-w-0 flex-1"
                           title={row.project?.name ?? 'Chantier'}
                         >
                           {row.project?.name ?? 'Chantier'}
                         </span>
-                        {/* LOT 27J — colonne gauche : nom chantier + chevron uniquement.
-                            La progression (X/Y) est retirée d'ici pour éliminer la
-                            redondance avec la pilule « X/Y terminées » de la timeline
-                            (seule information de progression conservée, source unique). */}
                         {canFocus && (
                           <button
                             onClick={e => { e.stopPropagation(); setFilterProject(filterProject === groupKey ? 'all' : groupKey) }}
@@ -1508,43 +1546,51 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
                           </button>
                         )}
                       </div>
-                      <div className="relative border-b border-border" style={{ width: totalDays * dayW, height: ROW_HEIGHT, background: hexToRgba(grpColor, 0.11) }}>
+                      {/* Cellule timeline — même base opaque + même teinte que la gauche
+                          → continuité parfaite (barre unique). */}
+                      <div className="relative bg-background border-b border-border flex items-center" style={{ width: totalDays * dayW, height: '100%' }}>
+                        <div className="absolute inset-0 pointer-events-none z-[-1]" style={{ background: headerTint }} />
                         {monthSegments.map((seg, idx) => (
                           <div key={idx} className="absolute inset-y-0 pointer-events-none" style={{ left: seg.left, width: seg.width }}>
                             {seg.isOdd && <div className="absolute inset-0 bg-foreground/[0.02]" />}
-                            {idx > 0 && <div className="absolute top-0 bottom-0 -left-px w-0.5 bg-border/60" />}
+                            {idx > 0 && <div className="absolute top-0 bottom-0 -left-px w-0.5 bg-border/40" />}
                           </div>
                         ))}
-                        {weekStarts.map(left => (
-                          <div key={`w-${left}`} className="absolute top-0 bottom-0 w-px bg-border/20 pointer-events-none" style={{ left }} />
-                        ))}
-                        {/* LOT 27K — alignement corrigé : même mécanisme de centrage que la
-                            colonne gauche (flex + align-items:center sur toute la hauteur
-                            de la ligne, height inchangée), au lieu de l'ancien
-                            absolute/top-50%/translateY qui produisait un axe optique
-                            légèrement différent (sensible au line-height + au py-px
-                            asymétrique de la pilule). leading-none uniformisé sur tous
-                            les segments pour éliminer toute variation de line-height. */}
-                        <div className="absolute inset-0 flex items-center gap-1 pl-3 pointer-events-none max-w-full overflow-hidden">
-                          <span className="shrink-0 whitespace-nowrap leading-none text-[11px] font-700 text-foreground/85 bg-background/60 px-1.5 py-1 rounded-md">
+                        {/* Métadonnées — même axe vertical (flex items-center sur toute la
+                            hauteur), collées au début de la timeline pour rester proches du
+                            nom. Badge « N alertes » cliquable (pointer-events-auto). */}
+                        <div className="relative z-[1] flex items-center gap-1 pl-3 min-w-0 overflow-hidden">
+                          <span className="shrink-0 whitespace-nowrap leading-none text-[11px] font-700 text-foreground/90 bg-foreground/[0.06] px-1.5 py-1 rounded-md">
                             {row.doneCount}/{row.taskCount} terminée{row.taskCount > 1 ? 's' : ''}
                           </span>
-                          <span className="shrink-0 leading-none text-[11px] text-muted-foreground/40">·</span>
-                          <span className="shrink-0 whitespace-nowrap leading-none text-[11px] font-600 text-muted-foreground">
+                          <span className="shrink-0 leading-none text-[11px] text-muted-foreground/40 hidden md:inline">·</span>
+                          <span className="shrink-0 whitespace-nowrap leading-none text-[11px] font-600 text-muted-foreground hidden md:inline">
                             {row.taskCount} tâche{row.taskCount > 1 ? 's' : ''}
                           </span>
-                          <span className="shrink-0 leading-none text-[11px] text-muted-foreground/40">·</span>
-                          <span className="whitespace-nowrap leading-none text-[11px] font-600 text-muted-foreground truncate">
+                          <span className="shrink-0 leading-none text-[11px] text-muted-foreground/40 hidden lg:inline">·</span>
+                          <span className="whitespace-nowrap leading-none text-[11px] font-600 text-muted-foreground truncate hidden lg:inline" title={periodLabel}>
                             {periodLabel}
                           </span>
                           {row.alertCount > 0 && (
-                            <>
-                              <span className="shrink-0 leading-none text-[11px] text-muted-foreground/40">·</span>
-                              <span className="shrink-0 whitespace-nowrap leading-none text-[11px] font-700 text-orange-600 dark:text-orange-400 flex items-center gap-1">
-                                <AlertTriangle className="h-3 w-3" />
-                                {row.alertCount} alerte{row.alertCount > 1 ? 's' : ''}
-                              </span>
-                            </>
+                            <button
+                              type="button"
+                              onClick={e => {
+                                e.stopPropagation()
+                                const r = e.currentTarget.getBoundingClientRect()
+                                const vw = typeof window !== 'undefined' ? window.innerWidth : 1280
+                                setAlertsPopover({
+                                  groupKey,
+                                  name: row.project?.name ?? 'Chantier',
+                                  x: Math.max(8, Math.min(r.left, vw - 340)),
+                                  y: r.bottom + 6,
+                                })
+                              }}
+                              className="shrink-0 ml-0.5 whitespace-nowrap leading-none text-[11px] font-700 text-orange-600 dark:text-orange-400 flex items-center gap-1 px-1.5 py-1 rounded-md hover:bg-orange-500/15 bg-orange-500/[0.08] transition-colors"
+                              title="Voir les alertes de ce chantier"
+                            >
+                              <AlertTriangle className="h-3 w-3" />
+                              {row.alertCount} alerte{row.alertCount > 1 ? 's' : ''}
+                            </button>
                           )}
                         </div>
                       </div>
@@ -2205,6 +2251,70 @@ export function GanttView({ tasks, projects, artisans = [], teams = [], undatedT
         filterMatches={filterMatches}
         onHistoryPush={historyPush}
       />
+
+      {/* ── LOT 27L — Popover « alertes du chantier » ──────────────────────────
+          Reste dans le planning (aucune navigation). « Voir la tâche » ouvre le
+          même TaskSidePanel que partout ailleurs. */}
+      {alertsPopover && (() => {
+        const grpTasks = groupTasksByKey.get(alertsPopover.groupKey) ?? []
+        const alerts = computeGroupAlerts(grpTasks)
+        return (
+          <>
+            <div className="fixed inset-0 z-[9040]" onClick={() => setAlertsPopover(null)} />
+            <div
+              className="fixed z-[9050] w-80 max-w-[calc(100vw-16px)] bg-surface border border-border rounded-xl shadow-2xl overflow-hidden flex flex-col"
+              style={{ left: alertsPopover.x, top: alertsPopover.y, maxHeight: 'min(60vh, 420px)' }}
+            >
+              <div className="shrink-0 flex items-center gap-2 px-3.5 py-2.5 border-b border-border bg-surface">
+                <AlertTriangle className="h-3.5 w-3.5 text-orange-500 shrink-0" />
+                <span className="text-[12px] font-700 text-foreground truncate flex-1" title={alertsPopover.name}>
+                  Alertes · {alertsPopover.name}
+                </span>
+                <button
+                  onClick={() => setAlertsPopover(null)}
+                  className="shrink-0 p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-elevated transition-colors"
+                  title="Fermer"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              </div>
+              <div className="overflow-y-auto p-2 flex flex-col gap-1.5">
+                {alerts.length === 0 ? (
+                  <p className="text-[12px] text-muted-foreground px-2 py-3 text-center">Aucune alerte.</p>
+                ) : alerts.map(a => (
+                  <div key={a.task.id} className="rounded-lg border border-border/60 bg-background px-2.5 py-2 flex flex-col gap-1.5">
+                    <div className="flex items-start gap-2">
+                      <span className="text-[12px] font-600 text-foreground leading-snug flex-1 min-w-0">{a.taskTitle}</span>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-1">
+                      {a.labels.map(l => (
+                        <span key={l} className={cn(
+                          'text-[9.5px] font-700 px-1.5 py-0.5 rounded-md whitespace-nowrap',
+                          l === 'En retard' ? 'bg-red-500/15 text-red-600 dark:text-red-400'
+                            : l === 'Bloquée' ? 'bg-orange-500/15 text-orange-600 dark:text-orange-400'
+                            : 'bg-yellow-500/15 text-yellow-600 dark:text-yellow-500',
+                        )}>{l}</span>
+                      ))}
+                      {a.assigneeName && (
+                        <span className="text-[10px] text-muted-foreground truncate">· {a.assigneeName}</span>
+                      )}
+                      {a.endDate && (
+                        <span className="text-[10px] text-muted-foreground whitespace-nowrap">· {formatDate(a.endDate)}</span>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => { handleTaskClick(a.task); setAlertsPopover(null) }}
+                      className="self-start text-[11px] font-600 text-primary hover:underline"
+                    >
+                      Voir la tâche →
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
+        )
+      })()}
 
       {/* ── Custom tooltip ── */}
       {/* Tooltip — must stay BELOW the TaskSidePanel (z-[9001]) so it can't bleed
