@@ -8,6 +8,9 @@ import {
   ArrowRight, Shield, Building2, X,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { CompactKpiCard } from '@/components/ui/CompactKpiCard'
+import { PageSection } from '@/components/ui/PageSection'
+import { EmptyState } from '@/components/ui/EmptyState'
 import { NouveauRapportButton } from './NouveauRapportButton'
 import { cn, formatDate } from '@/lib/utils'
 
@@ -125,38 +128,6 @@ const TYPE_LABEL: Record<string, string> = {
   custom: 'Ponctuel',
 }
 
-// ── KPI Tile ──────────────────────────────────────────────────────────────────
-
-function KpiTile({
-  value, label, icon: Icon, sub, accent = false,
-}: {
-  value: React.ReactNode
-  label: string
-  icon: React.ElementType
-  sub?: string | null
-  accent?: boolean
-}) {
-  return (
-    <div className="bg-surface rounded-xl border border-border/40 dark:border-white/[0.08] px-4 py-4 flex items-center gap-3 min-h-[80px] shadow-[0_1px_4px_rgba(0,0,0,0.05)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.4)]">
-      <div className={cn(
-        'w-9 h-9 rounded-xl flex items-center justify-center shrink-0',
-        accent ? 'bg-red-500/12 text-red-500' : 'bg-primary/10 text-primary',
-      )}>
-        <Icon className="h-4 w-4" />
-      </div>
-      <div className="min-w-0 flex-1">
-        <p className="text-[20px] font-800 text-foreground leading-none tabular-nums">{value}</p>
-        <p className="text-[11px] text-muted-foreground mt-1 leading-snug">{label}</p>
-        {sub && (
-          <p className={cn('text-[10px] mt-0.5 truncate', accent ? 'text-red-500/80' : 'text-muted-foreground/55')}>
-            {sub}
-          </p>
-        )}
-      </div>
-    </div>
-  )
-}
-
 // ── Alert Row ─────────────────────────────────────────────────────────────────
 
 function AlertRow({ alert, compact = false }: { alert: AlertEntry; compact?: boolean }) {
@@ -225,7 +196,7 @@ export function RapportsClient({ orgId, userId, projects, alerts, kpis, reports 
         }
         return 0
       })
-      .slice(0, 5),
+      .slice(0, 3),
     [alerts]
   )
 
@@ -260,54 +231,67 @@ export function RapportsClient({ orgId, userId, projects, alerts, kpis, reports 
 
   const allClear = alerts.length === 0
 
+  const scrollToAllAlerts = () => {
+    document.getElementById('toutes-alertes')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
   return (
-    <div className="px-6 lg:px-10 py-6 flex flex-col gap-6">
+    <div className="px-4 sm:px-6 lg:px-10 py-6 flex flex-col gap-6">
 
       {/* ── KPI bar ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-        <KpiTile
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <CompactKpiCard
           icon={AlertOctagon}
           value={kpis.criticalCount}
           label="Alertes critiques"
-          sub={kpis.criticalCount > 0 ? 'Réserves critiques + blocages' : 'Aucune alerte critique'}
+          tone="red"
           accent={kpis.criticalCount > 0}
+          sub={kpis.criticalCount > 0 ? 'Réserves critiques + blocages' : 'Aucune alerte critique'}
         />
-        <KpiTile
+        <CompactKpiCard
           icon={Flag}
           value={kpis.openIssuesCount}
           label="Réserves ouvertes"
-          sub={kpis.openIssuesCount > 0 ? 'Non clôturées' : 'Tout est traité'}
+          tone="orange"
           accent={kpis.openIssuesCount > 0}
+          sub={kpis.openIssuesCount > 0 ? 'Non clôturées' : 'Tout est traité'}
         />
-        <KpiTile
+        <CompactKpiCard
           icon={Clock}
           value={kpis.lateTasksCount}
           label="Tâches en retard"
+          tone="orange"
+          accent={kpis.lateTasksCount > 0}
           sub={kpis.lateTasksCount > 0 ? 'Échéance dépassée' : 'Aucun retard'}
         />
-        <KpiTile
+        <CompactKpiCard
           icon={Building2}
           value={kpis.atRiskCount}
           label="Chantiers à risque"
+          tone="red"
+          accent={kpis.atRiskCount > 0}
           sub={kpis.atRiskCount > 0
             ? `Sur ${projects.length} chantier${projects.length > 1 ? 's' : ''}`
             : 'Tous les chantiers sont OK'}
         />
       </div>
 
-      {/* ── À traiter en priorité ── */}
-      <section className="bg-surface rounded-2xl border border-border/40 dark:border-white/[0.08] overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.4)]">
-        <div className="px-5 py-3 border-b border-border/25 dark:border-white/[0.06] flex items-center gap-2.5">
-          <AlertOctagon className="h-3.5 w-3.5 text-red-500 shrink-0" />
-          <h2 className="text-[11px] font-800 uppercase tracking-widest text-muted-foreground flex-1">
-            À traiter en priorité
-          </h2>
-          {priorityItems.length > 0 && (
-            <span className="min-w-[20px] h-5 rounded-full bg-red-500/12 text-red-600 dark:text-red-400 text-[10px] font-700 flex items-center justify-center px-1.5 border border-red-500/20">
-              {priorityItems.length}
-            </span>
-          )}
-        </div>
+      {/* ── À traiter en priorité (3 max + accès à toutes les alertes) ── */}
+      <PageSection
+        title="À traiter en priorité"
+        icon={AlertOctagon}
+        iconClassName="text-red-500"
+        count={priorityItems.length}
+        countTone="red"
+        action={alerts.length > priorityItems.length ? (
+          <button
+            onClick={scrollToAllAlerts}
+            className="flex items-center gap-0.5 text-[11px] font-600 text-primary hover:text-primary/80 transition-colors whitespace-nowrap"
+          >
+            Voir toutes les alertes <ArrowRight className="h-3 w-3" />
+          </button>
+        ) : undefined}
+      >
         {allClear || priorityItems.length === 0 ? (
           <div className="px-5 py-10 flex flex-col items-center gap-2.5 text-center">
             <div className="w-11 h-11 rounded-2xl bg-green-500/10 flex items-center justify-center">
@@ -323,10 +307,10 @@ export function RapportsClient({ orgId, userId, projects, alerts, kpis, reports 
             ))}
           </div>
         )}
-      </section>
+      </PageSection>
 
       {/* ── Alertes filtrables ── */}
-      <section className="bg-surface rounded-2xl border border-border/40 dark:border-white/[0.08] overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.4)]">
+      <section id="toutes-alertes" className="dashboard-tile bg-surface rounded-2xl border border-border/50 dark:border-white/[0.08] overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.4)] scroll-mt-4">
         {/* Header + filtres */}
         <div className="px-5 pt-4 pb-3 border-b border-border/25 dark:border-white/[0.06] flex flex-col gap-3">
           <div className="flex items-center gap-2.5">
@@ -467,14 +451,7 @@ export function RapportsClient({ orgId, userId, projects, alerts, kpis, reports 
 
         {/* Reports history */}
         {reports.length > 0 && (
-          <div className="bg-surface rounded-2xl border border-border/40 dark:border-white/[0.08] overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.4)]">
-            <div className="px-5 py-3 border-b border-border/25 dark:border-white/[0.06] flex items-center gap-2.5">
-              <FileText className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-              <h3 className="text-[11px] font-800 uppercase tracking-widest text-muted-foreground flex-1">
-                Historique des rapports
-              </h3>
-              <span className="text-[10px] text-muted-foreground/40">{reports.length}</span>
-            </div>
+          <PageSection title="Historique des rapports" icon={FileText} count={reports.length} countTone="muted">
             <div className="divide-y divide-border/20 dark:divide-white/[0.04]">
               {reports.slice(0, 10).map(r => (
                 <Link
@@ -510,13 +487,17 @@ export function RapportsClient({ orgId, userId, projects, alerts, kpis, reports 
                 </Link>
               ))}
             </div>
-          </div>
+          </PageSection>
         )}
 
         {reports.length === 0 && (
-          <div className="flex flex-col items-center gap-2 py-8 text-center border border-dashed border-border/40 rounded-2xl">
-            <BarChart3 className="h-8 w-8 text-muted-foreground/20" />
-            <p className="text-[12px] text-muted-foreground/50 italic">Aucun rapport généré pour l'instant</p>
+          <div className="border border-dashed border-border/40 rounded-2xl">
+            <EmptyState
+              icon={BarChart3}
+              title="Aucun rapport généré"
+              description="Générez un rapport global ou par chantier pour le retrouver ici."
+              size="sm"
+            />
           </div>
         )}
       </section>
