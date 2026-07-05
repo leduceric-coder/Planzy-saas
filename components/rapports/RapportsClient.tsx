@@ -130,7 +130,8 @@ const TYPE_LABEL: Record<string, string> = {
 
 // ── Alert Row ─────────────────────────────────────────────────────────────────
 
-function AlertRow({ alert, compact = false }: { alert: AlertEntry; compact?: boolean }) {
+// Ligne d'alerte lisible (liste « Toutes les alertes ») — hauteur ~56-64px.
+function AlertRow({ alert }: { alert: AlertEntry }) {
   const cfg = KIND_CONFIG[alert.kind]
   const Icon = cfg.Icon
 
@@ -138,40 +139,87 @@ function AlertRow({ alert, compact = false }: { alert: AlertEntry; compact?: boo
     <Link
       href={`/chantiers/${alert.projectId}`}
       className={cn(
-        'group flex items-start gap-3 border-l-[3px] px-4 rounded-r-xl bg-surface',
+        'group flex items-center gap-3.5 border-l-[3px] pl-4 pr-4 py-3 rounded-r-xl bg-surface',
         'hover:bg-elevated/40 transition-colors',
         'border border-border/30 dark:border-white/[0.06]',
         cfg.border,
-        compact ? 'py-2.5' : 'py-3',
       )}
     >
-      <div className={cn('w-6 h-6 rounded-lg flex items-center justify-center shrink-0 mt-0.5', cfg.iconBg)}>
-        <Icon className={cn('h-3 w-3', cfg.iconCls)} />
+      <div className={cn('w-8 h-8 rounded-lg flex items-center justify-center shrink-0', cfg.iconBg)}>
+        <Icon className={cn('h-4 w-4', cfg.iconCls)} />
       </div>
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2 mb-0.5 flex-wrap">
           <span className={cn(
-            'inline-flex items-center text-[9.5px] font-700 px-1.5 py-0.5 rounded-full border',
+            'inline-flex items-center text-[10px] font-700 px-2 py-0.5 rounded-full border',
             cfg.pill,
           )}>
             {cfg.label}
           </span>
           {alert.projectName && (
-            <span className="text-[11px] text-muted-foreground/60 truncate max-w-[140px]">
+            <span className="text-[12px] text-muted-foreground/65 truncate max-w-[160px]">
               {alert.projectName}
             </span>
           )}
+          {alert.kind === 'late_task' && alert.daysLate != null && alert.daysLate > 0 && (
+            <span className="text-[11px] text-amber-600/80 dark:text-amber-400/80 font-600">
+              · {alert.daysLate}j de retard
+            </span>
+          )}
         </div>
-        <p className="text-[13px] font-600 text-foreground truncate leading-snug">{alert.title}</p>
-        {alert.kind === 'late_task' && alert.daysLate != null && alert.daysLate > 0 && (
-          <p className="text-[10.5px] text-amber-600/70 dark:text-amber-400/70 mt-0.5">
-            {alert.daysLate}j de retard
-          </p>
+        <p className="text-[14px] font-600 text-foreground truncate leading-snug">{alert.title}</p>
+      </div>
+      <span className="shrink-0 flex items-center gap-1 text-[12px] font-600 text-muted-foreground/55 group-hover:text-primary transition-colors whitespace-nowrap">
+        {cfg.cta} <ArrowRight className="h-3 w-3" />
+      </span>
+    </Link>
+  )
+}
+
+// Carte d'alerte prioritaire riche (grille 3 colonnes) — hauteur ~92px.
+function PriorityAlertCard({ alert }: { alert: AlertEntry }) {
+  const cfg = KIND_CONFIG[alert.kind]
+  const Icon = cfg.Icon
+
+  return (
+    <Link
+      href={`/chantiers/${alert.projectId}`}
+      className={cn(
+        'group flex flex-col gap-2 border-l-[3px] p-4 rounded-r-xl bg-surface min-h-[92px]',
+        'hover:bg-elevated/40 transition-colors',
+        'border border-border/30 dark:border-white/[0.06]',
+        cfg.border,
+      )}
+    >
+      <div className="flex items-center gap-2 flex-wrap">
+        <span className={cn(
+          'inline-flex items-center gap-1 text-[10px] font-700 px-2 py-0.5 rounded-full border',
+          cfg.pill,
+        )}>
+          <Icon className={cn('h-3 w-3', cfg.iconCls)} />
+          {cfg.label}
+        </span>
+        {alert.projectName && (
+          <span className="text-[12px] text-muted-foreground/65 truncate max-w-[150px]">
+            {alert.projectName}
+          </span>
         )}
       </div>
-      <span className="shrink-0 flex items-center gap-0.5 text-[11px] font-600 text-muted-foreground/50 group-hover:text-primary transition-colors mt-1 whitespace-nowrap">
-        {cfg.cta} <ArrowRight className="h-2.5 w-2.5" />
-      </span>
+
+      <p className="text-[14px] font-700 text-foreground leading-snug line-clamp-2 flex-1">
+        {alert.title}
+      </p>
+
+      <div className="flex items-center justify-between gap-2 pt-0.5">
+        <span className="text-[11.5px] text-muted-foreground/70 truncate">
+          {alert.kind === 'late_task' && alert.daysLate != null && alert.daysLate > 0
+            ? `${alert.daysLate}j de retard`
+            : cfg.label}
+        </span>
+        <span className="shrink-0 flex items-center gap-1 text-[12px] font-600 text-primary/70 group-hover:text-primary group-hover:gap-1.5 transition-all whitespace-nowrap">
+          {cfg.cta} <ArrowRight className="h-3 w-3" />
+        </span>
+      </div>
     </Link>
   )
 }
@@ -236,10 +284,10 @@ export function RapportsClient({ orgId, userId, projects, alerts, kpis, reports 
   }
 
   return (
-    <div className="px-4 sm:px-6 lg:px-10 py-6 flex flex-col gap-6">
+    <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-10 py-6 flex flex-col gap-7">
 
       {/* ── KPI bar ── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <CompactKpiCard
           icon={AlertOctagon}
           value={kpis.criticalCount}
@@ -301,9 +349,9 @@ export function RapportsClient({ orgId, userId, projects, alerts, kpis, reports 
             <p className="text-[12px] text-muted-foreground/55">Aucune alerte prioritaire détectée.</p>
           </div>
         ) : (
-          <div className="p-4 flex flex-col gap-2">
+          <div className="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {priorityItems.map(alert => (
-              <AlertRow key={alert.id} alert={alert} />
+              <PriorityAlertCard key={alert.id} alert={alert} />
             ))}
           </div>
         )}
@@ -353,13 +401,13 @@ export function RapportsClient({ orgId, userId, projects, alerts, kpis, reports 
 
           {/* Search + project select */}
           <div className="flex items-center gap-2 flex-wrap">
-            <div className="relative flex-1 min-w-[180px]">
+            <div className="relative flex-1 min-w-[180px] max-w-[320px]">
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
               <input
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Rechercher une alerte…"
-                className="w-full pl-8 pr-8 h-8 rounded-lg bg-elevated border border-border/40 dark:border-white/[0.08] text-[12px] placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/30 text-foreground"
+                className="w-full pl-8 pr-8 h-9 rounded-lg bg-elevated border border-border/40 dark:border-white/[0.08] text-[13px] placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/30 text-foreground"
               />
               {search && (
                 <button onClick={() => setSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2">
@@ -371,7 +419,7 @@ export function RapportsClient({ orgId, userId, projects, alerts, kpis, reports 
               <select
                 value={filterProjectId ?? ''}
                 onChange={e => setFilterProjectId(e.target.value || null)}
-                className="h-8 px-2.5 rounded-lg bg-elevated border border-border/40 dark:border-white/[0.08] text-[12px] text-foreground focus:outline-none focus:ring-1 focus:ring-primary/30"
+                className="h-9 px-2.5 rounded-lg bg-elevated border border-border/40 dark:border-white/[0.08] text-[13px] text-foreground focus:outline-none focus:ring-1 focus:ring-primary/30"
               >
                 <option value="">Tous les chantiers</option>
                 {projects.map(p => (
@@ -391,12 +439,12 @@ export function RapportsClient({ orgId, userId, projects, alerts, kpis, reports 
         ) : (
           <div className="p-4 flex flex-col gap-2">
             {visibleAlerts.map(alert => (
-              <AlertRow key={alert.id} alert={alert} compact />
+              <AlertRow key={alert.id} alert={alert} />
             ))}
             {!showAllAlerts && filteredAlerts.length > 15 && (
               <button
                 onClick={() => setShowAllAlerts(true)}
-                className="mt-1 flex items-center justify-center gap-1 text-[11px] font-600 text-primary hover:text-primary/80 transition-colors py-2"
+                className="mt-1 flex items-center justify-center gap-1 text-[12px] font-600 text-primary hover:text-primary/80 transition-colors py-2"
               >
                 Voir {filteredAlerts.length - 15} alertes supplémentaires
                 <ChevronRight className="h-3 w-3" />
@@ -408,44 +456,44 @@ export function RapportsClient({ orgId, userId, projects, alerts, kpis, reports 
 
       {/* ── Rapports disponibles ── */}
       <section className="flex flex-col gap-3">
-        <h2 className="text-[10px] font-800 uppercase tracking-widest text-muted-foreground">
+        <h2 className="text-[11px] font-800 uppercase tracking-widest text-muted-foreground">
           Rapports disponibles
         </h2>
 
-        {/* Action cards */}
+        {/* Cartes d'action compactes : icône + titre + description + action à droite */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {/* Rapport global */}
-          <div className="bg-surface border border-border/40 dark:border-white/[0.08] rounded-2xl p-5 flex flex-col gap-4 dashboard-tile">
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                <Globe className="h-5 w-5 text-primary" />
-              </div>
-              <div className="min-w-0">
-                <h3 className="font-700 text-foreground text-sm">Rapport global</h3>
-                <p className="text-xs text-muted-foreground mt-0.5 leading-snug">
-                  Vision multi-chantiers, KPI et activité récente
-                </p>
-              </div>
+          <div className="bg-surface border border-border/50 dark:border-white/[0.08] rounded-2xl p-4 flex items-center gap-3.5 dashboard-tile">
+            <div className="w-11 h-11 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
+              <Globe className="h-5 w-5 text-primary" />
             </div>
-            <Link href="/rapports/global" className="block">
-              <Button size="sm" className="w-full">Ouvrir le rapport global</Button>
+            <div className="min-w-0 flex-1">
+              <h3 className="font-700 text-foreground text-[14px]">Rapport global</h3>
+              <p className="text-[12px] text-muted-foreground mt-0.5 leading-snug">
+                Vision multi-chantiers, KPI et activité récente
+              </p>
+            </div>
+            <Link href="/rapports/global" className="shrink-0">
+              <Button size="sm" variant="outline">
+                Ouvrir <ArrowRight className="h-3.5 w-3.5" />
+              </Button>
             </Link>
           </div>
 
           {/* Rapport chantier */}
-          <div className="bg-surface border border-border/40 dark:border-white/[0.08] rounded-2xl p-5 flex flex-col gap-4 dashboard-tile">
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                <BarChart3 className="h-5 w-5 text-primary" />
-              </div>
-              <div className="min-w-0">
-                <h3 className="font-700 text-foreground text-sm">Rapport chantier</h3>
-                <p className="text-xs text-muted-foreground mt-0.5 leading-snug">
-                  Rapport détaillé par chantier et par période
-                </p>
-              </div>
+          <div className="bg-surface border border-border/50 dark:border-white/[0.08] rounded-2xl p-4 flex items-center gap-3.5 dashboard-tile">
+            <div className="w-11 h-11 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
+              <BarChart3 className="h-5 w-5 text-primary" />
             </div>
-            <NouveauRapportButton orgId={orgId} userId={userId} projects={projects} />
+            <div className="min-w-0 flex-1">
+              <h3 className="font-700 text-foreground text-[14px]">Rapport chantier</h3>
+              <p className="text-[12px] text-muted-foreground mt-0.5 leading-snug">
+                Rapport détaillé par chantier et par période
+              </p>
+            </div>
+            <div className="shrink-0">
+              <NouveauRapportButton orgId={orgId} userId={userId} projects={projects} />
+            </div>
           </div>
         </div>
 
@@ -457,32 +505,32 @@ export function RapportsClient({ orgId, userId, projects, alerts, kpis, reports 
                 <Link
                   key={r.id}
                   href={`/rapports/${r.id}`}
-                  className="group flex items-center gap-3.5 px-5 py-3 hover:bg-elevated/40 transition-colors"
+                  className="group flex items-center gap-3.5 px-5 py-3.5 hover:bg-elevated/40 transition-colors"
                 >
-                  <div className="w-8 h-8 rounded-lg bg-primary/8 flex items-center justify-center shrink-0">
-                    <FileText className="h-3.5 w-3.5 text-primary" />
+                  <div className="w-9 h-9 rounded-xl bg-primary/8 flex items-center justify-center shrink-0">
+                    <FileText className="h-4 w-4 text-primary" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-[13px] font-600 text-foreground truncate">{r.title ?? 'Rapport'}</p>
+                    <p className="text-[14px] font-600 text-foreground truncate">{r.title ?? 'Rapport'}</p>
                     <div className="flex items-center gap-2.5 mt-0.5">
                       {r.project?.name && (
-                        <span className="flex items-center gap-1 text-[10.5px] text-muted-foreground/60 truncate">
+                        <span className="flex items-center gap-1 text-[11.5px] text-muted-foreground/65 truncate">
                           <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: r.project.color }} />
                           {r.project.name}
                         </span>
                       )}
-                      <span className="text-[10.5px] text-muted-foreground/40">
+                      <span className="text-[11.5px] text-muted-foreground/45">
                         {formatDate(r.created_at)}
                       </span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 shrink-0">
+                  <div className="flex items-center gap-2.5 shrink-0">
                     {r.type && (
-                      <span className="text-[10px] font-600 px-2 py-0.5 rounded-lg bg-elevated border border-border/30 text-muted-foreground">
+                      <span className="text-[11px] font-600 px-2.5 py-1 rounded-lg bg-elevated border border-border/40 text-muted-foreground">
                         {TYPE_LABEL[r.type] ?? r.type}
                       </span>
                     )}
-                    <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/40 group-hover:text-foreground transition-colors" />
+                    <ChevronRight className="h-4 w-4 text-muted-foreground/40 group-hover:text-foreground transition-colors" />
                   </div>
                 </Link>
               ))}
