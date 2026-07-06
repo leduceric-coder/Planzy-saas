@@ -15,6 +15,8 @@ import { useToast } from '@/components/ui/toast-context'
 import { Progress } from '@/components/ui/progress'
 import { Button } from '@/components/ui/button'
 import { TaskSidePanel, type TaskUpdatePatch } from '@/components/planning/TaskSidePanel'
+import { CompactKpiCard } from '@/components/ui/CompactKpiCard'
+import { EmptyState } from '@/components/ui/EmptyState'
 import { NouvelleTacheModal } from '@/components/chantiers/NouvelleTacheModal'
 import { EditTacheModal } from '@/components/chantiers/EditTacheModal'
 import { EditChantierModal } from '@/components/chantiers/EditChantierModal'
@@ -391,7 +393,7 @@ export function ChantierDetail({
             />
           )}
           {activeTab === 'planning' && (
-            <div className="p-5 lg:p-8">
+            <div className="mx-auto w-full max-w-[1440px] p-5 lg:p-8">
               <WeekByDay tasks={weekTasks} today={today} />
             </div>
           )}
@@ -519,17 +521,17 @@ function OverviewTab({
     .slice(0, 6)
 
   return (
-    <div className="p-5 lg:p-8 flex flex-col gap-5">
+    <div className="mx-auto w-full max-w-[1440px] p-5 lg:p-8 flex flex-col gap-6">
       {/* KPI row */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <KpiTile label="Tâches ouvertes" value={kpiOpen} icon={CheckSquare} color="blue" />
-        <KpiTile label="En retard"        value={kpiLate}     icon={Clock}       color={kpiLate > 0 ? 'red' : 'blue'}    alert={kpiLate > 0} />
-        <KpiTile label="Réserves ouvertes" value={kpiIssues}  icon={Flag}        color={kpiIssues > 0 ? 'orange' : 'blue'} alert={kpiIssues > 0} />
-        <KpiTile label="Prochaine échéance" value={nextDeadlineValue} icon={Calendar} color="blue" small />
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <CompactKpiCard label="Tâches ouvertes" value={kpiOpen} icon={CheckSquare} tone="blue" />
+        <CompactKpiCard label="En retard" value={kpiLate} icon={Clock} tone="red" accent={kpiLate > 0} />
+        <CompactKpiCard label="Réserves ouvertes" value={kpiIssues} icon={Flag} tone="orange" accent={kpiIssues > 0} />
+        <CompactKpiCard label="Prochaine échéance" value={nextDeadlineValue} icon={Calendar} tone="blue" />
       </div>
 
       {/* Main 2-column layout */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         {/* À traiter — 2/3 */}
         <div className="xl:col-span-2">
           <DashTile
@@ -609,9 +611,7 @@ function OverviewTab({
         <div className="xl:col-span-1">
           <DashTile title="Activité récente">
             {logs.length === 0 ? (
-              <div className="flex items-center justify-center py-8">
-                <p className="text-[12px] text-muted-foreground">Aucune activité</p>
-              </div>
+              <EmptyState icon={Clock} title="Aucune activité" size="sm" />
             ) : (
               <div className="px-2 py-2">
                 {logs.slice(0, 8).map(log => {
@@ -632,13 +632,13 @@ function OverviewTab({
                         {getInitials(name)}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-[11.5px] text-foreground leading-snug">
+                        <p className="text-[12px] text-foreground leading-snug">
                           <span className="font-600">{name}</span>
                           {' '}<span className="text-muted-foreground">{actionLabel[log.action] ?? log.action}</span>
                           {' '}<span className="text-muted-foreground">{entityLabel[log.entity_type] ?? log.entity_type}</span>
                           {meta?.name && <span className="font-500 text-foreground"> «{meta.name}»</span>}
                         </p>
-                        <p className="text-[10px] text-muted-foreground/50 mt-0.5">{formatRelative(log.created_at)}</p>
+                        <p className="text-[11px] text-muted-foreground/55 mt-0.5">{formatRelative(log.created_at)}</p>
                       </div>
                     </div>
                   )
@@ -674,7 +674,7 @@ function OverviewTab({
               return (
                 <div
                   key={task.id}
-                  className="flex items-center gap-3 px-5 py-3 hover:bg-elevated/35 transition-colors cursor-pointer group/row"
+                  className="flex items-center gap-3 px-5 py-3.5 hover:bg-elevated/35 transition-colors cursor-pointer group/row"
                   onClick={() => onTaskClick(task)}
                 >
                   <div className={cn(
@@ -683,7 +683,7 @@ function OverviewTab({
                     task.status === 'blocked'     ? 'bg-red-500' :
                     late                          ? 'bg-amber-500' : 'bg-slate-300 dark:bg-slate-600',
                   )} />
-                  <p className="flex-1 text-[12.5px] font-500 text-foreground truncate">{task.title}</p>
+                  <p className="flex-1 text-[13px] font-500 text-foreground truncate">{task.title}</p>
                   {task.assignee && (
                     <div className="w-5 h-5 rounded-full text-[9px] font-700 text-white flex items-center justify-center shrink-0" style={{ background: task.assignee.color }}>
                       {(task.assignee.full_name ?? '?')[0]}
@@ -715,7 +715,7 @@ function EquipesTab({ projectTeams, team, tasks, artisans }: {
   artisans: { id: string; full_name: string | null; trade: string | null; color: string | null }[]
 }) {
   return (
-    <div className="p-5 lg:p-8 flex flex-col gap-5">
+    <div className="mx-auto w-full max-w-[1440px] p-5 lg:p-8 flex flex-col gap-6">
       {/* Équipes affectées */}
       {projectTeams.length > 0 && (
         <DashTile title="Équipes affectées" badge={projectTeams.length}>
@@ -827,7 +827,7 @@ function PhotoCard({ photo }: { photo: Photo & { taken_by_profile?: any } }) {
 
 function PhotosTab({ photos, documents }: { photos: (Photo & { taken_by_profile?: any })[]; documents: Document[] }) {
   return (
-    <div className="p-5 lg:p-8 flex flex-col gap-5">
+    <div className="mx-auto w-full max-w-[1440px] p-5 lg:p-8 flex flex-col gap-6">
       {/* Photos */}
       <DashTile
         title="Photos"
@@ -1167,7 +1167,7 @@ function ReservesTab({
   const closed = issues.filter(i => i.status === 'fixed' || i.status === 'validated' || i.status === 'rejected')
 
   return (
-    <div className="p-5 lg:p-8 flex flex-col gap-5">
+    <div className="mx-auto w-full max-w-[1440px] p-5 lg:p-8 flex flex-col gap-6">
       <DashTile
         title="Réserves ouvertes"
         badge={open.length || undefined}
@@ -1312,42 +1312,6 @@ function DashTile({
         {action && <div>{action}</div>}
       </div>
       {children}
-    </div>
-  )
-}
-
-function KpiTile({
-  label, value, icon: Icon, color, alert = false, small = false,
-}: {
-  label: string
-  value: number | string
-  icon: React.ElementType
-  color: 'blue' | 'orange' | 'red' | 'green'
-  alert?: boolean
-  small?: boolean
-}) {
-  const palette = {
-    blue:   { bubble: 'bg-primary/10 text-primary',         num: 'text-primary' },
-    orange: { bubble: 'bg-orange-500/10 text-orange-500',   num: 'text-orange-500' },
-    red:    { bubble: 'bg-red-500/10 text-red-500',         num: 'text-red-500' },
-    green:  { bubble: 'bg-green-500/10 text-green-500',     num: 'text-green-500' },
-  }
-  const col = palette[color]
-  return (
-    <div className="dashboard-tile bg-surface rounded-2xl border border-border/50 dark:border-white/[0.08] shadow-[0_2px_8px_rgba(0,0,0,0.06)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.5)] flex items-center gap-3 px-5 py-4">
-      <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center shrink-0', col.bubble)}>
-        <Icon className="h-4.5 w-4.5" />
-      </div>
-      <div className="min-w-0">
-        <p className={cn(
-          'font-extrabold tabular-nums leading-none tracking-tight',
-          small ? 'text-lg' : 'text-2xl',
-          alert ? col.num : 'text-foreground',
-        )}>
-          {value}
-        </p>
-        <p className="text-[11px] text-muted-foreground leading-tight mt-0.5 truncate">{label}</p>
-      </div>
     </div>
   )
 }
