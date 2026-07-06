@@ -258,8 +258,8 @@ export default async function DashboardPage() {
     <div className="flex flex-col h-full overflow-hidden">
 
       {/* ── Header ── */}
-      <div className="shrink-0 px-6 lg:px-10 pt-6 pb-4 border-b border-border/20 dark:border-white/[0.05]">
-        <div className="flex flex-wrap items-center gap-4 justify-between">
+      <div className="shrink-0 px-4 sm:px-6 lg:px-10 pt-6 pb-4 border-b border-border/20 dark:border-white/[0.05]">
+        <div className="mx-auto w-full max-w-[1440px] flex flex-wrap items-center gap-4 justify-between">
 
           {/* Greeting */}
           <div className="shrink-0">
@@ -299,7 +299,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* ── Scrollable content ── */}
-      <div className="flex-1 overflow-y-auto px-6 lg:px-10 py-5">
+      <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-10 py-6">
         {isEmpty ? (
           /* ── Empty / Onboarding ── */
           <div className="flex flex-col items-center justify-center py-20 gap-8">
@@ -320,7 +320,7 @@ export default async function DashboardPage() {
             </div>
           </div>
         ) : (
-          <div className="flex flex-col gap-5">
+          <div className="mx-auto w-full max-w-[1440px] flex flex-col gap-6">
 
             {/* ── Ligne 1 : Planning (2/3) + À traiter (1/3) ── */}
             <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-5 items-stretch">
