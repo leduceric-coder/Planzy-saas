@@ -1,13 +1,19 @@
 # LOT 30 — Checklist de recette dynamique (manuelle, 20–30 min)
 
-> À exécuter sur la **Preview** :
+> À exécuter sur la **Preview** (SHA **`8d185ef`**, sans l'endpoint debug) :
 > `https://kanvix-saas-git-claude-kanvix-lo-76d15a-erics-projects-8e37d8e4.vercel.app`
 > Navigateur à **zoom 100 %** (puis 125 % / 150 % pour les lignes concernées).
+> Reporter les résultats dans `final-qa-results.md`.
 >
-> ⚠️ **Base probablement partagée avec la production** (cf. `production-cutover.md`,
-> GO n°2). → **Créer/utiliser une organisation de TEST dédiée**. Ne PAS modifier ni
-> supprimer les données réelles (17 projets / 102 tâches existants). Privilégier
-> lecture + créations dans l'org de test.
+> ✅ **Faits confirmés (LOT 31/32)** : Production **et** Preview utilisent la **même
+> base** `qmuowzsfxsuqythghmtx` (cookie `sb-qmuo…-auth-token` côté prod ;
+> `qmuo….supabase.co` côté Preview). Les 9 migrations y sont déjà présentes →
+> **aucune migration à rejouer** ; bascule **code-only**.
+>
+> ⚠️ **Base PARTAGÉE Production/Preview** → **utiliser exclusivement un compte de
+> test + une organisation dédiée**, préfixer chaque donnée créée par **`[QA]`**, ne
+> **jamais** modifier / archiver / supprimer les données réelles (17 projets /
+> 102 tâches). Ne nettoyer que les objets `[QA]` créés.
 
 Recommandation méthode : **Option 2 (recette manuelle guidée)** ici et maintenant.
 Playwright (Option 1) seulement si une **base de staging isolée** est créée
