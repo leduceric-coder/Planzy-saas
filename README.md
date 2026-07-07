@@ -65,7 +65,23 @@ planzy-saas/
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
    - `SUPABASE_SERVICE_ROLE_KEY`
    - `NEXT_PUBLIC_SITE_URL` (votre URL Vercel)
+   - `RESEND_API_KEY` (clé Resend — serveur uniquement, jamais exposée côté client)
+   - `PLANZY_EMAIL_FROM` (ex: `Planzy <onboarding@resend.dev>` pour les tests)
 4. Déployer
+
+## Emails transactionnels (invitations)
+
+L'envoi d'email lors des invitations d'équipe est géré par [Resend](https://resend.com) via la route `POST /api/invitations/send`.
+
+**État actuel :** l'envoi Resend est techniquement validé (message ID confirmé, tracking DB complet). L'envoi vers des destinataires externes nécessitera un domaine vérifié lorsque la marque finale sera décidée.
+
+**En attendant :** `PLANZY_EMAIL_FROM=Planzy <onboarding@resend.dev>` est utilisé pour les tests. Resend autorise uniquement l'envoi vers l'adresse du compte propriétaire de la clé API. Le fallback "copier le lien" reste toujours disponible dans l'UI pour les autres destinataires.
+
+**Pour passer en production multi-destinataires :**
+1. Aller sur resend.com → Domains → Add Domain → votre domaine
+2. Ajouter les enregistrements DNS (TXT/MX) chez le registrar
+3. Mettre à jour `PLANZY_EMAIL_FROM=NomMarque <invitations@votre-domaine.fr>`
+4. Redéployer
 
 ## Fonctionnalités
 

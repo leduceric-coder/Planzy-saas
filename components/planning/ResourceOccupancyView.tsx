@@ -1,6 +1,11 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+// ─── LOT 26B — Vue ressources / occupation des artisans ─────────────────────────
+// Adaptée à l'architecture du ZIP : aucune server-action, aucune TaskFormModal.
+// L'édition réutilise le TaskSidePanel existant du planning (parcours identique
+// au Gantt), conformément à la décision §3 du LOT 27B.
+
+import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { addWeeks, format } from 'date-fns'
 import { fr } from 'date-fns/locale'
@@ -15,19 +20,30 @@ import {
   type OccupancyTask,
   type WeekOccupancy,
 } from '@/lib/occupancy'
-import { TaskFormModal, type ProjectOption, type ArtisanOption, type TeamOption } from '@/components/tasks/TaskFormModal'
-import type { TaskWithRelations } from '@/lib/actions/tasks'
-import type { GanttTask } from './GanttView'
+import { TaskSidePanel, type TaskUpdatePatch } from '@/components/planning/TaskSidePanel'
+import type { Task } from '@/lib/types'
 
 const WEEKS_VISIBLE = 6
 const WEEK_COL_WIDTH = 130
 const ROW_H = 64
 
+// Types alignés sur le fetch du planning riche du ZIP.
+export type PlanningTask = Task & {
+  assignee?: { id: string; full_name: string; color: string } | null
+  assigned_team?: string | null
+  team?: { id: string; name: string; color: string } | null
+  project?: { id: string; name: string; color: string } | null
+}
+
+export interface OccProjectOption { id: string; name: string; color: string }
+export interface OccArtisanOption { id: string; full_name: string; trade: string; color: string }
+export interface OccTeamOption { id: string; name: string; color: string | null; type: string | null; memberCount: number }
+
 interface Props {
-  tasks: GanttTask[]
-  projects: ProjectOption[]
-  artisans: ArtisanOption[]
-  teams: TeamOption[]
+  tasks: PlanningTask[]
+  projects: OccProjectOption[]
+  artisans: OccArtisanOption[]
+  teams: OccTeamOption[]
 }
 
 interface SelectedCell {
@@ -38,33 +54,33 @@ interface SelectedCell {
   weekOcc: WeekOccupancy
 }
 
-function toOccupancyTask(t: GanttTask): OccupancyTask {
+function toOccupancyTask(t: PlanningTask): OccupancyTask {
   return { id: t.id, title: t.title, start_date: t.start_date, end_date: t.end_date, project: t.project ?? null }
 }
 
 export function ResourceOccupancyView({ tasks, projects, artisans, teams }: Props) {
   const router = useRouter()
-  const [localTasks, setLocalTasks] = useState<GanttTask[]>(tasks)
+  const [localTasks, setLocalTasks] = useState<PlanningTask[]>(tasks)
   const [windowIndex, setWindowIndex] = useState(0)
   const [filterProject, setFilterProject] = useState('all')
   const [filterArtisan, setFilterArtisan] = useState('all')
   const [filterTrade, setFilterTrade] = useState('all')
   const [selectedCell, setSelectedCell] = useState<SelectedCell | null>(null)
-  const [editingTaskId, setEditingTaskId] = useState<string | null>(null)
+  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null)
 
-  function upsertLocalTask(updated: TaskWithRelations) {
-    setLocalTasks(prev => {
-      const exists = prev.some(t => t.id === updated.id)
-      const merged = { ...updated } as GanttTask
-      return exists ? prev.map(t => (t.id === updated.id ? merged : t)) : [...prev, merged]
-    })
-    setEditingTaskId(null)
+  // Resynchronise avec les données serveur après un router.refresh().
+  useEffect(() => { setLocalTasks(tasks) }, [tasks])
+
+  // Fusionne un patch de TaskSidePanel dans la liste locale pour recalculer
+  // l'occupation sans attendre le refresh serveur.
+  function handleTaskUpdated(taskId: string, patch: TaskUpdatePatch) {
+    setLocalTasks(prev => prev.map(t => (t.id === taskId ? { ...t, ...patch } as PlanningTask : t)))
     router.refresh()
   }
 
   const weeks = useMemo(() => getWeekStarts(addWeeks(new Date(), windowIndex * WEEKS_VISIBLE), WEEKS_VISIBLE), [windowIndex])
 
-  const trades = useMemo(() => [...new Set(artisans.map(a => a.trade))].sort(), [artisans])
+  const trades = useMemo(() => [...new Set(artisans.map(a => a.trade).filter(Boolean))].sort(), [artisans])
 
   const assignableTasks = useMemo(
     () =>
@@ -118,15 +134,12 @@ export function ResourceOccupancyView({ tasks, projects, artisans, teams }: Prop
     return alerts
   }, [visibleArtisans, assignableTasks])
 
-  function findTask(taskId: string): GanttTask | undefined {
-    return localTasks.find(t => t.id === taskId)
+  const selectedTask = selectedTaskId ? localTasks.find(t => t.id === selectedTaskId) ?? null : null
+
+  function openTask(taskId: string) {
+    setSelectedTaskId(taskId)
   }
 
-  function openEditForTask(taskId: string) {
-    setEditingTaskId(taskId)
-  }
-
-  const editingTask = editingTaskId ? findTask(editingTaskId) : undefined
   const todayWeek = weeks[0]
   const todayWeekOcc = new Map<string, WeekOccupancy>()
   visibleArtisans.forEach(a => {
@@ -227,7 +240,7 @@ export function ResourceOccupancyView({ tasks, projects, artisans, teams }: Prop
               </div>
               {teams.map(team => (
                 <div key={team.id} style={{ height: ROW_H }} className="flex items-center gap-2.5 px-4 border-b border-border shrink-0">
-                  <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: team.color }} />
+                  <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: team.color ?? '#94a3b8' }} />
                   <p className="text-sm font-600 text-foreground truncate">{team.name}</p>
                 </div>
               ))}
@@ -271,7 +284,7 @@ export function ResourceOccupancyView({ tasks, projects, artisans, teams }: Prop
                       <button
                         key={occ.weekStart}
                         style={{ width: WEEK_COL_WIDTH, flexShrink: 0 }}
-                        onClick={() => setSelectedCell({ kind: 'team', id: team.id, name: team.name, color: team.color, weekOcc: occ })}
+                        onClick={() => setSelectedCell({ kind: 'team', id: team.id, name: team.name, color: team.color ?? '#94a3b8', weekOcc: occ })}
                         className={cn('h-full flex flex-col items-center justify-center gap-0.5 border-r border-border transition-opacity hover:opacity-80', occupancyLevelColor(occ.level))}
                       >
                         <span className="text-sm font-700">{occ.rate}%</span>
@@ -314,7 +327,7 @@ export function ResourceOccupancyView({ tasks, projects, artisans, teams }: Prop
               )}
               <div className="flex flex-col gap-1.5">
                 {occ.tasks.map(t => (
-                  <button key={t.id} onClick={() => openEditForTask(t.id)} className="text-left text-xs text-foreground bg-elevated rounded-lg px-2.5 py-1.5 hover:bg-elevated/70 transition-colors">
+                  <button key={t.id} onClick={() => openTask(t.id)} className="text-left text-xs text-foreground bg-elevated rounded-lg px-2.5 py-1.5 hover:bg-elevated/70 transition-colors">
                     <span className="font-600">{t.title}</span> · {t.project?.name ?? 'Chantier'}
                   </button>
                 ))}
@@ -348,7 +361,7 @@ export function ResourceOccupancyView({ tasks, projects, artisans, teams }: Prop
             {selectedCell.weekOcc.tasks.map(t => (
               <button
                 key={t.id}
-                onClick={() => openEditForTask(t.id)}
+                onClick={() => openTask(t.id)}
                 className="flex items-center justify-between gap-3 bg-background border border-border rounded-lg px-3 py-2 text-left hover:border-primary/50 transition-colors"
               >
                 <div className="min-w-0">
@@ -365,18 +378,16 @@ export function ResourceOccupancyView({ tasks, projects, artisans, teams }: Prop
         </div>
       )}
 
-      {editingTask && (
-        <TaskFormModal
-          key={editingTask.id}
-          mode="edit"
-          task={editingTask as TaskWithRelations}
-          projects={projects}
-          artisans={artisans}
-          teams={teams}
-          onClose={() => setEditingTaskId(null)}
-          onSaved={upsertLocalTask}
-        />
-      )}
+      {/* Édition — réutilise le TaskSidePanel existant du planning (décision §3) */}
+      <TaskSidePanel
+        task={selectedTask}
+        artisans={artisans}
+        teams={teams}
+        availableTasks={localTasks}
+        onClose={() => setSelectedTaskId(null)}
+        onTaskUpdated={handleTaskUpdated}
+        onDependenciesChanged={() => router.refresh()}
+      />
     </div>
   )
 }

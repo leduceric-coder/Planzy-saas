@@ -1,0 +1,7 @@
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Kanvix mark">
+  <rect x="8" y="8" width="240" height="240" rx="44" fill="#0F1B2D" stroke="#1E293B" stroke-width="4"/>
+  
+  <rect x="54" y="48" width="28" height="160" rx="7" fill="#FFFFFF"/>
+  <path d="M88 128 L178 52" stroke="#2563FF" stroke-width="28" stroke-linecap="round"/>
+  <path d="M88 134 L178 206" stroke="#FFFFFF" stroke-width="28" stroke-linecap="round"/>
+</svg>

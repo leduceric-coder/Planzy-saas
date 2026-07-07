@@ -1,115 +1,217 @@
 import { createClient } from '@/lib/supabase/server'
 import { Header } from '@/components/layout/Header'
-import { BarChart3, TrendingUp, Clock, CheckCircle } from 'lucide-react'
-import { formatDate } from '@/lib/utils'
+import { Globe } from 'lucide-react'
+import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { Plus } from 'lucide-react'
+import { RapportsClient } from '@/components/rapports/RapportsClient'
+import { PrintButton } from '@/components/rapports/PrintButton'
+import type { AlertEntry } from '@/components/rapports/RapportsClient'
+
+type ReportRow = {
+  id: string
+  title: string | null
+  type: string | null
+  created_at: string | null
+  project: { name: string | null; color: string } | null
+  author: { full_name: string | null } | null
+}
+
+type RawTask = {
+  id: string
+  title: string
+  project_id: string
+  end_date: string | null
+  project: { name: string; color: string } | null
+}
+
+type RawIssue = {
+  id: string
+  title: string
+  project_id: string
+  priority: string | null
+  project: { name: string; color: string } | null
+}
 
 export default async function RapportsPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return null
 
-  const { data: profile } = await supabase.from('profiles').select('org_id').eq('id', user.id).single()
+  const { data: profileData } = await supabase
+    .from('profiles')
+    .select('org_id')
+    .eq('id', user.id)
+    .single()
+  const orgId = (profileData as { org_id: string | null } | null)?.org_id
 
-  const [{ data: reports }, { data: projects }] = await Promise.all([
-    supabase.from('reports').select('*, project:projects(name,color), author:profiles!generated_by(full_name)')
-      .eq('org_id', profile?.org_id ?? '').order('created_at', { ascending: false }),
-    supabase.from('projects').select('id, name, progress, status, start_date, end_date')
-      .eq('org_id', profile?.org_id ?? '').eq('status', 'active'),
+  if (!orgId) {
+    return (
+      <div className="p-6">
+        <p className="text-sm text-red-500">Impossible de charger votre organisation.</p>
+      </div>
+    )
+  }
+
+  const today = new Date()
+  const todayStr = today.toISOString().split('T')[0]
+
+  // ── Projects ────────────────────────────────────────────────────────────────
+
+  const { data: projectsData } = await supabase
+    .from('projects')
+    .select('id, name, color')
+    .eq('org_id', orgId)
+    .in('status', ['active', 'paused'])
+    .order('name')
+
+  const projects = (projectsData ?? []) as { id: string; name: string; color: string }[]
+  const projectIds = projects.map(p => p.id)
+
+  // ── Parallel data fetches ────────────────────────────────────────────────────
+
+  const [lateRes, blockedRes, issuesRes, reportsRes] = await Promise.all([
+    projectIds.length > 0
+      ? supabase
+          .from('tasks')
+          .select('id, title, project_id, end_date, project:projects(name,color)')
+          .in('project_id', projectIds)
+          .lt('end_date', todayStr)
+          .not('status', 'in', '(done,validated,archived)')
+          .order('end_date', { ascending: true })
+          .limit(50)
+      : Promise.resolve({ data: [] }),
+    projectIds.length > 0
+      ? supabase
+          .from('tasks')
+          .select('id, title, project_id, end_date, project:projects(name,color)')
+          .in('project_id', projectIds)
+          .eq('status', 'blocked')
+          .limit(50)
+      : Promise.resolve({ data: [] }),
+    projectIds.length > 0
+      ? supabase
+          .from('issues')
+          .select('id, title, project_id, priority, project:projects(name,color)')
+          .in('project_id', projectIds)
+          .not('status', 'in', '(fixed,validated,rejected)')
+          .limit(60)
+      : Promise.resolve({ data: [] }),
+    supabase
+      .from('reports')
+      .select('*, project:projects(name,color), author:profiles!generated_by(full_name)')
+      .eq('org_id', orgId)
+      .order('created_at', { ascending: false })
+      .limit(20),
   ])
+
+  const lateTasks   = (lateRes.data    ?? []) as RawTask[]
+  const blockedTasks = (blockedRes.data ?? []) as RawTask[]
+  const issues      = (issuesRes.data   ?? []) as RawIssue[]
+  const reports     = (reportsRes.data  ?? []) as ReportRow[]
+
+  // ── Derived data ──────────────────────────────────────────────────────────
+
+  const criticalIssues = issues.filter(i => i.priority === 'critical')
+  const highIssues     = issues.filter(i => i.priority === 'high')
+
+  // KPIs
+  const criticalCount    = criticalIssues.length + blockedTasks.length
+  const openIssuesCount  = issues.length
+  const lateTasksCount   = lateTasks.length
+  const atRiskProjectIds = new Set<string>([
+    ...criticalIssues.map(i => i.project_id),
+    ...blockedTasks.map(t => t.project_id),
+    ...lateTasks.map(t => t.project_id),
+  ])
+  const atRiskCount = atRiskProjectIds.size
+
+  // ── Build alert entries ────────────────────────────────────────────────────
+
+  const alertEntries: AlertEntry[] = []
+
+  for (const issue of criticalIssues) {
+    alertEntries.push({
+      id: `issue-critical-${issue.id}`,
+      kind: 'critical_issue',
+      title: issue.title,
+      projectName: issue.project?.name ?? null,
+      projectColor: issue.project?.color ?? null,
+      projectId: issue.project_id,
+      date: null,
+      daysLate: null,
+    })
+  }
+
+  for (const task of blockedTasks) {
+    alertEntries.push({
+      id: `blocked-${task.id}`,
+      kind: 'blocked_task',
+      title: task.title,
+      projectName: task.project?.name ?? null,
+      projectColor: task.project?.color ?? null,
+      projectId: task.project_id,
+      date: task.end_date,
+      daysLate: null,
+    })
+  }
+
+  for (const task of lateTasks) {
+    const daysLate = task.end_date
+      ? Math.ceil((today.getTime() - new Date(task.end_date).getTime()) / 86400000)
+      : null
+    alertEntries.push({
+      id: `late-${task.id}`,
+      kind: 'late_task',
+      title: task.title,
+      projectName: task.project?.name ?? null,
+      projectColor: task.project?.color ?? null,
+      projectId: task.project_id,
+      date: task.end_date,
+      daysLate,
+    })
+  }
+
+  for (const issue of highIssues) {
+    alertEntries.push({
+      id: `issue-high-${issue.id}`,
+      kind: 'high_issue',
+      title: issue.title,
+      projectName: issue.project?.name ?? null,
+      projectColor: issue.project?.color ?? null,
+      projectId: issue.project_id,
+      date: null,
+      daysLate: null,
+    })
+  }
+
+  // ── Render ────────────────────────────────────────────────────────────────
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
       <Header
-        title="Rapports"
-        subtitle={`${reports?.length ?? 0} rapports générés`}
-        actions={<Button size="sm"><Plus className="h-4 w-4" />Générer un rapport</Button>}
-      />
-
-      <div className="flex-1 overflow-y-auto px-10 pb-10 flex flex-col gap-8">
-        {/* Portfolio overview */}
-        <section>
-          <h2 className="text-xs font-700 uppercase tracking-wider text-muted-foreground mb-4">Vue portfolio</h2>
-          <div className="grid grid-cols-3 gap-4">
-            {projects?.map((p: any) => {
-              const daysLeft = p.end_date
-                ? Math.ceil((new Date(p.end_date).getTime() - Date.now()) / 86400000)
-                : null
-
-              return (
-                <div key={p.id} className="bg-surface border border-border rounded-xl p-5 flex flex-col gap-4">
-                  <div className="flex items-start justify-between gap-2">
-                    <h3 className="font-600 text-foreground text-sm leading-snug">{p.name}</h3>
-                    {daysLeft !== null && (
-                      <span className={`text-xs font-600 shrink-0 px-2 py-1 rounded-lg ${daysLeft < 0 ? 'bg-destructive/15 text-destructive' : daysLeft < 14 ? 'bg-yellow-500/15 text-yellow-500' : 'bg-primary/15 text-primary'}`}>
-                        {daysLeft < 0 ? `${Math.abs(daysLeft)}j retard` : `${daysLeft}j`}
-                      </span>
-                    )}
-                  </div>
-                  <div>
-                    <div className="flex items-center justify-between text-xs text-muted-foreground mb-1.5">
-                      <span>Avancement</span>
-                      <span className="font-700 text-foreground">{p.progress}%</span>
-                    </div>
-                    <div className="h-2 bg-elevated rounded-full overflow-hidden">
-                      <div
-                        className="h-full rounded-full bg-primary transition-all"
-                        style={{ width: `${p.progress}%` }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              )
-            })}
+        title="Rapports & alertes"
+        subtitle="Suivez les dérives, réserves et rapports de vos chantiers."
+        actions={
+          <div className="flex items-center gap-2">
+            <Link href="/rapports/global">
+              <Button size="sm" variant="outline">
+                <Globe className="h-4 w-4" />
+                <span className="hidden sm:inline">Rapport global</span>
+              </Button>
+            </Link>
+            <PrintButton />
           </div>
-        </section>
-
-        {/* Reports list */}
-        <section>
-          <h2 className="text-xs font-700 uppercase tracking-wider text-muted-foreground mb-4">Historique des rapports</h2>
-          {reports && reports.length > 0 ? (
-            <div className="flex flex-col gap-3">
-              {reports.map((report: any) => (
-                <div key={report.id} className="bg-surface border border-border rounded-xl p-5 flex items-start justify-between gap-4 hover:border-border/60 transition-colors">
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                      <BarChart3 className="h-5 w-5 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-600 text-foreground mb-1">{report.title}</h3>
-                      <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                        {report.project && (
-                          <span
-                            className="flex items-center gap-1"
-                            style={{ color: report.project.color }}
-                          >
-                            <span className="w-1.5 h-1.5 rounded-full" style={{ background: report.project.color }} />
-                            {report.project.name}
-                          </span>
-                        )}
-                        <span>{formatDate(report.created_at)}</span>
-                        {report.author && <span>{report.author.full_name}</span>}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <span className="text-xs bg-elevated border border-border px-2.5 py-1 rounded-lg font-600 text-muted-foreground">
-                      {report.type === 'weekly' ? 'Hebdo' : report.type === 'monthly' ? 'Mensuel' : report.type}
-                    </span>
-                    <Button variant="outline" size="sm">Voir</Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12 text-muted-foreground border border-dashed border-border rounded-xl">
-              <BarChart3 className="h-12 w-12 mx-auto mb-3 opacity-20" />
-              <p className="text-sm mb-3">Aucun rapport généré</p>
-              <Button size="sm"><Plus className="h-4 w-4" />Générer le premier rapport</Button>
-            </div>
-          )}
-        </section>
+        }
+      />
+      <div className="flex-1 overflow-y-auto">
+        <RapportsClient
+          orgId={orgId}
+          userId={user.id}
+          projects={projects}
+          alerts={alertEntries}
+          kpis={{ criticalCount, openIssuesCount, lateTasksCount, atRiskCount }}
+          reports={reports}
+        />
       </div>
     </div>
   )

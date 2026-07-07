@@ -1,23 +1,28 @@
 # Dependencies
 node_modules/
+.pnp
+.pnp.js
 
-# Next.js
+# Next.js build output
 .next/
 out/
-next-env.d.ts
 
-# Production
-build/
-dist/
-
-# Env
+# Environment variables
 .env
-.env*.local
-
-# Misc
-.DS_Store
-*.tsbuildinfo
-npm-debug.log*
+.env.local
+.env.*.local
 
 # Vercel
 .vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
