@@ -7,6 +7,7 @@ import { X, Send, ExternalLink, MessageSquare, AlertTriangle, FileText, Camera }
 import { cn, formatRelative, getInitials, messageTypeLabel, messageTypeColor } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
 import { mutationClient } from '@/lib/supabase/mutate'
+import { isRecentIncoming } from '@/lib/messages-activity'
 import type { Message, MessageType } from '@/lib/types'
 
 interface Thread {
@@ -121,13 +122,25 @@ export function MessagesSideWindow({ isOpen, onClose, orgId, currentUserId }: Pr
     return [...byKey.values()]
   })()
 
-  const lastMsgOf = (c: Conversation) =>
-    messages.find(m =>
+  const msgsOf = (c: Conversation) =>
+    messages.filter(m =>
       (c.threadId && m.thread_id === c.threadId) || (c.projectId && m.project_id === c.projectId)
-    ) ?? null
+    )
+  const lastMsgOf = (c: Conversation) => msgsOf(c)[0] ?? null
 
-  // Tri : chantiers avec activité récente en tête, puis alphabétique.
+  // LOT 35 — activité ENTRANTE récente par conversation (hors messages émis par
+  // l'utilisateur), même définition que le badge Sidebar (source : messages-activity).
+  const incomingOf = (c: Conversation) => {
+    const list = msgsOf(c).filter(m => isRecentIncoming(m, currentUserId))
+    return { count: list.length, last: list[0] ?? null } // list déjà trié desc
+  }
+
+  // Tri : conversations avec entrant récent en tête (par date du dernier entrant),
+  // puis autres avec activité, puis chantiers sans message, puis alphabétique.
   const sortedConversations = [...conversations].sort((a, b) => {
+    const ia = incomingOf(a).last?.created_at ?? ''
+    const ib = incomingOf(b).last?.created_at ?? ''
+    if (ia || ib) { if (ia !== ib) return ia && ib ? ib.localeCompare(ia) : (ia ? -1 : 1) }
     const ta = lastMsgOf(a)?.created_at ?? ''
     const tb = lastMsgOf(b)?.created_at ?? ''
     if (ta && tb) return tb.localeCompare(ta)
@@ -261,7 +274,9 @@ export function MessagesSideWindow({ isOpen, onClose, orgId, currentUserId }: Pr
             )}
             {sortedConversations.map(c => {
               const lastMsg = lastMsgOf(c)
+              const incoming = incomingOf(c)
               const isActive = selectedConversation?.key === c.key
+              const author = (incoming.last?.sender as { full_name?: string | null } | null)?.full_name ?? 'Équipe'
               return (
                 <button
                   key={c.key}
@@ -271,17 +286,42 @@ export function MessagesSideWindow({ isOpen, onClose, orgId, currentUserId }: Pr
                     isActive ? 'bg-primary/8 border-l-[3px] border-l-primary pl-[9px]' : 'hover:bg-elevated',
                   )}
                 >
-                  <div
-                    className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs font-700 shrink-0"
-                    style={{ background: c.color }}
-                  >
-                    {getInitials(c.name)}
+                  <div className="relative shrink-0">
+                    <div
+                      className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs font-700"
+                      style={{ background: c.color }}
+                    >
+                      {getInitials(c.name)}
+                    </div>
+                    {/* Point d'activité entrante récente (jamais pour mes propres messages) */}
+                    {incoming.count > 0 && (
+                      <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-orange-500 border-2 border-surface" aria-hidden />
+                    )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-600 text-foreground truncate leading-snug">{c.name}</p>
-                    <p className="text-[10px] text-muted-foreground truncate mt-0.5 leading-tight">
-                      {lastMsg ? lastMsg.content : 'Aucun message'}
-                    </p>
+                    <div className="flex items-center gap-1.5">
+                      <p className="text-xs font-600 text-foreground truncate leading-snug flex-1">{c.name}</p>
+                      {incoming.count > 0 && (
+                        <span
+                          title={`${incoming.count} message${incoming.count > 1 ? 's' : ''} reçu${incoming.count > 1 ? 's' : ''} récemment`}
+                          className="shrink-0 min-w-[16px] h-4 rounded-full bg-orange-500/15 text-orange-600 dark:text-orange-400 text-[9px] font-700 flex items-center justify-center px-1 leading-none tabular-nums"
+                        >
+                          {incoming.count} récent{incoming.count > 1 ? 's' : ''}
+                        </span>
+                      )}
+                    </div>
+                    {incoming.count > 0 ? (
+                      <p className="text-[10px] text-muted-foreground truncate mt-0.5 leading-tight">
+                        <span className="font-600 text-foreground/80">{author}</span> : {incoming.last?.content}
+                        {incoming.last?.created_at && (
+                          <span className="text-muted-foreground/60"> · {formatRelative(incoming.last.created_at)}</span>
+                        )}
+                      </p>
+                    ) : (
+                      <p className="text-[10px] text-muted-foreground truncate mt-0.5 leading-tight">
+                        {lastMsg ? lastMsg.content : 'Aucun message'}
+                      </p>
+                    )}
                   </div>
                 </button>
               )

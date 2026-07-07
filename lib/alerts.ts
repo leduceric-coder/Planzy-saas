@@ -1,3 +1,5 @@
+import { RECENT_WINDOW_MS } from '@/lib/messages-activity'
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnySupabaseClient = { from: (table: string) => any }
 
@@ -22,7 +24,8 @@ export type AlertsSummary = {
 
 export async function getAlertsSummary(
   supabase: AnySupabaseClient,
-  orgId: string
+  orgId: string,
+  currentUserId?: string,
 ): Promise<AlertsSummary> {
   const empty: AlertsSummary = {
     tasksLate: 0,
@@ -44,7 +47,20 @@ export async function getAlertsSummary(
 
   const today = new Date().toISOString().split('T')[0]
   const in7Days = new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0]
-  const since48h = new Date(Date.now() - 48 * 3600000).toISOString()
+  const since48h = new Date(Date.now() - RECENT_WINDOW_MS).toISOString()
+
+  // LOT 35 — messages ENTRANTS récents : exclut l'utilisateur courant.
+  // sender_id NULL (système) = entrant → inclus. Filtrage org via projectIds/RLS.
+  let messagesQuery = supabase
+    .from('messages')
+    .select('id, content, project_id, created_at, project:projects(name), sender:profiles!sender_id(full_name)', { count: 'exact' })
+    .in('project_id', projectIds)
+    .gte('created_at', since48h)
+    .order('created_at', { ascending: false })
+    .limit(20)
+  if (currentUserId) {
+    messagesQuery = messagesQuery.or(`sender_id.is.null,sender_id.neq.${currentUserId}`)
+  }
 
   const [lateRes, blockedRes, issuesRes, messagesRes, deadlineRes] = await Promise.all([
     supabase
@@ -71,13 +87,7 @@ export async function getAlertsSummary(
       .in('priority', ['high', 'critical'])
       .limit(10),
 
-    supabase
-      .from('messages')
-      .select('id, content, project_id, project:projects(name)')
-      .in('project_id', projectIds)
-      .gte('created_at', since48h)
-      .order('created_at', { ascending: false })
-      .limit(5),
+    messagesQuery,
 
     supabase
       .from('tasks')
@@ -123,16 +133,19 @@ export async function getAlertsSummary(
       body: `${i.title}${i.project?.name ? ` — ${i.project.name}` : ''}`,
       link: `/chantiers/${i.project_id}`,
     })),
-    ...recentMessages.map((m: any) => {
-      // LOT 33 — Contextualiser l'alerte : nom du chantier + extrait, et lien
-      // profond vers la conversation du chantier concerné (/messages?project=…).
+    // LOT 35 — Une alerte par chantier (le dernier message entrant), pour éviter
+    // une avalanche. recentMessages est trié desc → le 1er vu par chantier est le
+    // plus récent. Messages sans project_id regroupés sous « Général ».
+    ...dedupeMessagesByProject(recentMessages).map((m: any) => {
       const projectName = m.project?.name as string | undefined
+      const author = (m.sender?.full_name as string | undefined) ?? 'Équipe'
       const excerpt = (m.content as string | null)?.slice(0, 60) ?? ''
+      const label = projectName ?? 'Général'
       return {
         id: `msg-${m.id}`,
         type: 'message' as AlertType,
-        title: projectName ? `Nouveau message — ${projectName}` : 'Nouveau message',
-        body: projectName && excerpt ? `${projectName} · ${excerpt}` : (projectName ?? excerpt),
+        title: `Nouveau message reçu — ${label}`,
+        body: excerpt ? `${author} : ${excerpt}` : author,
         link: m.project_id ? `/messages?project=${m.project_id}` : '/messages',
       }
     }),
@@ -147,12 +160,30 @@ export async function getAlertsSummary(
       })),
   ]
 
+  // Compteur exact des messages entrants récents (peut dépasser la limite de 20
+  // rapportée dans recentMessages) — c'est la valeur du badge « reçus récemment ».
+  const messagesRecent = (messagesRes as { count?: number | null }).count ?? recentMessages.length
+
   return {
     tasksLate: lateTasks.length,
     tasksBlocked: blockedTasks.length,
     issuesCritical: criticalIssues.length,
-    messagesRecent: recentMessages.length,
+    messagesRecent,
     total: items.length,
     items,
   }
+}
+
+// Une entrée par chantier (le 1er = le plus récent, la liste étant triée desc).
+// Les messages sans project_id sont regroupés sous la clé « general ».
+function dedupeMessagesByProject<T extends { project_id?: string | null }>(msgs: T[]): T[] {
+  const seen = new Set<string>()
+  const out: T[] = []
+  for (const m of msgs) {
+    const key = m.project_id ?? 'general'
+    if (seen.has(key)) continue
+    seen.add(key)
+    out.push(m)
+  }
+  return out
 }

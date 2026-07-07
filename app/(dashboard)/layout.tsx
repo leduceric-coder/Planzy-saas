@@ -27,7 +27,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
       .order('updated_at', { ascending: false })
       .limit(10),
     orgId
-      ? getAlertsSummary(supabase, orgId)
+      ? getAlertsSummary(supabase, orgId, user.id)
       : Promise.resolve({
           tasksLate: 0,
           tasksBlocked: 0,

@@ -7,6 +7,7 @@ import { createClient } from '@/lib/supabase/client'
 import { mutationClient } from '@/lib/supabase/mutate'
 import { NouvelleConversationModal } from './NouvelleConversationModal'
 import { ContextPanel } from './ContextPanel'
+import { isRecentIncoming } from '@/lib/messages-activity'
 import type { Message, Profile, MessageType, IssueStatus, TaskStatus } from '@/lib/types'
 
 // The 5 types shown in the desktop send bar (spec LOT 3)
@@ -255,12 +256,11 @@ export function MessagesView({
         <div className="flex-1 overflow-y-auto">
           {filteredConversations.map(({ c, last }) => {
             const isActive = selectedConversation?.key === c.key
-            // Sans modèle de « lu » en base : indicateur d'activité récente (48h,
-            // messages non émis par l'utilisateur) — même sémantique que le badge nav.
+            // LOT 35 — indicateur « reçu récemment » via la source de vérité partagée
+            // (messages-activity) : 48 h, hors messages émis par l'utilisateur.
             const recent = localMessages.filter(m =>
               ((c.threadId && m.thread_id === c.threadId) || (c.projectId && m.project_id === c.projectId)) &&
-              m.sender_id !== currentUserId &&
-              Date.now() - new Date(m.created_at).getTime() < 48 * 3600 * 1000
+              isRecentIncoming(m, currentUserId)
             ).length
 
             return (

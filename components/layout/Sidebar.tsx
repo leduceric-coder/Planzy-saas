@@ -389,15 +389,22 @@ export function Sidebar({ profile, onLogout, onThemeChange, theme, projects = []
 
               {/* --- Groupe communication --- */}
               <div className="relative" data-demo-target="sidebar-messages-button">
+                {/* LOT 35 — libellé honnête : messages REÇUS RÉCEMMENT (48 h,
+                    hors messages envoyés par l'utilisateur). Aucun « non lu ». */}
                 <SidebarIconBtn
                   onClick={onOpenMessages}
-                  tooltip={alerts.messagesRecent ? `Messages (${alerts.messagesRecent})` : 'Messages'}
+                  tooltip={alerts.messagesRecent
+                    ? `${alerts.messagesRecent} message${alerts.messagesRecent > 1 ? 's' : ''} reçu${alerts.messagesRecent > 1 ? 's' : ''} récemment`
+                    : 'Messages'}
                   active={pathname.startsWith('/messages')}
                 >
                   <MessageSquare className="h-4 w-4" />
                 </SidebarIconBtn>
                 {alerts.messagesRecent ? (
-                  <span className="pointer-events-none absolute top-0.5 right-2 w-[15px] h-[15px] rounded-full bg-destructive text-white text-[9px] font-700 flex items-center justify-center">
+                  <span
+                    aria-label={`${alerts.messagesRecent} message${alerts.messagesRecent > 1 ? 's' : ''} reçu${alerts.messagesRecent > 1 ? 's' : ''} récemment`}
+                    className="pointer-events-none absolute top-0.5 right-2 w-[15px] h-[15px] rounded-full bg-destructive text-white text-[9px] font-700 flex items-center justify-center"
+                  >
                     {alerts.messagesRecent > 9 ? '9+' : alerts.messagesRecent}
                   </span>
                 ) : null}
@@ -455,7 +462,11 @@ export function Sidebar({ profile, onLogout, onThemeChange, theme, projects = []
                   <MessageSquare className="h-4 w-4 shrink-0 opacity-70" />
                   <span className="font-500">Messages</span>
                   {alerts.messagesRecent ? (
-                    <span className="min-w-[18px] h-[18px] rounded-full bg-destructive text-white text-[10px] font-700 flex items-center justify-center px-1">
+                    <span
+                      aria-label={`${alerts.messagesRecent} message${alerts.messagesRecent > 1 ? 's' : ''} reçu${alerts.messagesRecent > 1 ? 's' : ''} récemment`}
+                      title={`${alerts.messagesRecent} message${alerts.messagesRecent > 1 ? 's' : ''} reçu${alerts.messagesRecent > 1 ? 's' : ''} récemment`}
+                      className="min-w-[18px] h-[18px] rounded-full bg-destructive text-white text-[10px] font-700 flex items-center justify-center px-1"
+                    >
                       {alerts.messagesRecent}
                     </span>
                   ) : null}
