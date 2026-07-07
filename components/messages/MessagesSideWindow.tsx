@@ -17,6 +17,22 @@ interface Thread {
   created_at: string
 }
 
+interface Project {
+  id: string
+  name: string
+  color: string
+  status?: string | null
+}
+
+// LOT 34 — une conversation = un chantier accessible (ou un thread direct).
+interface Conversation {
+  key: string
+  projectId: string | null
+  threadId: string | null
+  name: string
+  color: string
+}
+
 interface ContextStats {
   issues: number
   docs: number
@@ -39,8 +55,9 @@ interface Props {
 export function MessagesSideWindow({ isOpen, onClose, orgId, currentUserId }: Props) {
   const [mounted, setMounted] = useState(false)
   const [threads, setThreads] = useState<Thread[]>([])
+  const [projects, setProjects] = useState<Project[]>([])
   const [messages, setMessages] = useState<(Message & { sender?: { full_name: string | null } | null })[]>([])
-  const [selectedThreadId, setSelectedThreadId] = useState<string | null>(null)
+  const [selectedKey, setSelectedKey] = useState<string | null>(null)
   const [newMessage, setNewMessage] = useState('')
   const [messageType, setMessageType] = useState<MessageType>('text')
   const [sending, setSending] = useState(false)
@@ -50,12 +67,20 @@ export function MessagesSideWindow({ isOpen, onClose, orgId, currentUserId }: Pr
 
   useEffect(() => { setMounted(true) }, [])
 
-  // Load threads + messages each time the window opens
+  // Load projects + threads + messages each time the window opens.
+  // LOT 34 — La liste doit couvrir TOUS les chantiers accessibles (projects, non
+  // archivés), pas seulement ceux ayant déjà un thread. RLS filtre déjà par org.
   useEffect(() => {
     if (!isOpen) return
     setLoading(true)
     const supabase = createClient()
     Promise.all([
+      supabase
+        .from('projects')
+        .select('id, name, color, status')
+        .eq('org_id', orgId)
+        .neq('status', 'archived')
+        .order('name'),
       supabase
         .from('message_threads')
         .select('*, project:projects(id,name,color)')
@@ -67,18 +92,52 @@ export function MessagesSideWindow({ isOpen, onClose, orgId, currentUserId }: Pr
         .eq('org_id', orgId)
         .order('created_at', { ascending: false })
         .limit(100),
-    ]).then(([{ data: t }, { data: m }]) => {
-      const loadedThreads = (t ?? []) as unknown as Thread[]
-      setThreads(loadedThreads)
+    ]).then(([{ data: p }, { data: t }, { data: m }]) => {
+      setProjects((p ?? []) as unknown as Project[])
+      setThreads((t ?? []) as unknown as Thread[])
       setMessages((m ?? []) as unknown as (Message & { sender?: { full_name: string | null } | null })[])
-      setSelectedThreadId(prev => prev ?? (loadedThreads[0]?.id ?? null))
       setLoading(false)
     })
   }, [isOpen, orgId])
 
-  // Fetch context stats (counts only) when selected project changes
-  const selectedThread = threads.find(t => t.id === selectedThreadId) ?? null
-  const projectId = selectedThread?.project?.id ?? null
+  // Conversations = tous les chantiers accessibles (projects) ∪ threads directs.
+  const conversations: Conversation[] = (() => {
+    const byKey = new Map<string, Conversation>()
+    for (const p of projects) {
+      const thread = threads.find(t => t.project?.id === p.id) ?? null
+      byKey.set(`project:${p.id}`, {
+        key: `project:${p.id}`, projectId: p.id, threadId: thread?.id ?? null,
+        name: p.name, color: p.color,
+      })
+    }
+    for (const t of threads) {
+      const pid = t.project?.id ?? null
+      if (pid && byKey.has(`project:${pid}`)) continue
+      byKey.set(`thread:${t.id}`, {
+        key: `thread:${t.id}`, projectId: pid, threadId: t.id,
+        name: t.title ?? t.project?.name ?? 'Conversation', color: t.project?.color ?? '#2563EB',
+      })
+    }
+    return [...byKey.values()]
+  })()
+
+  const lastMsgOf = (c: Conversation) =>
+    messages.find(m =>
+      (c.threadId && m.thread_id === c.threadId) || (c.projectId && m.project_id === c.projectId)
+    ) ?? null
+
+  // Tri : chantiers avec activité récente en tête, puis alphabétique.
+  const sortedConversations = [...conversations].sort((a, b) => {
+    const ta = lastMsgOf(a)?.created_at ?? ''
+    const tb = lastMsgOf(b)?.created_at ?? ''
+    if (ta && tb) return tb.localeCompare(ta)
+    if (ta !== tb) return ta ? -1 : 1
+    return a.name.localeCompare(b.name)
+  })
+
+  const selectedConversation =
+    conversations.find(c => c.key === selectedKey) ?? sortedConversations[0] ?? null
+  const projectId = selectedConversation?.projectId ?? null
 
   useEffect(() => {
     if (!projectId) { setContextStats(null); return }
@@ -100,26 +159,31 @@ export function MessagesSideWindow({ isOpen, onClose, orgId, currentUserId }: Pr
     return () => document.removeEventListener('keydown', handler)
   }, [isOpen, onClose])
 
-  // Auto-scroll on thread change or new message
+  // Auto-scroll on conversation change or new message
   useEffect(() => {
     if (feedRef.current) feedRef.current.scrollTop = feedRef.current.scrollHeight
-  }, [selectedThreadId, messages.length])
+  }, [selectedKey, messages.length])
 
-  const threadMessages = messages.filter(m =>
-    selectedThread ? m.thread_id === selectedThread.id || m.project_id === selectedThread.project?.id : false
-  )
+  const threadMessages = selectedConversation
+    ? messages.filter(m =>
+        (selectedConversation.threadId && m.thread_id === selectedConversation.threadId) ||
+        (selectedConversation.projectId && m.project_id === selectedConversation.projectId)
+      )
+    : []
 
   const handleSend = async () => {
-    if (!newMessage.trim() || !selectedThread || sending) return
+    if (!newMessage.trim() || !selectedConversation || sending) return
     const content = newMessage.trim()
     setNewMessage('')
     setSending(true)
+    // Réutilise le chemin de mutation existant : message indexé par project_id,
+    // thread_id optionnel (un chantier sans thread reçoit son 1er message ainsi).
     const { data, error } = await mutationClient()
       .from('messages')
       .insert({
         org_id: orgId,
-        project_id: selectedThread.project?.id ?? null,
-        thread_id: selectedThread.id,
+        project_id: selectedConversation.projectId,
+        thread_id: selectedConversation.threadId,
         sender_id: currentUserId,
         content,
         type: messageType,
@@ -167,7 +231,7 @@ export function MessagesSideWindow({ isOpen, onClose, orgId, currentUserId }: Pr
           </div>
           <div className="flex items-center gap-2">
             <Link
-              href="/messages"
+              href={selectedConversation?.projectId ? `/messages?project=${selectedConversation.projectId}` : '/messages'}
               onClick={onClose}
               className="flex items-center gap-1 text-[11px] font-600 text-muted-foreground hover:text-primary transition-colors px-2 py-1 rounded-md hover:bg-elevated"
             >
@@ -192,18 +256,16 @@ export function MessagesSideWindow({ isOpen, onClose, orgId, currentUserId }: Pr
             {loading && (
               <div className="p-4 text-center text-xs text-muted-foreground">Chargement…</div>
             )}
-            {!loading && threads.length === 0 && (
-              <div className="p-4 text-center text-xs text-muted-foreground">Aucune conversation</div>
+            {!loading && sortedConversations.length === 0 && (
+              <div className="p-4 text-center text-xs text-muted-foreground">Aucun chantier</div>
             )}
-            {threads.map(thread => {
-              const lastMsg = messages.find(m =>
-                m.thread_id === thread.id || m.project_id === thread.project?.id
-              )
-              const isActive = selectedThreadId === thread.id
+            {sortedConversations.map(c => {
+              const lastMsg = lastMsgOf(c)
+              const isActive = selectedConversation?.key === c.key
               return (
                 <button
-                  key={thread.id}
-                  onClick={() => setSelectedThreadId(thread.id)}
+                  key={c.key}
+                  onClick={() => setSelectedKey(c.key)}
                   className={cn(
                     'w-full flex items-center gap-2.5 px-3 py-3 text-left border-b border-border/50 transition-colors',
                     isActive ? 'bg-primary/8 border-l-[3px] border-l-primary pl-[9px]' : 'hover:bg-elevated',
@@ -211,17 +273,15 @@ export function MessagesSideWindow({ isOpen, onClose, orgId, currentUserId }: Pr
                 >
                   <div
                     className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs font-700 shrink-0"
-                    style={{ background: thread.project?.color ?? '#2563EB' }}
+                    style={{ background: c.color }}
                   >
-                    {getInitials(thread.title ?? thread.project?.name ?? 'CH')}
+                    {getInitials(c.name)}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-600 text-foreground truncate leading-snug">
-                      {thread.title ?? thread.project?.name ?? 'Conversation'}
+                    <p className="text-xs font-600 text-foreground truncate leading-snug">{c.name}</p>
+                    <p className="text-[10px] text-muted-foreground truncate mt-0.5 leading-tight">
+                      {lastMsg ? lastMsg.content : 'Aucun message'}
                     </p>
-                    {lastMsg && (
-                      <p className="text-[10px] text-muted-foreground truncate mt-0.5 leading-tight">{lastMsg.content}</p>
-                    )}
                   </div>
                 </button>
               )
@@ -229,23 +289,23 @@ export function MessagesSideWindow({ isOpen, onClose, orgId, currentUserId }: Pr
           </div>
 
           {/* Conversation */}
-          {selectedThread ? (
+          {selectedConversation ? (
             <div className="flex-1 flex flex-col overflow-hidden min-w-0">
 
               {/* Conv header */}
               <div className="shrink-0 flex items-center gap-2.5 px-4 py-3 border-b border-border bg-surface">
                 <div
                   className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs font-700 shrink-0"
-                  style={{ background: selectedThread.project?.color ?? '#2563EB' }}
+                  style={{ background: selectedConversation.color }}
                 >
-                  {getInitials(selectedThread.title ?? selectedThread.project?.name ?? 'CH')}
+                  {getInitials(selectedConversation.name)}
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-700 text-foreground truncate">
-                    {selectedThread.title ?? selectedThread.project?.name ?? 'Conversation'}
+                    {selectedConversation.name}
                   </p>
                   <p className="text-[10px] text-muted-foreground">
-                    {selectedThread.type === 'project' ? 'Messagerie chantier' : 'Conversation directe'}
+                    {selectedConversation.projectId ? 'Messagerie chantier' : 'Conversation directe'}
                   </p>
                 </div>
               </div>
@@ -271,13 +331,15 @@ export function MessagesSideWindow({ isOpen, onClose, orgId, currentUserId }: Pr
                       {contextStats.photos} photo{contextStats.photos > 1 ? 's' : ''}
                     </span>
                   )}
-                  <Link
-                    href={`/chantiers/${selectedThread.project?.id}`}
-                    onClick={onClose}
-                    className="ml-auto text-[10px] text-primary hover:underline font-600"
-                  >
-                    Voir fiche →
-                  </Link>
+                  {selectedConversation.projectId && (
+                    <Link
+                      href={`/chantiers/${selectedConversation.projectId}`}
+                      onClick={onClose}
+                      className="ml-auto text-[10px] text-primary hover:underline font-600"
+                    >
+                      Voir fiche →
+                    </Link>
+                  )}
                 </div>
               )}
 
