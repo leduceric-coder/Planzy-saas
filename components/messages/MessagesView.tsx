@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import { Send, Plus, Search, MessageSquare } from 'lucide-react'
 import { cn, formatRelative, getInitials, messageTypeLabel, messageTypeColor } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
@@ -24,6 +24,15 @@ interface Thread {
   type: string
   project?: { id: string; name: string; color: string } | null
   created_at: string
+}
+
+// LOT 33 — une conversation = un chantier accessible (ou un thread direct).
+interface Conversation {
+  key: string
+  projectId: string | null
+  threadId: string | null
+  name: string
+  color: string
 }
 
 interface ContextTask { id: string; title: string; status: string; end_date: string | null; priority: string; project_id: string }
@@ -56,7 +65,7 @@ export function MessagesView({
   contextPhotos = [],
   contextIssues = [],
 }: Props) {
-  const [selectedThreadId, setSelectedThreadId] = useState<string | null>(threads[0]?.id ?? null)
+  const [selectedKey, setSelectedKey] = useState<string | null>(null)
   const [localMessages, setLocalMessages] = useState<(Message & { sender?: Profile | null })[]>(messages)
   const [newMessage, setNewMessage] = useState('')
   const [messageType, setMessageType] = useState<MessageType>('text')
@@ -66,18 +75,75 @@ export function MessagesView({
   const [showNewThread, setShowNewThread] = useState(false)
   const feedRef = useRef<HTMLDivElement>(null)
 
-  const selectedThread = threads.find(t => t.id === selectedThreadId) ?? null
-  const selectedProjectId = selectedThread?.project?.id ?? null
+  // LOT 33 — Liste sourcée depuis TOUS les chantiers accessibles (projects), pas
+  // seulement ceux ayant déjà un thread : un chantier sans message doit apparaître.
+  // Les threads sans chantier actif correspondant (directs / projets non actifs)
+  // sont conservés. Les messages restent indexés par project_id (thread optionnel).
+  const conversations = useMemo<Conversation[]>(() => {
+    const byKey = new Map<string, Conversation>()
+    for (const p of projects) {
+      const thread = threads.find(t => t.project?.id === p.id) ?? null
+      byKey.set(`project:${p.id}`, {
+        key: `project:${p.id}`, projectId: p.id, threadId: thread?.id ?? null,
+        name: p.name, color: p.color,
+      })
+    }
+    for (const t of threads) {
+      const pid = t.project?.id ?? null
+      if (pid && byKey.has(`project:${pid}`)) continue
+      byKey.set(`thread:${t.id}`, {
+        key: `thread:${t.id}`, projectId: pid, threadId: t.id,
+        name: t.title ?? t.project?.name ?? 'Conversation', color: t.project?.color ?? '#2563EB',
+      })
+    }
+    return [...byKey.values()]
+  }, [projects, threads])
 
-  const threadMessages = localMessages.filter(m =>
-    selectedThread ? m.thread_id === selectedThread.id || m.project_id === selectedThread.project?.id : false
+  const lastMsgOf = (c: Conversation) =>
+    localMessages.find(m =>
+      (c.threadId && m.thread_id === c.threadId) || (c.projectId && m.project_id === c.projectId)
+    ) ?? null
+
+  // Tri par activité récente (chantiers avec messages en tête), puis alphabétique.
+  const sortedConversations = useMemo(() => {
+    const rows = conversations.map(c => ({ c, last: lastMsgOf(c) }))
+    rows.sort((a, b) => {
+      const ta = a.last?.created_at ?? ''
+      const tb = b.last?.created_at ?? ''
+      if (ta && tb) return tb.localeCompare(ta)
+      if (ta !== tb) return ta ? -1 : 1
+      return a.c.name.localeCompare(b.c.name)
+    })
+    return rows
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [conversations, localMessages])
+
+  const filteredConversations = sortedConversations.filter(({ c }) =>
+    !search || c.name.toLowerCase().includes(search.toLowerCase())
   )
 
-  const filteredThreads = threads.filter(t =>
-    !search || (t.title ?? t.project?.name ?? '').toLowerCase().includes(search.toLowerCase())
-  )
+  const selectedConversation =
+    conversations.find(c => c.key === selectedKey) ?? sortedConversations[0]?.c ?? null
+  const selectedProjectId = selectedConversation?.projectId ?? null
 
-  // Context panel data filtered for the selected project
+  // Deep-link : /messages?project=<id> ouvre directement la conversation du chantier.
+  useEffect(() => {
+    const pid = new URLSearchParams(window.location.search).get('project')
+    if (!pid) return
+    const match = conversations.find(c => c.projectId === pid)
+    if (match) setSelectedKey(match.key)
+  }, [conversations])
+
+  const threadMessages = selectedConversation
+    ? localMessages.filter(m =>
+        (selectedConversation.threadId && m.thread_id === selectedConversation.threadId) ||
+        (selectedConversation.projectId && m.project_id === selectedConversation.projectId)
+      )
+    : []
+
+  const panelProject = selectedConversation?.projectId
+    ? { id: selectedConversation.projectId, name: selectedConversation.name, color: selectedConversation.color }
+    : null
   const panelTasks = selectedProjectId ? contextTasks.filter(t => t.project_id === selectedProjectId) : []
   const panelDocs = selectedProjectId ? contextDocs.filter(d => d.project_id === selectedProjectId) : []
   const panelPhotos = selectedProjectId ? contextPhotos.filter(p => p.project_id === selectedProjectId) : []
@@ -123,22 +189,24 @@ export function MessagesView({
     if (feedRef.current) {
       feedRef.current.scrollTop = feedRef.current.scrollHeight
     }
-  }, [selectedThreadId, localMessages.length])
+  }, [selectedKey, localMessages.length])
 
   const handleSend = async () => {
-    if (!newMessage.trim() || !selectedThread || sending) return
+    if (!newMessage.trim() || !selectedConversation || sending) return
     const content = newMessage.trim()
     const type = messageType
     setNewMessage('')
     setSending(true)
     setSendError(null)
 
+    // Réutilise le chemin de mutation existant : message indexé par project_id,
+    // thread_id optionnel (comme la messagerie de la fiche chantier).
     const { data, error } = await mutationClient()
       .from('messages')
       .insert({
         org_id: orgId,
-        project_id: selectedThread.project?.id ?? null,
-        thread_id: selectedThread.id,
+        project_id: selectedConversation.projectId,
+        thread_id: selectedConversation.threadId,
         sender_id: currentUserId,
         content,
         type,
@@ -185,15 +253,20 @@ export function MessagesView({
         </div>
 
         <div className="flex-1 overflow-y-auto">
-          {filteredThreads.map(thread => {
-            const lastMsg = localMessages.find(m => m.thread_id === thread.id || m.project_id === thread.project?.id)
-            const isActive = selectedThreadId === thread.id
-            const hasUnread = false // future: unread count
+          {filteredConversations.map(({ c, last }) => {
+            const isActive = selectedConversation?.key === c.key
+            // Sans modèle de « lu » en base : indicateur d'activité récente (48h,
+            // messages non émis par l'utilisateur) — même sémantique que le badge nav.
+            const recent = localMessages.filter(m =>
+              ((c.threadId && m.thread_id === c.threadId) || (c.projectId && m.project_id === c.projectId)) &&
+              m.sender_id !== currentUserId &&
+              Date.now() - new Date(m.created_at).getTime() < 48 * 3600 * 1000
+            ).length
 
             return (
               <button
-                key={thread.id}
-                onClick={() => setSelectedThreadId(thread.id)}
+                key={c.key}
+                onClick={() => setSelectedKey(c.key)}
                 className={cn(
                   'w-full flex items-center gap-3 px-4 py-3 text-left border-b border-border transition-colors',
                   isActive ? 'bg-primary/8 border-l-2 border-l-primary pl-[14px]' : 'hover:bg-elevated'
@@ -201,56 +274,59 @@ export function MessagesView({
               >
                 <div
                   className="w-10 h-10 rounded-xl flex items-center justify-center text-white text-sm font-700 shrink-0"
-                  style={{ background: thread.project?.color ?? '#2563EB' }}
+                  style={{ background: c.color }}
                 >
-                  {getInitials(thread.title ?? thread.project?.name ?? 'CH')}
+                  {getInitials(c.name)}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between mb-0.5">
-                    <span className="text-sm font-600 text-foreground truncate">
-                      {thread.title ?? thread.project?.name ?? 'Conversation'}
-                    </span>
-                    {lastMsg && (
-                      <span className="text-[10px] text-muted-foreground shrink-0 ml-2">
-                        {formatRelative(lastMsg.created_at)}
-                      </span>
-                    )}
+                  <div className="flex items-center justify-between gap-2 mb-0.5">
+                    <span className="text-sm font-600 text-foreground truncate">{c.name}</span>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      {last && (
+                        <span className="text-[10px] text-muted-foreground">{formatRelative(last.created_at)}</span>
+                      )}
+                      {recent > 0 && !isActive && (
+                        <span className="min-w-[16px] h-4 rounded-full bg-primary text-white text-[9px] font-700 flex items-center justify-center px-1 leading-none tabular-nums">
+                          {recent}
+                        </span>
+                      )}
+                    </div>
                   </div>
-                  {lastMsg && (
-                    <p className="text-xs text-muted-foreground truncate">
-                      {isTypedMessage(lastMsg.type) ? `[${messageTypeLabel(lastMsg.type)}] ` : ''}{lastMsg.content}
-                    </p>
-                  )}
+                  <p className="text-xs text-muted-foreground truncate">
+                    {last
+                      ? `${isTypedMessage(last.type) ? `[${messageTypeLabel(last.type)}] ` : ''}${last.content}`
+                      : 'Aucun message'}
+                  </p>
                 </div>
               </button>
             )
           })}
 
-          {filteredThreads.length === 0 && (
+          {filteredConversations.length === 0 && (
             <div className="p-6 text-center text-sm text-muted-foreground">
-              {search ? 'Aucun résultat' : 'Aucune conversation'}
+              {search ? 'Aucun résultat' : 'Aucun chantier'}
             </div>
           )}
         </div>
       </div>
 
       {/* ── Center column: chat ── */}
-      {selectedThread ? (
+      {selectedConversation ? (
         <div className="flex-1 flex flex-col overflow-hidden bg-background min-w-0">
           {/* Header */}
           <div className="shrink-0 flex items-center gap-3 px-5 py-4 border-b border-border bg-surface">
             <div
               className="w-9 h-9 rounded-lg flex items-center justify-center text-white text-sm font-700 shrink-0"
-              style={{ background: selectedThread.project?.color ?? '#2563EB' }}
+              style={{ background: selectedConversation.color }}
             >
-              {getInitials(selectedThread.title ?? selectedThread.project?.name ?? 'CH')}
+              {getInitials(selectedConversation.name)}
             </div>
             <div className="min-w-0">
               <p className="font-700 text-foreground text-sm truncate">
-                {selectedThread.title ?? selectedThread.project?.name ?? 'Conversation'}
+                {selectedConversation.name}
               </p>
               <p className="text-xs text-muted-foreground">
-                {selectedThread.type === 'project' ? 'Messagerie chantier' : 'Conversation directe'}
+                {selectedConversation.projectId ? 'Messagerie chantier' : 'Conversation directe'}
               </p>
             </div>
           </div>
@@ -383,7 +459,7 @@ export function MessagesView({
 
       {/* ── Right column: context panel (desktop only) ── */}
       <ContextPanel
-        project={selectedThread?.project ?? null}
+        project={panelProject}
         tasks={panelTasks as any}
         documents={panelDocs}
         photos={panelPhotos}
@@ -396,7 +472,7 @@ export function MessagesView({
           currentUserId={currentUserId}
           projects={projects}
           onClose={() => setShowNewThread(false)}
-          onCreated={(id) => setSelectedThreadId(id)}
+          onCreated={(id) => setSelectedKey(`thread:${id}`)}
         />
       )}
     </div>

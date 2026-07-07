@@ -123,13 +123,19 @@ export async function getAlertsSummary(
       body: `${i.title}${i.project?.name ? ` — ${i.project.name}` : ''}`,
       link: `/chantiers/${i.project_id}`,
     })),
-    ...recentMessages.map((m: any) => ({
-      id: `msg-${m.id}`,
-      type: 'message' as AlertType,
-      title: 'Nouveau message',
-      body: m.project?.name ?? (m.content as string).slice(0, 60),
-      link: '/messages',
-    })),
+    ...recentMessages.map((m: any) => {
+      // LOT 33 — Contextualiser l'alerte : nom du chantier + extrait, et lien
+      // profond vers la conversation du chantier concerné (/messages?project=…).
+      const projectName = m.project?.name as string | undefined
+      const excerpt = (m.content as string | null)?.slice(0, 60) ?? ''
+      return {
+        id: `msg-${m.id}`,
+        type: 'message' as AlertType,
+        title: projectName ? `Nouveau message — ${projectName}` : 'Nouveau message',
+        body: projectName && excerpt ? `${projectName} · ${excerpt}` : (projectName ?? excerpt),
+        link: m.project_id ? `/messages?project=${m.project_id}` : '/messages',
+      }
+    }),
     ...deadlineTasks
       .filter((t: any) => !alreadyAlertedIds.has(t.id))
       .map((t: any) => ({
