@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { MessagesView } from '@/components/messages/MessagesView'
+import { signStoragePaths, resolveStorageUrl } from '@/lib/storage'
 import type { Message, Profile } from '@/lib/types'
 
 type ThreadRow = {
@@ -74,7 +75,7 @@ export default async function MessagesPage() {
       .limit(60),
     supabase
       .from('photos')
-      .select('id, url, thumbnail_url, caption, created_at, project_id')
+      .select('id, url, thumbnail_url, caption, created_at, project_id, storage_path')
       .eq('org_id', orgId)
       .order('created_at', { ascending: false })
       .limit(60),
@@ -92,8 +93,17 @@ export default async function MessagesPage() {
   const projects = (projectsData ?? []) as { id: string; name: string; color: string }[]
   const contextTasks = (tasksData ?? []) as unknown as ContextTask[]
   const contextDocs = (documentsData ?? []) as unknown as ContextDoc[]
-  const contextPhotos = (photosData ?? []) as unknown as ContextPhoto[]
   const contextIssues = (issuesData ?? []) as unknown as ContextIssue[]
+
+  // LOT 33 — signer les photos du panneau contextuel (bucket privé) : les uploads
+  // réels stockent un chemin nu dans `url` → 404 sinon (même correctif que la fiche).
+  const rawContextPhotos = (photosData ?? []) as unknown as (ContextPhoto & { storage_path?: string | null })[]
+  const ctxPhotoSigned = await signStoragePaths(supabase, 'photos', rawContextPhotos.map(p => p.storage_path))
+  const contextPhotos: ContextPhoto[] = rawContextPhotos.map(p =>
+    p.storage_path
+      ? { ...p, url: resolveStorageUrl(p.storage_path, ctxPhotoSigned, p.url) ?? '', thumbnail_url: null }
+      : p
+  )
 
   return (
     <div className="flex h-full overflow-hidden">

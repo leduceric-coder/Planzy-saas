@@ -867,20 +867,38 @@ function PhotosTab({ photos, documents }: { photos: (Photo & { taken_by_profile?
           </div>
         ) : (
           <div className="divide-y divide-border/15 dark:divide-white/[0.04]">
-            {documents.map(doc => (
-              <a key={doc.id} href={doc.file_url} target="_blank" rel="noreferrer"
-                className="flex items-center gap-3 px-5 py-3 hover:bg-elevated/35 transition-colors group"
-              >
-                <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                  <FileText className="h-3 w-3 text-primary" />
+            {documents.map(doc => {
+              // LOT 33 — n'ouvrir que si l'URL signée est valide (jamais un chemin nu → 404).
+              const openable = typeof doc.file_url === 'string' && /^https?:\/\//i.test(doc.file_url)
+              const rowInner = (
+                <>
+                  <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                    <FileText className="h-3 w-3 text-primary" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[13px] font-600 text-foreground truncate">{doc.name}</p>
+                    <p className="text-[11px] text-muted-foreground">
+                      {formatDate(doc.created_at)}
+                      {!openable && <span className="text-muted-foreground/50"> · Indisponible</span>}
+                    </p>
+                  </div>
+                  {openable && (
+                    <ExternalLink className="h-3.5 w-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+                  )}
+                </>
+              )
+              return openable ? (
+                <a key={doc.id} href={doc.file_url} target="_blank" rel="noopener noreferrer"
+                  className="flex items-center gap-3 px-5 py-3 hover:bg-elevated/35 transition-colors group"
+                >
+                  {rowInner}
+                </a>
+              ) : (
+                <div key={doc.id} className="flex items-center gap-3 px-5 py-3 opacity-60 cursor-default">
+                  {rowInner}
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-600 text-foreground truncate">{doc.name}</p>
-                  <p className="text-[11px] text-muted-foreground">{formatDate(doc.created_at)}</p>
-                </div>
-                <ExternalLink className="h-3.5 w-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
-              </a>
-            ))}
+              )
+            })}
           </div>
         )}
       </DashTile>

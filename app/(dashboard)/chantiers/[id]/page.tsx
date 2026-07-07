@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { ChantierDetail } from '@/components/chantiers/ChantierDetail'
+import { signStoragePaths, resolveStorageUrl } from '@/lib/storage'
 import type { Project, Task, Issue, Photo, Document, Message, Material, Delivery, Report, ActivityLog } from '@/lib/types'
 
 interface Props {
@@ -43,6 +44,26 @@ export default async function ChantierPage({ params, searchParams }: Props) {
   const project = projectData as Project | null
   if (!project) return notFound()
 
+  // LOT 33 — Bucket Storage privé : signer les chemins des photos/documents.
+  // Les uploads réels stockent un chemin nu dans url/file_url ; on le remplace
+  // par une URL signée (fraîche à chaque rendu serveur). Les anciennes données
+  // (url http complète, storage_path null) sont conservées telles quelles ;
+  // les photos DEMO (placeholder / caption) restent gérées côté client.
+  const rawPhotos = (photosData ?? []) as unknown as (Photo & { taken_by_profile?: any; storage_path?: string | null })[]
+  const rawDocuments = (documentsData ?? []) as unknown as (Document & { storage_path?: string | null })[]
+
+  const [photoSigned, docSigned] = await Promise.all([
+    signStoragePaths(supabase, 'photos', rawPhotos.map(p => p.storage_path)),
+    signStoragePaths(supabase, 'documents', rawDocuments.map(d => d.storage_path)),
+  ])
+
+  const photos = rawPhotos.map(p =>
+    p.storage_path ? { ...p, url: photoSigned.get(p.storage_path) ?? null, thumbnail_url: null } : p
+  )
+  const documents = rawDocuments.map(d =>
+    ({ ...d, file_url: resolveStorageUrl(d.storage_path, docSigned, d.file_url) ?? '' })
+  )
+
   // Fetch artisans, all org teams (for assignment picker), and project-associated teams
   const [{ data: artisansData }, { data: teamsData }, { data: projectTeamsData }] = await Promise.all([
     supabase
@@ -84,8 +105,8 @@ export default async function ChantierPage({ params, searchParams }: Props) {
       project={project as Project}
       tasks={(tasksData ?? []) as unknown as (Task & { assignee?: any; team?: any })[]}
       issues={(issuesData ?? []) as unknown as (Issue & { artisan?: any })[]}
-      photos={(photosData ?? []) as unknown as (Photo & { taken_by_profile?: any })[]}
-      documents={(documentsData ?? []) as unknown as Document[]}
+      photos={photos as unknown as (Photo & { taken_by_profile?: any })[]}
+      documents={documents as unknown as Document[]}
       messages={(messagesData ?? []) as unknown as (Message & { sender?: any })[]}
       materials={(materialsData ?? []) as unknown as Material[]}
       deliveries={(deliveriesData ?? []) as unknown as Delivery[]}
