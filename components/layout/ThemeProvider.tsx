@@ -11,7 +11,7 @@ interface ThemeContextType {
 }
 
 const ThemeContext = createContext<ThemeContextType>({
-  theme: 'dark',
+  theme: 'system',
   setTheme: () => {},
   toggleTheme: () => {},
 })
@@ -33,23 +33,33 @@ function applyTheme(theme: Theme) {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>('dark')
+  // LOT 36 — Défaut = 'system' (suit l'OS tant qu'aucun choix explicite n'est
+  // enregistré). État initial déterministe 'system' → identique SSR / 1er rendu
+  // client (pas de mismatch d'hydratation). Le script anti-flash de layout.tsx a
+  // déjà posé la bonne classe avant le paint ; la préférence stockée est lue au
+  // montage et appliquée une seule fois (pas de flash).
+  const [theme, setThemeState] = useState<Theme>('system')
+  const [mounted, setMounted] = useState(false)
 
-  // Read stored theme on mount
+  // Read stored theme on mount, apply the resolved theme once.
   useEffect(() => {
+    let initial: Theme = 'system'
     try {
       const stored = localStorage.getItem('planzy-theme') as Theme | null
-      if (stored === 'light' || stored === 'dark' || stored === 'system') {
-        setThemeState(stored)
-      }
+      if (stored === 'light' || stored === 'dark' || stored === 'system') initial = stored
     } catch {}
+    setThemeState(initial)
+    applyTheme(initial)
+    setMounted(true)
   }, [])
 
-  // Apply theme and persist whenever it changes
+  // Apply + persist only after mount (jamais avec l'état par défaut transitoire) —
+  // n'écrase donc pas une préférence existante et évite tout flash au montage.
   useEffect(() => {
+    if (!mounted) return
     applyTheme(theme)
     try { localStorage.setItem('planzy-theme', theme) } catch {}
-  }, [theme])
+  }, [theme, mounted])
 
   // Listen to OS preference changes when in system mode
   useEffect(() => {

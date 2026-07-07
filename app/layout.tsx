@@ -25,8 +25,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="fr" suppressHydrationWarning>
       <head>
-        {/* Anti-flash: apply stored theme before first paint */}
-        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('planzy-theme');if(t==='light'){document.documentElement.classList.add('light')}else if(t==='system'&&!window.matchMedia('(prefers-color-scheme: dark)').matches){document.documentElement.classList.add('light')}}catch(e){}})()` }} />
+        {/* Anti-flash: apply resolved theme before first paint.
+            LOT 36 — défaut = système : sans préférence (ou 'system'), on suit
+            prefers-color-scheme ; 'light'/'dark' explicites restent respectés. */}
+        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('planzy-theme');var light=(t==='light')||(t!=='dark'&&!window.matchMedia('(prefers-color-scheme: dark)').matches);if(light){document.documentElement.classList.add('light')}else{document.documentElement.classList.remove('light')}}catch(e){}})()` }} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link
