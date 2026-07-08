@@ -76,6 +76,12 @@ Icônes seules + tooltips, logo compact, accent actif visible, badges lisibles
 sans chevauchement. Préférence ouverte/réduite persistée en `localStorage`
 (`planzy-sidebar-collapsed`), lue au montage → aucun mismatch d'hydratation SSR.
 
+## Messages — fenêtre latérale
+L'entrée **Messages** (section Collaboration) **rouvre la fenêtre latérale**
+(`MessagesSideWindow`) et ne navigue pas vers la pleine page. Modélisé dans la
+config par `action: 'open-messages'` (l'`href: '/messages'` reste renseigné pour
+le matching d'état actif et le repli). Le clic déclenche `onOpenMessages`.
+
 ## Mobile
 La navigation mobile dédiée (`/mobile`, `MobileArtisanView`) n'est pas touchée :
 la refonte concerne la sidebar desktop. Aucune substitution de l'une par l'autre.

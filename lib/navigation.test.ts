@@ -52,6 +52,14 @@ test('état actif : parent actif sur les sous-routes', () => {
   assert.equal(activeNavId('/settings'), null) // admin déplacé hors nav principale
 })
 
+test('Messages ouvre la side-window (action non-navigante)', () => {
+  const messages = NAV_ITEMS.find(i => i.id === 'messages')
+  assert.equal(messages?.action, 'open-messages')
+  assert.equal(messages?.href, '/messages') // href conservé pour l'état actif
+  // Aucune autre entrée n'est une action.
+  assert.deepEqual(NAV_ITEMS.filter(i => i.action).map(i => i.id), ['messages'])
+})
+
 test('une seule entrée active à la fois', () => {
   for (const path of ['/', '/chantiers/1', '/planning', '/equipes/nouveau-artisan', '/rapports/global']) {
     const active = NAV_ITEMS.filter(i => isNavItemActive(path, i))
