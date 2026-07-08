@@ -24,6 +24,14 @@ export type NavId =
 /** Métrique d'alerte qui alimente le badge d'une entrée, le cas échéant. */
 export type BadgeSource = 'issuesCritical' | 'planningAlerts' | 'messagesRecent'
 
+/**
+ * Action non-navigante d'une entrée (ouvre un panneau plutôt que de changer de
+ * route). `open-messages` ouvre la fenêtre latérale de messagerie (side-window).
+ * `href` reste renseigné (matching d'état actif + repli), mais le clic déclenche
+ * l'action au lieu de naviguer.
+ */
+export type NavAction = 'open-messages'
+
 export interface NavItemConfig {
   id: NavId
   label: string
@@ -32,6 +40,7 @@ export interface NavItemConfig {
   /** Préfixes de route additionnels (hors `href`) marquant l'entrée active. */
   activePatterns?: string[]
   badgeSource?: BadgeSource
+  action?: NavAction
 }
 
 // Libellés courts et immédiatement compréhensibles (cf. cahier des charges).
@@ -42,7 +51,7 @@ export const NAV_ITEMS: NavItemConfig[] = [
   { id: 'rapports', label: 'Rapports', href: '/rapports', section: 'pilotage' },
   { id: 'equipe', label: 'Équipe', href: '/equipes', section: 'collaboration', activePatterns: ['/equipes'] },
   { id: 'documents', label: 'Documents', href: '/documents', section: 'collaboration' },
-  { id: 'messages', label: 'Messages', href: '/messages', section: 'collaboration', badgeSource: 'messagesRecent' },
+  { id: 'messages', label: 'Messages', href: '/messages', section: 'collaboration', badgeSource: 'messagesRecent', action: 'open-messages' },
 ]
 
 export const NAV_SECTIONS: { id: NavSection; label: string }[] = [

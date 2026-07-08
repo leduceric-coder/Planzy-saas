@@ -18,7 +18,7 @@ import { SidebarUserMenu } from './SidebarUserMenu'
 import type { TeamOption, ArtisanOption } from '@/components/ui/AssignmentPicker'
 import {
   NAV_SECTIONS, navItemsBySection, isNavItemActive, navBadgeFor,
-  type NavId, type NavItemConfig, type NavBadge, type BadgeTone, type AlertCounts,
+  type NavId, type NavItemConfig, type NavBadge, type BadgeTone, type AlertCounts, type NavAction,
 } from '@/lib/navigation'
 
 interface SidebarProps {
@@ -29,6 +29,7 @@ interface SidebarProps {
   projects?: { id: string; name: string; color: string }[]
   artisans?: ArtisanOption[]
   teams?: TeamOption[]
+  onOpenMessages?: () => void
 }
 
 const COLLAPSE_KEY = 'planzy-sidebar-collapsed'
@@ -83,27 +84,27 @@ function NavBadgeView({ badge, collapsed }: { badge: NavBadge; collapsed: boolea
 }
 
 function NavItem({
-  item, active, collapsed, badge,
+  item, active, collapsed, badge, onAction,
 }: {
   item: NavItemConfig
   active: boolean
   collapsed: boolean
   badge: NavBadge | null
+  onAction?: (action: NavAction) => void
 }) {
   const Icon = NAV_ICONS[item.id]
-  const link = (
-    <Link
-      href={item.href}
-      aria-current={active ? 'page' : undefined}
-      data-demo-target={item.id === 'messages' ? 'sidebar-messages-button' : undefined}
-      className={cn(
-        'group relative flex items-center rounded-lg text-sm font-500 transition-colors motion-reduce:transition-none mx-2',
-        collapsed ? 'justify-center h-10 w-10 mx-auto' : 'gap-2.5 px-3 min-h-[40px]',
-        active
-          ? 'bg-primary/10 text-foreground font-600'
-          : 'text-muted-foreground hover:bg-elevated hover:text-foreground',
-      )}
-    >
+  const demoTarget = item.id === 'messages' ? 'sidebar-messages-button' : undefined
+  const className = cn(
+    'group relative flex items-center rounded-lg text-sm font-500 transition-colors motion-reduce:transition-none mx-2 w-[calc(100%-1rem)] text-left',
+    collapsed ? 'justify-center h-10 w-10 mx-auto' : 'gap-2.5 px-3 min-h-[40px]',
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50',
+    active
+      ? 'bg-primary/10 text-foreground font-600'
+      : 'text-muted-foreground hover:bg-elevated hover:text-foreground',
+  )
+
+  const inner = (
+    <>
       {/* Accent vertical discret sur le bord gauche (état actif). */}
       {active && (
         <span
@@ -117,14 +118,37 @@ function NavItem({
       <Icon className={cn('h-4 w-4 shrink-0', active ? 'text-primary' : 'opacity-70')} />
       {!collapsed && <span className="flex-1 truncate">{item.label}</span>}
       {badge && <NavBadgeView badge={badge} collapsed={collapsed} />}
+    </>
+  )
+
+  // Entrée « action » (ex. Messages) : ouvre un panneau au lieu de naviguer.
+  const node = item.action ? (
+    <button
+      type="button"
+      onClick={() => onAction?.(item.action!)}
+      data-demo-target={demoTarget}
+      aria-haspopup="dialog"
+      aria-label={collapsed ? item.label : undefined}
+      className={className}
+    >
+      {inner}
+    </button>
+  ) : (
+    <Link
+      href={item.href}
+      aria-current={active ? 'page' : undefined}
+      data-demo-target={demoTarget}
+      className={className}
+    >
+      {inner}
     </Link>
   )
 
   if (collapsed) {
     const tip = badge ? `${item.label} — ${badge.label}` : item.label
-    return <Tooltip content={tip}>{link}</Tooltip>
+    return <Tooltip content={tip}>{node}</Tooltip>
   }
-  return link
+  return node
 }
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
@@ -135,10 +159,14 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
   )
 }
 
-export function Sidebar({ profile, onLogout, onThemeChange, theme, projects = [], artisans = [], teams = [] }: SidebarProps) {
+export function Sidebar({ profile, onLogout, onThemeChange, theme, projects = [], artisans = [], teams = [], onOpenMessages }: SidebarProps) {
   const pathname = usePathname()
   const alerts = useAlerts()
   const [collapsed, setCollapsed] = useState(false)
+
+  const handleNavAction = (action: NavAction) => {
+    if (action === 'open-messages') onOpenMessages?.()
+  }
 
   // Persistance légère de la préférence ouvert/réduit (localStorage). Lue au
   // montage → état initial déterministe côté serveur, aucun mismatch SSR.
@@ -227,6 +255,7 @@ export function Sidebar({ profile, onLogout, onThemeChange, theme, projects = []
                   active={isNavItemActive(pathname, item)}
                   collapsed={collapsed}
                   badge={item.badgeSource ? navBadgeFor(item.id, alertCounts) : null}
+                  onAction={handleNavAction}
                 />
               ))}
             </div>
