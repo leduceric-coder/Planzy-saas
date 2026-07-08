@@ -104,14 +104,23 @@ export default function LandingPage() {
             <Link href="/login" style={{ fontSize: 14, color: P.slate500, fontWeight: 500 }} className="hover:text-slate-900 transition-colors">Se connecter</Link>
           </nav>
 
-          <Link
-            href="/login"
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm transition-all hover:opacity-90"
-            style={{ background: P.blue, fontWeight: 600, boxShadow: '0 2px 8px rgba(37,99,235,0.3)' }}
-          >
-            <Play className="h-3.5 w-3.5 fill-white" />
-            Voir la démo
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/signup"
+              className="hidden sm:flex items-center px-4 py-2 rounded-xl text-sm transition-all hover:bg-white"
+              style={{ background: 'transparent', border: `1.5px solid ${P.slate200}`, color: P.slate700, fontWeight: 600 }}
+            >
+              Créer un compte
+            </Link>
+            <Link
+              href="/login"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm transition-all hover:opacity-90"
+              style={{ background: P.blue, fontWeight: 600, boxShadow: '0 2px 8px rgba(37,99,235,0.3)' }}
+            >
+              <Play className="h-3.5 w-3.5 fill-white" />
+              Voir la démo
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -563,6 +572,13 @@ export default function LandingPage() {
               Accéder à la démo
               <ArrowRight className="h-4 w-4" />
             </Link>
+            <Link
+              href="/signup"
+              className="inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl transition-all hover:bg-white/10"
+              style={{ background: 'transparent', color: P.white, fontWeight: 700, fontSize: 16, border: '1.5px solid rgba(255,255,255,0.4)' }}
+            >
+              Créer un compte
+            </Link>
           </div>
           <p style={{ fontSize: 13, color: 'rgba(191,219,254,0.7)', marginTop: 16 }}>
             Connexion immédiate · Données démo préchargées · Visite guidée incluse
@@ -585,6 +601,7 @@ export default function LandingPage() {
             <a href="#terrain" style={{ fontSize: 13, color: '#475569', fontWeight: 500 }} className="hover:text-white transition-colors">Terrain</a>
             <a href="#demo" style={{ fontSize: 13, color: '#475569', fontWeight: 500 }} className="hover:text-white transition-colors">Démo</a>
             <Link href="/login" style={{ fontSize: 13, color: '#475569', fontWeight: 500 }} className="hover:text-white transition-colors">Se connecter</Link>
+            <Link href="/signup" style={{ fontSize: 13, color: '#475569', fontWeight: 500 }} className="hover:text-white transition-colors">Créer un compte</Link>
           </div>
         </div>
       </footer>
