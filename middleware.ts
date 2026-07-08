@@ -44,9 +44,14 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith('/_next') ||
     pathname.startsWith('/favicon')
 
-  // Protected routes — redirect to login if not logged in
+  // Protected routes — visiteur non connecté :
+  //   - racine « / » → landing publique (vitrine commerciale, page d'accueil) ;
+  //   - toute autre route protégée → login.
+  // L'utilisateur connecté n'est jamais concerné (bloc gardé par !user) : « / »
+  // continue de servir le Dashboard. Sûr, sans boucle : /landing est public.
   if (!isPublicRoute && !user) {
-    return NextResponse.redirect(new URL('/login', request.url))
+    const target = pathname === '/' ? '/landing' : '/login'
+    return NextResponse.redirect(new URL(target, request.url))
   }
 
   return supabaseResponse
