@@ -9,6 +9,8 @@ import {
 import { cn } from '@/lib/utils'
 
 const COACH_KEY = 'planzy-demo-coach-shown'
+// LOT 38 — masquage persistant du bouton flottant « Visite guidée ».
+const GUIDE_DISMISS_KEY = 'kanvix-guide-dismissed'
 
 interface Step {
   route: string
@@ -104,6 +106,7 @@ export function DemoGuide({ isOpen, onOpen, onClose, onOpenMessages }: DemoGuide
   const [step, setStep] = useState(0)
   const [mounted, setMounted] = useState(false)
   const [showCoach, setShowCoach] = useState(false)
+  const [dismissed, setDismissed] = useState(false)
 
   // Drag
   const cardRef = useRef<HTMLDivElement>(null)
@@ -113,9 +116,16 @@ export function DemoGuide({ isOpen, onOpen, onClose, onOpenMessages }: DemoGuide
 
   useEffect(() => {
     setMounted(true)
-    if (typeof window !== 'undefined' && !sessionStorage.getItem(COACH_KEY)) {
-      setShowCoach(true)
+    if (typeof window !== 'undefined') {
+      if (!sessionStorage.getItem(COACH_KEY)) setShowCoach(true)
+      if (localStorage.getItem(GUIDE_DISMISS_KEY) === 'true') setDismissed(true)
     }
+  }, [])
+
+  const dismissGuide = useCallback(() => {
+    setDismissed(true)
+    setShowCoach(false)
+    if (typeof window !== 'undefined') localStorage.setItem(GUIDE_DISMISS_KEY, 'true')
   }, [])
 
   // Apply / remove highlight on step or open state change
@@ -231,6 +241,8 @@ export function DemoGuide({ isOpen, onOpen, onClose, onOpenMessages }: DemoGuide
 
   // ── Closed: floating trigger + optional coachmark ──────────────────────
   if (!isOpen) {
+    // LOT 38 — masqué durablement si l'utilisateur a fermé le bouton.
+    if (dismissed) return null
     return (
       <div style={{ position: 'fixed', bottom: 24, right: 24, zIndex: 40 }}>
         {/* Coachmark bubble */}
@@ -252,22 +264,32 @@ export function DemoGuide({ isOpen, onOpen, onClose, onOpenMessages }: DemoGuide
           </div>
         )}
 
-        {/* Launch button */}
-        <button
-          onClick={handleLaunch}
-          aria-label="Lancer la visite guidée"
-          className={cn(
-            'flex items-center gap-2 px-4 py-2.5',
-            'bg-primary text-white text-[12px] font-600',
-            'rounded-full shadow-md',
-            'hover:bg-primary/90 hover:shadow-lg',
-            'transition-all duration-200',
-            'demo-launch-pulse',
-          )}
-        >
-          <Play className="h-3.5 w-3.5 fill-white" />
-          Visite guidée (2 min)
-        </button>
+        {/* Launch button + petite croix de fermeture (masquage persistant) */}
+        <div className="relative">
+          <button
+            onClick={handleLaunch}
+            aria-label="Lancer la visite guidée"
+            className={cn(
+              'flex items-center gap-2 px-4 py-2.5',
+              'bg-primary text-white text-[12px] font-600',
+              'rounded-full shadow-md',
+              'hover:bg-primary/90 hover:shadow-lg',
+              'transition-all duration-200',
+              'demo-launch-pulse',
+            )}
+          >
+            <Play className="h-3.5 w-3.5 fill-white" />
+            Visite guidée (2 min)
+          </button>
+          <button
+            onClick={dismissGuide}
+            aria-label="Masquer la visite guidée"
+            title="Masquer"
+            className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-surface border border-border text-muted-foreground hover:text-foreground hover:border-foreground/30 shadow flex items-center justify-center transition-colors"
+          >
+            <X className="h-3 w-3" />
+          </button>
+        </div>
       </div>
     )
   }
