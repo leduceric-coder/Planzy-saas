@@ -51,9 +51,11 @@ interface Props {
   onClose: () => void
   orgId: string
   currentUserId: string
+  /** Préselectionne la conversation d'un chantier à l'ouverture (deep-link Dashboard). */
+  initialProjectId?: string | null
 }
 
-export function MessagesSideWindow({ isOpen, onClose, orgId, currentUserId }: Props) {
+export function MessagesSideWindow({ isOpen, onClose, orgId, currentUserId, initialProjectId }: Props) {
   const [mounted, setMounted] = useState(false)
   const [threads, setThreads] = useState<Thread[]>([])
   const [projects, setProjects] = useState<Project[]>([])
@@ -100,6 +102,11 @@ export function MessagesSideWindow({ isOpen, onClose, orgId, currentUserId }: Pr
       setLoading(false)
     })
   }, [isOpen, orgId])
+
+  // Préselection éventuelle d'un chantier à l'ouverture (deep-link Dashboard).
+  useEffect(() => {
+    if (isOpen && initialProjectId) setSelectedKey(`project:${initialProjectId}`)
+  }, [isOpen, initialProjectId])
 
   // Conversations = tous les chantiers accessibles (projects) ∪ threads directs.
   const conversations: Conversation[] = (() => {
