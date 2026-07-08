@@ -48,7 +48,6 @@ function Shell({ children, profile, projects, alerts, artisans, teams }: Props) 
           projects={projects}
           artisans={artisans}
           teams={teams}
-          onOpenMessages={() => setMessagesOpen(true)}
         />
         <main className="flex-1 flex flex-col overflow-hidden">
           {children}
