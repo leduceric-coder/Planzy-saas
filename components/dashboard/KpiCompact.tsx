@@ -5,12 +5,13 @@ export interface KpiChipData {
   icon: LucideIcon
   value: number
   label: string
-  scheme: 'blue' | 'orange' | 'red' | 'green'
+  scheme: 'blue' | 'orange' | 'amber' | 'red' | 'green'
 }
 
 const SCHEMES = {
   blue:   { bg: 'bg-blue-50 dark:bg-blue-950/60',   iconCls: 'text-blue-600 dark:text-blue-400',   numCls: 'text-blue-700 dark:text-blue-300' },
   orange: { bg: 'bg-orange-50 dark:bg-orange-950/60', iconCls: 'text-orange-600 dark:text-orange-400', numCls: 'text-orange-700 dark:text-orange-300' },
+  amber:  { bg: 'bg-amber-50 dark:bg-amber-950/60', iconCls: 'text-amber-600 dark:text-amber-400', numCls: 'text-amber-700 dark:text-amber-300' },
   red:    { bg: 'bg-red-50 dark:bg-red-950/60',     iconCls: 'text-red-600 dark:text-red-400',     numCls: 'text-red-700 dark:text-red-300' },
   green:  { bg: 'bg-green-50 dark:bg-green-950/60', iconCls: 'text-green-600 dark:text-green-400', numCls: 'text-green-700 dark:text-green-300' },
 }

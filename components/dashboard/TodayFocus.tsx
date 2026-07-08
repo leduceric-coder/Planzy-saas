@@ -35,6 +35,16 @@ interface Props {
   lateTasks: FocusTask[]
   blockedTasks: FocusTask[]
   criticalIssues: FocusIssue[]
+  /** Nombre total d'actions prioritaires (aligné sur l'en-tête du Dashboard). */
+  total?: number
+}
+
+// Score de criticité (LOT 38) — les plus urgents en premier :
+//   réserve critique > réserve haute > tâche bloquée > tâche en retard.
+function focusScore(item: FocusItem): number {
+  if (item.kind === 'critical') return item.priority === 'critical' ? 100 : 90
+  if (item.kind === 'blocked') return 70
+  return 60 // late
 }
 
 const CFG = {
@@ -76,8 +86,11 @@ const PRIORITY_LABEL: Record<string, string> = {
 
 const MAX_ITEMS = 6
 
-export function TodayFocus({ lateTasks, blockedTasks, criticalIssues }: Props) {
-  const items: FocusItem[] = [
+export function TodayFocus({ lateTasks, blockedTasks, criticalIssues, total }: Props) {
+  // lateTasks arrive déjà triées par échéance croissante (les plus en retard
+  // d'abord) ; on assemble puis on trie par criticité décroissante (tri stable
+  // → l'ordre par date est préservé au sein des retards).
+  const allItems: FocusItem[] = [
     ...criticalIssues.map(i => ({
       key: `issue-${i.id}`,
       kind: 'critical' as const,
@@ -103,9 +116,12 @@ export function TodayFocus({ lateTasks, blockedTasks, criticalIssues }: Props) {
       projectName: t.project?.name,
       projectId: t.project_id,
     })),
-  ].slice(0, MAX_ITEMS)
+  ]
+  allItems.sort((a, b) => focusScore(b) - focusScore(a))
+  const items = allItems.slice(0, MAX_ITEMS)
 
-  const total = items.length
+  // Badge = total réel (aligné sur « N actions prioritaires » de l'en-tête).
+  const badgeTotal = total ?? allItems.length
 
   return (
     <section data-demo-target="dashboard-today-focus" className="dashboard-tile bg-surface rounded-2xl border border-border/50 dark:border-white/[0.08] shadow-[0_2px_8px_rgba(0,0,0,0.06)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col h-full min-h-[460px]">
@@ -115,17 +131,17 @@ export function TodayFocus({ lateTasks, blockedTasks, criticalIssues }: Props) {
           <h2 className="text-[11px] font-800 uppercase tracking-widest text-muted-foreground">
             À traiter aujourd'hui
           </h2>
-          {total > 0 && (
+          {badgeTotal > 0 && (
             <span className="min-w-[20px] h-5 rounded-full bg-destructive text-white text-[10px] font-700 flex items-center justify-center px-1.5 leading-none">
-              {total}
+              {badgeTotal}
             </span>
           )}
         </div>
         <Link
-          href="/chantiers"
+          href="/rapports"
           className="text-[11px] text-primary hover:text-primary/80 font-600 flex items-center gap-1 transition-colors"
         >
-          Voir tout <ArrowRight className="h-3 w-3" />
+          Voir toutes les alertes <ArrowRight className="h-3 w-3" />
         </Link>
       </div>
 
@@ -191,18 +207,8 @@ export function TodayFocus({ lateTasks, blockedTasks, criticalIssues }: Props) {
           </div>
         )}
       </div>
-
-      {/* Footer link */}
-      {total > 0 && (
-        <div className="shrink-0 px-5 py-3 border-t border-border/15 dark:border-white/[0.04]">
-          <Link
-            href="/chantiers"
-            className="text-[11px] text-primary/70 hover:text-primary font-600 flex items-center gap-1 transition-colors"
-          >
-            Voir toutes les alertes <ArrowRight className="h-2.5 w-2.5" />
-          </Link>
-        </div>
-      )}
+      {/* LOT 38 — lien « Voir toutes les alertes » unique (en-tête), pointant
+          vers Rapports & alertes. Le doublon en pied de tuile a été retiré. */}
     </section>
   )
 }
