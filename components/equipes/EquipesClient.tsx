@@ -10,7 +10,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { TeamSlidePanel, type TeamFormData, type TeamType } from './TeamSlidePanel'
 import { EditArtisanModal } from './EditArtisanModal'
-import { ArtisanSidePanel, type EnrichedArtisan, type TaskWithProject } from './ArtisanSidePanel'
+import { ArtisanSidePanel, type EnrichedArtisan, type TaskWithProject, type AccountStatus } from './ArtisanSidePanel'
 import { cn, getInitials } from '@/lib/utils'
 import { mutationClient } from '@/lib/supabase/mutate'
 import { useRouter } from 'next/navigation'
@@ -26,6 +26,8 @@ interface ArtisanRow {
   color: string | null
   phone: string | null
   email: string | null
+  status?: string | null
+  is_archived?: boolean
 }
 
 interface TeamMember {
@@ -59,6 +61,7 @@ interface Props {
   orgId: string
   tasks: TaskWithProject[]
   today: string
+  canManage?: boolean
 }
 
 // ── Constants ──────────────────────────────────────────────────────────────────
@@ -131,7 +134,7 @@ function teamToFormData(t: TeamRow): TeamFormData {
 
 // ── Main component ─────────────────────────────────────────────────────────────
 
-export function EquipesClient({ teams, artisans, projects, orgId, tasks, today }: Props) {
+export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, canManage = false }: Props) {
   const router = useRouter()
   const { toast } = useToast()
 
@@ -224,6 +227,7 @@ export function EquipesClient({ teams, artisans, projects, orgId, tasks, today }
       return {
         ...a,
         status,
+        accountStatus: ((a.status as AccountStatus) ?? 'active'),
         weekTasks,
         currentProjects: Array.from(projectMap.values()),
         artisanTeams: teamsByArtisan.get(a.id) ?? [],
@@ -597,12 +601,24 @@ export function EquipesClient({ teams, artisans, projects, orgId, tasks, today }
                             {artisan.trade ?? 'Métier non renseigné'}
                           </p>
                         </div>
-                        <span className={cn(
-                          'text-[9.5px] font-700 px-2 py-0.5 rounded-full border shrink-0',
-                          config.cls,
-                        )}>
-                          {config.label}
-                        </span>
+                        <div className="flex flex-col items-end gap-1 shrink-0">
+                          {artisan.accountStatus === 'suspended' && (
+                            <span className="text-[9.5px] font-700 px-2 py-0.5 rounded-full border bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20">
+                              Suspendu
+                            </span>
+                          )}
+                          {artisan.accountStatus === 'archived' && (
+                            <span className="text-[9.5px] font-700 px-2 py-0.5 rounded-full border bg-muted/50 text-muted-foreground border-border/40">
+                              Archivé
+                            </span>
+                          )}
+                          <span className={cn(
+                            'text-[9.5px] font-700 px-2 py-0.5 rounded-full border',
+                            config.cls,
+                          )}>
+                            {config.label}
+                          </span>
+                        </div>
                       </div>
 
                       {/* Chantier + tâches */}
@@ -841,6 +857,11 @@ export function EquipesClient({ teams, artisans, projects, orgId, tasks, today }
           artisan={selectedArtisan}
           onClose={() => setSelectedArtisanId(null)}
           onEdit={() => { setEditingArtisanId(selectedArtisan.id); setSelectedArtisanId(null) }}
+          orgId={orgId}
+          canManage={canManage}
+          projects={projects}
+          tasks={tasks}
+          onChanged={() => router.refresh()}
         />
       )}
 

@@ -55,10 +55,13 @@ export default async function EquipesPage() {
 
   const { data: profileData } = await supabase
     .from('profiles')
-    .select('org_id')
+    .select('org_id, role')
     .eq('id', user.id)
     .single()
   const orgId = (profileData as { org_id: string | null } | null)?.org_id
+  const role = (profileData as { role: string | null } | null)?.role ?? null
+  // Rôles internes autorisés à gérer les artisans (statuts + rattachements).
+  const canManage = ['owner', 'admin', 'manager', 'site_supervisor'].includes(role ?? '')
 
   if (!orgId) {
     return (
@@ -123,6 +126,7 @@ export default async function EquipesPage() {
           orgId={orgId}
           tasks={tasks}
           today={today}
+          canManage={canManage}
         />
       </div>
     </div>
