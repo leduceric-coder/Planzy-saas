@@ -145,10 +145,14 @@ export default async function DashboardPage() {
             'task:tasks!task_id(id, title), reviewer:profiles!reviewed_by(full_name)',
           )
           .in('project_id', activeProjectIds)
+          // LOT 40 — défense en profondeur : filtre org_id EXPLICITE en plus du
+          // filtre project_id et de la RLS (isolation multi-tenant garantie même
+          // en cas de régression RLS).
+          .eq('org_id', orgId)
           // LOT 39 — la tuile « Photos & validations » ne montre que les photos à valider.
           .eq('validation_status', 'pending')
           .order('created_at', { ascending: false })
-          .limit(6)
+          .limit(24)
       : Promise.resolve({ data: [], error: null } as any),
 
     // LOT 27D — teams for the dashboard sidewindow assignment editor
