@@ -11,7 +11,7 @@ import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
 } from '@/components/ui/dialog'
 import { useToast } from '@/components/ui/toast-context'
 import { cn, formatDate } from '@/lib/utils'
@@ -614,7 +614,7 @@ export function TeamClient({ orgId, currentUserId, currentRole, members, invitat
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>Modifier le membre</DialogTitle>
-            <p className="text-sm text-muted-foreground">{editingMember?.full_name ?? editingMember?.email}</p>
+            <DialogDescription>{editingMember?.full_name ?? editingMember?.email}</DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-4">
             <SelectField label="Rôle" value={editRole} onChange={onEditRoleChange} disabled={editSaving}>
@@ -673,6 +673,7 @@ export function TeamClient({ orgId, currentUserId, currentRole, members, invitat
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>Retirer le membre</DialogTitle>
+            <DialogDescription>Retirer ce membre de l&apos;organisation. Son compte est conservé.</DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-3">
             <p className="text-sm text-muted-foreground">

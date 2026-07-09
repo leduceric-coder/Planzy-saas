@@ -1,12 +1,13 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   Phone, Mail, Pencil, Users, Building2, ListChecks, Plus, X, CalendarRange,
   Pause, Play, Archive, ShieldAlert, UserCheck, MailCheck, UserX, Lock,
 } from 'lucide-react'
 import { SlidePanel } from '@/components/ui/SlidePanel'
+import { ConfirmDialog, type ConfirmState } from '@/components/ui/ConfirmDialog'
 import { cn, getInitials } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
 import { mutationClient } from '@/lib/supabase/mutate'
@@ -82,6 +83,7 @@ interface Props {
 export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = false, projects = [], tasks = [], onChanged }: Props) {
   const router = useRouter()
   const { toast: showToast } = useToast()
+  const [, startTransition] = useTransition()
   const initials = getInitials(artisan.full_name)
   const workload = STATUS_CONFIG[artisan.status]
 
@@ -97,6 +99,10 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
   const [addProjectId, setAddProjectId] = useState('')
   const [addTaskProjectId, setAddTaskProjectId] = useState('')
   const [addTaskId, setAddTaskId] = useState('')
+  const [confirm, setConfirm] = useState<ConfirmState | null>(null)
+
+  // Rafraîchit les données serveur parent sans bloquer l'UI (INP).
+  const softRefresh = () => { if (onChanged) startTransition(() => onChanged()) }
 
   // Rattachements réels (RLS-scoped) rechargés à l'ouverture / après mutation.
   const loadAssignments = () => {
@@ -122,16 +128,34 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
     return s ? (TASK_STATUS_LABEL[s] ?? s) : null
   }
 
-  const refresh = () => { loadAssignments(); onChanged?.() }
+  // Refetch local léger (rattachements) + refresh parent non bloquant.
+  const refresh = () => { loadAssignments(); softRefresh() }
 
-  // ── Statut lifecycle ──
-  async function setStatus(next: AccountStatus) {
+  // ── Statut lifecycle (confirmation non bloquante) ──
+  function askStatus(next: AccountStatus) {
     if (busy || !orgId) return
-    if (next !== 'active' && !confirm(
-      next === 'suspended'
-        ? "Suspendre cet artisan ? Il ne pourra plus accéder à Kanvix tant qu'il est suspendu. Aucune donnée (photos, messages, tâches, historique) n'est supprimée."
-        : "Archiver cet artisan ? Il sera retiré des listes actives et ne pourra plus accéder à Kanvix. Aucune donnée n'est supprimée.",
-    )) return
+    const cfg: Record<AccountStatus, { title: string; description: string; confirmLabel: string; tone: 'danger' | 'warning' | 'default' }> = {
+      suspended: {
+        title: 'Confirmer la suspension',
+        description: "L'artisan ne pourra plus accéder à Kanvix tant qu'il est suspendu. Son historique (photos, messages, tâches) est conservé.",
+        confirmLabel: 'Suspendre', tone: 'warning',
+      },
+      archived: {
+        title: "Confirmer l'archivage",
+        description: "L'artisan sera retiré des listes actives et ne pourra plus accéder à Kanvix. Aucune donnée n'est supprimée.",
+        confirmLabel: 'Archiver', tone: 'default',
+      },
+      active: {
+        title: 'Réactiver cet artisan',
+        description: "L'artisan retrouvera l'accès à Kanvix. Son historique est inchangé.",
+        confirmLabel: 'Réactiver', tone: 'default',
+      },
+    }
+    const c = cfg[next]
+    setConfirm({ ...c, onConfirm: () => doSetStatus(next) })
+  }
+  async function doSetStatus(next: AccountStatus) {
+    if (!orgId) return
     setBusy(true)
     const patch: Record<string, unknown> =
       next === 'archived' ? { status: 'archived', is_archived: true }
@@ -139,65 +163,81 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
       : { status: 'suspended' } // suspension ne touche pas is_archived
     const { error } = await mutationClient().from('artisans').update(patch).eq('id', artisan.id).eq('org_id', orgId)
     setBusy(false)
+    setConfirm(null)
     if (error) { showToast(error.message, 'error'); return }
     setLocalStatus(next)
     showToast(next === 'active' ? 'Artisan réactivé' : next === 'suspended' ? 'Artisan suspendu' : 'Artisan archivé')
-    onChanged?.()
-    // On garde le panneau ouvert pour suspend/réactiver (feedback visible).
-    // L'archivage retire l'artisan de la liste active → on ferme.
+    softRefresh()
+    // Panneau conservé pour suspend/réactiver (feedback visible) ; l'archivage
+    // retire l'artisan de la liste active → on ferme.
     if (next === 'archived') onClose()
   }
 
-  // ── Rattachement chantier ──
+  // ── Rattachement chantier (idempotent : upsert onConflict → pas de 409) ──
   async function addProject() {
     if (!addProjectId || !orgId || busy) return
     setBusy(true)
     const { error } = await mutationClient().from('artisan_project_assignments')
-      .insert({ org_id: orgId, artisan_id: artisan.id, project_id: addProjectId })
+      .upsert({ org_id: orgId, artisan_id: artisan.id, project_id: addProjectId }, { onConflict: 'artisan_id,project_id', ignoreDuplicates: true })
     setBusy(false)
-    if (error && !String(error.message).toLowerCase().includes('duplicate')) { showToast(error.message, 'error'); return }
+    if (error) { showToast(error.message, 'error'); return }
     setAddProjectId('')
     showToast('Chantier rattaché')
     refresh()
   }
-  async function removeProject(a: ProjAssign) {
+  function askRemoveProject(a: ProjAssign) {
     if (busy) return
     const taskCount = taskAssigns.filter(t => t.project_id === a.project_id).length
-    if (!confirm(
-      taskCount > 0
-        ? `Retirer ce chantier ? Les ${taskCount} tâche(s) rattachée(s) de ce chantier seront aussi retirées. Cela retire l'accès opérationnel, pas l'historique métier.`
-        : "Retirer ce chantier ? Cela retire l'accès opérationnel, pas l'historique métier.",
-    )) return
+    setConfirm({
+      title: 'Retirer ce chantier',
+      description: taskCount > 0
+        ? `Les ${taskCount} tâche(s) rattachée(s) de ce chantier seront aussi retirées. Cela retire l'accès opérationnel, pas l'historique métier.`
+        : "Cela retire l'accès opérationnel de l'artisan sur ce chantier, pas l'historique métier.",
+      confirmLabel: 'Retirer', tone: 'danger',
+      onConfirm: () => doRemoveProject(a),
+    })
+  }
+  async function doRemoveProject(a: ProjAssign) {
     setBusy(true)
     // Retirer d'abord les tâches du chantier, puis le chantier (pas de tâche orpheline).
     await mutationClient().from('artisan_task_assignments').delete().eq('artisan_id', artisan.id).eq('project_id', a.project_id)
     const { error } = await mutationClient().from('artisan_project_assignments').delete().eq('id', a.id)
     setBusy(false)
+    setConfirm(null)
     if (error) { showToast(error.message, 'error'); return }
     showToast('Chantier retiré')
     refresh()
   }
 
-  // ── Rattachement tâche ──
+  // ── Rattachement tâche (idempotent) ──
   async function addTask() {
     if (!addTaskProjectId || !addTaskId || !orgId || busy) return
     setBusy(true)
-    // Garantir le rattachement chantier correspondant (doublon ignoré).
+    // Garantir le rattachement chantier correspondant (upsert idempotent → pas de 409).
     await mutationClient().from('artisan_project_assignments')
-      .insert({ org_id: orgId, artisan_id: artisan.id, project_id: addTaskProjectId })
+      .upsert({ org_id: orgId, artisan_id: artisan.id, project_id: addTaskProjectId }, { onConflict: 'artisan_id,project_id', ignoreDuplicates: true })
     const { error } = await mutationClient().from('artisan_task_assignments')
-      .insert({ org_id: orgId, artisan_id: artisan.id, project_id: addTaskProjectId, task_id: addTaskId })
+      .upsert({ org_id: orgId, artisan_id: artisan.id, project_id: addTaskProjectId, task_id: addTaskId }, { onConflict: 'artisan_id,task_id', ignoreDuplicates: true })
     setBusy(false)
-    if (error && !String(error.message).toLowerCase().includes('duplicate')) { showToast(error.message, 'error'); return }
+    if (error) { showToast(error.message, 'error'); return }
     setAddTaskId('')
     showToast('Tâche rattachée')
     refresh()
   }
-  async function removeTask(a: TaskAssign) {
+  function askRemoveTask(a: TaskAssign) {
     if (busy) return
+    setConfirm({
+      title: 'Retirer cette tâche',
+      description: "Cela retire l'accès opérationnel de l'artisan sur cette tâche, pas l'historique métier.",
+      confirmLabel: 'Retirer', tone: 'danger',
+      onConfirm: () => doRemoveTask(a),
+    })
+  }
+  async function doRemoveTask(a: TaskAssign) {
     setBusy(true)
     const { error } = await mutationClient().from('artisan_task_assignments').delete().eq('id', a.id)
     setBusy(false)
+    setConfirm(null)
     if (error) { showToast(error.message, 'error'); return }
     showToast('Tâche retirée')
     refresh()
@@ -219,6 +259,7 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
   const AccountIcon = accountLine.icon
 
   return (
+    <>
     <SlidePanel onClose={onClose} title={artisan.full_name ?? 'Artisan'} subtitle={artisan.trade ?? 'Métier non renseigné'}>
       <div className="flex flex-col gap-6">
 
@@ -275,7 +316,7 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
                   <span className="w-2 h-2 rounded-full shrink-0" style={{ background: projColor(a.project_id) }} />
                   <span className="flex-1 min-w-0 truncate text-[12.5px] font-500 text-foreground">{projName(a.project_id)}</span>
                   {canManage && (
-                    <button onClick={() => removeProject(a)} disabled={busy} title="Retirer" className="p-1 rounded text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"><X className="h-3.5 w-3.5" /></button>
+                    <button onClick={() => askRemoveProject(a)} disabled={busy} title="Retirer" className="p-1 rounded text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"><X className="h-3.5 w-3.5" /></button>
                   )}
                 </div>
               ))}
@@ -313,7 +354,7 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
                     </span>
                   </span>
                   {canManage && (
-                    <button onClick={() => removeTask(a)} disabled={busy} title="Retirer" className="p-1 rounded text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors self-start"><X className="h-3.5 w-3.5" /></button>
+                    <button onClick={() => askRemoveTask(a)} disabled={busy} title="Retirer" className="p-1 rounded text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors self-start"><X className="h-3.5 w-3.5" /></button>
                   )}
                 </div>
               ))}
@@ -371,16 +412,16 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
             </button>
             <div className="flex items-center gap-2">
               {localStatus === 'active' ? (
-                <button onClick={() => setStatus('suspended')} disabled={busy} className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl border border-amber-500/40 text-amber-600 dark:text-amber-400 text-sm font-600 hover:bg-amber-500/10 disabled:opacity-50 transition-colors">
+                <button onClick={() => askStatus('suspended')} disabled={busy} className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl border border-amber-500/40 text-amber-600 dark:text-amber-400 text-sm font-600 hover:bg-amber-500/10 disabled:opacity-50 transition-colors">
                   <Pause className="h-3.5 w-3.5" />Suspendre
                 </button>
               ) : (
-                <button onClick={() => setStatus('active')} disabled={busy} className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl border border-green-500/40 text-green-600 dark:text-green-400 text-sm font-600 hover:bg-green-500/10 disabled:opacity-50 transition-colors">
+                <button onClick={() => askStatus('active')} disabled={busy} className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl border border-green-500/40 text-green-600 dark:text-green-400 text-sm font-600 hover:bg-green-500/10 disabled:opacity-50 transition-colors">
                   <Play className="h-3.5 w-3.5" />Réactiver
                 </button>
               )}
               {localStatus !== 'archived' && (
-                <button onClick={() => setStatus('archived')} disabled={busy} className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl border border-border/50 text-muted-foreground text-sm font-600 hover:bg-elevated disabled:opacity-50 transition-colors">
+                <button onClick={() => askStatus('archived')} disabled={busy} className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl border border-border/50 text-muted-foreground text-sm font-600 hover:bg-elevated disabled:opacity-50 transition-colors">
                   <Archive className="h-3.5 w-3.5" />Archiver
                 </button>
               )}
@@ -394,6 +435,8 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
 
       </div>
     </SlidePanel>
+    <ConfirmDialog state={confirm} loading={busy} onCancel={() => setConfirm(null)} />
+    </>
   )
 }
 
