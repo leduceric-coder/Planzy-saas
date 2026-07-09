@@ -198,6 +198,21 @@ export default async function DashboardPage() {
     }
   })
 
+  // LOT 40 (addendum) — compteur EXACT des photos à valider, même périmètre de
+  // sécurité que la liste (org_id + projets de l'org + pending + RLS), sans
+  // ramener les lignes (head: true) ni signer d'URL. La liste reste plafonnée à
+  // 24 pour l'aperçu ; le badge affiche le total réel.
+  const { count: pendingPhotoCount } =
+    activeProjectIds.length > 0
+      ? await supabase
+          .from('photos')
+          .select('id', { count: 'exact', head: true })
+          .in('project_id', activeProjectIds)
+          .eq('org_id', orgId)
+          .eq('validation_status', 'pending')
+      : { count: 0 }
+  const pendingPhotosTotal = pendingPhotoCount ?? photos.length
+
   // ── Typed data ──────────────────────────────────────────────────────────────
   type RichTask = Task & {
     project_id: string
@@ -334,7 +349,7 @@ export default async function DashboardPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-stretch">
               <TeamAssignments artisans={artisans} tasks={tasks as any[]} teamMembers={teamMembers} teams={teams} today={today} />
               <MessagesTeam messages={messages} orgId={orgId} currentUserId={user.id} />
-              <PhotoValidations photos={photos} canReview={canReviewPhotos} />
+              <PhotoValidations photos={photos} canReview={canReviewPhotos} pendingTotal={pendingPhotosTotal} />
             </div>
 
           </div>

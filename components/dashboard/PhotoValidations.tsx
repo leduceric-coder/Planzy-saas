@@ -32,11 +32,16 @@ export type DashPhoto = {
 interface Props {
   photos: DashPhoto[]
   canReview?: boolean
+  /** Total EXACT de photos à valider pour l'org (peut dépasser la liste affichée). */
+  pendingTotal?: number
 }
 
-export function PhotoValidations({ photos, canReview = false }: Props) {
+export function PhotoValidations({ photos, canReview = false, pendingTotal }: Props) {
   const router = useRouter()
   const [selected, setSelected] = useState<SidePhoto | null>(null)
+  // Total exact org-scoped (fourni par le serveur) ; repli sur la liste affichée.
+  const total = pendingTotal ?? photos.length
+  const hasMore = total > photos.length
 
   return (
     <section className="dashboard-tile bg-surface rounded-2xl border border-border/50 dark:border-white/[0.08] shadow-[0_2px_8px_rgba(0,0,0,0.06)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col h-full min-h-[340px]">
@@ -47,13 +52,13 @@ export function PhotoValidations({ photos, canReview = false }: Props) {
         <h2 className="text-[11px] font-800 uppercase tracking-widest text-muted-foreground">
           Photos &amp; validations
         </h2>
-        {photos.length > 0 && (
+        {total > 0 && (
           <span
-            aria-label={`${photos.length} photo${photos.length > 1 ? 's' : ''} à valider`}
-            title={`${photos.length} photo${photos.length > 1 ? 's' : ''} à valider`}
+            aria-label={`${total} photo${total > 1 ? 's' : ''} à valider`}
+            title={`${total} photo${total > 1 ? 's' : ''} à valider`}
             className="ml-auto inline-flex items-center gap-1 px-2 h-5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 text-[10px] font-700"
           >
-            {photos.length} à valider
+            {total} à valider
           </span>
         )}
       </div>
@@ -106,6 +111,11 @@ export function PhotoValidations({ photos, canReview = false }: Props) {
               </button>
             ))}
           </div>
+          {hasMore && (
+            <p className="mt-3 text-center text-[10.5px] text-muted-foreground/60">
+              {photos.length} plus récentes affichées sur {total} à valider
+            </p>
+          )}
         </div>
       )}
 
