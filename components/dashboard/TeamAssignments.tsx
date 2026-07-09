@@ -24,28 +24,36 @@ export type TeamMemberRef = {
   artisan_id: string
 }
 
+export type TeamRef = {
+  id: string
+  name: string
+}
+
 interface Props {
   artisans: AssignmentArtisan[]
   tasks: AssignmentTask[]
   teamMembers: TeamMemberRef[]
+  teams?: TeamRef[]
   today: string
 }
 
-type ArtisanStatus = 'conflict' | 'assigned' | 'free'
+// LOT 38 — « conflict » remplacé par « loaded » (chargé) : plusieurs tâches la
+// même semaine n'est pas un vrai conflit d'horaire, seulement une charge élevée.
+type ArtisanStatus = 'loaded' | 'assigned' | 'free'
 
 function getStatus(taskCount: number): ArtisanStatus {
-  if (taskCount > 1) return 'conflict'
+  if (taskCount > 1) return 'loaded'
   if (taskCount === 1) return 'assigned'
   return 'free'
 }
 
 const STATUS_BADGE: Record<ArtisanStatus, { label: string; cls: string }> = {
-  conflict: { label: 'Conflit',  cls: 'bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20' },
+  loaded:   { label: 'Chargé',  cls: 'bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20' },
   assigned: { label: 'Affecté', cls: 'bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20' },
   free:     { label: 'Libre',   cls: 'bg-muted/40 text-muted-foreground/60 border border-border/30' },
 }
 
-export function TeamAssignments({ artisans, tasks, teamMembers, today }: Props) {
+export function TeamAssignments({ artisans, tasks, teamMembers, teams = [], today }: Props) {
   const weekEnd = new Date(today)
   weekEnd.setDate(weekEnd.getDate() + 7)
   const weekEndStr = weekEnd.toISOString().split('T')[0]
@@ -55,6 +63,15 @@ export function TeamAssignments({ artisans, tasks, teamMembers, today }: Props) 
   for (const tm of teamMembers) {
     if (!artisansByTeam.has(tm.team_id)) artisansByTeam.set(tm.team_id, [])
     artisansByTeam.get(tm.team_id)!.push(tm.artisan_id)
+  }
+
+  // LOT 38 — équipe d'appartenance de chaque artisan (première équipe trouvée).
+  const teamNameById = new Map(teams.map(t => [t.id, t.name]))
+  const teamNameByArtisan = new Map<string, string>()
+  for (const tm of teamMembers) {
+    if (teamNameByArtisan.has(tm.artisan_id)) continue
+    const name = teamNameById.get(tm.team_id)
+    if (name) teamNameByArtisan.set(tm.artisan_id, name)
   }
 
   const tasksByArtisan = new Map<string, AssignmentTask[]>()
@@ -78,9 +95,9 @@ export function TeamAssignments({ artisans, tasks, teamMembers, today }: Props) 
     }
   }
 
-  const assigned  = artisans.filter(a => (tasksByArtisan.get(a.id)?.length ?? 0) === 1).length
-  const conflicts = artisans.filter(a => (tasksByArtisan.get(a.id)?.length ?? 0) > 1).length
-  const free      = artisans.filter(a => (tasksByArtisan.get(a.id)?.length ?? 0) === 0).length
+  const assigned = artisans.filter(a => (tasksByArtisan.get(a.id)?.length ?? 0) === 1).length
+  const loaded   = artisans.filter(a => (tasksByArtisan.get(a.id)?.length ?? 0) > 1).length
+  const free     = artisans.filter(a => (tasksByArtisan.get(a.id)?.length ?? 0) === 0).length
 
   return (
     <section className="dashboard-tile bg-surface rounded-2xl border border-border/50 dark:border-white/[0.08] shadow-[0_2px_8px_rgba(0,0,0,0.06)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col h-full min-h-[340px]">
@@ -93,18 +110,18 @@ export function TeamAssignments({ artisans, tasks, teamMembers, today }: Props) 
           </h2>
         </div>
         <span className="text-[10.5px] text-muted-foreground/55">
-          {assigned + conflicts} affecté{assigned + conflicts > 1 ? 's' : ''} · {conflicts > 0 ? `${conflicts} conflit${conflicts > 1 ? 's' : ''} · ` : ''}{free} libre{free > 1 ? 's' : ''}
+          {assigned + loaded} affecté{assigned + loaded > 1 ? 's' : ''} · {loaded > 0 ? `${loaded} chargé${loaded > 1 ? 's' : ''} · ` : ''}{free} libre{free > 1 ? 's' : ''}
         </span>
       </div>
 
-      {/* Conflict alert */}
-      {conflicts > 0 && (
+      {/* Charge élevée — plusieurs tâches la même semaine (pas un conflit d'horaire) */}
+      {loaded > 0 && (
         <div className="shrink-0 mx-4 mt-3 flex items-center gap-2.5 px-3 py-2 rounded-xl bg-orange-500/10 border border-orange-500/20">
           <AlertTriangle className="h-3.5 w-3.5 text-orange-500 shrink-0" />
           <p className="text-[11.5px] font-600 text-orange-600 dark:text-orange-400 flex-1">
-            {conflicts} conflit{conflicts > 1 ? 's' : ''} d'affectation à vérifier
+            {loaded} artisan{loaded > 1 ? 's' : ''} sur plusieurs tâches cette semaine
           </p>
-          <Link href="/equipes" className="text-[11px] text-primary font-600 hover:underline shrink-0 flex items-center gap-0.5">
+          <Link href="/planning?view=resources" className="text-[11px] text-primary font-600 hover:underline shrink-0 flex items-center gap-0.5">
             Voir <ArrowRight className="h-2.5 w-2.5" />
           </Link>
         </div>
@@ -140,16 +157,25 @@ export function TeamAssignments({ artisans, tasks, teamMembers, today }: Props) 
                   key={artisan.id}
                   className="grid grid-cols-[2fr_1fr_2fr_auto] items-center gap-3 px-5 py-2.5 hover:bg-foreground/[0.02] transition-colors"
                 >
-                  {/* Artisan */}
-                  <div className="flex items-center gap-2.5 min-w-0">
+                  {/* Artisan — clic → planning (vue ressources) filtré sur l'artisan */}
+                  <Link
+                    href={`/planning?view=resources&artisan=${artisan.id}`}
+                    title={`Voir le planning de ${artisan.full_name}`}
+                    className="flex items-center gap-2.5 min-w-0 group rounded-lg -ml-1 px-1 py-0.5 hover:bg-primary/5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                  >
                     <div
                       className="w-7 h-7 rounded-full text-white text-[10px] font-700 flex items-center justify-center shrink-0"
                       style={{ background: artisan.color || '#6366f1' }}
                     >
                       {initials}
                     </div>
-                    <span className="text-[12.5px] font-600 text-foreground truncate">{artisan.full_name}</span>
-                  </div>
+                    <span className="min-w-0">
+                      <span className="block text-[12.5px] font-600 text-foreground truncate group-hover:text-primary transition-colors">{artisan.full_name}</span>
+                      <span className="block text-[10px] text-muted-foreground/60 truncate">
+                        {teamNameByArtisan.get(artisan.id) ?? 'Indépendant'}
+                      </span>
+                    </span>
+                  </Link>
 
                   {/* Role */}
                   <span className="text-[11.5px] text-slate-600 dark:text-slate-400 truncate font-500">{artisan.trade}</span>

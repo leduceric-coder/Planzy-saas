@@ -1,10 +1,11 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { MessageCircle, ArrowRight, Paperclip, Send } from 'lucide-react'
 import { formatRelative, getInitials } from '@/lib/utils'
 import { cn } from '@/lib/utils'
-import { DashboardMessagesPanel } from './DashboardMessagesPanel'
+import { MessagesSideWindow } from '@/components/messages/MessagesSideWindow'
 
 export type DashMessage = {
   id: string
@@ -44,12 +45,20 @@ function avatarColor(name: string): string {
 }
 
 export function MessagesTeam({ messages, orgId, currentUserId }: Props) {
+  const router = useRouter()
   const [panelOpen, setPanelOpen] = useState(false)
   const [panelProjectId, setPanelProjectId] = useState<string | null>(null)
 
   function openPanel(projectId?: string | null) {
     setPanelProjectId(projectId ?? null)
     setPanelOpen(true)
+  }
+
+  // LOT 38 — à la fermeture, rafraîchir les données serveur du Dashboard pour
+  // refléter les messages envoyés (la liste « messages récents » est en SSR).
+  function closePanel() {
+    setPanelOpen(false)
+    router.refresh()
   }
 
   return (
@@ -144,14 +153,13 @@ export function MessagesTeam({ messages, orgId, currentUserId }: Props) {
         </div>
       </section>
 
-      {panelOpen && (
-        <DashboardMessagesPanel
-          orgId={orgId}
-          currentUserId={currentUserId}
-          onClose={() => setPanelOpen(false)}
-          initialProjectId={panelProjectId}
-        />
-      )}
+      <MessagesSideWindow
+        isOpen={panelOpen}
+        onClose={closePanel}
+        orgId={orgId}
+        currentUserId={currentUserId}
+        initialProjectId={panelProjectId}
+      />
     </>
   )
 }

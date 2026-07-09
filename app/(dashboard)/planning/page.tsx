@@ -14,12 +14,15 @@ type GanttProject = { id: string; name: string; color: string }
 type GanttArtisan = { id: string; full_name: string; trade: string; color: string }
 
 interface PageProps {
-  searchParams: Promise<{ focus?: string; id?: string }>
+  searchParams: Promise<{ focus?: string; id?: string; view?: string; artisan?: string }>
 }
 
 export default async function PlanningPage({ searchParams }: PageProps) {
   const sp = await searchParams
   const initialFocusTaskId = sp.focus === 'task' ? sp.id : undefined
+  // LOT 38 — deep-link Dashboard : /planning?view=resources&artisan=<id>
+  const initialView = sp.view === 'resources' ? 'resources' as const : undefined
+  const initialArtisanId = sp.artisan || undefined
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return null
@@ -108,6 +111,8 @@ export default async function PlanningPage({ searchParams }: PageProps) {
           teams={teams}
           undatedTasks={undatedTasks}
           initialFocusTaskId={initialFocusTaskId}
+          initialView={initialView}
+          initialArtisanId={initialArtisanId}
           orgId={orgId}
         />
       </div>

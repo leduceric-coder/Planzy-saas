@@ -25,11 +25,13 @@ interface Props {
   teams: OccTeamOption[]
   undatedTasks: PlanningTask[]
   initialFocusTaskId?: string
+  initialView?: 'tasks' | 'resources'
+  initialArtisanId?: string
   orgId: string
 }
 
-export function PlanningTabs({ tasks, projects, artisans, teams, undatedTasks, initialFocusTaskId, orgId }: Props) {
-  const [view, setView] = useState<'tasks' | 'resources'>('tasks')
+export function PlanningTabs({ tasks, projects, artisans, teams, undatedTasks, initialFocusTaskId, initialView, initialArtisanId, orgId }: Props) {
+  const [view, setView] = useState<'tasks' | 'resources'>(initialView ?? 'tasks')
   const [showNew, setShowNew] = useState(false)
 
   return (
@@ -79,7 +81,7 @@ export function PlanningTabs({ tasks, projects, artisans, teams, undatedTasks, i
             onNewTask={() => setShowNew(true)}
           />
         ) : (
-          <ResourceOccupancyView tasks={tasks} projects={projects} artisans={artisans} teams={teams} />
+          <ResourceOccupancyView tasks={tasks} projects={projects} artisans={artisans} teams={teams} initialArtisan={initialArtisanId} />
         )}
       </div>
 

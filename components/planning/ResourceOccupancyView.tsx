@@ -44,6 +44,8 @@ interface Props {
   projects: OccProjectOption[]
   artisans: OccArtisanOption[]
   teams: OccTeamOption[]
+  /** LOT 38 — filtre initial sur un artisan (deep-link Dashboard → planning). */
+  initialArtisan?: string
 }
 
 interface SelectedCell {
@@ -58,12 +60,14 @@ function toOccupancyTask(t: PlanningTask): OccupancyTask {
   return { id: t.id, title: t.title, start_date: t.start_date, end_date: t.end_date, project: t.project ?? null }
 }
 
-export function ResourceOccupancyView({ tasks, projects, artisans, teams }: Props) {
+export function ResourceOccupancyView({ tasks, projects, artisans, teams, initialArtisan }: Props) {
   const router = useRouter()
   const [localTasks, setLocalTasks] = useState<PlanningTask[]>(tasks)
   const [windowIndex, setWindowIndex] = useState(0)
   const [filterProject, setFilterProject] = useState('all')
-  const [filterArtisan, setFilterArtisan] = useState('all')
+  const [filterArtisan, setFilterArtisan] = useState(
+    initialArtisan && artisans.some(a => a.id === initialArtisan) ? initialArtisan : 'all',
+  )
   const [filterTrade, setFilterTrade] = useState('all')
   const [selectedCell, setSelectedCell] = useState<SelectedCell | null>(null)
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null)

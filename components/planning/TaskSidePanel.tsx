@@ -645,10 +645,12 @@ export function TaskSidePanel({
 
   return (
     <>
+      {/* Overlay — clic extérieur ferme le panneau (desktop + mobile, LOT 38). */}
       {task && (
         <div
-          className="fixed inset-0 z-[49] bg-black/10 md:hidden"
+          className="fixed inset-0 z-[9000] bg-black/10"
           onClick={onClose}
+          aria-hidden
         />
       )}
 
@@ -883,15 +885,19 @@ export function TaskSidePanel({
                       </span>
                     </div>
                   )}
+                </>
+              )}
 
-                  {/* Dependencies */}
-                  <div className="mb-5">
+              {/* Dépendances — visibles en lecture ET en édition (LOT 38).
+                  Le bouton « Ajouter un prédécesseur » et la suppression ne
+                  s'affichent qu'en mode modification (isEditing). */}
+              <div className="mb-5">
                     <div className="flex items-center justify-between mb-2">
                       <p className="text-xs font-600 text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
                         <Link2 className="h-3 w-3" />
                         Dépendances
                       </p>
-                      {!depAddOpen && (
+                      {isEditing && !depAddOpen && (
                         <button
                           onClick={() => setDepAddOpen(true)}
                           className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 font-600"
@@ -955,7 +961,7 @@ export function TaskSidePanel({
                       </div>
                     )}
 
-                    {depAddOpen && (() => {
+                    {isEditing && depAddOpen && (() => {
                       // Filter out: self, already-upstream, and any task that would create a cycle
                       // (deep DFS via wouldCreateCycle on the full org-scoped graph).
                       // While allDeps is loading, fall back to the local subset to avoid showing
@@ -1060,6 +1066,7 @@ export function TaskSidePanel({
                                 onRemove={() => handleRemoveDependency(d.id)}
                                 disabled={depSaving}
                                 warningMessage={depWarning}
+                                editable={isEditing}
                               />
                             )
                           })}
@@ -1086,6 +1093,7 @@ export function TaskSidePanel({
                                 onRemove={() => handleRemoveDependency(d.id)}
                                 disabled={depSaving}
                                 warningMessage={depWarning}
+                                editable={isEditing}
                               />
                             )
                           })}
@@ -1093,8 +1101,6 @@ export function TaskSidePanel({
                       )}
                     </div>
                   </div>
-                </>
-              )}
             </div>
 
             {/* Footer */}
@@ -1155,9 +1161,11 @@ interface DependencyItemProps {
   onRemove: () => void
   disabled: boolean
   warningMessage?: string | null
+  /** Affiche le bouton de suppression uniquement en mode édition (LOT 38). */
+  editable?: boolean
 }
 
-function DependencyItem({ task, fallbackId, onRemove, disabled, warningMessage }: DependencyItemProps) {
+function DependencyItem({ task, fallbackId, onRemove, disabled, warningMessage, editable }: DependencyItemProps) {
   return (
     <li className="flex flex-col gap-1 bg-background border border-border rounded-lg px-2.5 py-2 text-xs">
       <div className="flex items-center gap-2">
@@ -1179,17 +1187,19 @@ function DependencyItem({ task, fallbackId, onRemove, disabled, warningMessage }
             )}
           </p>
         </div>
-        <button
-          onClick={onRemove}
-          disabled={disabled}
-          className={cn(
-            'p-1 rounded text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors',
-            disabled && 'opacity-50 cursor-not-allowed'
-          )}
-          title="Supprimer la dépendance"
-        >
-          <Trash2 className="h-3.5 w-3.5" />
-        </button>
+        {editable && (
+          <button
+            onClick={onRemove}
+            disabled={disabled}
+            className={cn(
+              'p-1 rounded text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors',
+              disabled && 'opacity-50 cursor-not-allowed'
+            )}
+            title="Supprimer la dépendance"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </button>
+        )}
       </div>
       {warningMessage && (
         <div className="flex items-start gap-1.5 text-[11px] text-amber-600 dark:text-amber-400 bg-amber-500/10 rounded px-2 py-1">

@@ -5,7 +5,7 @@ import { TeamAssignments } from '@/components/dashboard/TeamAssignments'
 import { PhotoValidations } from '@/components/dashboard/PhotoValidations'
 import { MessagesTeam } from '@/components/dashboard/MessagesTeam'
 import { KpiChip } from '@/components/dashboard/KpiCompact'
-import { Plus, Building2, Check, Building, Clock, AlertTriangle, Users } from 'lucide-react'
+import { Building2, Check, Building, Clock, AlertTriangle, ClipboardList } from 'lucide-react'
 import Link from 'next/link'
 import type { Task } from '@/lib/types'
 
@@ -55,8 +55,6 @@ export default async function DashboardPage() {
 
   const today = new Date().toISOString().split('T')[0]
   const { weekStart, weekEnd } = getWeekBounds(today)
-  // Next-7-days window for artisan conflict check
-  const next7 = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
 
   // ── Parallel data fetch ──────────────────────────────────────────────────────
   const [
@@ -139,8 +137,8 @@ export default async function DashboardPage() {
       ? supabase
           .from('photos')
           .select(
-            'id, url, thumbnail_url, caption, storage_path, project_id, issue_id,' +
-            'project:projects(name), issue:issues(status)',
+            'id, url, thumbnail_url, caption, storage_path, project_id, issue_id, taken_by, created_at,' +
+            'project:projects(name), issue:issues(status), uploader:profiles!taken_by(full_name)',
           )
           .in('project_id', activeProjectIds)
           .order('created_at', { ascending: false })
@@ -180,6 +178,8 @@ export default async function DashboardPage() {
       project_id: p.project_id as string,
       issue_status: (p.issue as { status: string } | null)?.status ?? null,
       project: (p.project as { name: string } | null) ?? null,
+      author: (p.uploader as { full_name: string | null } | null)?.full_name ?? null,
+      created_at: (p.created_at as string | null) ?? null,
     }
   })
 
@@ -229,15 +229,6 @@ export default async function DashboardPage() {
     return start <= weekEnd && t.end_date >= weekStart
   })
 
-  // Artisan conflict count
-  const artisanWeekCount = new Map<string, number>()
-  for (const t of tasks) {
-    if (t.assigned_to && t.end_date && t.end_date >= today && t.end_date <= next7) {
-      artisanWeekCount.set(t.assigned_to, (artisanWeekCount.get(t.assigned_to) ?? 0) + 1)
-    }
-  }
-  const conflictCount = Array.from(artisanWeekCount.values()).filter(c => c > 1).length
-
   const priorityCount = lateTasks.length + blockedTasks.length + criticalIssues.length
 
   // ── Greeting ──────────────────────────────────────────────────────────────────
@@ -272,29 +263,20 @@ export default async function DashboardPage() {
                 <span className="text-muted-foreground/55">
                   {' '}·{' '}
                   <span className="text-foreground/65 font-500">
-                    {priorityCount} point{priorityCount > 1 ? 's' : ''} à traiter
+                    {priorityCount} action{priorityCount > 1 ? 's' : ''} prioritaire{priorityCount > 1 ? 's' : ''}
                   </span>
                 </span>
               )}
             </p>
           </div>
 
-          {/* KPI compact chips */}
-          <div className="flex items-center gap-2 flex-wrap flex-1 justify-center">
+          {/* KPI compact chips — libellés fiables et non ambigus (LOT 38) */}
+          <div className="flex items-center gap-2 flex-wrap flex-1 justify-end">
             <KpiChip icon={Building} value={projects.length} label="chantiers actifs" scheme="blue" />
-            <KpiChip icon={Clock} value={issuesOpen} label="validations en attente" scheme="orange" />
+            <KpiChip icon={ClipboardList} value={issuesOpen} label="réserves ouvertes" scheme="amber" />
             <KpiChip icon={AlertTriangle} value={criticalIssues.length} label="alertes critiques" scheme="red" />
-            <KpiChip icon={Users} value={conflictCount} label="conflits équipe" scheme="green" />
+            <KpiChip icon={Clock} value={lateTasks.length} label="tâches en retard" scheme="orange" />
           </div>
-
-          {/* CTA */}
-          <Link
-            href="/chantiers/nouveau"
-            className="shrink-0 flex items-center gap-1.5 px-4 py-2 bg-primary text-white text-sm font-600 rounded-xl hover:bg-primary/90 transition-colors shadow-sm"
-          >
-            <Plus className="h-4 w-4" />
-            Nouveau chantier
-          </Link>
         </div>
       </div>
 
@@ -329,14 +311,15 @@ export default async function DashboardPage() {
                 lateTasks={lateTasks as any[]}
                 blockedTasks={blockedTasks as any[]}
                 criticalIssues={criticalIssues as any[]}
+                total={priorityCount}
               />
             </div>
 
             {/* ── Ligne 2 : Équipes + Messagerie + Photos ── */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-stretch">
-              <TeamAssignments artisans={artisans} tasks={tasks as any[]} teamMembers={teamMembers} today={today} />
+              <TeamAssignments artisans={artisans} tasks={tasks as any[]} teamMembers={teamMembers} teams={teams} today={today} />
               <MessagesTeam messages={messages} orgId={orgId} currentUserId={user.id} />
-              <PhotoValidations photos={photos} openIssuesCount={issuesOpen} />
+              <PhotoValidations photos={photos} />
             </div>
 
           </div>
