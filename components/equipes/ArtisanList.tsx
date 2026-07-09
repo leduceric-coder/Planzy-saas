@@ -37,7 +37,7 @@ export function ArtisanList({ artisans }: Props) {
     setArchiveLoading(true)
     const { error: err } = await mutationClient()
       .from('artisans')
-      .update({ is_archived: true })
+      .update({ is_archived: true, status: 'archived' })  // LOT 41B — statut aligné
       .eq('id', archivingArtisan.id)
       .eq('org_id', archivingArtisan.org_id)
     setArchiveLoading(false)

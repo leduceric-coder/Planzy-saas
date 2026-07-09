@@ -39,6 +39,7 @@ type ArtisanRow = {
   phone: string | null
   email: string | null
   is_archived: boolean
+  status?: string | null
 }
 
 type ProjectRow = {
@@ -77,7 +78,7 @@ export default async function EquipesPage() {
       .order('name'),
     supabase
       .from('artisans')
-      .select('id, org_id, full_name, trade, color, phone, email, is_archived')
+      .select('id, org_id, full_name, trade, color, phone, email, is_archived, status')
       .eq('org_id', orgId)
       .eq('is_archived', false)
       .order('full_name'),

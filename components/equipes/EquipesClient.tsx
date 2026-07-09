@@ -323,7 +323,8 @@ export function EquipesClient({ teams, artisans, projects, orgId, tasks, today }
     setArchiveLoading(true)
     const { error: err } = await mutationClient()
       .from('artisans')
-      .update({ is_archived: true })
+      // LOT 41B — aligne le statut lifecycle sur is_archived (source cible = status).
+      .update({ is_archived: true, status: 'archived' })
       .eq('id', archivingArtisan.id)
       .eq('org_id', archivingArtisan.org_id)
     setArchiveLoading(false)
