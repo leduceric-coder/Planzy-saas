@@ -34,11 +34,13 @@ export default async function DashboardPage() {
 
   const { data: profileData } = await supabase
     .from('profiles')
-    .select('org_id, full_name')
+    .select('org_id, full_name, role')
     .eq('id', user.id)
     .single()
-  const profile = profileData as unknown as { org_id: string | null; full_name: string | null } | null
+  const profile = profileData as unknown as { org_id: string | null; full_name: string | null; role: string | null } | null
   const orgId = profile?.org_id ?? ''
+  // LOT 39 — rôles autorisés à valider/refuser une photo (aligné sur la RPC review_photo).
+  const canReviewPhotos = ['owner', 'admin', 'manager', 'site_supervisor'].includes(profile?.role ?? '')
 
   const { data: projectsData } = await supabase
     .from('projects')
@@ -137,10 +139,14 @@ export default async function DashboardPage() {
       ? supabase
           .from('photos')
           .select(
-            'id, url, thumbnail_url, caption, storage_path, project_id, issue_id, taken_by, created_at,' +
-            'project:projects(name), issue:issues(status), uploader:profiles!taken_by(full_name)',
+            'id, url, thumbnail_url, caption, storage_path, project_id, issue_id, task_id, taken_by, created_at,' +
+            'validation_status, reviewed_at, review_comment,' +
+            'project:projects(name), issue:issues(status), uploader:profiles!taken_by(full_name),' +
+            'task:tasks!task_id(id, title), reviewer:profiles!reviewed_by(full_name)',
           )
           .in('project_id', activeProjectIds)
+          // LOT 39 — la tuile « Photos & validations » ne montre que les photos à valider.
+          .eq('validation_status', 'pending')
           .order('created_at', { ascending: false })
           .limit(6)
       : Promise.resolve({ data: [], error: null } as any),
@@ -180,6 +186,11 @@ export default async function DashboardPage() {
       project: (p.project as { name: string } | null) ?? null,
       author: (p.uploader as { full_name: string | null } | null)?.full_name ?? null,
       created_at: (p.created_at as string | null) ?? null,
+      validation_status: (p.validation_status as string | null) ?? 'pending',
+      task: (p.task as { id: string; title: string } | null) ?? null,
+      reviewer: (p.reviewer as { full_name: string | null } | null)?.full_name ?? null,
+      reviewed_at: (p.reviewed_at as string | null) ?? null,
+      review_comment: (p.review_comment as string | null) ?? null,
     }
   })
 
@@ -319,7 +330,7 @@ export default async function DashboardPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-stretch">
               <TeamAssignments artisans={artisans} tasks={tasks as any[]} teamMembers={teamMembers} teams={teams} today={today} />
               <MessagesTeam messages={messages} orgId={orgId} currentUserId={user.id} />
-              <PhotoValidations photos={photos} />
+              <PhotoValidations photos={photos} canReview={canReviewPhotos} />
             </div>
 
           </div>
