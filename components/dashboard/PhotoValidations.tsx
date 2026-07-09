@@ -40,12 +40,22 @@ export function PhotoValidations({ photos, canReview = false }: Props) {
 
   return (
     <section className="dashboard-tile bg-surface rounded-2xl border border-border/50 dark:border-white/[0.08] shadow-[0_2px_8px_rgba(0,0,0,0.06)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col h-full min-h-[340px]">
-      {/* Header — LOT 38 : lien « Voir tout » retiré. */}
+      {/* Header — badge « N à valider » (LOT 40). Le compteur = longueur de la
+          liste org-scoped affichée : badge == liste == pending autorisées. */}
       <div className="shrink-0 px-5 py-3.5 border-b border-border/25 flex items-center gap-2 bg-surface">
         <Camera className="h-3.5 w-3.5 text-muted-foreground/70" />
         <h2 className="text-[11px] font-800 uppercase tracking-widest text-muted-foreground">
           Photos &amp; validations
         </h2>
+        {photos.length > 0 && (
+          <span
+            aria-label={`${photos.length} photo${photos.length > 1 ? 's' : ''} à valider`}
+            title={`${photos.length} photo${photos.length > 1 ? 's' : ''} à valider`}
+            className="ml-auto inline-flex items-center gap-1 px-2 h-5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 text-[10px] font-700"
+          >
+            {photos.length} à valider
+          </span>
+        )}
       </div>
 
       {/* Photo grid — LOT 39 : uniquement les photos à valider (pending). */}
@@ -56,9 +66,10 @@ export function PhotoValidations({ photos, canReview = false }: Props) {
           <Link href="/documents" className="text-xs text-primary hover:underline">Accéder aux documents →</Link>
         </div>
       ) : (
-        <div className="flex-1 p-4">
+        <div className="flex-1 overflow-y-auto p-4">
+          {/* LOT 40 — toutes les photos pending org-scoped (badge == liste). */}
           <div className="grid grid-cols-[repeat(auto-fill,minmax(90px,1fr))] gap-2">
-            {photos.slice(0, 6).map(photo => (
+            {photos.map(photo => (
               <button
                 key={photo.id}
                 type="button"
