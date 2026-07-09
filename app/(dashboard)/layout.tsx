@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { DashboardShell } from './DashboardShell'
+import { AccessBlocked } from '@/components/layout/AccessBlocked'
 import { getAlertsSummary } from '@/lib/alerts'
 import type { Profile } from '@/lib/types'
 import type { TeamOption, ArtisanOption } from '@/components/ui/AssignmentPicker'
@@ -18,6 +19,21 @@ export default async function DashboardLayout({ children }: { children: React.Re
     .single()
   const profile = profileData as unknown as Profile | null
   const orgId = (profile as any)?.org_id as string | null
+
+  // LOT 41B — Gate d'accès : un artisan suspendu/archivé ne peut pas entrer dans
+  // l'application (gate applicatif ; la restriction DB complète = LOT 41D).
+  const artisanId = (profile as any)?.artisan_id as string | null
+  if (artisanId) {
+    const { data: artisanRow } = await supabase
+      .from('artisans')
+      .select('status')
+      .eq('id', artisanId)
+      .single()
+    const artisanStatus = (artisanRow as { status?: string } | null)?.status
+    if (artisanStatus === 'suspended' || artisanStatus === 'archived') {
+      return <AccessBlocked status={artisanStatus} />
+    }
+  }
 
   const [projectsResult, alerts, artisansResult, teamsResult] = await Promise.all([
     supabase
