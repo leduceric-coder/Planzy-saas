@@ -28,6 +28,7 @@ interface ArtisanRow {
   email: string | null
   status?: string | null
   is_archived?: boolean
+  user_id?: string | null
 }
 
 interface TeamMember {
@@ -62,6 +63,7 @@ interface Props {
   tasks: TaskWithProject[]
   today: string
   canManage?: boolean
+  pendingInviteArtisanIds?: string[]
 }
 
 // ── Constants ──────────────────────────────────────────────────────────────────
@@ -134,9 +136,10 @@ function teamToFormData(t: TeamRow): TeamFormData {
 
 // ── Main component ─────────────────────────────────────────────────────────────
 
-export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, canManage = false }: Props) {
+export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, canManage = false, pendingInviteArtisanIds = [] }: Props) {
   const router = useRouter()
   const { toast } = useToast()
+  const pendingInviteSet = useMemo(() => new Set(pendingInviteArtisanIds), [pendingInviteArtisanIds])
 
   // Tabs
   const [activeTab, setActiveTab] = useState<'artisans' | 'equipes'>('artisans')
@@ -228,12 +231,14 @@ export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, 
         ...a,
         status,
         accountStatus: ((a.status as AccountStatus) ?? 'active'),
+        hasAccount: !!a.user_id,
+        hasPendingInvite: pendingInviteSet.has(a.id),
         weekTasks,
         currentProjects: Array.from(projectMap.values()),
         artisanTeams: teamsByArtisan.get(a.id) ?? [],
       }
     }),
-    [artisans, weekTasksByArtisan, teamsByArtisan]
+    [artisans, weekTasksByArtisan, teamsByArtisan, pendingInviteSet]
   )
 
   // ── KPIs ──────────────────────────────────────────────────────────────────
@@ -545,7 +550,7 @@ export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, 
           )}
 
           {/* Nouvelle équipe button (équipes tab) */}
-          {activeTab === 'equipes' && (
+          {activeTab === 'equipes' && canManage && (
             <button
               onClick={() => { setEditingTeam(null); setTeamPanelOpen(true) }}
               className="ml-auto flex items-center gap-1.5 h-8 px-3 rounded-full text-[12px] font-600 bg-transparent text-muted-foreground border border-border/40 hover:text-foreground hover:bg-elevated/50 transition-colors whitespace-nowrap"
@@ -655,25 +660,27 @@ export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, 
                             <span className="text-[10.5px] text-muted-foreground/30 italic">Sans équipe</span>
                           )}
                         </div>
-                        <div
-                          className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
-                          onClick={e => e.stopPropagation()}
-                        >
-                          <button
-                            onClick={() => setEditingArtisanId(artisan.id)}
-                            className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-elevated transition-colors"
-                            title="Modifier"
+                        {canManage && (
+                          <div
+                            className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
+                            onClick={e => e.stopPropagation()}
                           >
-                            <Pencil className="h-3 w-3" />
-                          </button>
-                          <button
-                            onClick={() => setArchivingArtisanId(artisan.id)}
-                            className="p-1.5 rounded-lg text-muted-foreground hover:text-orange-500 hover:bg-orange-500/10 transition-colors"
-                            title="Archiver"
-                          >
-                            <Archive className="h-3 w-3" />
-                          </button>
-                        </div>
+                            <button
+                              onClick={() => setEditingArtisanId(artisan.id)}
+                              className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-elevated transition-colors"
+                              title="Modifier"
+                            >
+                              <Pencil className="h-3 w-3" />
+                            </button>
+                            <button
+                              onClick={() => setArchivingArtisanId(artisan.id)}
+                              className="p-1.5 rounded-lg text-muted-foreground hover:text-orange-500 hover:bg-orange-500/10 transition-colors"
+                              title="Archiver"
+                            >
+                              <Archive className="h-3 w-3" />
+                            </button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -754,13 +761,15 @@ export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, 
                             )}
                           </div>
                         </div>
-                        <button
-                          onClick={() => { setEditingTeam(teamToFormData(team)); setTeamPanelOpen(true) }}
-                          className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-elevated transition-colors opacity-0 group-hover:opacity-100 shrink-0"
-                          title="Modifier"
-                        >
-                          <Pencil className="h-3.5 w-3.5" />
-                        </button>
+                        {canManage && (
+                          <button
+                            onClick={() => { setEditingTeam(teamToFormData(team)); setTeamPanelOpen(true) }}
+                            className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-elevated transition-colors opacity-0 group-hover:opacity-100 shrink-0"
+                            title="Modifier"
+                          >
+                            <Pencil className="h-3.5 w-3.5" />
+                          </button>
+                        )}
                       </div>
 
                       {/* Badges */}
@@ -832,7 +841,7 @@ export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, 
                 )
               })}
             </div>
-          ) : (
+          ) : canManage ? (
             <div
               onClick={() => { setEditingTeam(null); setTeamPanelOpen(true) }}
               className="border-2 border-dashed border-border rounded-xl p-10 flex flex-col items-center gap-3 cursor-pointer hover:border-primary/40 hover:bg-primary/5 transition-colors group"
@@ -844,6 +853,11 @@ export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, 
                 <p className="text-sm font-600 text-foreground">Créer la première équipe</p>
                 <p className="text-xs text-muted-foreground mt-0.5">Regroupez vos artisans par chantier, métier ou entreprise</p>
               </div>
+            </div>
+          ) : (
+            <div className="border-2 border-dashed border-border rounded-xl p-10 flex flex-col items-center gap-2 text-center">
+              <Users className="h-6 w-6 text-muted-foreground/40" />
+              <p className="text-sm text-muted-foreground">Aucune équipe pour le moment.</p>
             </div>
           )
         )}

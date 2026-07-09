@@ -20,16 +20,19 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const profile = profileData as unknown as Profile | null
   const orgId = (profile as any)?.org_id as string | null
 
-  // LOT 41B — Gate d'accès : un artisan suspendu/archivé ne peut pas entrer dans
-  // l'application (gate applicatif ; la restriction DB complète = LOT 41D).
-  const artisanId = (profile as any)?.artisan_id as string | null
-  if (artisanId) {
-    const { data: artisanRow } = await supabase
-      .from('artisans')
-      .select('status')
-      .eq('id', artisanId)
-      .single()
-    const artisanStatus = (artisanRow as { status?: string } | null)?.status
+  // LOT 41B/41E — Gate d'accès : un artisan suspendu/archivé ne peut pas entrer
+  // dans l'application (gate applicatif ; la restriction DB complète = LOT 41D).
+  // On résout le lien compte↔artisan par les DEUX chemins possibles
+  // (profiles.artisan_id ET artisans.user_id) pour être robuste aux données
+  // partiellement backfillées. Les rôles internes ne sont jamais bloqués ici.
+  const internalRoles = ['owner', 'admin', 'manager', 'site_supervisor']
+  const isInternal = internalRoles.includes(((profile as any)?.role as string) ?? '')
+  if (!isInternal) {
+    const artisanId = (profile as any)?.artisan_id as string | null
+    const { data: linkedArtisan } = artisanId
+      ? await supabase.from('artisans').select('status').eq('id', artisanId).maybeSingle()
+      : await supabase.from('artisans').select('status').eq('user_id', user.id).maybeSingle()
+    const artisanStatus = (linkedArtisan as { status?: string } | null)?.status
     if (artisanStatus === 'suspended' || artisanStatus === 'archived') {
       return <AccessBlocked status={artisanStatus} />
     }
