@@ -32,7 +32,7 @@ export default async function ChantierPage({ params, searchParams }: Props) {
     supabase.from('projects').select('*').eq('id', id).single(),
     supabase.from('tasks').select('*, assignee:artisans(id,full_name,color,trade), team:teams(id,name,color)').eq('project_id', id).order('position'),
     supabase.from('issues').select('*, artisan:artisans!assigned_to(id,full_name,color)').eq('project_id', id).order('created_at', { ascending: false }),
-    supabase.from('photos').select('*, taken_by_profile:profiles!taken_by(full_name)').eq('project_id', id).order('taken_at', { ascending: false }).limit(20),
+    supabase.from('photos').select('*, taken_by_profile:profiles!taken_by(full_name), task:tasks!task_id(id, title)').eq('project_id', id).order('taken_at', { ascending: false }).limit(20),
     supabase.from('documents').select('*').eq('project_id', id).order('created_at', { ascending: false }),
     supabase.from('messages').select('*, sender:profiles!sender_id(full_name,avatar_url)').eq('project_id', id).order('created_at', { ascending: false }).limit(30),
     supabase.from('materials').select('*').eq('project_id', id).order('created_at', { ascending: false }),

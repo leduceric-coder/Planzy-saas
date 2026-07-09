@@ -792,9 +792,24 @@ function EquipesTab({ projectTeams, team, tasks, artisans }: {
 
 // ── Photos Tab ────────────────────────────────────────────────────────────────
 
-function PhotoCard({ photo }: { photo: Photo & { taken_by_profile?: any } }) {
+// LOT 39 — statut de validation affiché sur la carte photo.
+const PHOTO_STATUS_META: Record<string, { label: string; cls: string }> = {
+  pending:  { label: 'À valider', cls: 'bg-amber-500/90 text-white' },
+  approved: { label: 'Validée',   cls: 'bg-green-600/90 text-white' },
+  rejected: { label: 'Refusée',   cls: 'bg-red-600/90 text-white' },
+}
+
+type PhotoCardData = Photo & {
+  taken_by_profile?: any
+  task?: { id: string; title: string } | null
+  validation_status?: string | null
+}
+
+function PhotoCard({ photo }: { photo: PhotoCardData }) {
   const [hasError, setHasError] = useState(false)
   const src = hasError ? null : resolveDemoImageSrc(photo.thumbnail_url ?? photo.url, photo.caption)
+  const statusMeta = PHOTO_STATUS_META[photo.validation_status ?? 'pending'] ?? PHOTO_STATUS_META.pending
+  const taskLabel = photo.task?.title ?? 'Photo générale du chantier'
 
   if (!src) {
     return (
@@ -815,17 +830,22 @@ function PhotoCard({ photo }: { photo: Photo & { taken_by_profile?: any } }) {
         loading="lazy"
         onError={() => setHasError(true)}
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-70 rounded-xl transition-opacity" />
-      {photo.caption && (
-        <div className="absolute bottom-1.5 inset-x-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-          <p className="text-[9px] text-white font-500 truncate px-1 drop-shadow">{photo.caption}</p>
-        </div>
-      )}
+      {/* Badge statut de validation (toujours visible) */}
+      <div className="absolute top-1.5 left-1.5">
+        <span className={cn('text-[8.5px] font-700 px-1.5 py-0.5 rounded-md', statusMeta.cls)}>{statusMeta.label}</span>
+      </div>
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-80 rounded-xl transition-opacity" />
+      <div className="absolute bottom-1.5 inset-x-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+        <p className={cn('text-[9px] font-600 truncate px-1 drop-shadow', photo.task ? 'text-white' : 'text-white/75 italic')}>
+          {taskLabel}
+        </p>
+        {photo.caption && <p className="text-[8.5px] text-white/80 font-500 truncate px-1 drop-shadow">{photo.caption}</p>}
+      </div>
     </div>
   )
 }
 
-function PhotosTab({ photos, documents }: { photos: (Photo & { taken_by_profile?: any })[]; documents: Document[] }) {
+function PhotosTab({ photos, documents }: { photos: PhotoCardData[]; documents: Document[] }) {
   return (
     <div className="mx-auto w-full max-w-[1440px] p-5 lg:p-8 flex flex-col gap-6">
       {/* Photos */}

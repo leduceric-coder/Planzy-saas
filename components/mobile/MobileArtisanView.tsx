@@ -1116,7 +1116,9 @@ export function MobileArtisanView({
 
                     <select
                       value={photoProjectId}
-                      onChange={e => setPhotoProjectId(e.target.value)}
+                      // LOT 39 — changer de chantier détache la tâche liée (elle
+                      // appartient à un autre chantier) pour éviter tout rattachement croisé.
+                      onChange={e => { setPhotoProjectId(e.target.value); setPhotoLinkedTask(null) }}
                       className="w-full h-11 rounded-xl border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
                     >
                       {projects.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
