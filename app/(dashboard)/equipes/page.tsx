@@ -80,11 +80,12 @@ export default async function EquipesPage() {
       .select('id, name, color, type, project_id, description, lead_id, project:projects(id,name), lead:artisans!lead_id(id,full_name,trade), members:team_members(artisan_id, artisan:artisans(id,full_name,trade,color))')
       .eq('org_id', orgId)
       .order('name'),
+    // Tous les artisans (actifs, suspendus, archivés) : le filtre cycle de vie
+    // est appliqué côté client pour rester accessibles via l'onglet « Archivés ».
     supabase
       .from('artisans')
       .select('id, org_id, full_name, trade, color, phone, email, is_archived, status, user_id')
       .eq('org_id', orgId)
-      .eq('is_archived', false)
       .order('full_name'),
     supabase
       .from('projects')

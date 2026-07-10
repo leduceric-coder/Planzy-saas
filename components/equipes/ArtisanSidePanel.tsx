@@ -105,8 +105,10 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
   const softRefresh = () => { if (onChanged) startTransition(() => onChanged()) }
 
   // Rattachements réels (RLS-scoped) rechargés à l'ouverture / après mutation.
-  const loadAssignments = () => {
-    setLoading(true)
+  // silent=true : refetch de réconciliation (n'affiche pas l'état « Chargement… »,
+  // garde les mises à jour optimistes visibles).
+  const loadAssignments = (silent = false) => {
+    if (!silent) setLoading(true)
     const supabase = createClient()
     Promise.all([
       supabase.from('artisan_project_assignments').select('id, project_id').eq('artisan_id', artisan.id).eq('is_active', true),
@@ -117,7 +119,7 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
       setLoading(false)
     })
   }
-  useEffect(loadAssignments, [artisan.id])
+  useEffect(() => { loadAssignments() }, [artisan.id])
 
   const projName = (id: string) => projects.find(p => p.id === id)?.name ?? 'Chantier'
   const projColor = (id: string) => projects.find(p => p.id === id)?.color ?? '#6366f1'
@@ -129,7 +131,7 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
   }
 
   // Refetch local léger (rattachements) + refresh parent non bloquant.
-  const refresh = () => { loadAssignments(); softRefresh() }
+  const refresh = () => { loadAssignments(true); softRefresh() }
 
   // ── Statut lifecycle (confirmation non bloquante) ──
   function askStatus(next: AccountStatus) {
@@ -176,11 +178,14 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
   // ── Rattachement chantier (idempotent : upsert onConflict → pas de 409) ──
   async function addProject() {
     if (!addProjectId || !orgId || busy) return
+    const pid = addProjectId
     setBusy(true)
     const { error } = await mutationClient().from('artisan_project_assignments')
-      .upsert({ org_id: orgId, artisan_id: artisan.id, project_id: addProjectId }, { onConflict: 'artisan_id,project_id', ignoreDuplicates: true })
+      .upsert({ org_id: orgId, artisan_id: artisan.id, project_id: pid }, { onConflict: 'artisan_id,project_id', ignoreDuplicates: true })
     setBusy(false)
     if (error) { showToast(error.message, 'error'); return }
+    // Optimiste : le badge « Sans chantier » disparaît immédiatement.
+    setProjAssigns(prev => prev.some(p => p.project_id === pid) ? prev : [...prev, { id: `tmp-${pid}`, project_id: pid }])
     setAddProjectId('')
     showToast('Chantier rattaché')
     refresh()
@@ -205,6 +210,9 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
     setBusy(false)
     setConfirm(null)
     if (error) { showToast(error.message, 'error'); return }
+    // Optimiste : retire le chantier et ses tâches (badges recalculés immédiatement).
+    setProjAssigns(prev => prev.filter(p => p.id !== a.id))
+    setTaskAssigns(prev => prev.filter(t => t.project_id !== a.project_id))
     showToast('Chantier retiré')
     refresh()
   }
@@ -212,14 +220,18 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
   // ── Rattachement tâche (idempotent) ──
   async function addTask() {
     if (!addTaskProjectId || !addTaskId || !orgId || busy) return
+    const pid = addTaskProjectId, tid = addTaskId
     setBusy(true)
     // Garantir le rattachement chantier correspondant (upsert idempotent → pas de 409).
     await mutationClient().from('artisan_project_assignments')
-      .upsert({ org_id: orgId, artisan_id: artisan.id, project_id: addTaskProjectId }, { onConflict: 'artisan_id,project_id', ignoreDuplicates: true })
+      .upsert({ org_id: orgId, artisan_id: artisan.id, project_id: pid }, { onConflict: 'artisan_id,project_id', ignoreDuplicates: true })
     const { error } = await mutationClient().from('artisan_task_assignments')
-      .upsert({ org_id: orgId, artisan_id: artisan.id, project_id: addTaskProjectId, task_id: addTaskId }, { onConflict: 'artisan_id,task_id', ignoreDuplicates: true })
+      .upsert({ org_id: orgId, artisan_id: artisan.id, project_id: pid, task_id: tid }, { onConflict: 'artisan_id,task_id', ignoreDuplicates: true })
     setBusy(false)
     if (error) { showToast(error.message, 'error'); return }
+    // Optimiste : « Sans tâche » (et « Sans chantier » si 1er rattachement) disparaissent.
+    setProjAssigns(prev => prev.some(p => p.project_id === pid) ? prev : [...prev, { id: `tmp-${pid}`, project_id: pid }])
+    setTaskAssigns(prev => prev.some(t => t.task_id === tid) ? prev : [...prev, { id: `tmp-${tid}`, task_id: tid, project_id: pid }])
     setAddTaskId('')
     showToast('Tâche rattachée')
     refresh()
@@ -239,6 +251,8 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
     setBusy(false)
     setConfirm(null)
     if (error) { showToast(error.message, 'error'); return }
+    // Optimiste : « Sans tâche » revient si c'était la dernière.
+    setTaskAssigns(prev => prev.filter(t => t.id !== a.id))
     showToast('Tâche retirée')
     refresh()
   }

@@ -77,6 +77,18 @@ const ARTISAN_FILTERS: { value: ArtisanFilter; label: string }[] = [
   { value: 'conflict', label: 'Conflits' },
 ]
 
+// Filtre cycle de vie (statut du compte artisan). Vue par défaut : Actifs.
+type Lifecycle = 'active' | 'suspended' | 'archived' | 'all'
+
+const LIFECYCLE_FILTERS: { value: Lifecycle; label: string }[] = [
+  { value: 'active',    label: 'Actifs' },
+  { value: 'suspended', label: 'Suspendus' },
+  { value: 'archived',  label: 'Archivés' },
+  { value: 'all',       label: 'Tous' },
+]
+
+const lifecycleOf = (a: { accountStatus?: 'active' | 'suspended' | 'archived' }) => a.accountStatus ?? 'active'
+
 const STATUS_CONFIG = {
   free:     { label: 'Disponible',    cls: 'bg-muted/40 text-muted-foreground/60 border-border/30' },
   assigned: { label: 'Affecté',       cls: 'bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20' },
@@ -146,6 +158,7 @@ export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, 
 
   // Filters / search
   const [artisanFilter, setArtisanFilter] = useState<ArtisanFilter>('all')
+  const [lifecycle, setLifecycle] = useState<Lifecycle>('active')
   const [search, setSearch] = useState('')
 
   // Side panels
@@ -241,14 +254,28 @@ export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, 
     [artisans, weekTasksByArtisan, teamsByArtisan, pendingInviteSet]
   )
 
+  // Sous-ensembles par cycle de vie. Les métriques (KPI/alertes) ne portent que
+  // sur les artisans ACTIFS ; suspendus/archivés restent listables via le filtre.
+  const activeArtisans = useMemo(() => enrichedArtisans.filter(a => lifecycleOf(a) === 'active'), [enrichedArtisans])
+  const lifecycleArtisans = useMemo(
+    () => lifecycle === 'all' ? enrichedArtisans : enrichedArtisans.filter(a => lifecycleOf(a) === lifecycle),
+    [enrichedArtisans, lifecycle],
+  )
+  const lifecycleCounts = useMemo(() => ({
+    active:    enrichedArtisans.filter(a => lifecycleOf(a) === 'active').length,
+    suspended: enrichedArtisans.filter(a => lifecycleOf(a) === 'suspended').length,
+    archived:  enrichedArtisans.filter(a => lifecycleOf(a) === 'archived').length,
+    all:       enrichedArtisans.length,
+  }), [enrichedArtisans])
+
   // ── KPIs ──────────────────────────────────────────────────────────────────
 
   const kpis = useMemo(() => ({
-    assigned:    enrichedArtisans.filter(a => a.status === 'assigned').length,
-    free:        enrichedArtisans.filter(a => a.status === 'free').length,
-    conflicts:   enrichedArtisans.filter(a => a.status === 'conflict').length,
+    assigned:    activeArtisans.filter(a => a.status === 'assigned').length,
+    free:        activeArtisans.filter(a => a.status === 'free').length,
+    conflicts:   activeArtisans.filter(a => a.status === 'conflict').length,
     activeTeams: teams.filter(t => t.members.length > 0).length,
-  }), [enrichedArtisans, teams])
+  }), [activeArtisans, teams])
 
   // ── Alerts ────────────────────────────────────────────────────────────────
 
@@ -259,7 +286,7 @@ export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, 
 
   const alerts = useMemo((): Alert[] => {
     const result: Alert[] = []
-    for (const a of enrichedArtisans) {
+    for (const a of activeArtisans) {
       if (a.status === 'conflict') result.push({ type: 'conflict', artisan: a })
     }
     for (const t of teams) {
@@ -278,12 +305,12 @@ export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, 
       }
     }
     return result.slice(0, 6)
-  }, [enrichedArtisans, teams, tasks, projectById])
+  }, [activeArtisans, teams, tasks, projectById])
 
   // ── Filtered lists ────────────────────────────────────────────────────────
 
   const filteredArtisans = useMemo(() => {
-    let list = enrichedArtisans
+    let list = lifecycleArtisans
     if (artisanFilter !== 'all') list = list.filter(a => a.status === artisanFilter)
     if (search.trim()) {
       const q = search.trim().toLowerCase()
@@ -293,7 +320,7 @@ export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, 
       )
     }
     return list
-  }, [enrichedArtisans, artisanFilter, search])
+  }, [lifecycleArtisans, artisanFilter, search])
 
   const filteredTeams = useMemo(() => {
     if (!search.trim()) return teams
@@ -305,11 +332,11 @@ export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, 
   }, [teams, search])
 
   const filterCounts: Record<ArtisanFilter, number> = useMemo(() => ({
-    all:      enrichedArtisans.length,
-    assigned: enrichedArtisans.filter(a => a.status === 'assigned').length,
-    free:     enrichedArtisans.filter(a => a.status === 'free').length,
-    conflict: enrichedArtisans.filter(a => a.status === 'conflict').length,
-  }), [enrichedArtisans])
+    all:      lifecycleArtisans.length,
+    assigned: lifecycleArtisans.filter(a => a.status === 'assigned').length,
+    free:     lifecycleArtisans.filter(a => a.status === 'free').length,
+    conflict: lifecycleArtisans.filter(a => a.status === 'conflict').length,
+  }), [lifecycleArtisans])
 
   // ── Selected artisan ──────────────────────────────────────────────────────
 
@@ -377,7 +404,7 @@ export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, 
             icon={UserCheck}
             value={kpis.assigned}
             label="Affectés cette semaine"
-            sub={artisans.length > 0 ? `sur ${artisans.length} artisan${artisans.length > 1 ? 's' : ''}` : null}
+            sub={activeArtisans.length > 0 ? `sur ${activeArtisans.length} artisan${activeArtisans.length > 1 ? 's' : ''} actif${activeArtisans.length > 1 ? 's' : ''}` : null}
           />
           <KpiTile
             icon={UserX}
@@ -485,7 +512,7 @@ export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, 
             {(['artisans', 'equipes'] as const).map(tab => (
               <button
                 key={tab}
-                onClick={() => { setActiveTab(tab); setSearch(''); setArtisanFilter('all') }}
+                onClick={() => { setActiveTab(tab); setSearch(''); setArtisanFilter('all'); setLifecycle('active') }}
                 className={cn(
                   'h-7 px-3.5 rounded-lg text-[12px] font-600 transition-colors whitespace-nowrap',
                   activeTab === tab
@@ -493,7 +520,7 @@ export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, 
                     : 'text-muted-foreground hover:text-foreground',
                 )}
               >
-                {tab === 'artisans' ? `Artisans (${artisans.length})` : `Équipes (${teams.length})`}
+                {tab === 'artisans' ? `Artisans (${lifecycleCounts.active})` : `Équipes (${teams.length})`}
               </button>
             ))}
           </div>
@@ -560,6 +587,32 @@ export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, 
             </button>
           )}
         </div>
+
+        {/* ── Lifecycle segmented control (artisans tab) ── */}
+        {activeTab === 'artisans' && (
+          <div className="flex items-center gap-1 bg-elevated/50 border border-border/40 rounded-xl p-1 w-fit">
+            {LIFECYCLE_FILTERS.map(l => (
+              <button
+                key={l.value}
+                onClick={() => setLifecycle(l.value)}
+                className={cn(
+                  'flex items-center gap-1.5 h-7 px-3 rounded-lg text-[12px] font-600 transition-colors whitespace-nowrap',
+                  lifecycle === l.value
+                    ? 'bg-surface text-foreground shadow-sm border border-border/30'
+                    : 'text-muted-foreground hover:text-foreground',
+                )}
+              >
+                {l.label}
+                <span className={cn(
+                  'text-[10px] font-700 min-w-[16px] h-[16px] rounded-full flex items-center justify-center px-1 leading-none',
+                  lifecycle === l.value ? 'bg-primary/15 text-primary' : 'bg-muted text-muted-foreground/70',
+                )}>
+                  {lifecycleCounts[l.value]}
+                </span>
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* ── Artisans tab ── */}
         {activeTab === 'artisans' && (
@@ -672,13 +725,15 @@ export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, 
                             >
                               <Pencil className="h-3 w-3" />
                             </button>
-                            <button
-                              onClick={() => setArchivingArtisanId(artisan.id)}
-                              className="p-1.5 rounded-lg text-muted-foreground hover:text-orange-500 hover:bg-orange-500/10 transition-colors"
-                              title="Archiver"
-                            >
-                              <Archive className="h-3 w-3" />
-                            </button>
+                            {artisan.accountStatus !== 'archived' && (
+                              <button
+                                onClick={() => setArchivingArtisanId(artisan.id)}
+                                className="p-1.5 rounded-lg text-muted-foreground hover:text-orange-500 hover:bg-orange-500/10 transition-colors"
+                                title="Archiver"
+                              >
+                                <Archive className="h-3 w-3" />
+                              </button>
+                            )}
                           </div>
                         )}
                       </div>
@@ -694,9 +749,15 @@ export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, 
               </div>
               <div className="text-center">
                 <h3 className="font-700 text-foreground mb-1">Aucun artisan trouvé</h3>
-                <p className="text-sm text-muted-foreground mb-4">Aucun artisan ne correspond à ce filtre.</p>
+                <p className="text-sm text-muted-foreground mb-4">
+                  {lifecycle === 'archived'
+                    ? 'Aucun artisan archivé.'
+                    : lifecycle === 'suspended'
+                      ? 'Aucun artisan suspendu.'
+                      : 'Aucun artisan ne correspond à ce filtre.'}
+                </p>
                 <button
-                  onClick={() => { setArtisanFilter('all'); setSearch('') }}
+                  onClick={() => { setArtisanFilter('all'); setSearch(''); setLifecycle('active') }}
                   className="text-sm font-600 text-primary hover:text-primary/80 hover:underline transition-colors"
                 >
                   Réinitialiser les filtres
