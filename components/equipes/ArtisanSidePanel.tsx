@@ -78,9 +78,10 @@ interface Props {
   projects?: ProjectRef[]
   tasks?: TaskWithProject[]
   onChanged?: () => void
+  onCountsChanged?: (artisanId: string, projects: number, tasks: number) => void
 }
 
-export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = false, projects = [], tasks = [], onChanged }: Props) {
+export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = false, projects = [], tasks = [], onChanged, onCountsChanged }: Props) {
   const router = useRouter()
   const { toast: showToast } = useToast()
   const [, startTransition] = useTransition()
@@ -114,9 +115,13 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
       supabase.from('artisan_project_assignments').select('id, project_id').eq('artisan_id', artisan.id).eq('is_active', true),
       supabase.from('artisan_task_assignments').select('id, task_id, project_id').eq('artisan_id', artisan.id).eq('is_active', true),
     ]).then(([p, t]) => {
-      setProjAssigns((p.data ?? []) as ProjAssign[])
-      setTaskAssigns((t.data ?? []) as TaskAssign[])
+      const proj = (p.data ?? []) as ProjAssign[]
+      const task = (t.data ?? []) as TaskAssign[]
+      setProjAssigns(proj)
+      setTaskAssigns(task)
       setLoading(false)
+      // Réconcilie la source de vérité parent (badges carte) avec la base.
+      onCountsChanged?.(artisan.id, proj.length, task.length)
     })
   }
   useEffect(() => { loadAssignments() }, [artisan.id])
@@ -184,8 +189,10 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
       .upsert({ org_id: orgId, artisan_id: artisan.id, project_id: pid }, { onConflict: 'artisan_id,project_id', ignoreDuplicates: true })
     setBusy(false)
     if (error) { showToast(error.message, 'error'); return }
-    // Optimiste : le badge « Sans chantier » disparaît immédiatement.
-    setProjAssigns(prev => prev.some(p => p.project_id === pid) ? prev : [...prev, { id: `tmp-${pid}`, project_id: pid }])
+    // Optimiste : le badge « Sans chantier » disparaît immédiatement (fiche + carte).
+    const next = projAssigns.some(p => p.project_id === pid) ? projAssigns : [...projAssigns, { id: `tmp-${pid}`, project_id: pid }]
+    setProjAssigns(next)
+    onCountsChanged?.(artisan.id, next.length, taskAssigns.length)
     setAddProjectId('')
     showToast('Chantier rattaché')
     refresh()
@@ -211,8 +218,11 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
     setConfirm(null)
     if (error) { showToast(error.message, 'error'); return }
     // Optimiste : retire le chantier et ses tâches (badges recalculés immédiatement).
-    setProjAssigns(prev => prev.filter(p => p.id !== a.id))
-    setTaskAssigns(prev => prev.filter(t => t.project_id !== a.project_id))
+    const nextProj = projAssigns.filter(p => p.id !== a.id)
+    const nextTask = taskAssigns.filter(t => t.project_id !== a.project_id)
+    setProjAssigns(nextProj)
+    setTaskAssigns(nextTask)
+    onCountsChanged?.(artisan.id, nextProj.length, nextTask.length)
     showToast('Chantier retiré')
     refresh()
   }
@@ -230,8 +240,11 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
     setBusy(false)
     if (error) { showToast(error.message, 'error'); return }
     // Optimiste : « Sans tâche » (et « Sans chantier » si 1er rattachement) disparaissent.
-    setProjAssigns(prev => prev.some(p => p.project_id === pid) ? prev : [...prev, { id: `tmp-${pid}`, project_id: pid }])
-    setTaskAssigns(prev => prev.some(t => t.task_id === tid) ? prev : [...prev, { id: `tmp-${tid}`, task_id: tid, project_id: pid }])
+    const nextProj = projAssigns.some(p => p.project_id === pid) ? projAssigns : [...projAssigns, { id: `tmp-${pid}`, project_id: pid }]
+    const nextTask = taskAssigns.some(t => t.task_id === tid) ? taskAssigns : [...taskAssigns, { id: `tmp-${tid}`, task_id: tid, project_id: pid }]
+    setProjAssigns(nextProj)
+    setTaskAssigns(nextTask)
+    onCountsChanged?.(artisan.id, nextProj.length, nextTask.length)
     setAddTaskId('')
     showToast('Tâche rattachée')
     refresh()
@@ -252,7 +265,9 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
     setConfirm(null)
     if (error) { showToast(error.message, 'error'); return }
     // Optimiste : « Sans tâche » revient si c'était la dernière.
-    setTaskAssigns(prev => prev.filter(t => t.id !== a.id))
+    const nextTask = taskAssigns.filter(t => t.id !== a.id)
+    setTaskAssigns(nextTask)
+    onCountsChanged?.(artisan.id, projAssigns.length, nextTask.length)
     showToast('Tâche retirée')
     refresh()
   }

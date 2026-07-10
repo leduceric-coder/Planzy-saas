@@ -74,7 +74,7 @@ export default async function EquipesPage() {
 
   const today = new Date().toISOString().split('T')[0]
 
-  const [{ data: teamsData }, { data: artisansData }, { data: projectsData }, { data: tasksData }, { data: invitesData }] = await Promise.all([
+  const [{ data: teamsData }, { data: artisansData }, { data: projectsData }, { data: tasksData }, { data: invitesData }, { data: apaData }, { data: ataData }] = await Promise.all([
     supabase
       .from('teams')
       .select('id, name, color, type, project_id, description, lead_id, project:projects(id,name), lead:artisans!lead_id(id,full_name,trade), members:team_members(artisan_id, artisan:artisans(id,full_name,trade,color))')
@@ -104,6 +104,18 @@ export default async function EquipesPage() {
       .select('artisan_id, status')
       .eq('org_id', orgId)
       .eq('status', 'pending'),
+    // Rattachements actifs → source de vérité des badges « Sans chantier / tâche »
+    // (carte + fiche). RLS org-scoped ; comptage côté serveur.
+    supabase
+      .from('artisan_project_assignments')
+      .select('artisan_id')
+      .eq('org_id', orgId)
+      .eq('is_active', true),
+    supabase
+      .from('artisan_task_assignments')
+      .select('artisan_id')
+      .eq('org_id', orgId)
+      .eq('is_active', true),
   ])
 
   const teams    = (teamsData    ?? []) as unknown as TeamRow[]
@@ -115,6 +127,16 @@ export default async function EquipesPage() {
       .map(i => i.artisan_id)
       .filter((v): v is string => !!v)
   ))
+
+  const assignmentCounts: Record<string, { projects: number; tasks: number }> = {}
+  for (const r of (apaData ?? []) as { artisan_id: string | null }[]) {
+    if (!r.artisan_id) continue
+    ;(assignmentCounts[r.artisan_id] ??= { projects: 0, tasks: 0 }).projects++
+  }
+  for (const r of (ataData ?? []) as { artisan_id: string | null }[]) {
+    if (!r.artisan_id) continue
+    ;(assignmentCounts[r.artisan_id] ??= { projects: 0, tasks: 0 }).tasks++
+  }
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
@@ -143,6 +165,7 @@ export default async function EquipesPage() {
           today={today}
           canManage={canManage}
           pendingInviteArtisanIds={pendingInviteArtisanIds}
+          assignmentCounts={assignmentCounts}
         />
       </div>
     </div>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import {
   Users, Plus, Search, AlertTriangle, CheckCircle2,
   UserCheck, UserX, Pencil, Archive, X, ChevronRight,
@@ -64,6 +64,7 @@ interface Props {
   today: string
   canManage?: boolean
   pendingInviteArtisanIds?: string[]
+  assignmentCounts?: Record<string, { projects: number; tasks: number }>
 }
 
 // ── Constants ──────────────────────────────────────────────────────────────────
@@ -148,10 +149,17 @@ function teamToFormData(t: TeamRow): TeamFormData {
 
 // ── Main component ─────────────────────────────────────────────────────────────
 
-export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, canManage = false, pendingInviteArtisanIds = [] }: Props) {
+export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, canManage = false, pendingInviteArtisanIds = [], assignmentCounts = {} }: Props) {
   const router = useRouter()
   const { toast } = useToast()
   const pendingInviteSet = useMemo(() => new Set(pendingInviteArtisanIds), [pendingInviteArtisanIds])
+
+  // Source de vérité des rattachements (badges carte + fiche). Initialisée depuis
+  // le serveur, mise à jour de façon optimiste par la fiche (onCountsChanged),
+  // puis réconciliée à chaque router.refresh (nouvelles props serveur).
+  const [assignCounts, setAssignCounts] = useState(assignmentCounts)
+  useEffect(() => { setAssignCounts(assignmentCounts) }, [assignmentCounts])
+  const countsFor = (id: string) => assignCounts[id] ?? { projects: 0, tasks: 0 }
 
   // Tabs
   const [activeTab, setActiveTab] = useState<'artisans' | 'equipes'>('artisans')
@@ -621,6 +629,11 @@ export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, 
               {filteredArtisans.map(artisan => {
                 const config = STATUS_CONFIG[artisan.status]
                 const initials = getInitials(artisan.full_name)
+                const ac = countsFor(artisan.id)
+                // Badges rattachement : signal de gestion (rôles internes), et
+                // seulement pour un artisan actif (pas suspendu/archivé).
+                const showNoProject = canManage && artisan.accountStatus === 'active' && ac.projects === 0
+                const showNoTask    = canManage && artisan.accountStatus === 'active' && ac.tasks === 0
                 const mainProject = artisan.currentProjects[0]
                 const teamLabel = artisan.artisanTeams.length > 0
                   ? artisan.artisanTeams.slice(0, 2).map(t => t.name).join(', ') +
@@ -668,6 +681,16 @@ export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, 
                           {artisan.accountStatus === 'archived' && (
                             <span className="text-[9.5px] font-700 px-2 py-0.5 rounded-full border bg-muted/50 text-muted-foreground border-border/40">
                               Archivé
+                            </span>
+                          )}
+                          {showNoProject && (
+                            <span className="text-[9.5px] font-700 px-2 py-0.5 rounded-full border bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20">
+                              Sans chantier
+                            </span>
+                          )}
+                          {showNoTask && (
+                            <span className="text-[9.5px] font-700 px-2 py-0.5 rounded-full border bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20">
+                              Sans tâche
                             </span>
                           )}
                           <span className={cn(
@@ -937,6 +960,8 @@ export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, 
           projects={projects}
           tasks={tasks}
           onChanged={() => router.refresh()}
+          onCountsChanged={(id, projectsCount, tasksCount) =>
+            setAssignCounts(prev => ({ ...prev, [id]: { projects: projectsCount, tasks: tasksCount } }))}
         />
       )}
 
