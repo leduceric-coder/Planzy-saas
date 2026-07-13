@@ -240,6 +240,40 @@ export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, 
     return map
   }, [tasks, artisans, today, weekEnd, projectById, artisansByTeam])
 
+  // Affectations « legacy » détectées (planning) : tâches assigned_to, tâches
+  // assigned_team via appartenance équipe, et chantier via teams.project_id.
+  // Sert à ne pas afficher « Sans chantier/tâche » quand l'artisan est en réalité
+  // affecté (mais pas encore rattaché explicitement) → évite la contradiction.
+  const legacyByArtisan = useMemo(() => {
+    const map = new Map<string, { taskIds: Set<string>; projectIds: Set<string> }>()
+    const ensure = (id: string) => {
+      let e = map.get(id)
+      if (!e) { e = { taskIds: new Set(), projectIds: new Set() }; map.set(id, e) }
+      return e
+    }
+    for (const task of tasks) {
+      if (task.assigned_to) {
+        const e = ensure(task.assigned_to)
+        e.taskIds.add(task.id)
+        if (task.project_id) e.projectIds.add(task.project_id)
+      }
+      if (task.assigned_team) {
+        for (const aid of artisansByTeam.get(task.assigned_team) ?? []) {
+          const e = ensure(aid)
+          e.taskIds.add(task.id)
+          if (task.project_id) e.projectIds.add(task.project_id)
+        }
+      }
+    }
+    for (const team of teams) {
+      if (!team.project_id) continue
+      for (const m of team.members) {
+        if (m.artisan_id) ensure(m.artisan_id).projectIds.add(team.project_id)
+      }
+    }
+    return map
+  }, [tasks, artisansByTeam, teams])
+
   // Enriched artisans
   const enrichedArtisans = useMemo((): EnrichedArtisan[] =>
     artisans.map(a => {
@@ -630,10 +664,15 @@ export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, 
                 const config = STATUS_CONFIG[artisan.status]
                 const initials = getInitials(artisan.full_name)
                 const ac = countsFor(artisan.id)
-                // Badges rattachement : signal de gestion (rôles internes), et
-                // seulement pour un artisan actif (pas suspendu/archivé).
-                const showNoProject = canManage && artisan.accountStatus === 'active' && ac.projects === 0
-                const showNoTask    = canManage && artisan.accountStatus === 'active' && ac.tasks === 0
+                const legacy = legacyByArtisan.get(artisan.id)
+                const hasLegacyProject = (legacy?.projectIds.size ?? 0) > 0
+                const hasLegacyTask    = (legacy?.taskIds.size ?? 0) > 0
+                const isActive = artisan.accountStatus === 'active'
+                // « Sans chantier/tâche » seulement si AUCUN rattachement explicite
+                // ET aucune affectation legacy (sinon on ne ment pas : « À confirmer »).
+                const showNoProject = canManage && isActive && ac.projects === 0 && !hasLegacyProject
+                const showNoTask    = canManage && isActive && ac.tasks === 0 && !hasLegacyTask
+                const showToConfirm = canManage && isActive && ac.projects === 0 && ac.tasks === 0 && (hasLegacyProject || hasLegacyTask)
                 const mainProject = artisan.currentProjects[0]
                 const teamLabel = artisan.artisanTeams.length > 0
                   ? artisan.artisanTeams.slice(0, 2).map(t => t.name).join(', ') +
@@ -693,6 +732,11 @@ export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, 
                               Sans tâche
                             </span>
                           )}
+                          {showToConfirm && (
+                            <span className="text-[9.5px] font-700 px-2 py-0.5 rounded-full border bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20" title="Affecté via le planning — rattachement explicite à confirmer">
+                              À confirmer
+                            </span>
+                          )}
                           <span className={cn(
                             'text-[9.5px] font-700 px-2 py-0.5 rounded-full border',
                             config.cls,
@@ -711,6 +755,10 @@ export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, 
                               {ac.projects} chantier{ac.projects > 1 ? 's' : ''}
                               {' · '}
                               {ac.tasks} tâche{ac.tasks > 1 ? 's' : ''} rattachée{ac.tasks > 1 ? 's' : ''}
+                            </span>
+                          ) : (hasLegacyProject || hasLegacyTask) ? (
+                            <span className="text-[11.5px] text-blue-600/90 dark:text-blue-400/90 font-500 truncate flex-1">
+                              Affecté via le planning — à confirmer
                             </span>
                           ) : (
                             <span className="text-[11px] text-muted-foreground/45 italic flex-1">Aucun rattachement</span>

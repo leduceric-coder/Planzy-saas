@@ -278,6 +278,27 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
   const noProjects = !loading && projAssigns.length === 0
   const noTasks = !loading && taskAssigns.length === 0
 
+  // Affectations détectées (planning) non encore rattachées explicitement :
+  // tâches assigned_to l'artisan ou assigned_team d'une de ses équipes.
+  const teamIds = new Set(artisan.artisanTeams.map(t => t.id))
+  const detectedTasks = tasks.filter(t => t.assigned_to === artisan.id || (t.assigned_team ? teamIds.has(t.assigned_team) : false))
+  const unconfirmedDetected = detectedTasks.filter(t => !taskAssigns.some(a => a.task_id === t.id))
+
+  // Confirme les affectations détectées en rattachements explicites (idempotent).
+  async function confirmDetected() {
+    if (!orgId || busy || unconfirmedDetected.length === 0) return
+    setBusy(true)
+    for (const t of unconfirmedDetected) {
+      await mutationClient().from('artisan_project_assignments')
+        .upsert({ org_id: orgId, artisan_id: artisan.id, project_id: t.project_id }, { onConflict: 'artisan_id,project_id', ignoreDuplicates: true })
+      await mutationClient().from('artisan_task_assignments')
+        .upsert({ org_id: orgId, artisan_id: artisan.id, project_id: t.project_id, task_id: t.id }, { onConflict: 'artisan_id,task_id', ignoreDuplicates: true })
+    }
+    setBusy(false)
+    showToast(`${unconfirmedDetected.length} rattachement${unconfirmedDetected.length > 1 ? 's' : ''} créé${unconfirmedDetected.length > 1 ? 's' : ''}`)
+    refresh()
+  }
+
   // Compte lié / invitation
   const accountLine =
     artisan.hasAccount
@@ -303,8 +324,9 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
             <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
               <span className={cn('inline-flex items-center text-[10px] font-700 px-2 py-0.5 rounded-full border', account.cls)}>{account.label}</span>
               <span className={cn('inline-flex items-center text-[10px] font-700 px-2 py-0.5 rounded-full border', workload.cls)}>{workload.label}</span>
-              {noProjects && <span className="inline-flex items-center text-[10px] font-700 px-2 py-0.5 rounded-full border bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20">Sans chantier</span>}
-              {noTasks && <span className="inline-flex items-center text-[10px] font-700 px-2 py-0.5 rounded-full border bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20">Sans tâche</span>}
+              {noProjects && unconfirmedDetected.length === 0 && <span className="inline-flex items-center text-[10px] font-700 px-2 py-0.5 rounded-full border bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20">Sans chantier</span>}
+              {noTasks && unconfirmedDetected.length === 0 && <span className="inline-flex items-center text-[10px] font-700 px-2 py-0.5 rounded-full border bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20">Sans tâche</span>}
+              {noProjects && noTasks && unconfirmedDetected.length > 0 && <span className="inline-flex items-center text-[10px] font-700 px-2 py-0.5 rounded-full border bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20">À confirmer</span>}
             </div>
           </div>
         </div>
@@ -408,6 +430,41 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
             </div>
           )}
         </div>
+
+        {/* Affectations détectées (planning) non encore rattachées */}
+        {!loading && unconfirmedDetected.length > 0 && (
+          <div className="flex flex-col gap-2 p-3 rounded-xl bg-blue-500/[0.06] border border-blue-500/20">
+            <h3 className="text-[10px] font-800 uppercase tracking-widest text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
+              <ShieldAlert className="h-3 w-3" /> Affectations détectées
+            </h3>
+            <p className="text-[11.5px] text-muted-foreground leading-relaxed">
+              Cet artisan a des affectations issues du planning, mais aucun rattachement explicite chantier/tâche.
+              Confirmez-les en rattachements pour les futures autorisations.
+            </p>
+            <div className="flex flex-col gap-1">
+              {unconfirmedDetected.slice(0, 5).map(t => (
+                <div key={t.id} className="flex items-center gap-2 text-[12px] text-foreground/80">
+                  <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: projColor(t.project_id) }} />
+                  <span className="truncate">{t.title}</span>
+                  <span className="text-[10.5px] text-muted-foreground shrink-0">· {projName(t.project_id)}</span>
+                </div>
+              ))}
+              {unconfirmedDetected.length > 5 && (
+                <span className="text-[10.5px] text-muted-foreground/70">+{unconfirmedDetected.length - 5} autre(s)</span>
+              )}
+            </div>
+            {canManage && (
+              <button
+                onClick={confirmDetected}
+                disabled={busy}
+                className="mt-1 h-9 px-3 rounded-lg bg-blue-600 text-white text-[12.5px] font-600 hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center gap-1.5"
+              >
+                <Plus className="h-3.5 w-3.5" />
+                Créer les rattachements depuis les affectations
+              </button>
+            )}
+          </div>
+        )}
 
         {/* Équipes */}
         <div className="flex flex-col gap-2">
