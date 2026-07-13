@@ -702,9 +702,20 @@ export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, 
                         </div>
                       </div>
 
-                      {/* Chantier + tâches */}
+                      {/* Rattachements (même source que la fiche : assignCounts).
+                          Pour les rôles internes ; sinon repli sur le planning (assigned_to). */}
                       <div className="flex items-center gap-2 min-w-0">
-                        {mainProject ? (
+                        {canManage ? (
+                          (ac.projects > 0 || ac.tasks > 0) ? (
+                            <span className="text-[11.5px] text-foreground/75 font-500 truncate flex-1">
+                              {ac.projects} chantier{ac.projects > 1 ? 's' : ''}
+                              {' · '}
+                              {ac.tasks} tâche{ac.tasks > 1 ? 's' : ''} rattachée{ac.tasks > 1 ? 's' : ''}
+                            </span>
+                          ) : (
+                            <span className="text-[11px] text-muted-foreground/45 italic flex-1">Aucun rattachement</span>
+                          )
+                        ) : mainProject ? (
                           <div className="flex items-center gap-1.5 min-w-0 flex-1">
                             <span className="w-2 h-2 rounded-full shrink-0" style={{ background: mainProject.color }} />
                             <span className="text-[11.5px] text-foreground/75 font-500 truncate">{mainProject.name}</span>
@@ -716,11 +727,6 @@ export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, 
                           </div>
                         ) : (
                           <span className="text-[11px] text-muted-foreground/45 italic flex-1">Aucune tâche planifiée</span>
-                        )}
-                        {artisan.weekTasks.length > 0 && (
-                          <span className="text-[10.5px] text-muted-foreground/55 font-600 shrink-0">
-                            {artisan.weekTasks.length} tâche{artisan.weekTasks.length > 1 ? 's' : ''}
-                          </span>
                         )}
                       </div>
 
