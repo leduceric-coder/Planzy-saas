@@ -277,6 +277,8 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
   const availableProjects = projects.filter(p => !projAssigns.some(a => a.project_id === p.id))
   const noProjects = !loading && projAssigns.length === 0
   const noTasks = !loading && taskAssigns.length === 0
+  // État « À confirmer » : affecté via planning mais aucun rattachement explicite.
+  // (défini ici ; unconfirmedDetected est calculé juste après)
 
   // Affectations détectées (planning) non encore rattachées explicitement :
   // tâches assigned_to l'artisan ou assigned_team d'une de ses équipes.
@@ -323,7 +325,10 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
             <p className="text-sm text-muted-foreground mt-0.5">{artisan.trade ?? 'Métier non renseigné'}</p>
             <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
               <span className={cn('inline-flex items-center text-[10px] font-700 px-2 py-0.5 rounded-full border', account.cls)}>{account.label}</span>
-              <span className={cn('inline-flex items-center text-[10px] font-700 px-2 py-0.5 rounded-full border', workload.cls)}>{workload.label}</span>
+              {/* Badge de charge masqué en état « À confirmer » pour ne pas le contredire. */}
+              {!(noProjects && noTasks && unconfirmedDetected.length > 0) && (
+                <span className={cn('inline-flex items-center text-[10px] font-700 px-2 py-0.5 rounded-full border', workload.cls)}>{workload.label}</span>
+              )}
               {noProjects && unconfirmedDetected.length === 0 && <span className="inline-flex items-center text-[10px] font-700 px-2 py-0.5 rounded-full border bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20">Sans chantier</span>}
               {noTasks && unconfirmedDetected.length === 0 && <span className="inline-flex items-center text-[10px] font-700 px-2 py-0.5 rounded-full border bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20">Sans tâche</span>}
               {noProjects && noTasks && unconfirmedDetected.length > 0 && <span className="inline-flex items-center text-[10px] font-700 px-2 py-0.5 rounded-full border bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20">À confirmer</span>}

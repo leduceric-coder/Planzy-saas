@@ -737,12 +737,16 @@ export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, 
                               À confirmer
                             </span>
                           )}
-                          <span className={cn(
-                            'text-[9.5px] font-700 px-2 py-0.5 rounded-full border',
-                            config.cls,
-                          )}>
-                            {config.label}
-                          </span>
+                          {/* Badge de charge (Affecté/Multi-affecté/Disponible) masqué en état
+                              « À confirmer » pour ne pas contredire ce dernier. */}
+                          {!showToConfirm && (
+                            <span className={cn(
+                              'text-[9.5px] font-700 px-2 py-0.5 rounded-full border',
+                              config.cls,
+                            )}>
+                              {config.label}
+                            </span>
+                          )}
                         </div>
                       </div>
 
