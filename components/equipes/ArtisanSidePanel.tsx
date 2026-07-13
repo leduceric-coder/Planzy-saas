@@ -47,10 +47,11 @@ export type EnrichedArtisan = {
 
 // ── Config ────────────────────────────────────────────────────────────────────
 
+// Charge / disponibilité PLANNING (fenêtre 7 jours) — distincte du périmètre.
 const STATUS_CONFIG = {
-  free:     { label: 'Disponible',    cls: 'bg-muted/40 text-muted-foreground/70 border-border/30' },
-  assigned: { label: 'Affecté',       cls: 'bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20' },
-  conflict: { label: 'Multi-affecté', cls: 'bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20' },
+  free:     { label: 'Libre cette semaine',    cls: 'bg-muted/40 text-muted-foreground/70 border-border/30' },
+  assigned: { label: 'Planifié cette semaine', cls: 'bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20' },
+  conflict: { label: 'Surcharge possible',     cls: 'bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20' },
 }
 
 const ACCOUNT_CONFIG: Record<AccountStatus, { label: string; cls: string }> = {

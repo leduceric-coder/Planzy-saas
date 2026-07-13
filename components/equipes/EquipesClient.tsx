@@ -90,10 +90,12 @@ const LIFECYCLE_FILTERS: { value: Lifecycle; label: string }[] = [
 
 const lifecycleOf = (a: { accountStatus?: 'active' | 'suspended' | 'archived' }) => a.accountStatus ?? 'active'
 
+// Charge / disponibilité PLANNING (fenêtre 7 jours à partir d'aujourd'hui) —
+// distincte du périmètre de rattachement (chantiers/tâches). Libellés explicites.
 const STATUS_CONFIG = {
-  free:     { label: 'Disponible',    cls: 'bg-muted/40 text-muted-foreground/60 border-border/30' },
-  assigned: { label: 'Affecté',       cls: 'bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20' },
-  conflict: { label: 'Multi-affecté', cls: 'bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20' },
+  free:     { label: 'Libre cette semaine',     cls: 'bg-muted/40 text-muted-foreground/60 border-border/30' },
+  assigned: { label: 'Planifié cette semaine',  cls: 'bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20' },
+  conflict: { label: 'Surcharge possible',      cls: 'bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20' },
 }
 
 const TYPE_LABEL: Record<TeamType, string> = {
@@ -756,16 +758,17 @@ export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, 
                         {canManage ? (
                           (ac.projects > 0 || ac.tasks > 0) ? (
                             <span className="text-[11.5px] text-foreground/75 font-500 truncate flex-1">
+                              <span className="text-muted-foreground/70">Périmètre : </span>
                               {ac.projects} chantier{ac.projects > 1 ? 's' : ''}
                               {' · '}
-                              {ac.tasks} tâche{ac.tasks > 1 ? 's' : ''} rattachée{ac.tasks > 1 ? 's' : ''}
+                              {ac.tasks} tâche{ac.tasks > 1 ? 's' : ''}
                             </span>
                           ) : (hasLegacyProject || hasLegacyTask) ? (
                             <span className="text-[11.5px] text-blue-600/90 dark:text-blue-400/90 font-500 truncate flex-1">
                               Affecté via le planning — à confirmer
                             </span>
                           ) : (
-                            <span className="text-[11px] text-muted-foreground/45 italic flex-1">Aucun rattachement</span>
+                            <span className="text-[11px] text-muted-foreground/45 italic flex-1">Aucun périmètre défini</span>
                           )
                         ) : mainProject ? (
                           <div className="flex items-center gap-1.5 min-w-0 flex-1">
