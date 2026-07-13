@@ -98,10 +98,10 @@ export default async function EquipesPage() {
       .select('id, project_id, title, status, start_date, end_date, assigned_to, assigned_team')
       .eq('org_id', orgId)
       .not('status', 'in', '(done,validated)'),
-    // Invitations en attente → « Invitation en attente » sur la fiche artisan.
+    // Invitations en attente → « Invitation en attente » + périmètre prévu (fiche).
     supabase
       .from('invitations')
-      .select('artisan_id, status')
+      .select('artisan_id, status, project_id, task_ids')
       .eq('org_id', orgId)
       .eq('status', 'pending'),
     // Rattachements actifs → source de vérité des badges « Sans chantier / tâche »
@@ -122,11 +122,18 @@ export default async function EquipesPage() {
   const artisans = (artisansData ?? []) as unknown as ArtisanRow[]
   const projects = (projectsData ?? []) as unknown as ProjectRow[]
   const tasks    = (tasksData    ?? []) as unknown as TaskWithProject[]
+  const pendingInvites = (invitesData ?? []) as { artisan_id: string | null; project_id: string | null; task_ids: string[] | null }[]
   const pendingInviteArtisanIds = Array.from(new Set(
-    ((invitesData ?? []) as { artisan_id: string | null }[])
-      .map(i => i.artisan_id)
-      .filter((v): v is string => !!v)
+    pendingInvites.map(i => i.artisan_id).filter((v): v is string => !!v)
   ))
+  // Périmètre prévu par artisan (dernière invitation en attente rencontrée).
+  const pendingInviteScopes: Record<string, { projectId: string | null; taskIds: string[] }> = {}
+  for (const i of pendingInvites) {
+    if (!i.artisan_id) continue
+    if (!pendingInviteScopes[i.artisan_id]) {
+      pendingInviteScopes[i.artisan_id] = { projectId: i.project_id, taskIds: i.task_ids ?? [] }
+    }
+  }
 
   const assignmentCounts: Record<string, { projects: number; tasks: number }> = {}
   for (const r of (apaData ?? []) as { artisan_id: string | null }[]) {
@@ -165,6 +172,7 @@ export default async function EquipesPage() {
           today={today}
           canManage={canManage}
           pendingInviteArtisanIds={pendingInviteArtisanIds}
+          pendingInviteScopes={pendingInviteScopes}
           assignmentCounts={assignmentCounts}
         />
       </div>

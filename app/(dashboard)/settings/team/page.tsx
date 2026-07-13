@@ -27,7 +27,7 @@ export default async function TeamPage() {
 
   const orgId = profile.org_id
 
-  const [{ data: membersRaw }, { data: invitationsRaw }, { data: artisansRaw }] = await Promise.all([
+  const [{ data: membersRaw }, { data: invitationsRaw }, { data: artisansRaw }, { data: projectsRaw }, { data: tasksRaw }] = await Promise.all([
     supabase
       .from('profiles')
       .select('id, email, full_name, avatar_url, role, artisan_id, created_at')
@@ -35,7 +35,7 @@ export default async function TeamPage() {
       .order('created_at'),
     supabase
       .from('invitations')
-      .select('id, email, token, role, artisan_id, status, created_at, expires_at, email_sent_at, email_last_error, email_send_count')
+      .select('id, email, token, role, artisan_id, status, created_at, expires_at, email_sent_at, email_last_error, email_send_count, project_id, task_ids')
       .eq('org_id', orgId)
       .order('created_at', { ascending: false }),
     supabase
@@ -44,6 +44,19 @@ export default async function TeamPage() {
       .eq('org_id', orgId)
       .eq('is_archived', false)
       .order('full_name'),
+    // Périmètre d'invitation artisan : chantiers + tâches de l'organisation.
+    supabase
+      .from('projects')
+      .select('id, name')
+      .eq('org_id', orgId)
+      .neq('status', 'archived')
+      .order('name'),
+    supabase
+      .from('tasks')
+      .select('id, title, project_id')
+      .eq('org_id', orgId)
+      .not('status', 'in', '(done,validated)')
+      .order('title'),
   ])
 
   const members = (membersRaw ?? []) as {
@@ -68,9 +81,13 @@ export default async function TeamPage() {
     email_sent_at: string | null
     email_last_error: string | null
     email_send_count: number
+    project_id: string | null
+    task_ids: string[] | null
   }[]
 
   const artisans = (artisansRaw ?? []) as { id: string; full_name: string; trade: string; user_id: string | null }[]
+  const projects = (projectsRaw ?? []) as { id: string; name: string }[]
+  const tasks = (tasksRaw ?? []) as { id: string; title: string; project_id: string }[]
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
@@ -86,6 +103,8 @@ export default async function TeamPage() {
           members={members}
           invitations={invitations}
           artisans={artisans}
+          projects={projects}
+          tasks={tasks}
         />
       </div>
     </div>

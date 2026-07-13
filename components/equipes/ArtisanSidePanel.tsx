@@ -80,9 +80,10 @@ interface Props {
   tasks?: TaskWithProject[]
   onChanged?: () => void
   onCountsChanged?: (artisanId: string, projects: number, tasks: number) => void
+  pendingScope?: { projectId: string | null; taskIds: string[] }
 }
 
-export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = false, projects = [], tasks = [], onChanged, onCountsChanged }: Props) {
+export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = false, projects = [], tasks = [], onChanged, onCountsChanged, pendingScope }: Props) {
   const router = useRouter()
   const { toast: showToast } = useToast()
   const [, startTransition] = useTransition()
@@ -287,6 +288,11 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
   const detectedTasks = tasks.filter(t => t.assigned_to === artisan.id || (t.assigned_team ? teamIds.has(t.assigned_team) : false))
   const unconfirmedDetected = detectedTasks.filter(t => !taskAssigns.some(a => a.task_id === t.id))
 
+  // Périmètre prévu à l'invitation (rattachements créés à l'acceptation).
+  const hasPendingScope = !!artisan.hasPendingInvite && !!pendingScope?.projectId
+  const pendingProjectName = pendingScope?.projectId ? projName(pendingScope.projectId) : null
+  const pendingTaskTitles = (pendingScope?.taskIds ?? []).map(id => taskTitle(id))
+
   // Confirme les affectations détectées en rattachements explicites (idempotent).
   async function confirmDetected() {
     if (!orgId || busy || unconfirmedDetected.length === 0) return
@@ -330,9 +336,10 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
               {!(noProjects && noTasks && unconfirmedDetected.length > 0) && (
                 <span className={cn('inline-flex items-center text-[10px] font-700 px-2 py-0.5 rounded-full border', workload.cls)}>{workload.label}</span>
               )}
-              {noProjects && unconfirmedDetected.length === 0 && <span className="inline-flex items-center text-[10px] font-700 px-2 py-0.5 rounded-full border bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20">Sans chantier</span>}
-              {noTasks && unconfirmedDetected.length === 0 && <span className="inline-flex items-center text-[10px] font-700 px-2 py-0.5 rounded-full border bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20">Sans tâche</span>}
-              {noProjects && noTasks && unconfirmedDetected.length > 0 && <span className="inline-flex items-center text-[10px] font-700 px-2 py-0.5 rounded-full border bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20">À confirmer</span>}
+              {noProjects && unconfirmedDetected.length === 0 && !hasPendingScope && <span className="inline-flex items-center text-[10px] font-700 px-2 py-0.5 rounded-full border bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20">Sans chantier</span>}
+              {noTasks && unconfirmedDetected.length === 0 && !hasPendingScope && <span className="inline-flex items-center text-[10px] font-700 px-2 py-0.5 rounded-full border bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20">Sans tâche</span>}
+              {noProjects && noTasks && unconfirmedDetected.length > 0 && !hasPendingScope && <span className="inline-flex items-center text-[10px] font-700 px-2 py-0.5 rounded-full border bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20">À confirmer</span>}
+              {hasPendingScope && <span className="inline-flex items-center text-[10px] font-700 px-2 py-0.5 rounded-full border bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20">Invitation en attente</span>}
             </div>
           </div>
         </div>
@@ -356,6 +363,29 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
             </div>
           </div>
         </div>
+
+        {/* Périmètre prévu à l'invitation (distinct des rattachements actifs) */}
+        {hasPendingScope && (
+          <div className="flex flex-col gap-2 p-3 rounded-xl bg-blue-500/[0.06] border border-blue-500/20">
+            <h3 className="text-[10px] font-800 uppercase tracking-widest text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
+              <MailCheck className="h-3 w-3" /> Périmètre prévu à l&apos;invitation
+            </h3>
+            <div className="flex items-center gap-2 text-[12.5px] text-foreground/85">
+              <Building2 className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+              <span className="font-500">{pendingProjectName ?? 'Chantier prévu'}</span>
+            </div>
+            {pendingTaskTitles.length > 0 && (
+              <div className="flex flex-col gap-0.5">
+                {pendingTaskTitles.map((t, i) => (
+                  <div key={i} className="flex items-center gap-2 text-[12px] text-muted-foreground">
+                    <ListChecks className="h-3 w-3 shrink-0" /><span className="truncate">{t}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+            <p className="text-[10.5px] text-muted-foreground/70">Les rattachements seront créés à l&apos;acceptation de l&apos;invitation.</p>
+          </div>
+        )}
 
         {/* Chantiers rattachés */}
         <div className="flex flex-col gap-2">

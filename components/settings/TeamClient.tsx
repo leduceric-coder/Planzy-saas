@@ -40,6 +40,8 @@ interface Invitation {
   email_sent_at: string | null
   email_last_error: string | null
   email_send_count: number
+  project_id?: string | null
+  task_ids?: string[] | null
 }
 
 interface Artisan {
@@ -49,6 +51,9 @@ interface Artisan {
   user_id: string | null
 }
 
+interface ProjectOpt { id: string; name: string }
+interface TaskOpt { id: string; title: string; project_id: string }
+
 interface Props {
   orgId: string
   currentUserId: string
@@ -56,6 +61,8 @@ interface Props {
   members: Member[]
   invitations: Invitation[]
   artisans: Artisan[]
+  projects?: ProjectOpt[]
+  tasks?: TaskOpt[]
 }
 
 // ── Constants ─────────────────────────────────────────────────────────────────
@@ -149,7 +156,7 @@ function EmailStatusBadge({ inv }: { inv: Invitation }) {
 
 // ── Main component ────────────────────────────────────────────────────────────
 
-export function TeamClient({ orgId, currentUserId, currentRole, members, invitations: initialInvitations, artisans }: Props) {
+export function TeamClient({ orgId, currentUserId, currentRole, members, invitations: initialInvitations, artisans, projects = [], tasks = [] }: Props) {
   const router = useRouter()
   const { toast } = useToast()
   const isAdmin = currentRole === 'owner' || currentRole === 'admin'
@@ -159,6 +166,8 @@ export function TeamClient({ orgId, currentUserId, currentRole, members, invitat
   const [email, setEmail] = useState('')
   const [role, setRole] = useState<string>('artisan')
   const [artisanId, setArtisanId] = useState('')
+  const [projectId, setProjectId] = useState('')       // périmètre artisan (chantier)
+  const [taskIds, setTaskIds] = useState<string[]>([])  // périmètre artisan (tâches)
   const [sending, setSending] = useState(false)
   const [inviteError, setInviteError] = useState<string | null>(null)
   const [generatedLink, setGeneratedLink] = useState<string | null>(null)
@@ -184,6 +193,26 @@ export function TeamClient({ orgId, currentUserId, currentRole, members, invitat
   const editRoleWasArtisan = editingMember?.role === 'artisan'
   const editRoleChangedFromArtisan = editRoleWasArtisan && editRole !== 'artisan'
   const editRolesAvailable = currentRole === 'owner' ? ['owner', ...INVITE_ROLES] : INVITE_ROLES
+
+  // Périmètre d'invitation artisan : chantier + au moins une tâche obligatoires.
+  const isArtisanInvite = role === 'artisan'
+  const projectTasks = tasks.filter(t => t.project_id === projectId)
+  const scopeValid = !isArtisanInvite || (!!projectId && taskIds.length > 0)
+  const projectNameOf = (id: string | null | undefined) => (id ? projects.find(p => p.id === id)?.name ?? null : null)
+  const taskTitleOf = (id: string) => tasks.find(t => t.id === id)?.title ?? null
+
+  function changeInviteRole(next: string) {
+    setRole(next)
+    if (next !== 'artisan') { setProjectId(''); setTaskIds([]) } // pas de périmètre pour les rôles internes
+    setInviteError(null)
+  }
+  function changeInviteProject(next: string) {
+    setProjectId(next)
+    setTaskIds([]) // les tâches dépendent du chantier
+  }
+  function toggleInviteTask(id: string) {
+    setTaskIds(prev => prev.includes(id) ? prev.filter(t => t !== id) : [...prev, id])
+  }
 
   function openEdit(member: Member) {
     setEditingMember(member)
@@ -222,6 +251,14 @@ export function TeamClient({ orgId, currentUserId, currentRole, members, invitat
 
     const normalizedEmail = email.trim().toLowerCase()
 
+    // LOT 41F — un artisan invité doit toujours avoir un périmètre (1 chantier + ≥1 tâche).
+    if (role === 'artisan') {
+      if (!projectId) { setInviteError('Sélectionnez un chantier pour cet artisan.'); return }
+      if (taskIds.length === 0) { setInviteError('Sélectionnez au moins une tâche du chantier.'); return }
+      const invalid = taskIds.some(id => !tasks.some(t => t.id === id && t.project_id === projectId))
+      if (invalid) { setInviteError('Une tâche sélectionnée n\'appartient pas au chantier.'); return }
+    }
+
     const alreadyPending = invitations.find(i => i.status === 'pending' && i.email === normalizedEmail)
     if (alreadyPending) { setInviteError('Une invitation est déjà en attente pour cet email.'); return }
 
@@ -246,6 +283,7 @@ export function TeamClient({ orgId, currentUserId, currentRole, members, invitat
     const token = crypto.randomUUID()
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
 
+    const isArtisan = role === 'artisan'
     const { data: inserted, error } = await mutationClient()
       .from('invitations')
       .insert({
@@ -256,6 +294,9 @@ export function TeamClient({ orgId, currentUserId, currentRole, members, invitat
         token,
         invited_by: currentUserId,
         expires_at: expiresAt,
+        // Périmètre imposé pour les artisans ; null pour les rôles internes.
+        project_id: isArtisan ? projectId : null,
+        task_ids: isArtisan ? taskIds : null,
       })
       .select('id')
       .single() as { data: { id: string } | null; error: unknown }
@@ -280,11 +321,15 @@ export function TeamClient({ orgId, currentUserId, currentRole, members, invitat
       email_sent_at: null,
       email_last_error: null,
       email_send_count: 0,
+      project_id: isArtisan ? projectId : null,
+      task_ids: isArtisan ? taskIds : null,
     }
     setInvitations(prev => [newInv, ...prev])
     setEmail('')
     setRole('artisan')
     setArtisanId('')
+    setProjectId('')
+    setTaskIds([])
 
     // Send email automatically
     const emailResult = await sendInvitationEmail(inserted.id)
@@ -421,7 +466,7 @@ export function TeamClient({ orgId, currentUserId, currentRole, members, invitat
                   className="h-9 text-sm"
                 />
               </div>
-              <SelectField label="Rôle *" value={role} onChange={setRole}>
+              <SelectField label="Rôle *" value={role} onChange={changeInviteRole}>
                 {INVITE_ROLES.map(r => (
                   <option key={r} value={r}>{ROLE_LABEL[r]}</option>
                 ))}
@@ -439,6 +484,50 @@ export function TeamClient({ orgId, currentUserId, currentRole, members, invitat
               </SelectField>
             )}
 
+            {/* LOT 41F — périmètre obligatoire pour un artisan (chantier + tâche). */}
+            {isArtisanInvite && (
+              <div className="flex flex-col gap-3 rounded-xl border border-orange-500/20 bg-orange-500/[0.04] p-3">
+                <div className="flex items-center gap-2">
+                  <Shield className="h-3.5 w-3.5 text-orange-500 shrink-0" />
+                  <p className="text-xs font-600 text-orange-600 dark:text-orange-400">
+                    Périmètre d&apos;accès de l&apos;artisan (obligatoire)
+                  </p>
+                </div>
+                <SelectField label="Chantier *" value={projectId} onChange={changeInviteProject}>
+                  <option value="">{projects.length ? 'Sélectionner un chantier…' : 'Aucun chantier disponible'}</option>
+                  {projects.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                </SelectField>
+                {projectId && (
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-600 text-muted-foreground">Tâches du chantier * (au moins une)</label>
+                    {projectTasks.length === 0 ? (
+                      <p className="text-xs text-muted-foreground/70 italic">Aucune tâche active sur ce chantier. Créez une tâche avant d&apos;inviter.</p>
+                    ) : (
+                      <div className="flex flex-col gap-1 max-h-44 overflow-y-auto rounded-lg border border-border bg-background p-1.5">
+                        {projectTasks.map(t => (
+                          <label key={t.id} className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-elevated cursor-pointer text-sm">
+                            <input
+                              type="checkbox"
+                              checked={taskIds.includes(t.id)}
+                              onChange={() => toggleInviteTask(t.id)}
+                              className="h-3.5 w-3.5 rounded border-border accent-primary"
+                            />
+                            <span className="truncate text-foreground/90">{t.title}</span>
+                          </label>
+                        ))}
+                      </div>
+                    )}
+                    {taskIds.length > 0 && (
+                      <p className="text-[11px] text-muted-foreground">{taskIds.length} tâche{taskIds.length > 1 ? 's' : ''} sélectionnée{taskIds.length > 1 ? 's' : ''}</p>
+                    )}
+                  </div>
+                )}
+                <p className="text-[11px] text-muted-foreground/70 leading-relaxed">
+                  L&apos;artisan n&apos;aura accès qu&apos;à ce chantier et à ces tâches. Les rattachements sont créés à l&apos;acceptation de l&apos;invitation.
+                </p>
+              </div>
+            )}
+
             {inviteError && (
               <div className="text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-lg px-3 py-2">
                 {inviteError}
@@ -446,7 +535,7 @@ export function TeamClient({ orgId, currentUserId, currentRole, members, invitat
             )}
 
             <div className="flex gap-2">
-              <Button type="submit" size="sm" disabled={sending}>
+              <Button type="submit" size="sm" disabled={sending || !scopeValid} title={!scopeValid ? 'Chantier et au moins une tâche obligatoires pour un artisan' : undefined}>
                 {sending ? 'Envoi en cours…' : (
                   <><Send className="h-3.5 w-3.5" />Inviter par email</>
                 )}
@@ -560,6 +649,18 @@ export function TeamClient({ orgId, currentUserId, currentRole, members, invitat
                         {inv.expires_at && ` · Expire ${formatDate(inv.expires_at)}`}
                       </span>
                     </div>
+                    {/* Périmètre prévu (invitation artisan) */}
+                    {inv.project_id && projectNameOf(inv.project_id) && (
+                      <div className="mt-1.5 text-[11px] text-foreground/70 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
+                        <span className="text-muted-foreground">Périmètre prévu :</span>
+                        <span className="font-600">{projectNameOf(inv.project_id)}</span>
+                        {(inv.task_ids?.length ?? 0) > 0 && (
+                          <span className="text-muted-foreground">
+                            · {inv.task_ids!.map(id => taskTitleOf(id)).filter(Boolean).join(', ') || `${inv.task_ids!.length} tâche(s)`}
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </div>
                   <div className="flex items-center gap-1 shrink-0">
                     {/* Copy link */}
