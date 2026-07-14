@@ -12,6 +12,7 @@ import { SlidePanel } from '@/components/ui/SlidePanel'
 import { PhotoThumb } from '@/components/ui/PhotoThumb'
 import { UploadDocumentModal } from './UploadDocumentModal'
 import { UploadPhotoModal } from './UploadPhotoModal'
+import { CanDo } from '@/components/layout/CanDo'
 import { cn, formatDateShort, formatRelative } from '@/lib/utils'
 
 // ── Types ──────────────────────────────────────────────────────────────────────
@@ -406,14 +407,18 @@ export function DocumentsClient({ orgId, documents, photos, projects, issues, to
 
         {/* ── Upload actions ── */}
         <div className="flex items-center gap-3 flex-wrap">
-          <Button onClick={() => setShowUploadPhoto(true)} size="sm">
-            <Camera className="h-4 w-4" />
-            Ajouter une photo
-          </Button>
-          <Button onClick={() => setShowUploadDoc(true)} size="sm" variant="outline">
-            <Plus className="h-4 w-4" />
-            Ajouter un document
-          </Button>
+          <CanDo action="photo.upload">
+            <Button onClick={() => setShowUploadPhoto(true)} size="sm">
+              <Camera className="h-4 w-4" />
+              Ajouter une photo
+            </Button>
+          </CanDo>
+          <CanDo action="document.manage">
+            <Button onClick={() => setShowUploadDoc(true)} size="sm" variant="outline">
+              <Plus className="h-4 w-4" />
+              Ajouter un document
+            </Button>
+          </CanDo>
         </div>
 
         {/* ── KPI bar ── */}

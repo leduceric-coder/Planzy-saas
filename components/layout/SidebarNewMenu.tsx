@@ -21,6 +21,8 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { NouvelleTacheRapide } from './NouvelleTacheRapide'
 import { GenererRapportModal } from '@/components/rapports/GenererRapportModal'
+import { useRole } from '@/components/layout/RoleContext'
+import { canWrite } from '@/lib/permissions'
 import type { TeamOption, ArtisanOption } from '@/components/ui/AssignmentPicker'
 
 interface Props {
@@ -37,10 +39,14 @@ const ARTISAN_HREF = '/equipes/nouveau-artisan'
 
 export function SidebarNewMenu({ collapsed, orgId, userId, projects, artisans, teams }: Props) {
   const router = useRouter()
+  const role = useRole()
   const [showQuickTask, setShowQuickTask] = useState(false)
   const [showReport, setShowReport] = useState(false)
   const [mounted, setMounted] = useState(false)
   useEffect(() => { setMounted(true) }, [])
+
+  // LOT 42 — le lecteur (viewer) ne crée rien : le menu « Nouveau » est masqué.
+  if (!canWrite(role)) return null
 
   // La tâche rapide et le rapport nécessitent l'organisation courante.
   const canTask = Boolean(orgId)

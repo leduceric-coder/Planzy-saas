@@ -5,6 +5,7 @@ import type { EnrichedProject, ProjectStats } from '@/components/chantiers/Chant
 import { Button } from '@/components/ui/button'
 import { Plus } from 'lucide-react'
 import Link from 'next/link'
+import { CanDo } from '@/components/layout/CanDo'
 import type { Project } from '@/lib/types'
 
 export default async function ChantiersPage() {
@@ -135,12 +136,14 @@ export default async function ChantiersPage() {
         title="Chantiers"
         subtitle={subtitle}
         actions={
-          <Link href="/chantiers/nouveau">
-            <Button size="sm">
-              <Plus className="h-4 w-4" />
-              Nouveau chantier
-            </Button>
-          </Link>
+          <CanDo action="chantier.create">
+            <Link href="/chantiers/nouveau">
+              <Button size="sm">
+                <Plus className="h-4 w-4" />
+                Nouveau chantier
+              </Button>
+            </Link>
+          </CanDo>
         }
       />
       <div className="flex-1 overflow-y-auto">

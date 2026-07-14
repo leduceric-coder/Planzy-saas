@@ -7,6 +7,7 @@ import { Sidebar } from '@/components/layout/Sidebar'
 import { ThemeProvider, useTheme } from '@/components/layout/ThemeProvider'
 import { ToastProvider } from '@/components/ui/toast-context'
 import { AlertsProvider } from '@/components/layout/AlertsContext'
+import { RoleProvider } from '@/components/layout/RoleContext'
 import { MessagesSideWindow } from '@/components/messages/MessagesSideWindow'
 import { DemoGuide } from '@/components/demo/DemoGuide'
 import type { Profile } from '@/lib/types'
@@ -78,7 +79,9 @@ export function DashboardShell(props: Props) {
   return (
     <ThemeProvider>
       <ToastProvider>
-        <Shell {...props} />
+        <RoleProvider role={(props.profile as { role?: string } | null)?.role}>
+          <Shell {...props} />
+        </RoleProvider>
       </ToastProvider>
     </ThemeProvider>
   )

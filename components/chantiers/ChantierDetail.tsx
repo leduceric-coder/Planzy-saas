@@ -23,6 +23,9 @@ import { EditChantierModal } from '@/components/chantiers/EditChantierModal'
 import { NouvelleReserveModal } from '@/components/chantiers/NouvelleReserveModal'
 import { EditReserveModal } from '@/components/chantiers/EditReserveModal'
 import { WeekByDay, type WeekDayTask } from '@/components/dashboard/WeekByDay'
+import { useRole } from '@/components/layout/RoleContext'
+import { CanDo } from '@/components/layout/CanDo'
+import { isReadOnly } from '@/lib/permissions'
 import {
   cn, formatDate, formatRelative, getInitials, isLate,
   projectStatusLabel, projectStatusColor,
@@ -88,6 +91,8 @@ export function ChantierDetail({
   const router = useRouter()
   const { toast } = useToast()
   const today = new Date().toISOString().split('T')[0]
+  const role = useRole()
+  const readOnly = isReadOnly(role) // LOT 42 — le lecteur ne modifie rien
 
   // ── UI state ────────────────────────────────────────────────────────────────
   const [activeTab, setActiveTab] = useState<Tab>('overview')
@@ -251,6 +256,7 @@ export function ChantierDetail({
                 <ArrowLeft className="h-3.5 w-3.5" />
                 Chantiers
               </Link>
+              {!readOnly && (
               <div className="flex items-center gap-1.5">
                 <button
                   onClick={() => setShowNewTask(true)}
@@ -283,6 +289,7 @@ export function ChantierDetail({
                   </button>
                 )}
               </div>
+              )}
             </div>
 
             {/* Row 2: name + status + deadline */}
@@ -1212,9 +1219,11 @@ function ReservesTab({
         badgeColor="orange"
         urgent={open.length > 0}
         action={
+          <CanDo>
           <button onClick={onAdd} className="flex items-center gap-1 text-[11px] text-primary hover:text-primary/80 font-600 transition-colors">
             <Plus className="h-3 w-3" /> Ajouter
           </button>
+          </CanDo>
         }
       >
         {open.length === 0 ? (
@@ -1298,6 +1307,7 @@ function IssueRow({
       })}>
         {issuePriorityLabel(issue.priority)}
       </span>
+      <CanDo>
       <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
         <button onClick={onEdit} className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-elevated rounded-lg transition-colors">
           <Pencil className="h-3.5 w-3.5" />
@@ -1312,6 +1322,7 @@ function IssueRow({
           {isResolved ? <RotateCcw className="h-3.5 w-3.5" /> : <CheckCircle2 className="h-3.5 w-3.5" />}
         </button>
       </div>
+      </CanDo>
     </div>
   )
 }

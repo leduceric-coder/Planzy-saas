@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { GenererRapportModal } from './GenererRapportModal'
+import { useRole } from '@/components/layout/RoleContext'
+import { can } from '@/lib/permissions'
 
 interface Props {
   orgId: string
@@ -12,7 +14,10 @@ interface Props {
 }
 
 export function NouveauRapportButton({ orgId, userId, projects }: Props) {
+  const role = useRole()
   const [showModal, setShowModal] = useState(false)
+
+  if (!can(role, 'report.create')) return null // LOT 42 — viewer/artisan ne créent pas de rapport
 
   return (
     <>

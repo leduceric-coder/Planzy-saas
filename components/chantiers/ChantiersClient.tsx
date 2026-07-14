@@ -11,6 +11,7 @@ import { CompactKpiCard } from '@/components/ui/CompactKpiCard'
 import { PageSection } from '@/components/ui/PageSection'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { ChantierRichCard } from './ChantierRichCard'
+import { CanDo } from '@/components/layout/CanDo'
 import { cn, formatDateShort } from '@/lib/utils'
 import type { Project } from '@/lib/types'
 
@@ -166,12 +167,14 @@ export function ChantiersClient({ projects, today }: Props) {
           description="Créez votre premier chantier pour commencer à planifier."
           size="lg"
           action={
-            <Link href="/chantiers/nouveau">
-              <Button size="sm">
-                <Plus className="h-4 w-4" />
-                Créer un chantier
-              </Button>
-            </Link>
+            <CanDo action="chantier.create">
+              <Link href="/chantiers/nouveau">
+                <Button size="sm">
+                  <Plus className="h-4 w-4" />
+                  Créer un chantier
+                </Button>
+              </Link>
+            </CanDo>
           }
         />
       </div>
@@ -336,12 +339,14 @@ export function ChantiersClient({ projects, today }: Props) {
           description="Commencez par créer votre premier chantier."
           size="lg"
           action={
-            <Link href="/chantiers/nouveau">
-              <Button size="sm">
-                <Plus className="h-4 w-4" />
-                Créer un chantier
-              </Button>
-            </Link>
+            <CanDo action="chantier.create">
+              <Link href="/chantiers/nouveau">
+                <Button size="sm">
+                  <Plus className="h-4 w-4" />
+                  Créer un chantier
+                </Button>
+              </Link>
+            </CanDo>
           }
         />
       )}
