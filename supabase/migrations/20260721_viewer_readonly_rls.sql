@@ -1,22 +1,11 @@
 -- ============================================================================
--- LOT 42 — P0 VIEWER READ-ONLY (CANDIDAT RLS — NON APPLIQUÉ — REQUIERT GATE GO)
--- ============================================================================
--- Problème (P0) : toutes les policies d'écriture des tables métier sont
--- org-wide SANS contrôle de rôle :
---   org_id IN (select get_my_org_ids())
--- => un compte 'viewer' peut créer/modifier chantiers, tâches, photos,
---    documents, messages, rapports, équipes au niveau BASE. L'UI ne masque ces
---    actions que sur la page Équipes (canManage) ; partout ailleurs elles sont
---    visibles. Les mutations étant client-side (mutationClient), la RLS est le
---    SEUL point d'application réel : une correction UI seule serait cosmétique.
---
--- Correction MINIMALE et SÛRE (ce candidat) : rendre 'viewer' strictement en
--- lecture seule, sans changer le comportement des rôles internes ni artisan.
--- On ajoute `public.can_write_org()` (rôle courant != 'viewer') à chaque policy
--- d'écriture. Aucune restriction de périmètre artisan ici (=> LOT 42E).
---
--- NE PAS exécuter sans GO. Réversible : redéfinir les policies sans le AND, ou
--- DROP FUNCTION can_write_org(). Aucune donnée modifiée.
+-- LOT 42A — VIEWER READ-ONLY (APPLIQUÉ le 2026-07-24 via MCP apply_migration).
+-- Rend le rôle 'viewer' strictement en lecture seule : ajoute can_write_org()
+-- (rôle != 'viewer') aux policies d'écriture des tables métier. Les rôles
+-- internes et artisan sont inchangés (aucune restriction de scope artisan → 42E).
+-- issues : ajout d'une policy SELECT org-wide pour préserver la lecture (la
+-- policy ALL était l'unique chemin de lecture). invitations : déjà owner/admin.
+-- Réversible : retirer le AND public.can_write_org() des policies + DROP FUNCTION.
 -- ============================================================================
 
 BEGIN;
@@ -77,6 +66,25 @@ CREATE POLICY "Membres équipes gérables" ON public.team_members FOR ALL TO pub
 DROP POLICY IF EXISTS "Rapports créables" ON public.reports;
 CREATE POLICY "Rapports créables" ON public.reports FOR INSERT TO public
   WITH CHECK (org_id IN (select get_my_org_ids()) AND public.can_write_org());
+
+-- artisans (couverture viewer ; scope 'manager+' réel = LOT 42E, non touché ici)
+DROP POLICY IF EXISTS "Artisans gérables par manager+" ON public.artisans;
+CREATE POLICY "Artisans gérables par manager+" ON public.artisans FOR ALL TO public
+  USING (org_id IN (select get_my_org_ids()) AND public.can_write_org())
+  WITH CHECK (org_id IN (select get_my_org_ids()) AND public.can_write_org());
+
+-- issues (réserves) : la policy ALL était l'UNIQUE chemin de lecture. On AJOUTE
+-- une policy SELECT org-wide (préserve la lecture viewer, OR des policies) puis
+-- on restreint la policy d'écriture au non-viewer. Aucune lecture retirée.
+DROP POLICY IF EXISTS "Réserves visibles" ON public.issues;
+CREATE POLICY "Réserves visibles" ON public.issues FOR SELECT TO public
+  USING (org_id IN (select get_my_org_ids()));
+DROP POLICY IF EXISTS "Réserves gérables" ON public.issues;
+CREATE POLICY "Réserves gérables" ON public.issues FOR ALL TO public
+  USING (org_id IN (select get_my_org_ids()) AND public.can_write_org())
+  WITH CHECK (org_id IN (select get_my_org_ids()) AND public.can_write_org());
+
+-- invitations : INSERT/UPDATE déjà restreints à owner/admin (viewer déjà bloqué) → inchangé.
 
 -- Vérification post-application (à lire avant COMMIT en exécution gated) :
 --   -- simuler un viewer : doit échouer sur INSERT projects/tasks/etc.
