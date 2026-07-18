@@ -65,3 +65,22 @@ const MATRIX: Record<Action, Role[]> = {
 export function can(role: string | null | undefined, action: Action): boolean {
   return MATRIX[action].includes(asRole(role))
 }
+
+// Libellés/descriptions de rôle (affichage fiche ressource — LOT 42B).
+export const ROLE_LABEL: Record<Role, string> = {
+  owner: 'Propriétaire',
+  admin: 'Administrateur',
+  manager: 'Chef de projet',
+  site_supervisor: 'Conducteur de travaux',
+  artisan: 'Artisan',
+  viewer: 'Lecteur',
+}
+
+export const ROLE_DESCRIPTION: Record<Role, string> = {
+  owner: 'Accès complet à l\'organisation.',
+  admin: 'Administration de l\'organisation.',
+  manager: 'Pilotage opérationnel (chantiers, tâches, ressources).',
+  site_supervisor: 'Suivi terrain, planning et validation photos.',
+  artisan: 'Accès terrain limité à son périmètre.',
+  viewer: 'Lecture seule.',
+}

@@ -5,9 +5,11 @@ import { useRouter } from 'next/navigation'
 import {
   Phone, Mail, Pencil, Users, Building2, ListChecks, Plus, X, CalendarRange,
   Pause, Play, Archive, ShieldAlert, UserCheck, MailCheck, UserX, Lock,
+  KeyRound, Gauge, Activity, Send, ShieldCheck, Clock,
 } from 'lucide-react'
 import { SlidePanel } from '@/components/ui/SlidePanel'
 import { ConfirmDialog, type ConfirmState } from '@/components/ui/ConfirmDialog'
+import { ROLE_LABEL, ROLE_DESCRIPTION, asRole } from '@/lib/permissions'
 import { cn, getInitials } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
 import { mutationClient } from '@/lib/supabase/mutate'
@@ -39,6 +41,8 @@ export type EnrichedArtisan = {
   status: 'free' | 'assigned' | 'conflict'
   accountStatus?: AccountStatus
   hasAccount?: boolean
+  accountRole?: string | null
+  accountEmail?: string | null
   hasPendingInvite?: boolean
   weekTasks: (TaskWithProject & { projectInfo: { id: string; name: string; color: string } | null })[]
   currentProjects: { id: string; name: string; color: string }[]
@@ -317,6 +321,25 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
         : { icon: UserX, cls: 'text-muted-foreground/70', label: 'Aucun compte lié' }
   const AccountIcon = accountLine.icon
 
+  // ── Rôle & droits (lecture seule ; modification = LOT 42D) ──
+  const roleKey = artisan.hasAccount && artisan.accountRole ? asRole(artisan.accountRole) : null
+  const roleLabel = roleKey ? ROLE_LABEL[roleKey] : null
+  const roleDesc = roleKey ? ROLE_DESCRIPTION[roleKey] : null
+
+  // ── Périmètre autorisé (résumé) ──
+  const scopeSummary =
+    projAssigns.length > 0 || taskAssigns.length > 0
+      ? `Périmètre : ${projAssigns.length} chantier${projAssigns.length > 1 ? 's' : ''} · ${taskAssigns.length} tâche${taskAssigns.length > 1 ? 's' : ''}`
+      : hasPendingScope
+        ? `Invitation en attente — chantier prévu${(pendingScope?.taskIds?.length ?? 0) > 0 ? ' + tâches' : ''}`
+        : unconfirmedDetected.length > 0
+          ? 'Affecté via le planning — à confirmer'
+          : 'Aucun périmètre défini'
+
+  // ── Taux d'occupation (semaine) ──
+  const weekTaskCount = artisan.weekTasks.length
+  const weekProjectCount = artisan.currentProjects.length
+
   return (
     <>
     <SlidePanel onClose={onClose} title={artisan.full_name ?? 'Artisan'} subtitle={artisan.trade ?? 'Métier non renseigné'}>
@@ -353,15 +376,69 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
 
         {/* Coordonnées (toujours affichées, « Non renseigné » si vide) */}
         <div className="flex flex-col gap-2">
-          <h3 className="text-[10px] font-800 uppercase tracking-widest text-muted-foreground">Coordonnées</h3>
+          <h3 className="text-[10px] font-800 uppercase tracking-widest text-muted-foreground">Identité</h3>
           <div className="flex flex-col gap-1.5">
             <ContactRow icon={Mail} value={artisan.email} href={artisan.email ? `mailto:${artisan.email}` : undefined} />
             <ContactRow icon={Phone} value={artisan.phone} href={artisan.phone ? `tel:${artisan.phone}` : undefined} />
-            <div className="flex items-center gap-2.5 text-sm">
-              <div className="w-7 h-7 rounded-lg bg-elevated border border-border/40 flex items-center justify-center shrink-0"><AccountIcon className={cn('h-3.5 w-3.5', accountLine.cls)} /></div>
-              <span className={cn('font-500', accountLine.cls)}>{accountLine.label}</span>
+          </div>
+        </div>
+
+        {/* Compte Kanvix */}
+        <div className="flex flex-col gap-2">
+          <h3 className="text-[10px] font-800 uppercase tracking-widest text-muted-foreground">Compte Kanvix</h3>
+          <div className="flex items-center gap-2.5 text-sm">
+            <div className="w-7 h-7 rounded-lg bg-elevated border border-border/40 flex items-center justify-center shrink-0"><AccountIcon className={cn('h-3.5 w-3.5', accountLine.cls)} /></div>
+            <div className="min-w-0">
+              <span className={cn('font-500 block', accountLine.cls)}>{accountLine.label}</span>
+              {artisan.accountEmail && <span className="text-[11px] text-muted-foreground truncate block">{artisan.accountEmail}</span>}
             </div>
           </div>
+          {canManage && (
+            <div className="flex items-center gap-2 mt-0.5">
+              <button disabled title="À venir — LOT 42C" className="inline-flex items-center gap-1 h-8 px-2.5 rounded-lg border border-border/50 text-[11.5px] font-600 text-muted-foreground/60 cursor-not-allowed">
+                <Send className="h-3 w-3" />{artisan.hasPendingInvite ? 'Renvoyer' : 'Inviter'}
+              </button>
+              {artisan.hasPendingInvite && (
+                <button disabled title="À venir — LOT 42C" className="inline-flex items-center gap-1 h-8 px-2.5 rounded-lg border border-border/50 text-[11.5px] font-600 text-muted-foreground/60 cursor-not-allowed">
+                  <X className="h-3 w-3" />Révoquer
+                </button>
+              )}
+              <span className="text-[10px] text-muted-foreground/50 italic">à venir · 42C</span>
+            </div>
+          )}
+        </div>
+
+        {/* Rôle & droits (lecture seule ; modification = LOT 42D) */}
+        <div className="flex flex-col gap-2">
+          <h3 className="text-[10px] font-800 uppercase tracking-widest text-muted-foreground flex items-center gap-1.5">
+            <KeyRound className="h-3 w-3" /> Rôle &amp; droits
+          </h3>
+          {roleLabel ? (
+            <div className="flex items-start gap-2.5 text-sm">
+              <div className="w-7 h-7 rounded-lg bg-elevated border border-border/40 flex items-center justify-center shrink-0"><ShieldCheck className="h-3.5 w-3.5 text-primary" /></div>
+              <div className="min-w-0">
+                <span className="font-600 text-foreground block">{roleLabel}</span>
+                <span className="text-[11.5px] text-muted-foreground">{roleDesc}</span>
+              </div>
+            </div>
+          ) : (
+            <p className="text-[12px] text-muted-foreground/60 italic">Aucun compte lié — aucun rôle applicatif.</p>
+          )}
+          {canManage && (
+            <button disabled title="À venir — LOT 42D" className="self-start inline-flex items-center gap-1 h-8 px-2.5 rounded-lg border border-border/50 text-[11.5px] font-600 text-muted-foreground/60 cursor-not-allowed">
+              <Pencil className="h-3 w-3" />Modifier les droits · à venir · 42D
+            </button>
+          )}
+        </div>
+
+        {/* Périmètre autorisé (résumé) */}
+        <div className="flex flex-col gap-1.5">
+          <h3 className="text-[10px] font-800 uppercase tracking-widest text-muted-foreground flex items-center gap-1.5">
+            <Lock className="h-3 w-3" /> Périmètre autorisé
+          </h3>
+          <p className={cn('text-[12.5px] font-500', scopeSummary.startsWith('Aucun') ? 'text-muted-foreground/55 italic' : 'text-foreground/80')}>
+            {scopeSummary}
+          </p>
         </div>
 
         {/* Périmètre prévu à l'invitation (distinct des rattachements actifs) */}
@@ -518,6 +595,29 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
           )}
         </div>
 
+        {/* Taux d'occupation (semaine) */}
+        <div className="flex flex-col gap-2">
+          <h3 className="text-[10px] font-800 uppercase tracking-widest text-muted-foreground flex items-center gap-1.5">
+            <Gauge className="h-3 w-3" /> Taux d&apos;occupation
+          </h3>
+          <div className="flex items-center gap-3">
+            <div className="flex-1 rounded-xl border border-border/40 bg-elevated/40 px-3 py-2 text-center">
+              <p className="text-[18px] font-800 text-foreground leading-none tabular-nums">{weekTaskCount}</p>
+              <p className="text-[10px] text-muted-foreground mt-0.5">tâche{weekTaskCount > 1 ? 's' : ''} cette semaine</p>
+            </div>
+            <div className="flex-1 rounded-xl border border-border/40 bg-elevated/40 px-3 py-2 text-center">
+              <p className="text-[18px] font-800 text-foreground leading-none tabular-nums">{weekProjectCount}</p>
+              <p className="text-[10px] text-muted-foreground mt-0.5">chantier{weekProjectCount > 1 ? 's' : ''}</p>
+            </div>
+            <div className="flex-1">
+              <span className={cn('inline-flex items-center justify-center w-full text-[10.5px] font-700 px-2 py-2 rounded-xl border', workload.cls)}>{workload.label}</span>
+            </div>
+          </div>
+          {artisan.status === 'conflict' && (
+            <p className="text-[11px] text-orange-600 dark:text-orange-400 flex items-center gap-1.5"><ShieldAlert className="h-3 w-3 shrink-0" />Plusieurs tâches simultanées — surcharge possible.</p>
+          )}
+        </div>
+
         {/* Planning */}
         <button
           onClick={() => router.push(`/planning?view=resources&artisan=${artisan.id}`)}
@@ -525,6 +625,17 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
         >
           <CalendarRange className="h-3.5 w-3.5 text-muted-foreground" />Voir le planning
         </button>
+
+        {/* Activité récente (empty state — données dédiées à un lot ultérieur) */}
+        <div className="flex flex-col gap-2">
+          <h3 className="text-[10px] font-800 uppercase tracking-widest text-muted-foreground flex items-center gap-1.5">
+            <Activity className="h-3 w-3" /> Activité récente
+          </h3>
+          <div className="rounded-xl border border-dashed border-border/50 px-3 py-4 text-center">
+            <Clock className="h-4 w-4 text-muted-foreground/40 mx-auto mb-1" />
+            <p className="text-[11.5px] text-muted-foreground/60">L&apos;activité récente sera affichée ici.</p>
+          </div>
+        </div>
 
         {/* Actions gestion (rôles internes uniquement) */}
         {canManage && (

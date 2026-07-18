@@ -74,7 +74,7 @@ export default async function EquipesPage() {
 
   const today = new Date().toISOString().split('T')[0]
 
-  const [{ data: teamsData }, { data: artisansData }, { data: projectsData }, { data: tasksData }, { data: invitesData }, { data: apaData }, { data: ataData }] = await Promise.all([
+  const [{ data: teamsData }, { data: artisansData }, { data: projectsData }, { data: tasksData }, { data: invitesData }, { data: apaData }, { data: ataData }, { data: accountsData }] = await Promise.all([
     supabase
       .from('teams')
       .select('id, name, color, type, project_id, description, lead_id, project:projects(id,name), lead:artisans!lead_id(id,full_name,trade), members:team_members(artisan_id, artisan:artisans(id,full_name,trade,color))')
@@ -116,6 +116,12 @@ export default async function EquipesPage() {
       .select('artisan_id')
       .eq('org_id', orgId)
       .eq('is_active', true),
+    // Comptes liés → rôle/email du compte Kanvix par artisan (fiche ressource).
+    supabase
+      .from('profiles')
+      .select('artisan_id, role, email')
+      .eq('org_id', orgId)
+      .not('artisan_id', 'is', null),
   ])
 
   const teams    = (teamsData    ?? []) as unknown as TeamRow[]
@@ -135,6 +141,12 @@ export default async function EquipesPage() {
     }
   }
 
+  // Compte Kanvix lié par artisan (rôle applicatif + email).
+  const accountByArtisan: Record<string, { role: string | null; email: string | null }> = {}
+  for (const a of (accountsData ?? []) as { artisan_id: string | null; role: string | null; email: string | null }[]) {
+    if (a.artisan_id && !accountByArtisan[a.artisan_id]) accountByArtisan[a.artisan_id] = { role: a.role, email: a.email }
+  }
+
   const assignmentCounts: Record<string, { projects: number; tasks: number }> = {}
   for (const r of (apaData ?? []) as { artisan_id: string | null }[]) {
     if (!r.artisan_id) continue
@@ -148,8 +160,8 @@ export default async function EquipesPage() {
   return (
     <div className="flex flex-col h-full overflow-hidden">
       <Header
-        title="Équipes & terrain"
-        subtitle="Suivez les affectations, disponibilités et conflits terrain."
+        title="Ressources"
+        subtitle="Pilotez les artisans, équipes et accès chantier."
         actions={
           canManage ? (
             <Link href="/equipes/nouveau-artisan">
@@ -174,6 +186,7 @@ export default async function EquipesPage() {
           pendingInviteArtisanIds={pendingInviteArtisanIds}
           pendingInviteScopes={pendingInviteScopes}
           assignmentCounts={assignmentCounts}
+          accountByArtisan={accountByArtisan}
         />
       </div>
     </div>

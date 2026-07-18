@@ -66,6 +66,7 @@ interface Props {
   pendingInviteArtisanIds?: string[]
   pendingInviteScopes?: Record<string, { projectId: string | null; taskIds: string[] }>
   assignmentCounts?: Record<string, { projects: number; tasks: number }>
+  accountByArtisan?: Record<string, { role: string | null; email: string | null }>
 }
 
 // ── Constants ──────────────────────────────────────────────────────────────────
@@ -152,7 +153,7 @@ function teamToFormData(t: TeamRow): TeamFormData {
 
 // ── Main component ─────────────────────────────────────────────────────────────
 
-export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, canManage = false, pendingInviteArtisanIds = [], pendingInviteScopes = {}, assignmentCounts = {} }: Props) {
+export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, canManage = false, pendingInviteArtisanIds = [], pendingInviteScopes = {}, assignmentCounts = {}, accountByArtisan = {} }: Props) {
   const router = useRouter()
   const { toast } = useToast()
   const pendingInviteSet = useMemo(() => new Set(pendingInviteArtisanIds), [pendingInviteArtisanIds])
@@ -290,13 +291,15 @@ export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, 
         status,
         accountStatus: ((a.status as AccountStatus) ?? 'active'),
         hasAccount: !!a.user_id,
+        accountRole: accountByArtisan[a.id]?.role ?? null,
+        accountEmail: accountByArtisan[a.id]?.email ?? null,
         hasPendingInvite: pendingInviteSet.has(a.id),
         weekTasks,
         currentProjects: Array.from(projectMap.values()),
         artisanTeams: teamsByArtisan.get(a.id) ?? [],
       }
     }),
-    [artisans, weekTasksByArtisan, teamsByArtisan, pendingInviteSet]
+    [artisans, weekTasksByArtisan, teamsByArtisan, pendingInviteSet, accountByArtisan]
   )
 
   // Sous-ensembles par cycle de vie. Les métriques (KPI/alertes) ne portent que
