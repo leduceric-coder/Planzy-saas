@@ -8,6 +8,8 @@ import { cn, formatRelative, getInitials, messageTypeLabel, messageTypeColor } f
 import { createClient } from '@/lib/supabase/client'
 import { mutationClient } from '@/lib/supabase/mutate'
 import { isRecentIncoming } from '@/lib/messages-activity'
+import { useRole } from '@/components/layout/RoleContext'
+import { can } from '@/lib/permissions'
 import type { Message, MessageType } from '@/lib/types'
 
 interface Thread {
@@ -56,6 +58,7 @@ interface Props {
 }
 
 export function MessagesSideWindow({ isOpen, onClose, orgId, currentUserId, initialProjectId }: Props) {
+  const canSend = can(useRole(), 'message.send') // viewer = lecture seule
   const [mounted, setMounted] = useState(false)
   const [threads, setThreads] = useState<Thread[]>([])
   const [projects, setProjects] = useState<Project[]>([])
@@ -192,6 +195,7 @@ export function MessagesSideWindow({ isOpen, onClose, orgId, currentUserId, init
     : []
 
   const handleSend = async () => {
+    if (!canSend) return // LOT 42A-FIX2 — le lecteur ne peut pas envoyer (évite un 403)
     if (!newMessage.trim() || !selectedConversation || sending) return
     const content = newMessage.trim()
     setNewMessage('')
@@ -445,7 +449,12 @@ export function MessagesSideWindow({ isOpen, onClose, orgId, currentUserId, init
                 })}
               </div>
 
-              {/* Send bar */}
+              {/* Send bar (masquée pour le lecteur : lecture seule) */}
+              {!canSend ? (
+                <div className="shrink-0 px-4 py-3 border-t border-border bg-surface text-center text-[12px] text-muted-foreground">
+                  Lecture seule — vous ne pouvez pas envoyer de message.
+                </div>
+              ) : (
               <div className="shrink-0 px-4 pt-2.5 pb-4 border-t border-border bg-surface">
                 <div className="flex gap-1.5 mb-2.5 flex-wrap">
                   {SEND_TYPES.map(mt => (
@@ -484,6 +493,7 @@ export function MessagesSideWindow({ isOpen, onClose, orgId, currentUserId, init
                   </button>
                 </div>
               </div>
+              )}
             </div>
           ) : (
             <div className="flex-1 flex items-center justify-center">

@@ -5,6 +5,7 @@ import { Send, Plus, Search, MessageSquare } from 'lucide-react'
 import { cn, formatRelative, getInitials, messageTypeLabel, messageTypeColor } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
 import { mutationClient } from '@/lib/supabase/mutate'
+import { can } from '@/lib/permissions'
 import { NouvelleConversationModal } from './NouvelleConversationModal'
 import { ContextPanel } from './ContextPanel'
 import { isRecentIncoming } from '@/lib/messages-activity'
@@ -66,6 +67,7 @@ export function MessagesView({
   contextPhotos = [],
   contextIssues = [],
 }: Props) {
+  const canSend = can((profile as { role?: string } | null)?.role, 'message.send') // viewer = lecture seule
   const [selectedKey, setSelectedKey] = useState<string | null>(null)
   const [localMessages, setLocalMessages] = useState<(Message & { sender?: Profile | null })[]>(messages)
   const [newMessage, setNewMessage] = useState('')
@@ -193,6 +195,7 @@ export function MessagesView({
   }, [selectedKey, localMessages.length])
 
   const handleSend = async () => {
+    if (!canSend) return // LOT 42A-FIX2 — lecteur : pas d'envoi (évite un 403)
     if (!newMessage.trim() || !selectedConversation || sending) return
     const content = newMessage.trim()
     const type = messageType
@@ -396,7 +399,12 @@ export function MessagesView({
             })}
           </div>
 
-          {/* Send bar */}
+          {/* Send bar (masquée pour le lecteur : lecture seule) */}
+          {!canSend ? (
+          <div className="shrink-0 px-4 py-3 border-t border-border bg-surface text-center text-[12px] text-muted-foreground">
+            Lecture seule — vous ne pouvez pas envoyer de message.
+          </div>
+          ) : (
           <div className="shrink-0 px-4 py-3 border-t border-border bg-surface">
             {/* Type selector */}
             <div className="flex gap-1.5 mb-2.5 flex-wrap">
@@ -440,6 +448,7 @@ export function MessagesView({
               <p className="text-xs text-destructive mt-1">{sendError}</p>
             )}
           </div>
+          )}
         </div>
       ) : (
         <div className="flex-1 flex items-center justify-center text-muted-foreground">

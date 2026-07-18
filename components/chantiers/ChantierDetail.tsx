@@ -25,7 +25,7 @@ import { EditReserveModal } from '@/components/chantiers/EditReserveModal'
 import { WeekByDay, type WeekDayTask } from '@/components/dashboard/WeekByDay'
 import { useRole } from '@/components/layout/RoleContext'
 import { CanDo } from '@/components/layout/CanDo'
-import { isReadOnly } from '@/lib/permissions'
+import { isReadOnly, can } from '@/lib/permissions'
 import {
   cn, formatDate, formatRelative, getInitials, isLate,
   projectStatusLabel, projectStatusColor,
@@ -944,6 +944,7 @@ function MessagerieTab({
   orgId: string
 }) {
   const { toast } = useToast()
+  const canSend = can(useRole(), 'message.send') // viewer = lecture seule
   const [localMessages, setLocalMessages] = useState<(Message & { sender?: any })[]>(
     [...initialMessages].reverse()
   )
@@ -964,6 +965,7 @@ function MessagerieTab({
   }
 
   async function handleSend() {
+    if (!canSend) return // LOT 42A-FIX2 — lecteur : pas d'envoi (évite un 403)
     const content = msgInput.trim()
     if (!content || msgSending) return
     setMsgSending(true)
@@ -1165,7 +1167,12 @@ function MessagerieTab({
               )}
             </div>
 
-            {/* Input */}
+            {/* Input (masqué pour le lecteur : lecture seule) */}
+            {!canSend ? (
+              <div className="shrink-0 px-3 py-3 border-t border-border/25 dark:border-white/[0.06] bg-surface text-center text-[12px] text-muted-foreground">
+                Lecture seule — vous ne pouvez pas envoyer de message.
+              </div>
+            ) : (
             <div className="shrink-0 px-3 py-3 border-t border-border/25 dark:border-white/[0.06] bg-surface">
               <div className="flex items-center gap-2">
                 <div className="flex-1 flex items-center gap-2 px-3.5 py-2.5 rounded-2xl bg-elevated/60 border border-border/30 dark:border-white/[0.07] focus-within:border-primary/40 focus-within:ring-1 focus-within:ring-primary/20 transition-all">
@@ -1188,6 +1195,7 @@ function MessagerieTab({
                 </button>
               </div>
             </div>
+            )}
           </div>
         </>
       )}
