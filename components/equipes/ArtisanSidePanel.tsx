@@ -9,6 +9,7 @@ import {
 } from 'lucide-react'
 import { SlidePanel } from '@/components/ui/SlidePanel'
 import { ConfirmDialog, type ConfirmState } from '@/components/ui/ConfirmDialog'
+import { InviteResourceModal } from './InviteResourceModal'
 import { ROLE_LABEL, ROLE_DESCRIPTION, asRole } from '@/lib/permissions'
 import { cn, getInitials } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
@@ -80,14 +81,17 @@ interface Props {
   onEdit: () => void
   orgId?: string
   canManage?: boolean
+  /** Peut inviter / relancer / révoquer (owner/admin — aligné RLS + API). */
+  canInvite?: boolean
+  currentUserId?: string
   projects?: ProjectRef[]
   tasks?: TaskWithProject[]
   onChanged?: () => void
   onCountsChanged?: (artisanId: string, projects: number, tasks: number) => void
-  pendingScope?: { projectId: string | null; taskIds: string[] }
+  pendingScope?: { id?: string; email?: string | null; role?: string | null; projectId: string | null; taskIds: string[] }
 }
 
-export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = false, projects = [], tasks = [], onChanged, onCountsChanged, pendingScope }: Props) {
+export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = false, canInvite = false, currentUserId, projects = [], tasks = [], onChanged, onCountsChanged, pendingScope }: Props) {
   const router = useRouter()
   const { toast: showToast } = useToast()
   const [, startTransition] = useTransition()
@@ -107,6 +111,10 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
   const [addTaskProjectId, setAddTaskProjectId] = useState('')
   const [addTaskId, setAddTaskId] = useState('')
   const [confirm, setConfirm] = useState<ConfirmState | null>(null)
+
+  // ── Invitation (compte Kanvix) ──
+  const [showInvite, setShowInvite] = useState(false)
+  const [inviteBusy, setInviteBusy] = useState(false)
 
   // Rafraîchit les données serveur parent sans bloquer l'UI (INP).
   const softRefresh = () => { if (onChanged) startTransition(() => onChanged()) }
@@ -312,6 +320,48 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
     refresh()
   }
 
+  // ── Renvoyer l'email d'invitation (réutilise /api/invitations/send) ──
+  async function resendInvite() {
+    const invId = pendingScope?.id
+    if (!invId || inviteBusy) return
+    setInviteBusy(true)
+    try {
+      const res = await fetch('/api/invitations/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ invitationId: invId }),
+      })
+      const data = await res.json() as { ok?: boolean; message?: string }
+      if (data.ok) showToast(`Email d'invitation renvoyé${artisan.accountEmail ? ` à ${artisan.accountEmail}` : ''}`)
+      else showToast(data.message ?? "L'email n'a pas pu être renvoyé.", 'error')
+    } catch {
+      showToast('Impossible de joindre le serveur.', 'error')
+    } finally {
+      setInviteBusy(false)
+    }
+  }
+
+  // ── Révoquer l'invitation en attente (status = revoked ; owner/admin via RLS) ──
+  function askRevokeInvite() {
+    const invId = pendingScope?.id
+    if (!invId || inviteBusy) return
+    setConfirm({
+      title: "Révoquer l'invitation",
+      description: "Le lien d'invitation deviendra invalide. Vous pourrez en émettre une nouvelle à tout moment.",
+      confirmLabel: 'Révoquer', tone: 'danger',
+      onConfirm: () => doRevokeInvite(invId),
+    })
+  }
+  async function doRevokeInvite(invId: string) {
+    setInviteBusy(true)
+    const { error } = await mutationClient().from('invitations').update({ status: 'revoked' }).eq('id', invId)
+    setInviteBusy(false)
+    setConfirm(null)
+    if (error) { showToast(error.message, 'error'); return }
+    showToast('Invitation révoquée')
+    softRefresh()
+  }
+
   // Compte lié / invitation
   const accountLine =
     artisan.hasAccount
@@ -393,17 +443,37 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
               {artisan.accountEmail && <span className="text-[11px] text-muted-foreground truncate block">{artisan.accountEmail}</span>}
             </div>
           </div>
-          {canManage && (
+          {/* Actions compte — inviter / relancer / révoquer (owner/admin ; aligné RLS). */}
+          {canInvite && !artisan.hasAccount && (
             <div className="flex items-center gap-2 mt-0.5">
-              <button disabled title="À venir — LOT 42C" className="inline-flex items-center gap-1 h-8 px-2.5 rounded-lg border border-border/50 text-[11.5px] font-600 text-muted-foreground/60 cursor-not-allowed">
-                <Send className="h-3 w-3" />{artisan.hasPendingInvite ? 'Renvoyer' : 'Inviter'}
-              </button>
-              {artisan.hasPendingInvite && (
-                <button disabled title="À venir — LOT 42C" className="inline-flex items-center gap-1 h-8 px-2.5 rounded-lg border border-border/50 text-[11.5px] font-600 text-muted-foreground/60 cursor-not-allowed">
-                  <X className="h-3 w-3" />Révoquer
+              {artisan.hasPendingInvite ? (
+                <>
+                  <button
+                    onClick={resendInvite}
+                    disabled={inviteBusy || !pendingScope?.id}
+                    title={!pendingScope?.id ? 'Invitation introuvable' : "Renvoyer l'email d'invitation"}
+                    className="inline-flex items-center gap-1 h-8 px-2.5 rounded-lg border border-border/50 text-[11.5px] font-600 text-foreground hover:bg-elevated disabled:opacity-50 transition-colors"
+                  >
+                    <Send className="h-3 w-3" />Renvoyer
+                  </button>
+                  <button
+                    onClick={askRevokeInvite}
+                    disabled={inviteBusy || !pendingScope?.id}
+                    title="Révoquer l'invitation"
+                    className="inline-flex items-center gap-1 h-8 px-2.5 rounded-lg border border-border/50 text-[11.5px] font-600 text-destructive hover:bg-destructive/10 disabled:opacity-50 transition-colors"
+                  >
+                    <X className="h-3 w-3" />Révoquer
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={() => setShowInvite(true)}
+                  disabled={inviteBusy}
+                  className="inline-flex items-center gap-1 h-8 px-2.5 rounded-lg bg-primary text-white text-[11.5px] font-600 hover:bg-primary/90 disabled:opacity-50 transition-colors"
+                >
+                  <Send className="h-3 w-3" />Inviter sur Kanvix
                 </button>
               )}
-              <span className="text-[10px] text-muted-foreground/50 italic">à venir · 42C</span>
             </div>
           )}
         </div>
@@ -668,7 +738,18 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
 
       </div>
     </SlidePanel>
-    <ConfirmDialog state={confirm} loading={busy} onCancel={() => setConfirm(null)} />
+    <ConfirmDialog state={confirm} loading={busy || inviteBusy} onCancel={() => setConfirm(null)} />
+    {showInvite && orgId && currentUserId && (
+      <InviteResourceModal
+        artisan={{ id: artisan.id, full_name: artisan.full_name, email: artisan.email, trade: artisan.trade }}
+        orgId={orgId}
+        currentUserId={currentUserId}
+        projects={projects}
+        tasks={tasks}
+        onClose={() => setShowInvite(false)}
+        onSent={() => { softRefresh() }}
+      />
+    )}
     </>
   )
 }

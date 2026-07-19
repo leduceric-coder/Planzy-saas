@@ -63,6 +63,8 @@ export default async function EquipesPage() {
   const role = (profileData as { role: string | null } | null)?.role ?? null
   // Rôles internes autorisés à gérer les artisans (statuts + rattachements).
   const canManage = ['owner', 'admin', 'manager', 'site_supervisor'].includes(role ?? '')
+  // Inviter / relancer / révoquer : owner/admin uniquement (aligné RLS invitations + API /send).
+  const canInvite = ['owner', 'admin'].includes(role ?? '')
 
   if (!orgId) {
     return (
@@ -101,7 +103,7 @@ export default async function EquipesPage() {
     // Invitations en attente → « Invitation en attente » + périmètre prévu (fiche).
     supabase
       .from('invitations')
-      .select('artisan_id, status, project_id, task_ids')
+      .select('id, email, role, artisan_id, status, project_id, task_ids')
       .eq('org_id', orgId)
       .eq('status', 'pending'),
     // Rattachements actifs → source de vérité des badges « Sans chantier / tâche »
@@ -128,16 +130,17 @@ export default async function EquipesPage() {
   const artisans = (artisansData ?? []) as unknown as ArtisanRow[]
   const projects = (projectsData ?? []) as unknown as ProjectRow[]
   const tasks    = (tasksData    ?? []) as unknown as TaskWithProject[]
-  const pendingInvites = (invitesData ?? []) as { artisan_id: string | null; project_id: string | null; task_ids: string[] | null }[]
+  const pendingInvites = (invitesData ?? []) as { id: string; email: string | null; role: string | null; artisan_id: string | null; project_id: string | null; task_ids: string[] | null }[]
   const pendingInviteArtisanIds = Array.from(new Set(
     pendingInvites.map(i => i.artisan_id).filter((v): v is string => !!v)
   ))
-  // Périmètre prévu par artisan (dernière invitation en attente rencontrée).
-  const pendingInviteScopes: Record<string, { projectId: string | null; taskIds: string[] }> = {}
+  // Invitation en attente par artisan (id/email/rôle + périmètre prévu) : alimente
+  // la fiche ressource pour relancer/révoquer et afficher le périmètre.
+  const pendingInviteScopes: Record<string, { id: string; email: string | null; role: string | null; projectId: string | null; taskIds: string[] }> = {}
   for (const i of pendingInvites) {
     if (!i.artisan_id) continue
     if (!pendingInviteScopes[i.artisan_id]) {
-      pendingInviteScopes[i.artisan_id] = { projectId: i.project_id, taskIds: i.task_ids ?? [] }
+      pendingInviteScopes[i.artisan_id] = { id: i.id, email: i.email, role: i.role, projectId: i.project_id, taskIds: i.task_ids ?? [] }
     }
   }
 
@@ -183,6 +186,8 @@ export default async function EquipesPage() {
           tasks={tasks}
           today={today}
           canManage={canManage}
+          canInvite={canInvite}
+          currentUserId={user.id}
           pendingInviteArtisanIds={pendingInviteArtisanIds}
           pendingInviteScopes={pendingInviteScopes}
           assignmentCounts={assignmentCounts}

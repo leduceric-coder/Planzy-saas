@@ -63,8 +63,10 @@ interface Props {
   tasks: TaskWithProject[]
   today: string
   canManage?: boolean
+  canInvite?: boolean
+  currentUserId?: string
   pendingInviteArtisanIds?: string[]
-  pendingInviteScopes?: Record<string, { projectId: string | null; taskIds: string[] }>
+  pendingInviteScopes?: Record<string, { id: string; email: string | null; role: string | null; projectId: string | null; taskIds: string[] }>
   assignmentCounts?: Record<string, { projects: number; tasks: number }>
   accountByArtisan?: Record<string, { role: string | null; email: string | null }>
 }
@@ -153,7 +155,7 @@ function teamToFormData(t: TeamRow): TeamFormData {
 
 // ── Main component ─────────────────────────────────────────────────────────────
 
-export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, canManage = false, pendingInviteArtisanIds = [], pendingInviteScopes = {}, assignmentCounts = {}, accountByArtisan = {} }: Props) {
+export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, canManage = false, canInvite = false, currentUserId, pendingInviteArtisanIds = [], pendingInviteScopes = {}, assignmentCounts = {}, accountByArtisan = {} }: Props) {
   const router = useRouter()
   const { toast } = useToast()
   const pendingInviteSet = useMemo(() => new Set(pendingInviteArtisanIds), [pendingInviteArtisanIds])
@@ -1022,6 +1024,8 @@ export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, 
           onEdit={() => { setEditingArtisanId(selectedArtisan.id); setSelectedArtisanId(null) }}
           orgId={orgId}
           canManage={canManage}
+          canInvite={canInvite}
+          currentUserId={currentUserId}
           projects={projects}
           tasks={tasks}
           onChanged={() => router.refresh()}
