@@ -66,7 +66,7 @@ interface Props {
   canInvite?: boolean
   currentUserId?: string
   pendingInviteArtisanIds?: string[]
-  pendingInviteScopes?: Record<string, { id: string; email: string | null; role: string | null; projectId: string | null; taskIds: string[] }>
+  pendingInviteScopes?: Record<string, { id: string; email: string | null; role: string | null; token: string | null; projectId: string | null; taskIds: string[] }>
   assignmentCounts?: Record<string, { projects: number; tasks: number }>
   accountByArtisan?: Record<string, { role: string | null; email: string | null }>
 }

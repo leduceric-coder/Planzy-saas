@@ -103,7 +103,7 @@ export default async function EquipesPage() {
     // Invitations en attente → « Invitation en attente » + périmètre prévu (fiche).
     supabase
       .from('invitations')
-      .select('id, email, role, artisan_id, status, project_id, task_ids')
+      .select('id, email, role, artisan_id, status, token, project_id, task_ids')
       .eq('org_id', orgId)
       .eq('status', 'pending'),
     // Rattachements actifs → source de vérité des badges « Sans chantier / tâche »
@@ -130,17 +130,18 @@ export default async function EquipesPage() {
   const artisans = (artisansData ?? []) as unknown as ArtisanRow[]
   const projects = (projectsData ?? []) as unknown as ProjectRow[]
   const tasks    = (tasksData    ?? []) as unknown as TaskWithProject[]
-  const pendingInvites = (invitesData ?? []) as { id: string; email: string | null; role: string | null; artisan_id: string | null; project_id: string | null; task_ids: string[] | null }[]
+  const pendingInvites = (invitesData ?? []) as { id: string; email: string | null; role: string | null; artisan_id: string | null; token: string | null; project_id: string | null; task_ids: string[] | null }[]
   const pendingInviteArtisanIds = Array.from(new Set(
     pendingInvites.map(i => i.artisan_id).filter((v): v is string => !!v)
   ))
-  // Invitation en attente par artisan (id/email/rôle + périmètre prévu) : alimente
-  // la fiche ressource pour relancer/révoquer et afficher le périmètre.
-  const pendingInviteScopes: Record<string, { id: string; email: string | null; role: string | null; projectId: string | null; taskIds: string[] }> = {}
+  // Invitation en attente par artisan (id/email/rôle/token + périmètre prévu) :
+  // alimente la fiche ressource pour relancer/révoquer, copier le lien et afficher
+  // le périmètre. Le token sert au lien de secours sans régénérer d'invitation.
+  const pendingInviteScopes: Record<string, { id: string; email: string | null; role: string | null; token: string | null; projectId: string | null; taskIds: string[] }> = {}
   for (const i of pendingInvites) {
     if (!i.artisan_id) continue
     if (!pendingInviteScopes[i.artisan_id]) {
-      pendingInviteScopes[i.artisan_id] = { id: i.id, email: i.email, role: i.role, projectId: i.project_id, taskIds: i.task_ids ?? [] }
+      pendingInviteScopes[i.artisan_id] = { id: i.id, email: i.email, role: i.role, token: i.token, projectId: i.project_id, taskIds: i.task_ids ?? [] }
     }
   }
 

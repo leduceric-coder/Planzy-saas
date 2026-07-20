@@ -21,8 +21,6 @@ interface Props {
   currentUserId: string
   projects: ProjectRef[]
   tasks: TaskWithProject[]
-  /** Emails déjà en attente dans l'org → évite les doublons d'invitation. */
-  pendingEmails?: string[]
   onClose: () => void
   onSent: () => void
 }
@@ -33,7 +31,7 @@ const INVITE_ROLE_OPTIONS: Role[] = ['artisan', 'viewer', 'site_supervisor', 'ma
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export function InviteResourceModal({ artisan, orgId, currentUserId, projects, tasks, pendingEmails = [], onClose, onSent }: Props) {
+export function InviteResourceModal({ artisan, orgId, currentUserId, projects, tasks, onClose, onSent }: Props) {
   const { toast } = useToast()
   const [email, setEmail] = useState(artisan.email ?? '')
   const [role, setRole] = useState<Role>('artisan')
@@ -90,28 +88,41 @@ export function InviteResourceModal({ artisan, orgId, currentUserId, projects, t
       if (invalid) { setError("Une tâche sélectionnée n'appartient pas au chantier."); return }
     }
 
-    if (pendingEmails.map(m => m.toLowerCase()).includes(normalizedEmail)) {
-      setError('Une invitation est déjà en attente pour cet email.'); return
-    }
-
     setSending(true)
     setError(null)
 
-    // Déjà membre de l'organisation ?
+    // ── Gardes anti-doublon (relecture fraîche en base, pas seulement l'état UI).
+    // L'insert n'a lieu qu'après ces contrôles → on ne masque pas le problème par
+    // un simple message : on empêche réellement la création.
     const supabase = createClient()
-    const { data: existingMember } = await (supabase as any)
-      .from('profiles')
-      .select('id, role')
-      .eq('org_id', orgId)
-      .eq('email', normalizedEmail)
-      .maybeSingle() as { data: { id: string; role: string } | null }
+    const fail = (msg: string) => { setError(msg); setSending(false) }
 
+    // A. La ressource a déjà un compte lié (artisans.user_id ou profile.artisan_id).
+    const { data: artisanRow } = await (supabase as any)
+      .from('artisans').select('user_id').eq('id', artisan.id).maybeSingle() as { data: { user_id: string | null } | null }
+    const { data: linkedProfile } = await (supabase as any)
+      .from('profiles').select('id').eq('org_id', orgId).eq('artisan_id', artisan.id).maybeSingle() as { data: { id: string } | null }
+    if (artisanRow?.user_id || linkedProfile) { fail('Cette ressource dispose déjà d\'un compte Kanvix.'); return }
+
+    // B. Email déjà membre de l'organisation.
+    const { data: existingMember } = await (supabase as any)
+      .from('profiles').select('id, role').eq('org_id', orgId).eq('email', normalizedEmail).maybeSingle() as { data: { id: string; role: string } | null }
     if (existingMember) {
       const label = ROLE_LABEL[(existingMember.role as Role)] ?? existingMember.role
-      setError(`Cet utilisateur est déjà membre de l'organisation (rôle « ${label} »). Modifiez son rôle depuis les Réglages si nécessaire.`)
-      setSending(false)
-      return
+      fail(`Cet utilisateur est déjà membre de l'organisation (rôle « ${label} »). Modifiez son rôle depuis les Réglages si nécessaire.`); return
     }
+
+    // C. Invitation « pending » déjà présente pour la ressource OU pour l'email.
+    const { data: pendingRows } = await (supabase as any)
+      .from('invitations').select('id, email, artisan_id').eq('org_id', orgId).eq('status', 'pending') as { data: { id: string; email: string | null; artisan_id: string | null }[] | null }
+    const rows = pendingRows ?? []
+    if (rows.some(r => r.artisan_id === artisan.id)) { fail('Une invitation est déjà en attente pour cette ressource.'); return }
+    if (rows.some(r => (r.email ?? '').toLowerCase().trim() === normalizedEmail)) { fail('Une invitation est déjà en attente pour cet email.'); return }
+
+    // D. Invitation déjà acceptée pour cet email dans l'organisation.
+    const { data: acceptedRows } = await (supabase as any)
+      .from('invitations').select('id').eq('org_id', orgId).eq('status', 'accepted').ilike('email', normalizedEmail).limit(1) as { data: { id: string }[] | null }
+    if (acceptedRows && acceptedRows.length > 0) { fail('Cet email a déjà accepté une invitation dans cette organisation.'); return }
 
     const token = crypto.randomUUID()
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()

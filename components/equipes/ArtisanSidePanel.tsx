@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import {
   Phone, Mail, Pencil, Users, Building2, ListChecks, Plus, X, CalendarRange,
   Pause, Play, Archive, ShieldAlert, UserCheck, MailCheck, UserX, Lock,
-  KeyRound, Gauge, Activity, Send, ShieldCheck, Clock,
+  KeyRound, Gauge, Activity, Send, ShieldCheck, Clock, Copy, Check,
 } from 'lucide-react'
 import { SlidePanel } from '@/components/ui/SlidePanel'
 import { ConfirmDialog, type ConfirmState } from '@/components/ui/ConfirmDialog'
@@ -88,7 +88,7 @@ interface Props {
   tasks?: TaskWithProject[]
   onChanged?: () => void
   onCountsChanged?: (artisanId: string, projects: number, tasks: number) => void
-  pendingScope?: { id?: string; email?: string | null; role?: string | null; projectId: string | null; taskIds: string[] }
+  pendingScope?: { id?: string; email?: string | null; role?: string | null; token?: string | null; projectId: string | null; taskIds: string[] }
 }
 
 export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = false, canInvite = false, currentUserId, projects = [], tasks = [], onChanged, onCountsChanged, pendingScope }: Props) {
@@ -115,6 +115,8 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
   // ── Invitation (compte Kanvix) ──
   const [showInvite, setShowInvite] = useState(false)
   const [inviteBusy, setInviteBusy] = useState(false)
+  const [inviteFallbackLink, setInviteFallbackLink] = useState<string | null>(null)
+  const [linkCopied, setLinkCopied] = useState(false)
 
   // Rafraîchit les données serveur parent sans bloquer l'UI (INP).
   const softRefresh = () => { if (onChanged) startTransition(() => onChanged()) }
@@ -320,22 +322,41 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
     refresh()
   }
 
-  // ── Renvoyer l'email d'invitation (réutilise /api/invitations/send) ──
+  // Lien d'invitation existant (token de la ligne pending) — aucun token régénéré.
+  const inviteLink = pendingScope?.token ? `${typeof window !== 'undefined' ? window.location.origin : ''}/invite/${pendingScope.token}` : null
+
+  async function copyInviteLink() {
+    if (!inviteLink) return
+    await navigator.clipboard.writeText(inviteLink)
+    setLinkCopied(true)
+    setTimeout(() => setLinkCopied(false), 2000)
+  }
+
+  // ── Renvoyer l'email d'invitation (réutilise l'invitation pending existante) ──
+  // N'INSÈRE jamais : appelle /api/invitations/send avec l'id existant. Sur échec,
+  // affiche le lien de secours (token existant) plutôt que de recréer une invitation.
   async function resendInvite() {
     const invId = pendingScope?.id
     if (!invId || inviteBusy) return
     setInviteBusy(true)
+    setInviteFallbackLink(null)
     try {
       const res = await fetch('/api/invitations/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ invitationId: invId }),
       })
-      const data = await res.json() as { ok?: boolean; message?: string }
-      if (data.ok) showToast(`Email d'invitation renvoyé${artisan.accountEmail ? ` à ${artisan.accountEmail}` : ''}`)
-      else showToast(data.message ?? "L'email n'a pas pu être renvoyé.", 'error')
+      const data = await res.json() as { ok?: boolean; fallback?: boolean; message?: string }
+      if (data.ok) {
+        showToast(`Email d'invitation renvoyé${pendingScope?.email ? ` à ${pendingScope.email}` : ''}`)
+      } else {
+        // Email non parti → on garde le lien copiable (pas de nouvelle invitation).
+        if (inviteLink) setInviteFallbackLink(inviteLink)
+        showToast(data.message ?? "L'email n'a pas pu être renvoyé — utilisez le lien de secours.", 'error')
+      }
     } catch {
-      showToast('Impossible de joindre le serveur.', 'error')
+      if (inviteLink) setInviteFallbackLink(inviteLink)
+      showToast('Impossible de joindre le serveur — utilisez le lien de secours.', 'error')
     } finally {
       setInviteBusy(false)
     }
@@ -443,36 +464,58 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
               {artisan.accountEmail && <span className="text-[11px] text-muted-foreground truncate block">{artisan.accountEmail}</span>}
             </div>
           </div>
-          {/* Actions compte — inviter / relancer / révoquer (owner/admin ; aligné RLS). */}
+          {/* Actions compte — inviter / relancer / copier / révoquer (owner/admin ; aligné RLS). */}
           {canInvite && !artisan.hasAccount && (
-            <div className="flex items-center gap-2 mt-0.5">
-              {artisan.hasPendingInvite ? (
-                <>
+            <div className="flex flex-col gap-2 mt-0.5">
+              <div className="flex flex-wrap items-center gap-2">
+                {artisan.hasPendingInvite ? (
+                  <>
+                    <button
+                      onClick={resendInvite}
+                      disabled={inviteBusy || !pendingScope?.id}
+                      title={!pendingScope?.id ? 'Invitation introuvable' : "Renvoyer l'email d'invitation"}
+                      className="inline-flex items-center gap-1 h-8 px-2.5 rounded-lg border border-border/50 text-[11.5px] font-600 text-foreground hover:bg-elevated disabled:opacity-50 transition-colors"
+                    >
+                      <Send className="h-3 w-3" />Renvoyer
+                    </button>
+                    {inviteLink && (
+                      <button
+                        onClick={copyInviteLink}
+                        disabled={inviteBusy}
+                        title="Copier le lien d'invitation"
+                        className="inline-flex items-center gap-1 h-8 px-2.5 rounded-lg border border-border/50 text-[11.5px] font-600 text-foreground hover:bg-elevated disabled:opacity-50 transition-colors"
+                      >
+                        {linkCopied ? <Check className="h-3 w-3 text-green-500" /> : <Copy className="h-3 w-3" />}
+                        {linkCopied ? 'Copié' : 'Copier le lien'}
+                      </button>
+                    )}
+                    <button
+                      onClick={askRevokeInvite}
+                      disabled={inviteBusy || !pendingScope?.id}
+                      title="Révoquer l'invitation"
+                      className="inline-flex items-center gap-1 h-8 px-2.5 rounded-lg border border-border/50 text-[11.5px] font-600 text-destructive hover:bg-destructive/10 disabled:opacity-50 transition-colors"
+                    >
+                      <X className="h-3 w-3" />Révoquer
+                    </button>
+                  </>
+                ) : (
                   <button
-                    onClick={resendInvite}
-                    disabled={inviteBusy || !pendingScope?.id}
-                    title={!pendingScope?.id ? 'Invitation introuvable' : "Renvoyer l'email d'invitation"}
-                    className="inline-flex items-center gap-1 h-8 px-2.5 rounded-lg border border-border/50 text-[11.5px] font-600 text-foreground hover:bg-elevated disabled:opacity-50 transition-colors"
+                    onClick={() => setShowInvite(true)}
+                    disabled={inviteBusy}
+                    className="inline-flex items-center gap-1 h-8 px-2.5 rounded-lg bg-primary text-white text-[11.5px] font-600 hover:bg-primary/90 disabled:opacity-50 transition-colors"
                   >
-                    <Send className="h-3 w-3" />Renvoyer
+                    <Send className="h-3 w-3" />Inviter sur Kanvix
                   </button>
-                  <button
-                    onClick={askRevokeInvite}
-                    disabled={inviteBusy || !pendingScope?.id}
-                    title="Révoquer l'invitation"
-                    className="inline-flex items-center gap-1 h-8 px-2.5 rounded-lg border border-border/50 text-[11.5px] font-600 text-destructive hover:bg-destructive/10 disabled:opacity-50 transition-colors"
-                  >
-                    <X className="h-3 w-3" />Révoquer
+                )}
+              </div>
+              {/* Lien de secours affiché si le renvoi email échoue (token existant). */}
+              {inviteFallbackLink && (
+                <div className="flex items-center gap-2 p-2 rounded-lg bg-yellow-500/[0.06] border border-yellow-500/20">
+                  <span className="flex-1 min-w-0 text-[10.5px] font-mono text-muted-foreground truncate">{inviteFallbackLink}</span>
+                  <button onClick={copyInviteLink} title="Copier le lien" className="shrink-0 p-1.5 rounded-md border border-border/50 hover:bg-elevated transition-colors">
+                    {linkCopied ? <Check className="h-3.5 w-3.5 text-green-500" /> : <Copy className="h-3.5 w-3.5 text-muted-foreground" />}
                   </button>
-                </>
-              ) : (
-                <button
-                  onClick={() => setShowInvite(true)}
-                  disabled={inviteBusy}
-                  className="inline-flex items-center gap-1 h-8 px-2.5 rounded-lg bg-primary text-white text-[11.5px] font-600 hover:bg-primary/90 disabled:opacity-50 transition-colors"
-                >
-                  <Send className="h-3 w-3" />Inviter sur Kanvix
-                </button>
+                </div>
               )}
             </div>
           )}
