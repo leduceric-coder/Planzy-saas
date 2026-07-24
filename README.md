@@ -2,6 +2,10 @@
 
 **Stack :** Next.js 15 · TypeScript · Tailwind CSS · Supabase · Vercel
 
+> 🔥 **Feux France** — mini-app cartographique publique (route `/feux`) affichant
+> les détections satellites de chaleur (NASA FIRMS) en France, indépendante de
+> Supabase. Voir [`docs/FEUX_FRANCE.md`](docs/FEUX_FRANCE.md).
+
 ## Démarrage rapide
 
 ```bash

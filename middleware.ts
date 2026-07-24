@@ -3,6 +3,18 @@ import { NextResponse, type NextRequest } from 'next/server'
 import type { Database } from '@/lib/types'
 
 export async function middleware(request: NextRequest) {
+  // Feux France — mini-app cartographique publique, indépendante de Supabase.
+  // Court-circuit AVANT toute création du client Supabase pour que l'app
+  // fonctionne même sans variables d'environnement Supabase (mode démo).
+  const { pathname: earlyPath } = request.nextUrl
+  if (
+    earlyPath.startsWith('/feux') ||
+    earlyPath.startsWith('/api/firms') ||
+    earlyPath.startsWith('/api/geocode')
+  ) {
+    return NextResponse.next({ request })
+  }
+
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient<Database>(
@@ -41,6 +53,10 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith('/update-password') ||
     pathname.startsWith('/api/auth') ||
     pathname.startsWith('/invite') ||
+    // Feux France — mini-app cartographique publique (aucune donnée protégée).
+    pathname.startsWith('/feux') ||
+    pathname.startsWith('/api/firms') ||
+    pathname.startsWith('/api/geocode') ||
     pathname.startsWith('/_next') ||
     pathname.startsWith('/favicon')
 
