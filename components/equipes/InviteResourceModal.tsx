@@ -6,7 +6,7 @@ import {
 } from 'lucide-react'
 import { useToast } from '@/components/ui/toast-context'
 import { ROLE_LABEL, type Role } from '@/lib/permissions'
-import { INVITE_ERROR_MESSAGES, RESOURCE_INVITE_ROLES, normalizeEmail, isValidEmail } from '@/lib/invitations'
+import { INVITE_ERROR_MESSAGES, RESOURCE_INVITE_ROLES, normalizeEmail, isValidEmail, buildInvitePayload } from '@/lib/invitations'
 import type { TaskWithProject } from './ArtisanSidePanel'
 import { cn } from '@/lib/utils'
 
@@ -43,6 +43,12 @@ export function InviteResourceModal({ artisan, projects, tasks, onClose, onSent 
   const isArtisanInvite = role === 'artisan'
   const projectTasks = useMemo(() => tasks.filter(t => t.project_id === projectId), [tasks, projectId])
   const scopeValid = !isArtisanInvite || (!!projectId && taskIds.length > 0)
+
+  // Le formulaire porte-t-il une saisie utilisateur ? Sert à ne PAS fermer sur un
+  // clic hors-modale : une fermeture accidentelle perdrait l'email saisi, et la
+  // réouverture réinjecterait silencieusement l'email de la fiche. (LOT 42C-FIX3)
+  const isDirty = email !== (artisan.email ?? '') || projectId !== '' || taskIds.length > 0
+  const handleBackdrop = () => { if (!isDirty && !sending) onClose() }
 
   function changeRole(next: Role) {
     setRole(next)
@@ -90,16 +96,15 @@ export function InviteResourceModal({ artisan, projects, tasks, onClose, onSent 
     // AVANT l'INSERT et renvoie 409/400/403 avec un code d'erreur mappé en message.
     let created: { id: string; token: string } | null = null
     try {
+      // Charge utile construite depuis la valeur AFFICHÉE : payload.email est
+      // toujours normalizeEmail(champ à l'écran), jamais artisan.email.
+      const payload = buildInvitePayload({
+        artisanId: artisan.id, displayedEmail: email, role, projectId, taskIds,
+      })
       const res = await fetch('/api/invitations/create-resource-invite', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          artisanId: artisan.id,
-          email: normalizedEmail,
-          role,
-          projectId: isArtisanInvite ? projectId : null,
-          taskIds: isArtisanInvite ? taskIds : null,
-        }),
+        body: JSON.stringify(payload),
       })
       const data = await res.json().catch(() => ({})) as { ok?: boolean; error?: string; invitation?: { id: string; token: string } }
       if (!res.ok || !data.ok || !data.invitation) {
@@ -138,7 +143,7 @@ export function InviteResourceModal({ artisan, projects, tasks, onClose, onSent 
   }
 
   return (
-    <div className="fixed inset-0 z-[260] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={onClose}>
+    <div className="fixed inset-0 z-[260] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={handleBackdrop}>
       <div className="bg-surface border border-border rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between px-5 py-4 border-b border-border sticky top-0 bg-surface z-10">
           <div className="flex items-center gap-2 min-w-0">

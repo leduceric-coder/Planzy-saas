@@ -39,6 +39,34 @@ export const INVITE_ERROR_MESSAGES: Record<string, string> = {
   server_error: 'Une erreur est survenue. Réessayez.',
 }
 
+// Charge utile POSTée à la route de création. Fonction PURE : garantit que
+// l'email envoyé est exactement normalizeEmail(valeur affichée à l'écran), et
+// que le périmètre n'accompagne que le rôle artisan. (LOT 42C-FIX3)
+export type InvitePayload = {
+  artisanId: string
+  email: string
+  role: string
+  projectId: string | null
+  taskIds: string[] | null
+}
+
+export function buildInvitePayload(input: {
+  artisanId: string
+  displayedEmail: string
+  role: string
+  projectId: string
+  taskIds: string[]
+}): InvitePayload {
+  const isArtisan = input.role === 'artisan'
+  return {
+    artisanId: input.artisanId,
+    email: normalizeEmail(input.displayedEmail),
+    role: input.role,
+    projectId: isArtisan ? (input.projectId || null) : null,
+    taskIds: isArtisan ? (input.taskIds.length ? input.taskIds : null) : null,
+  }
+}
+
 export type InviteGuardInput = {
   callerRole: string | null | undefined
   email: string

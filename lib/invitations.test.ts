@@ -254,3 +254,49 @@ test('resolve: manager/viewer/artisan callers are refused (403)', async () => {
     if (!r.ok) assert.equal(r.code, 403)
   }
 })
+
+// ── Invariant affichage → payload (LOT 42C-FIX3) ─────────────────────────────
+// Garantit que l'email POSTé est toujours normalizeEmail(valeur affichée),
+// jamais l'email pré-rempli de la fiche.
+
+import { buildInvitePayload } from './invitations.ts'
+
+const FICHE_EMAIL = 'durant@roger.fr' // email pré-rempli depuis la fiche ressource
+
+test('payload: displayedEmail -> normalizeEmail -> payload.email', () => {
+  for (const displayed of ['JEAN.DUPONT@Test.FR', '  jean.dupont@test.fr  ', ' LEDUC+test@Cervval.COM ']) {
+    const p = buildInvitePayload({ artisanId: 'art-1', displayedEmail: displayed, role: 'viewer', projectId: '', taskIds: [] })
+    assert.equal(p.email, normalizeEmail(displayed))
+    assert.notEqual(p.email, FICHE_EMAIL, 'le payload ne doit jamais retomber sur l\'email de la fiche')
+  }
+})
+
+test('payload: an edited email never falls back to the fiche email', () => {
+  const p = buildInvitePayload({ artisanId: 'art-1', displayedEmail: 'JEAN.DUPONT@Test.FR', role: 'artisan', projectId: 'p1', taskIds: ['t1'] })
+  assert.equal(p.email, 'jean.dupont@test.fr')
+})
+
+test('payload: scope is carried only for the artisan role', () => {
+  const artisan = buildInvitePayload({ artisanId: 'a', displayedEmail: 'x@y.zz', role: 'artisan', projectId: 'p1', taskIds: ['t1', 't2'] })
+  assert.equal(artisan.projectId, 'p1')
+  assert.deepEqual(artisan.taskIds, ['t1', 't2'])
+
+  const viewer = buildInvitePayload({ artisanId: 'a', displayedEmail: 'x@y.zz', role: 'viewer', projectId: 'p1', taskIds: ['t1'] })
+  assert.equal(viewer.projectId, null, 'un rôle non-artisan ne doit pas emporter de périmètre')
+  assert.equal(viewer.taskIds, null)
+})
+
+test('payload: empty scope on an artisan role is normalized to null (server then blocks)', () => {
+  const p = buildInvitePayload({ artisanId: 'a', displayedEmail: 'x@y.zz', role: 'artisan', projectId: '', taskIds: [] })
+  assert.equal(p.projectId, null)
+  assert.equal(p.taskIds, null)
+  // Le serveur refuse ce cas.
+  const v = canCreateResourceInvitation(base({ role: 'artisan', email: p.email, projectId: p.projectId, taskIds: p.taskIds }))
+  assert.equal(v.ok, false)
+  if (!v.ok) assert.equal(v.error, 'missing_scope')
+})
+
+test('payload: the fiche email is only sent when it is what is displayed', () => {
+  const untouched = buildInvitePayload({ artisanId: 'a', displayedEmail: FICHE_EMAIL, role: 'viewer', projectId: '', taskIds: [] })
+  assert.equal(untouched.email, FICHE_EMAIL, 'champ non modifié -> le pré-rempli part bien')
+})
