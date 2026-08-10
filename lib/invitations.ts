@@ -90,3 +90,77 @@ export function canCreateResourceInvitation(i: InviteGuardInput): InviteGuardRes
 
   return { ok: true, email }
 }
+
+// ── Orchestration (testable sans HTTP ni base) ───────────────────────────────
+// Collecte les faits via un lecteur injectable puis applique le verdict.
+// FAIL-CLOSED : toute lecture en échec ⇒ 500 sans insertion possible.
+
+type Read<T> = Promise<{ ok: true; data: T } | { ok: false }>
+
+export type InviteReader = {
+  getCaller(): Read<{ orgId: string | null; role: string | null } | null>
+  getArtisan(artisanId: string): Read<{ id: string; org_id: string; user_id: string | null } | null>
+  getProfiles(orgId: string): Read<{ email: string | null; artisan_id: string | null }[]>
+  getInvitations(orgId: string): Read<{ email: string | null; artisan_id: string | null; status: string }[]>
+  validateScope(orgId: string, projectId: string, taskIds: string[]): Read<boolean>
+}
+
+export type ResolvedInvite =
+  | { ok: true; orgId: string; email: string; role: string; artisanId: string; projectId: string | null; taskIds: string[] | null }
+  | { ok: false; code: number; error: string }
+
+export type ResolveInput = {
+  artisanId: string
+  email: string
+  role: string
+  projectId?: string | null
+  taskIds?: string[] | null
+}
+
+export async function resolveResourceInvitation(reader: InviteReader, input: ResolveInput): Promise<ResolvedInvite> {
+  const fail500 = { ok: false as const, code: 500, error: 'server_error' }
+
+  const caller = await reader.getCaller()
+  if (!caller.ok) return fail500
+  const orgId = caller.data?.orgId
+  if (!orgId) return { ok: false, code: 403, error: 'forbidden' }
+
+  const art = await reader.getArtisan(input.artisanId)
+  if (!art.ok) return fail500
+  if (!art.data || art.data.org_id !== orgId) return { ok: false, code: 403, error: 'resource_not_found' }
+
+  const profs = await reader.getProfiles(orgId)
+  if (!profs.ok) return fail500
+  const email = normalizeEmail(input.email)
+  const artisanHasAccount = !!art.data.user_id || profs.data.some(p => p.artisan_id === input.artisanId)
+  const emailIsMember = email !== '' && profs.data.some(p => normalizeEmail(p.email) === email)
+
+  const invs = await reader.getInvitations(orgId)
+  if (!invs.ok) return fail500
+  const pendingArtisanIds = invs.data.filter(r => r.status === 'pending' && r.artisan_id).map(r => r.artisan_id as string)
+  const pendingEmails = invs.data.filter(r => r.status === 'pending').map(r => r.email ?? '')
+  const acceptedEmails = invs.data.filter(r => r.status === 'accepted').map(r => r.email ?? '')
+
+  const projectId = input.projectId ?? null
+  const taskIds = input.taskIds ?? null
+  let taskProjectValid = true
+  if (input.role === 'artisan' && projectId && taskIds && taskIds.length > 0) {
+    const scope = await reader.validateScope(orgId, projectId, taskIds)
+    if (!scope.ok) return fail500
+    taskProjectValid = scope.data
+  }
+
+  const verdict = canCreateResourceInvitation({
+    callerRole: caller.data?.role, email, role: input.role, artisanId: input.artisanId,
+    artisanHasAccount, emailIsMember, pendingArtisanIds, pendingEmails, acceptedEmails,
+    projectId, taskIds, taskProjectValid,
+  })
+  if (!verdict.ok) return { ok: false, code: verdict.code, error: verdict.error }
+
+  const isArtisan = input.role === 'artisan'
+  return {
+    ok: true, orgId, email: verdict.email, role: input.role, artisanId: input.artisanId,
+    projectId: isArtisan ? projectId : null,
+    taskIds: isArtisan ? taskIds : null,
+  }
+}

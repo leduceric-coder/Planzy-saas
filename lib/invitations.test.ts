@@ -122,3 +122,135 @@ test('happy path: artisan invitation with valid scope, email normalized', () => 
   assert.equal(res.ok, true)
   if (res.ok) assert.equal(res.email, 'fresh@ex.com')
 })
+
+// ── Orchestration serveur (resolveResourceInvitation) ────────────────────────
+// Prouve : collecte des faits, fail-closed sur toute lecture en échec, et
+// qu'aucune charge d'INSERT n'est produite lorsqu'un contrôle bloque.
+
+import { resolveResourceInvitation, type InviteReader } from './invitations.ts'
+
+const ORG = 'org-1'
+function reader(over: Partial<InviteReader> = {}): InviteReader {
+  return {
+    async getCaller() { return { ok: true, data: { orgId: ORG, role: 'owner' } } },
+    async getArtisan(id) { return { ok: true, data: { id, org_id: ORG, user_id: null } } },
+    async getProfiles() { return { ok: true, data: [] } },
+    async getInvitations() { return { ok: true, data: [] } },
+    async validateScope() { return { ok: true, data: true } },
+    ...over,
+  }
+}
+const ARTISAN_INPUT = { artisanId: 'art-1', email: 'new@example.com', role: 'artisan', projectId: 'p1', taskIds: ['t1'] }
+
+test('resolve: happy path returns an insert payload carrying artisan_id/project_id/task_ids', async () => {
+  const r = await resolveResourceInvitation(reader(), ARTISAN_INPUT)
+  assert.equal(r.ok, true)
+  if (r.ok) {
+    assert.equal(r.artisanId, 'art-1')
+    assert.equal(r.projectId, 'p1')
+    assert.deepEqual(r.taskIds, ['t1'])
+    assert.equal(r.email, 'new@example.com')
+    assert.equal(r.orgId, ORG)
+  }
+})
+
+test('resolve: non-artisan role carries a null scope', async () => {
+  const r = await resolveResourceInvitation(reader(), { ...ARTISAN_INPUT, role: 'viewer' })
+  assert.equal(r.ok, true)
+  if (r.ok) { assert.equal(r.projectId, null); assert.equal(r.taskIds, null) }
+})
+
+test('resolve is FAIL-CLOSED: any failing control read yields 500, never a payload', async () => {
+  const failing: (keyof InviteReader)[] = ['getCaller', 'getArtisan', 'getProfiles', 'getInvitations', 'validateScope']
+  for (const key of failing) {
+    const r = await resolveResourceInvitation(
+      reader({ [key]: async () => ({ ok: false }) } as Partial<InviteReader>),
+      ARTISAN_INPUT,
+    )
+    assert.equal(r.ok, false, `${key} failure must not produce a payload`)
+    if (!r.ok) assert.equal(r.code, 500, `${key} failure must be 500`)
+  }
+})
+
+test('resolve: artisan from another org is rejected (403)', async () => {
+  const r = await resolveResourceInvitation(
+    reader({ async getArtisan(id) { return { ok: true, data: { id, org_id: 'other-org', user_id: null } } } }),
+    ARTISAN_INPUT,
+  )
+  assert.equal(r.ok, false)
+  if (!r.ok) { assert.equal(r.code, 403); assert.equal(r.error, 'resource_not_found') }
+})
+
+test('resolve: resource already linked to a profile is blocked (409)', async () => {
+  const r = await resolveResourceInvitation(
+    reader({ async getProfiles() { return { ok: true, data: [{ email: 'x@y.z', artisan_id: 'art-1' }] } } }),
+    ARTISAN_INPUT,
+  )
+  assert.equal(r.ok, false)
+  if (!r.ok) { assert.equal(r.code, 409); assert.equal(r.error, 'resource_has_account') }
+})
+
+test('resolve: artisans.user_id set is blocked (409)', async () => {
+  const r = await resolveResourceInvitation(
+    reader({ async getArtisan(id) { return { ok: true, data: { id, org_id: ORG, user_id: 'u-1' } } } }),
+    ARTISAN_INPUT,
+  )
+  assert.equal(r.ok, false)
+  if (!r.ok) assert.equal(r.error, 'resource_has_account')
+})
+
+test('resolve: email already a member is blocked, case/space-insensitive', async () => {
+  const r = await resolveResourceInvitation(
+    reader({ async getProfiles() { return { ok: true, data: [{ email: '  NEW@Example.COM ', artisan_id: null }] } } }),
+    ARTISAN_INPUT,
+  )
+  assert.equal(r.ok, false)
+  if (!r.ok) { assert.equal(r.code, 409); assert.equal(r.error, 'email_is_member') }
+})
+
+test('resolve: pending invitation for the same resource is blocked (409)', async () => {
+  const r = await resolveResourceInvitation(
+    reader({ async getInvitations() { return { ok: true, data: [{ email: 'other@x.com', artisan_id: 'art-1', status: 'pending' }] } } }),
+    ARTISAN_INPUT,
+  )
+  assert.equal(r.ok, false)
+  if (!r.ok) { assert.equal(r.code, 409); assert.equal(r.error, 'pending_resource') }
+})
+
+test('resolve: pending invitation for the same email on ANOTHER resource is blocked (409)', async () => {
+  const r = await resolveResourceInvitation(
+    reader({ async getInvitations() { return { ok: true, data: [{ email: ' NEW@EXAMPLE.com ', artisan_id: 'art-99', status: 'pending' }] } } }),
+    ARTISAN_INPUT,
+  )
+  assert.equal(r.ok, false)
+  if (!r.ok) { assert.equal(r.code, 409); assert.equal(r.error, 'pending_email') }
+})
+
+test('resolve: a revoked invitation does NOT block a new one', async () => {
+  const r = await resolveResourceInvitation(
+    // getInvitations ne remonte que pending/accepted ; une révoquée est absente.
+    reader({ async getInvitations() { return { ok: true, data: [] } } }),
+    ARTISAN_INPUT,
+  )
+  assert.equal(r.ok, true)
+})
+
+test('resolve: tasks outside the project are rejected (400)', async () => {
+  const r = await resolveResourceInvitation(
+    reader({ async validateScope() { return { ok: true, data: false } } }),
+    ARTISAN_INPUT,
+  )
+  assert.equal(r.ok, false)
+  if (!r.ok) { assert.equal(r.code, 400); assert.equal(r.error, 'task_not_in_project') }
+})
+
+test('resolve: manager/viewer/artisan callers are refused (403)', async () => {
+  for (const role of ['manager', 'site_supervisor', 'viewer', 'artisan']) {
+    const r = await resolveResourceInvitation(
+      reader({ async getCaller() { return { ok: true, data: { orgId: ORG, role } } } }),
+      ARTISAN_INPUT,
+    )
+    assert.equal(r.ok, false, `${role} must be refused`)
+    if (!r.ok) assert.equal(r.code, 403)
+  }
+})
