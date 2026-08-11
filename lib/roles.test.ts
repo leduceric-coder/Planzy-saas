@@ -157,3 +157,55 @@ test('consequences never promise a scope restriction that is not enforced yet', 
     assert.equal(s.includes('limité à son périmètre'), false, `${r} must not promise scope isolation`)
   }
 })
+
+// ── Sélection du nouveau rôle (LOT 42D-FIX2) ─────────────────────────────────
+// Aucun rôle ne doit être présélectionné : un rôle sensible (admin) ne peut pas
+// être validé par simple inertie sur la valeur par défaut du sélecteur.
+
+import { roleSelectOptions, canSubmitRoleChange, NO_ROLE_SELECTED } from './roles.ts'
+
+test('the selector opens on no selection at all', () => {
+  assert.equal(NO_ROLE_SELECTED, '')
+  assert.equal(canSubmitRoleChange(NO_ROLE_SELECTED, 'manager'), false)
+})
+
+test('submission stays blocked until an explicit, different role is chosen', () => {
+  // rien de choisi
+  assert.equal(canSubmitRoleChange('', 'manager'), false)
+  // même rôle que l'actuel
+  assert.equal(canSubmitRoleChange('manager', 'manager'), false)
+  // rôle inconnu ou non attribuable
+  assert.equal(canSubmitRoleChange('owner', 'manager'), false)
+  assert.equal(canSubmitRoleChange('superadmin', 'manager'), false)
+  // choix explicite et différent
+  assert.equal(canSubmitRoleChange('viewer', 'manager'), true)
+  assert.equal(canSubmitRoleChange('admin', 'manager'), true)
+})
+
+test('roleSelectOptions never contains the current role nor owner', () => {
+  for (const caller of ['owner', 'admin'] as Role[]) {
+    for (const target of ['admin', 'manager', 'site_supervisor', 'artisan', 'viewer'] as Role[]) {
+      const opts = roleSelectOptions(caller, target, false)
+      assert.equal(opts.includes(target), false, `${caller}/${target}: current role must not be offered`)
+      assert.equal(opts.includes('owner' as Role), false, `${caller}/${target}: owner must never be offered`)
+    }
+  }
+})
+
+test('the dangerous case from the report: manager target no longer defaults to admin', () => {
+  // Bob, Chef de projet (manager), vu par un owner.
+  const opts = roleSelectOptions('owner', 'manager', false)
+  assert.equal(opts[0], 'admin', 'admin remains the first option in the list')
+  // ...mais rien n'est présélectionné, donc rien ne peut être confirmé d'emblée.
+  assert.equal(canSubmitRoleChange(NO_ROLE_SELECTED, 'manager'), false)
+})
+
+test('every offered option is individually submittable once picked', () => {
+  for (const caller of ['owner', 'admin'] as Role[]) {
+    for (const target of ['manager', 'artisan', 'viewer'] as Role[]) {
+      for (const opt of roleSelectOptions(caller, target, false)) {
+        assert.equal(canSubmitRoleChange(opt, target), true, `${caller}/${target}: ${opt} must be submittable`)
+      }
+    }
+  }
+})

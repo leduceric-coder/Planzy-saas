@@ -5,7 +5,8 @@ import { X, ShieldCheck, AlertTriangle, KeyRound } from 'lucide-react'
 import { useToast } from '@/components/ui/toast-context'
 import { ROLE_LABEL, type Role } from '@/lib/permissions'
 import {
-  assignableRolesFor, roleChangeConsequence, isElevation,
+  roleSelectOptions, canSubmitRoleChange, NO_ROLE_SELECTED,
+  roleChangeConsequence, isElevation,
   ROLE_ERROR_MESSAGES, type RoleErrorCode,
 } from '@/lib/roles'
 
@@ -21,23 +22,29 @@ interface Props {
 
 export function ChangeRoleModal({ resourceId, personName, currentRole, callerRole, isSelf, onClose, onChanged }: Props) {
   const { toast } = useToast()
-  const options = assignableRolesFor(callerRole, currentRole, isSelf).filter(r => r !== currentRole)
-  const [newRole, setNewRole] = useState<Role | ''>(options[0] ?? '')
+  const options = roleSelectOptions(callerRole, currentRole, isSelf)
+  // Aucune présélection : un rôle sensible (Administrateur) ne doit jamais
+  // pouvoir être validé par simple inertie sur la valeur par défaut.
+  const [newRole, setNewRole] = useState<Role | ''>(NO_ROLE_SELECTED)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const consequence = newRole ? roleChangeConsequence(newRole) : null
   const elevated = newRole ? isElevation(newRole) : false
+  const canSubmit = canSubmitRoleChange(newRole, currentRole)
 
   async function handleConfirm() {
-    if (!newRole || saving) return
+    // Le rétrécissement de type reflète la garde : sans choix explicite et
+    // différent du rôle actuel, aucune requête n'est émise.
+    if (!canSubmit || saving || !newRole) return
+    const chosen: Role = newRole
     setSaving(true)
     setError(null)
     try {
       const res = await fetch(`/api/resources/${resourceId}/role`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ role: newRole }),
+        body: JSON.stringify({ role: chosen }),
       })
       const data = await res.json().catch(() => ({})) as { ok?: boolean; error?: string }
       if (!res.ok || !data.ok) {
@@ -45,7 +52,7 @@ export function ChangeRoleModal({ resourceId, personName, currentRole, callerRol
         setSaving(false)
         return
       }
-      toast(`Rôle mis à jour : ${ROLE_LABEL[newRole]}`)
+      toast(`Rôle mis à jour : ${ROLE_LABEL[chosen]}`)
       onChanged()
       onClose()
     } catch {
@@ -91,10 +98,11 @@ export function ChangeRoleModal({ resourceId, personName, currentRole, callerRol
             ) : (
               <select
                 value={newRole}
-                onChange={e => { setNewRole(e.target.value as Role); setError(null) }}
+                onChange={e => { setNewRole(e.target.value as Role | ''); setError(null) }}
                 disabled={saving}
                 className="h-9 rounded-lg border border-border bg-background px-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary disabled:opacity-60"
               >
+                <option value="">Choisir un rôle…</option>
                 {options.map(r => <option key={r} value={r}>{ROLE_LABEL[r]}</option>)}
               </select>
             )}
@@ -120,7 +128,7 @@ export function ChangeRoleModal({ resourceId, personName, currentRole, callerRol
           <button onClick={onClose} disabled={saving} className="h-9 px-4 rounded-lg border border-border text-sm font-600 text-muted-foreground hover:bg-elevated transition-colors disabled:opacity-50">
             Annuler
           </button>
-          <button onClick={handleConfirm} disabled={saving || !newRole || options.length === 0}
+          <button onClick={handleConfirm} disabled={saving || !canSubmit || options.length === 0}
             className="h-9 px-4 rounded-lg bg-primary text-white text-sm font-600 hover:bg-primary/90 disabled:opacity-50 transition-colors">
             {saving ? 'Modification…' : 'Confirmer le changement'}
           </button>

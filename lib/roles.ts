@@ -85,6 +85,24 @@ export function canOpenRoleEditor(callerRole: string | null | undefined, targetR
   return assignableRolesFor(callerRole, targetRole, isSelf).length > 0
 }
 
+// Options réellement proposées dans le sélecteur : rôles autorisés, privés du
+// rôle actuel (le « changer » vers le même rôle n'a pas de sens).
+export function roleSelectOptions(callerRole: string | null | undefined, targetRole: string | null | undefined, isSelf: boolean): Role[] {
+  const current = asRole(targetRole)
+  return assignableRolesFor(callerRole, targetRole, isSelf).filter(r => r !== current)
+}
+
+// Aucune présélection : le sélecteur s'ouvre vide. Un rôle sensible (admin)
+// ne doit jamais pouvoir être validé par simple inertie.
+export const NO_ROLE_SELECTED = '' as const
+
+// Le bouton de confirmation n'est actif qu'après un choix explicite et différent.
+export function canSubmitRoleChange(selected: string, currentRole: string | null | undefined): boolean {
+  if (!selected) return false
+  if (!ASSIGNABLE_ROLES.includes(selected as Role)) return false
+  return selected !== asRole(currentRole)
+}
+
 // Conséquence affichée avant confirmation. Volontairement sobre : tant que la
 // restriction par périmètre n'est pas appliquée en base, on ne promet rien.
 export function roleChangeConsequence(newRole: Role): string {
