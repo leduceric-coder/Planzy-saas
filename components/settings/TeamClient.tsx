@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/dialog'
 import { useToast } from '@/components/ui/toast-context'
 import { cn, formatDate } from '@/lib/utils'
+import { ROLE_ERROR_MESSAGES } from '@/lib/roles'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -87,12 +88,12 @@ const ROLE_COLOR: Record<string, string> = {
 
 const INVITE_ROLES = ['admin', 'manager', 'site_supervisor', 'artisan', 'viewer'] as const
 
+// Contrat d'erreurs partagé avec la RPC durcie (lib/roles), complété par les
+// codes propres au retrait de membre.
 const EDIT_ERROR_MESSAGES: Record<string, string> = {
+  ...ROLE_ERROR_MESSAGES,
   'non_autorisé': 'Action non autorisée.',
-  'seul_owner_peut_promouvoir': 'Seul un propriétaire peut attribuer le rôle Propriétaire.',
-  'dernier_owner': "Impossible : cet utilisateur est le dernier propriétaire de l'organisation.",
-  'artisan_autre_org': "Cet artisan n'appartient pas à votre organisation.",
-  'artisan_deja_lie': 'Cet artisan est déjà rattaché à un autre utilisateur.',
+  'seul_owner_peut_promouvoir': 'Seul un propriétaire peut attribuer ce rôle.',
   'cannot_remove_self': 'Vous ne pouvez pas vous retirer vous-même.',
 }
 
@@ -192,7 +193,9 @@ export function TeamClient({ orgId, currentUserId, currentRole, members, invitat
   // ── Derived ───────────────────────────────────────────────────────────────────
   const editRoleWasArtisan = editingMember?.role === 'artisan'
   const editRoleChangedFromArtisan = editRoleWasArtisan && editRole !== 'artisan'
-  const editRolesAvailable = currentRole === 'owner' ? ['owner', ...INVITE_ROLES] : INVITE_ROLES
+  // « owner » n'est plus attribuable : le transfert de propriété est un workflow
+  // distinct. La RPC refuse ce rôle (cannot_assign_owner) quel que soit l'appelant.
+  const editRolesAvailable = INVITE_ROLES
 
   // Périmètre d'invitation artisan : chantier + au moins une tâche obligatoires.
   const isArtisanInvite = role === 'artisan'

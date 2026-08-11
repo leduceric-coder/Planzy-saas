@@ -121,7 +121,7 @@ export default async function EquipesPage() {
     // Comptes liés → rôle/email du compte Kanvix par artisan (fiche ressource).
     supabase
       .from('profiles')
-      .select('artisan_id, role, email')
+      .select('id, artisan_id, role, email')
       .eq('org_id', orgId)
       .not('artisan_id', 'is', null),
   ])
@@ -146,9 +146,9 @@ export default async function EquipesPage() {
   }
 
   // Compte Kanvix lié par artisan (rôle applicatif + email).
-  const accountByArtisan: Record<string, { role: string | null; email: string | null }> = {}
-  for (const a of (accountsData ?? []) as { artisan_id: string | null; role: string | null; email: string | null }[]) {
-    if (a.artisan_id && !accountByArtisan[a.artisan_id]) accountByArtisan[a.artisan_id] = { role: a.role, email: a.email }
+  const accountByArtisan: Record<string, { id: string; role: string | null; email: string | null }> = {}
+  for (const a of (accountsData ?? []) as { id: string; artisan_id: string | null; role: string | null; email: string | null }[]) {
+    if (a.artisan_id && !accountByArtisan[a.artisan_id]) accountByArtisan[a.artisan_id] = { id: a.id, role: a.role, email: a.email }
   }
 
   const assignmentCounts: Record<string, { projects: number; tasks: number }> = {}
@@ -189,6 +189,7 @@ export default async function EquipesPage() {
           canManage={canManage}
           canInvite={canInvite}
           currentUserId={user.id}
+          callerRole={role}
           pendingInviteArtisanIds={pendingInviteArtisanIds}
           pendingInviteScopes={pendingInviteScopes}
           assignmentCounts={assignmentCounts}

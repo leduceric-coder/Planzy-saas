@@ -10,7 +10,9 @@ import {
 import { SlidePanel } from '@/components/ui/SlidePanel'
 import { ConfirmDialog, type ConfirmState } from '@/components/ui/ConfirmDialog'
 import { InviteResourceModal } from './InviteResourceModal'
+import { ChangeRoleModal } from './ChangeRoleModal'
 import { ROLE_LABEL, ROLE_DESCRIPTION, asRole } from '@/lib/permissions'
+import { canOpenRoleEditor, ROLE_HIGHLIGHTS } from '@/lib/roles'
 import { cn, getInitials } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
 import { mutationClient } from '@/lib/supabase/mutate'
@@ -84,6 +86,10 @@ interface Props {
   /** Peut inviter / relancer / révoquer (owner/admin — aligné RLS + API). */
   canInvite?: boolean
   currentUserId?: string
+  /** Rôle applicatif de l'utilisateur connecté (matrice d'attribution 42D). */
+  callerRole?: string | null
+  /** Profil lié à cette ressource, s'il existe (cible du changement de rôle). */
+  linkedProfileId?: string | null
   projects?: ProjectRef[]
   tasks?: TaskWithProject[]
   onChanged?: () => void
@@ -91,7 +97,7 @@ interface Props {
   pendingScope?: { id?: string; email?: string | null; role?: string | null; token?: string | null; projectId: string | null; taskIds: string[] }
 }
 
-export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = false, canInvite = false, currentUserId, projects = [], tasks = [], onChanged, onCountsChanged, pendingScope }: Props) {
+export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = false, canInvite = false, currentUserId, callerRole, linkedProfileId, projects = [], tasks = [], onChanged, onCountsChanged, pendingScope }: Props) {
   const router = useRouter()
   const { toast: showToast } = useToast()
   const [, startTransition] = useTransition()
@@ -117,6 +123,9 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
   const [inviteBusy, setInviteBusy] = useState(false)
   const [inviteFallbackLink, setInviteFallbackLink] = useState<string | null>(null)
   const [linkCopied, setLinkCopied] = useState(false)
+
+  // ── Rôle & droits (LOT 42D) ──
+  const [showRoleModal, setShowRoleModal] = useState(false)
 
   // Rafraîchit les données serveur parent sans bloquer l'UI (INP).
   const softRefresh = () => { if (onChanged) startTransition(() => onChanged()) }
@@ -392,10 +401,17 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
         : { icon: UserX, cls: 'text-muted-foreground/70', label: 'Aucun compte lié' }
   const AccountIcon = accountLine.icon
 
-  // ── Rôle & droits (lecture seule ; modification = LOT 42D) ──
+  // ── Rôle & droits ──
+  // « Rôle actif » n'existe que si un compte est lié. Une invitation en attente
+  // porte un « rôle prévu », qui n'est pas un droit effectif.
   const roleKey = artisan.hasAccount && artisan.accountRole ? asRole(artisan.accountRole) : null
   const roleLabel = roleKey ? ROLE_LABEL[roleKey] : null
   const roleDesc = roleKey ? ROLE_DESCRIPTION[roleKey] : null
+  const plannedRoleKey = !artisan.hasAccount && artisan.hasPendingInvite && pendingScope?.role
+    ? asRole(pendingScope.role) : null
+  // La cible du changement est le PROFIL lié, jamais l'artisan.
+  const isSelfTarget = !!linkedProfileId && !!currentUserId && linkedProfileId === currentUserId
+  const canEditRole = !!roleKey && !!linkedProfileId && canOpenRoleEditor(callerRole, roleKey, isSelfTarget)
 
   // ── Périmètre autorisé (résumé) ──
   const scopeSummary =
@@ -526,32 +542,55 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
           <h3 className="text-[10px] font-800 uppercase tracking-widest text-muted-foreground flex items-center gap-1.5">
             <KeyRound className="h-3 w-3" /> Rôle &amp; droits
           </h3>
-          {roleLabel ? (
+          {roleKey && roleLabel ? (
+            <>
+              <div className="flex items-start gap-2.5 text-sm">
+                <div className="w-7 h-7 rounded-lg bg-elevated border border-border/40 flex items-center justify-center shrink-0"><ShieldCheck className="h-3.5 w-3.5 text-primary" /></div>
+                <div className="min-w-0">
+                  <span className="text-[10px] font-700 uppercase tracking-wide text-muted-foreground/70 block">Rôle actif</span>
+                  <span className="font-600 text-foreground block">{roleLabel}</span>
+                  <span className="text-[11.5px] text-muted-foreground">{roleDesc}</span>
+                </div>
+              </div>
+              <ul className="flex flex-col gap-0.5 pl-9">
+                {ROLE_HIGHLIGHTS[roleKey].map(h => (
+                  <li key={h} className="text-[11.5px] text-foreground/70 flex items-center gap-1.5">
+                    <span className="w-1 h-1 rounded-full bg-muted-foreground/40 shrink-0" />{h}
+                  </li>
+                ))}
+              </ul>
+              {canEditRole && (
+                <button
+                  onClick={() => setShowRoleModal(true)}
+                  className="self-start inline-flex items-center gap-1 h-8 px-2.5 rounded-lg border border-border/50 text-[11.5px] font-600 text-foreground hover:bg-elevated transition-colors"
+                >
+                  <Pencil className="h-3 w-3" />Modifier le rôle
+                </button>
+              )}
+            </>
+          ) : plannedRoleKey ? (
             <div className="flex items-start gap-2.5 text-sm">
-              <div className="w-7 h-7 rounded-lg bg-elevated border border-border/40 flex items-center justify-center shrink-0"><ShieldCheck className="h-3.5 w-3.5 text-primary" /></div>
+              <div className="w-7 h-7 rounded-lg bg-elevated border border-border/40 flex items-center justify-center shrink-0"><MailCheck className="h-3.5 w-3.5 text-amber-500" /></div>
               <div className="min-w-0">
-                <span className="font-600 text-foreground block">{roleLabel}</span>
-                <span className="text-[11.5px] text-muted-foreground">{roleDesc}</span>
+                <span className="text-[10px] font-700 uppercase tracking-wide text-muted-foreground/70 block">Rôle prévu</span>
+                <span className="font-600 text-foreground block">{ROLE_LABEL[plannedRoleKey]}</span>
+                <span className="text-[11.5px] text-muted-foreground">Effectif à l&apos;acceptation de l&apos;invitation.</span>
               </div>
             </div>
           ) : (
             <p className="text-[12px] text-muted-foreground/60 italic">Aucun compte lié — aucun rôle applicatif.</p>
-          )}
-          {canManage && (
-            <button disabled title="À venir — LOT 42D" className="self-start inline-flex items-center gap-1 h-8 px-2.5 rounded-lg border border-border/50 text-[11.5px] font-600 text-muted-foreground/60 cursor-not-allowed">
-              <Pencil className="h-3 w-3" />Modifier les droits · à venir · 42D
-            </button>
           )}
         </div>
 
         {/* Périmètre autorisé (résumé) */}
         <div className="flex flex-col gap-1.5">
           <h3 className="text-[10px] font-800 uppercase tracking-widest text-muted-foreground flex items-center gap-1.5">
-            <Lock className="h-3 w-3" /> Périmètre autorisé
+            <Lock className="h-3 w-3" /> Périmètre opérationnel
           </h3>
           <p className={cn('text-[12.5px] font-500', scopeSummary.startsWith('Aucun') ? 'text-muted-foreground/55 italic' : 'text-foreground/80')}>
             {scopeSummary}
           </p>
+          <p className="text-[10.5px] text-muted-foreground/60">Utilisé pour les affectations et le planning.</p>
         </div>
 
         {/* Périmètre prévu à l'invitation (distinct des rattachements actifs) */}
@@ -791,6 +830,17 @@ export function ArtisanSidePanel({ artisan, onClose, onEdit, orgId, canManage = 
         tasks={tasks}
         onClose={() => setShowInvite(false)}
         onSent={() => { softRefresh() }}
+      />
+    )}
+    {showRoleModal && roleKey && (
+      <ChangeRoleModal
+        resourceId={artisan.id}
+        personName={artisan.full_name ?? 'Cette personne'}
+        currentRole={roleKey}
+        callerRole={callerRole}
+        isSelf={isSelfTarget}
+        onClose={() => setShowRoleModal(false)}
+        onChanged={() => softRefresh()}
       />
     )}
     </>

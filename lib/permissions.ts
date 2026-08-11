@@ -76,11 +76,14 @@ export const ROLE_LABEL: Record<Role, string> = {
   viewer: 'Lecteur',
 }
 
+// ⚠️ Formulations volontairement factuelles : la restriction d'accès par
+// périmètre n'est pas encore appliquée au niveau des données. Ne pas décrire un
+// cloisonnement technique qui n'existe pas — voir « Périmètre opérationnel ».
 export const ROLE_DESCRIPTION: Record<Role, string> = {
   owner: 'Accès complet à l\'organisation.',
   admin: 'Administration de l\'organisation.',
   manager: 'Pilotage opérationnel (chantiers, tâches, ressources).',
   site_supervisor: 'Suivi terrain, planning et validation photos.',
-  artisan: 'Accès terrain limité à son périmètre.',
-  viewer: 'Lecture seule.',
+  artisan: 'Accès aux fonctions terrain autorisées.',
+  viewer: 'Lecture seule des données accessibles.',
 }

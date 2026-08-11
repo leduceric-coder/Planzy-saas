@@ -65,10 +65,11 @@ interface Props {
   canManage?: boolean
   canInvite?: boolean
   currentUserId?: string
+  callerRole?: string | null
   pendingInviteArtisanIds?: string[]
   pendingInviteScopes?: Record<string, { id: string; email: string | null; role: string | null; token: string | null; projectId: string | null; taskIds: string[] }>
   assignmentCounts?: Record<string, { projects: number; tasks: number }>
-  accountByArtisan?: Record<string, { role: string | null; email: string | null }>
+  accountByArtisan?: Record<string, { id: string; role: string | null; email: string | null }>
 }
 
 // ── Constants ──────────────────────────────────────────────────────────────────
@@ -155,7 +156,7 @@ function teamToFormData(t: TeamRow): TeamFormData {
 
 // ── Main component ─────────────────────────────────────────────────────────────
 
-export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, canManage = false, canInvite = false, currentUserId, pendingInviteArtisanIds = [], pendingInviteScopes = {}, assignmentCounts = {}, accountByArtisan = {} }: Props) {
+export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, canManage = false, canInvite = false, currentUserId, callerRole, pendingInviteArtisanIds = [], pendingInviteScopes = {}, assignmentCounts = {}, accountByArtisan = {} }: Props) {
   const router = useRouter()
   const { toast } = useToast()
   const pendingInviteSet = useMemo(() => new Set(pendingInviteArtisanIds), [pendingInviteArtisanIds])
@@ -1026,6 +1027,8 @@ export function EquipesClient({ teams, artisans, projects, orgId, tasks, today, 
           canManage={canManage}
           canInvite={canInvite}
           currentUserId={currentUserId}
+          callerRole={callerRole}
+          linkedProfileId={accountByArtisan[selectedArtisan.id]?.id ?? null}
           projects={projects}
           tasks={tasks}
           onChanged={() => router.refresh()}
