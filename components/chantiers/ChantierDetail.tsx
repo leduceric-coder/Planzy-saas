@@ -93,6 +93,10 @@ export function ChantierDetail({
   const today = new Date().toISOString().split('T')[0]
   const role = useRole()
   const readOnly = isReadOnly(role) // LOT 42 — le lecteur ne modifie rien
+  // LOT 42E1C — l'administration d'un chantier (créer une tâche, modifier,
+  // archiver) est refusée en base à l'artisan depuis 42E1B : on ne lui propose
+  // plus ces contrôles. Alignement d'affichage, la RLS reste la sécurité.
+  const canAdminChantier = can(role, 'chantier.update')
 
   // ── UI state ────────────────────────────────────────────────────────────────
   const [activeTab, setActiveTab] = useState<Tab>('overview')
@@ -256,7 +260,7 @@ export function ChantierDetail({
                 <ArrowLeft className="h-3.5 w-3.5" />
                 Chantiers
               </Link>
-              {!readOnly && (
+              {canAdminChantier && (
               <div className="flex items-center gap-1.5">
                 <button
                   onClick={() => setShowNewTask(true)}

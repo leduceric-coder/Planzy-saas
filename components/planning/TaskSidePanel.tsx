@@ -10,6 +10,8 @@ import { useToast } from '@/components/ui/toast-context'
 import type { Task, TaskStatus } from '@/lib/types'
 import { AssignmentPicker } from '@/components/ui/AssignmentPicker'
 import { type HistoryAction } from '@/lib/hooks/useUndoHistory'
+import { useRole, useArtisanScope } from '@/components/layout/RoleContext'
+import { canEditTaskFields, canUpdateTaskStatus } from '@/lib/taskPermissions'
 
 type GanttTask = Task & {
   assignee?: { id: string; full_name: string; color: string } | null
@@ -176,6 +178,15 @@ export function TaskSidePanel({
   const [localStatus, setLocalStatus] = useState<TaskStatus | null>(null)
   const [saving, setSaving] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
+
+  // LOT 42E1C — alignement de l'affichage sur la sécurité 42E1B. Les champs
+  // administratifs sont réservés aux rôles internes ; l'avancement n'est
+  // proposé à l'artisan que sur une tâche réellement affectée (ATA ∪
+  // assigned_to), jamais sur une tâche seulement visible via son chantier.
+  const currentRole = useRole()
+  const { artisanId, assignedTaskIds } = useArtisanScope()
+  const canEditFields = canEditTaskFields(currentRole)
+  const canChangeStatus = task ? canUpdateTaskStatus(currentRole, task, artisanId, assignedTaskIds) : false
   const [editError, setEditError] = useState<string | null>(null)
 
   // Edit form state
@@ -782,9 +793,19 @@ export function TaskSidePanel({
                     </div>
                   )}
 
-                  {/* Status pills */}
+                  {/* Status pills — interactives seulement si la base accepterait
+                      l'écriture (interne, ou artisan sur sa propre tâche). */}
                   <div className="mb-5">
                     <p className="text-xs font-600 text-muted-foreground uppercase tracking-wider mb-2">Statut</p>
+                    {!canChangeStatus ? (
+                      displayStatus ? (
+                        <span className={cn('inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-600 border border-current', taskStatusColor(displayStatus))}>
+                          {taskStatusLabel(displayStatus)}
+                        </span>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">—</span>
+                      )
+                    ) : (
                     <div className="flex flex-wrap gap-2">
                       {STATUSES.map(s => (
                         <button
@@ -803,6 +824,7 @@ export function TaskSidePanel({
                         </button>
                       ))}
                     </div>
+                    )}
                   </div>
 
                   {/* Dates */}
@@ -1128,6 +1150,7 @@ export function TaskSidePanel({
                 </>
               ) : (
                 <>
+                  {canEditFields && (
                   <button
                     onClick={handleEnterEdit}
                     className="flex items-center gap-1.5 text-xs px-3 py-2 rounded-lg bg-primary text-white hover:bg-primary/90 transition-colors"
@@ -1135,6 +1158,7 @@ export function TaskSidePanel({
                     <Edit2 className="h-3.5 w-3.5" />
                     Modifier
                   </button>
+                  )}
                   {task.project && (
                     <Link
                       href={`/chantiers/${task.project_id}`}

@@ -95,8 +95,42 @@ export default async function DashboardLayout({ children }: { children: React.Re
     memberCount: t.members?.length ?? 0,
   } satisfies TeamOption))
 
+  // LOT 42E1C — périmètre d'ÉCRITURE de l'artisan, calculé ici une seule fois et
+  // diffusé par contexte : les six écrans qui ouvrent TaskSidePanel n'ont ainsi
+  // rien à câbler. Miroir exact de la règle RLS 42E1B (ATA active ∪ assigned_to),
+  // à ne pas confondre avec les tâches simplement visibles. Rien n'est chargé
+  // pour les rôles internes, qui peuvent tout éditer.
+  const isArtisanRole = ((profile as any)?.role as string) === 'artisan'
+  let artisanId: string | null = null
+  let assignedTaskIds: string[] = []
+  if (isArtisanRole && orgId) {
+    artisanId = ((profile as any)?.artisan_id as string | null) ?? null
+    if (!artisanId) {
+      const { data: linked } = await supabase.from('artisans').select('id').eq('user_id', user.id).maybeSingle()
+      artisanId = (linked as { id?: string } | null)?.id ?? null
+    }
+    if (artisanId) {
+      const [{ data: ata }, { data: direct }] = await Promise.all([
+        supabase.from('artisan_task_assignments').select('task_id').eq('artisan_id', artisanId).eq('is_active', true),
+        supabase.from('tasks').select('id').eq('assigned_to', artisanId),
+      ])
+      assignedTaskIds = Array.from(new Set([
+        ...((ata ?? []) as { task_id: string | null }[]).map(r => r.task_id).filter((v): v is string => !!v),
+        ...((direct ?? []) as { id: string }[]).map(r => r.id),
+      ]))
+    }
+  }
+
   return (
-    <DashboardShell profile={profile} projects={projects} alerts={alerts} artisans={artisans} teams={teams}>
+    <DashboardShell
+      profile={profile}
+      projects={projects}
+      alerts={alerts}
+      artisans={artisans}
+      teams={teams}
+      artisanId={artisanId}
+      assignedTaskIds={assignedTaskIds}
+    >
       {children}
     </DashboardShell>
   )

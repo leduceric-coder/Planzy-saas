@@ -7,7 +7,7 @@ import { Sidebar } from '@/components/layout/Sidebar'
 import { ThemeProvider, useTheme } from '@/components/layout/ThemeProvider'
 import { ToastProvider } from '@/components/ui/toast-context'
 import { AlertsProvider } from '@/components/layout/AlertsContext'
-import { RoleProvider } from '@/components/layout/RoleContext'
+import { RoleProvider, ArtisanScopeProvider } from '@/components/layout/RoleContext'
 import { MessagesSideWindow } from '@/components/messages/MessagesSideWindow'
 import { DemoGuide } from '@/components/demo/DemoGuide'
 import type { Profile } from '@/lib/types'
@@ -21,6 +21,9 @@ interface Props {
   alerts: AlertsSummary
   artisans: ArtisanOption[]
   teams: TeamOption[]
+  /** LOT 42E1C — périmètre d'écriture artisan (vide pour les rôles internes). */
+  artisanId?: string | null
+  assignedTaskIds?: string[]
 }
 
 function Shell({ children, profile, projects, alerts, artisans, teams }: Props) {
@@ -80,7 +83,9 @@ export function DashboardShell(props: Props) {
     <ThemeProvider>
       <ToastProvider>
         <RoleProvider role={(props.profile as { role?: string } | null)?.role}>
-          <Shell {...props} />
+          <ArtisanScopeProvider artisanId={props.artisanId ?? null} assignedTaskIds={props.assignedTaskIds ?? []}>
+            <Shell {...props} />
+          </ArtisanScopeProvider>
         </RoleProvider>
       </ToastProvider>
     </ThemeProvider>

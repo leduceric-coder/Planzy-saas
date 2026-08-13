@@ -27,3 +27,27 @@ export function usePermissions() {
     isReadOnly: isReadOnly(role),
   }
 }
+
+// ── Périmètre artisan (LOT 42E1C) ────────────────────────────────────────────
+// Contexte distinct de RoleContext pour ne pas changer la signature de
+// useRole(). Alimenté une seule fois par le layout dashboard, et uniquement
+// pour un artisan : les rôles internes n'en ont pas besoin.
+// `assignedTaskIds` = tâches réellement affectées (ATA active ∪ assigned_to),
+// c'est-à-dire exactement la règle d'écriture de la RLS 42E1B — à ne pas
+// confondre avec les tâches simplement visibles.
+
+type ArtisanScope = { artisanId: string | null; assignedTaskIds: string[] }
+
+const ArtisanScopeContext = createContext<ArtisanScope>({ artisanId: null, assignedTaskIds: [] })
+
+export function ArtisanScopeProvider({ artisanId, assignedTaskIds, children }: ArtisanScope & { children: React.ReactNode }) {
+  return (
+    <ArtisanScopeContext.Provider value={{ artisanId: artisanId ?? null, assignedTaskIds: assignedTaskIds ?? [] }}>
+      {children}
+    </ArtisanScopeContext.Provider>
+  )
+}
+
+export function useArtisanScope(): ArtisanScope {
+  return useContext(ArtisanScopeContext)
+}
