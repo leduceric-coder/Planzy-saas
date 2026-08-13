@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { MobileArtisanView } from '@/components/mobile/MobileArtisanView'
+import { collectAtaTaskIds, artisanTaskFilter } from '@/lib/artisanTaskScope'
 import { redirect } from 'next/navigation'
 import type { Profile, Artisan, Task, Message, Issue, Project } from '@/lib/types'
 
@@ -33,12 +34,28 @@ export default async function MobilePage() {
   const todayStart = new Date()
   todayStart.setHours(0, 0, 0, 0)
 
+  // LOT 42E1D — une tâche est « affectée » à l'artisan par ATA active OU par
+  // tasks.assigned_to, exactement comme la règle d'écriture 42E1B. Un seul
+  // SELECT léger, et uniquement quand un artisan est résolu (jamais pour
+  // owner/admin). `assignedFilter` vaut null s'il n'y a aucune ATA : on reste
+  // alors sur l'égalité sur assigned_to plutôt que d'émettre un id.in.() vide.
+  let ataTaskIds: string[] = []
+  if (artisanId) {
+    const { data: ataRows } = await supabase
+      .from('artisan_task_assignments')
+      .select('task_id')
+      .eq('artisan_id', artisanId)
+      .eq('is_active', true)
+    ataTaskIds = collectAtaTaskIds(ataRows as { task_id?: string | null }[] | null)
+  }
+  const assignedFilter = artisanTaskFilter(artisanId, ataTaskIds)
+
   const [tasksResult, doneTasksResult, messagesResult, issuesResult, projectsResult] = await Promise.all([
     artisanId
-      ? supabase
-          .from('tasks')
-          .select('*, project:projects(id,name,color)')
-          .eq('assigned_to', artisanId)
+      ? (assignedFilter
+          ? supabase.from('tasks').select('*, project:projects(id,name,color)').or(assignedFilter)
+          : supabase.from('tasks').select('*, project:projects(id,name,color)').eq('assigned_to', artisanId)
+        )
           .not('status', 'in', '(done,validated)')
           .order('end_date', { ascending: true, nullsFirst: false })
       : isOwnerOrAdmin && orgId
@@ -52,10 +69,10 @@ export default async function MobilePage() {
 
     // Tâches terminées aujourd'hui (completed_at >= début du jour)
     artisanId
-      ? supabase
-          .from('tasks')
-          .select('*, project:projects(id,name,color)')
-          .eq('assigned_to', artisanId)
+      ? (assignedFilter
+          ? supabase.from('tasks').select('*, project:projects(id,name,color)').or(assignedFilter)
+          : supabase.from('tasks').select('*, project:projects(id,name,color)').eq('assigned_to', artisanId)
+        )
           .eq('status', 'done')
           .gte('completed_at', todayStart.toISOString())
           .order('completed_at', { ascending: false })
