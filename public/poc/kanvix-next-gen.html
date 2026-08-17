@@ -675,7 +675,7 @@
 
       /* ---------------- Today / workflow ---------------- */
       .today-hero {
-        padding: 2px 0 22px;
+        padding: 2px 0 20px;
       }
       .today-hero h1 {
         font-size: 27px;
@@ -688,117 +688,156 @@
         color: var(--text-secondary);
         font-size: 14px;
       }
-      .today-workflow {
+      /* Two prominent zones (À décider + Aujourd'hui), À surveiller light below */
+      .today-grid {
         display: grid;
-        grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.05fr) minmax(0, 0.95fr);
-        gap: 16px;
+        grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+        grid-template-areas: "decide today" "watch watch";
+        gap: 24px 24px;
         align-items: start;
       }
-      .workflow-lane {
+      .zone-decide {
+        grid-area: decide;
+      }
+      .zone-today {
+        grid-area: today;
+      }
+      .zone-watch {
+        grid-area: watch;
+        margin-top: 2px;
+      }
+      .zone-head {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin: 0 0 12px;
+        padding: 0 0 10px;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--text);
+        border-bottom: 1px solid var(--border-light);
+      }
+      .zone-head .zdot {
+        width: 8px;
+        height: 8px;
+        flex: 0 0 8px;
+        border-radius: 50%;
+        background: var(--text-tertiary);
+      }
+      .zone-head.decide .zdot {
+        background: var(--danger);
+      }
+      .zone-head.today .zdot {
+        background: var(--accent);
+      }
+      .zone-head.watch .zdot {
+        background: var(--warning);
+      }
+      .zone-head em {
+        margin-left: auto;
+        font-style: normal;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--text-tertiary);
+      }
+      .zone-head.decide em {
+        color: var(--danger-ink);
+      }
+      .zone-head.today em {
+        color: var(--accent-ink);
+      }
+      .zone-head.watch em {
+        color: var(--warning-ink);
+      }
+      /* décider + aujourd'hui = surfaces présentes */
+      .zone-decide .zone-body,
+      .zone-today .zone-body {
         background: var(--surface);
         border: 1px solid var(--border-light);
         border-radius: var(--radius-lg);
-        overflow: hidden;
         box-shadow: var(--shadow-xs);
+        padding: 2px 18px;
       }
-      .workflow-lane > h2 {
-        display: flex;
-        justify-content: space-between;
+      /* décider = l'élément le plus fort : fine barre rouge à gauche */
+      .zone-decide .zone-body {
+        border-left: 3px solid var(--danger);
+      }
+      /* à surveiller = beaucoup plus léger, pas de carte */
+      .zone-watch .zone-body {
+        padding: 0;
+      }
+      .zone-empty {
+        display: grid;
+        gap: 2px;
+        padding: 14px 2px;
+        color: var(--success);
+        font-size: 13px;
+        font-weight: 600;
+      }
+      .zone-empty b {
+        color: var(--text);
+        font-size: 14px;
+      }
+      .zone-empty span {
+        color: var(--text-secondary);
+        font-size: 12px;
+        font-weight: 400;
+      }
+      .today-calm {
+        max-width: 760px;
+      }
+      .calm-note {
+        display: inline-flex;
         align-items: center;
         gap: 8px;
-        min-height: 42px;
-        padding: 11px 16px;
-        margin: 0;
+        margin-top: 14px;
+        color: var(--success);
         font-size: 13px;
-        font-weight: 700;
-        letter-spacing: 0.01em;
-        border-bottom: 1px solid var(--border-light);
+        font-weight: 600;
       }
-      .workflow-lane > h2:before {
-        content: "";
-        width: 7px;
-        height: 7px;
-        border-radius: 50%;
-        margin-right: 2px;
-      }
-      .workflow-lane > h2 span {
-        display: grid;
-        place-items: center;
-        min-width: 20px;
-        height: 20px;
-        padding: 0 6px;
-        border-radius: 20px;
-        font-size: 11px;
-        font-weight: 700;
-        margin-left: auto;
-      }
-      .decision-lane > h2 {
-        background: var(--danger-soft);
-        color: var(--danger-ink);
-      }
-      .decision-lane > h2:before {
-        background: var(--danger);
-      }
-      .decision-lane > h2 span {
-        background: var(--danger);
-        color: #fff;
-      }
-      .today-lane > h2 {
-        background: var(--accent-soft);
-        color: var(--accent-ink);
-      }
-      .today-lane > h2:before {
-        background: var(--accent);
-      }
-      .today-lane > h2 span {
-        background: var(--accent);
-        color: #fff;
-      }
-      .watch-lane > h2 {
-        background: var(--warning-soft);
-        color: var(--warning-ink);
-      }
-      .watch-lane > h2:before {
-        background: var(--warning);
-      }
-      .watch-lane > h2 span {
-        background: var(--warning);
-        color: #fff;
-      }
-      .lane-content {
-        padding: 4px 16px 8px;
-      }
-      .calm-workflow {
-        grid-template-columns: minmax(420px, 640px);
-        justify-content: center;
-      }
+      /* Décision */
       .decision-card {
-        display: block;
-        padding: 14px 0 12px;
+        padding: 14px 0 15px;
         border-bottom: 1px solid var(--border-light);
       }
       .decision-card:last-child {
         border-bottom: 0;
       }
       .decision-card h3 {
-        font-size: 16px;
+        font-size: 17px;
         margin: 6px 0 2px;
       }
-      .decision-card p,
-      .watch-card p {
+      .decision-card > p {
         margin: 0;
         color: var(--text-secondary);
         font-size: 13px;
       }
-      .impact-facts {
-        display: grid;
-        gap: 3px;
+      .decide-facts {
         margin: 12px 0 14px;
+        padding: 11px 13px;
+        background: var(--danger-soft);
+        border: 1px solid var(--danger-border);
+        border-radius: var(--radius-sm);
       }
-      .impact-facts b {
-        font-size: 13px;
+      .decide-facts b {
+        display: block;
+        font-size: 14px;
+        color: var(--danger-ink);
       }
-      .impact-facts span {
+      .decide-facts span {
+        display: block;
+        margin-top: 2px;
+        font-size: 12px;
+        color: var(--text-secondary);
+      }
+      .decide-actions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+      .multi-note {
+        margin: 12px 0 0;
         color: var(--text-secondary);
         font-size: 12px;
       }
@@ -832,60 +871,6 @@
       .actual-mini {
         background: var(--danger);
       }
-      .workflow-task {
-        display: grid;
-        grid-template-columns: 9px minmax(0, 1fr) auto;
-        gap: 11px;
-        align-items: center;
-        padding: 13px 0;
-        border-bottom: 1px solid var(--border-light);
-        cursor: pointer;
-      }
-      .workflow-task:last-child,
-      .watch-card:last-child {
-        border-bottom: 0;
-      }
-      .workflow-task h3 {
-        margin: 0 0 2px;
-        font-size: 14px;
-      }
-      .workflow-task p {
-        margin: 0;
-        color: var(--text-secondary);
-        font-size: 12px;
-      }
-      .workflow-task small {
-        color: var(--text-tertiary);
-        font-size: 12px;
-      }
-      .watch-card {
-        display: grid;
-        grid-template-columns: auto 1fr auto;
-        gap: 11px;
-        align-items: center;
-        padding: 13px 0;
-        border-bottom: 1px solid var(--border-light);
-      }
-      .watch-card h3 {
-        margin: 0 0 2px;
-        font-size: 14px;
-      }
-      .lane-empty {
-        display: grid;
-        gap: 3px;
-        justify-items: start;
-        padding: 16px 2px;
-        color: var(--success);
-        font-size: 13px;
-      }
-      .lane-empty b {
-        color: var(--text);
-        font-size: 14px;
-      }
-      .lane-empty small {
-        color: var(--text-secondary);
-        font-size: 12px;
-      }
       .technical-details {
         margin-top: 12px;
         padding-top: 11px;
@@ -897,6 +882,75 @@
         color: var(--accent);
         font-weight: 600;
         cursor: pointer;
+      }
+      /* Aujourd'hui = liste de lignes */
+      .today-task {
+        display: grid;
+        grid-template-columns: 9px minmax(0, 1fr) auto;
+        gap: 11px;
+        align-items: center;
+        padding: 13px 8px;
+        margin: 0 -8px;
+        border-radius: var(--radius-sm);
+        border-bottom: 1px solid var(--border-light);
+        cursor: pointer;
+        min-height: 44px;
+      }
+      .today-task:last-child {
+        border-bottom: 0;
+      }
+      .today-task:hover {
+        background: var(--surface-subtle);
+      }
+      .today-task.doing {
+        background: var(--accent-soft);
+        border-bottom-color: transparent;
+      }
+      .today-task h3 {
+        margin: 0 0 2px;
+        font-size: 14px;
+      }
+      .today-task p {
+        margin: 0;
+        color: var(--text-secondary);
+        font-size: 12px;
+      }
+      .today-task small {
+        color: var(--text-tertiary);
+        font-size: 12px;
+      }
+      /* À surveiller = lignes légères */
+      .watch-row {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        gap: 12px;
+        align-items: center;
+        padding: 13px 0;
+        border-bottom: 1px solid var(--border-light);
+        min-height: 44px;
+      }
+      .watch-row:last-child {
+        border-bottom: 0;
+      }
+      .watch-row h3 {
+        margin: 0 0 2px;
+        font-size: 14px;
+      }
+      .watch-row p {
+        margin: 0;
+        color: var(--text-secondary);
+        font-size: 12.5px;
+      }
+      .watch-row small {
+        display: block;
+        margin-top: 2px;
+        color: var(--text-tertiary);
+        font-size: 12px;
+      }
+      .watch-row .success {
+        color: var(--success);
+        font-size: 12px;
+        font-weight: 600;
       }
 
       /* ---------------- Chantiers (sites) ---------------- */
@@ -2852,23 +2906,6 @@
           order: -1;
         }
       }
-      @media (min-width: 601px) and (max-width: 1080px) {
-        .today-workflow {
-          grid-template-columns: 1fr 1fr;
-        }
-        .decision-lane {
-          grid-column: 1;
-        }
-        .watch-lane {
-          grid-column: 2;
-        }
-        .today-lane {
-          grid-column: 1 / -1;
-        }
-        .calm-workflow .today-lane {
-          grid-column: 1 / -1;
-        }
-      }
       @media (max-width: 720px) {
         .shell {
           display: block;
@@ -2928,10 +2965,10 @@
         .context {
           text-align: left;
         }
-        .today-workflow {
-          display: flex;
-          flex-direction: column;
-          gap: 14px;
+        .today-grid {
+          grid-template-columns: 1fr;
+          grid-template-areas: "decide" "watch" "today";
+          gap: 20px;
         }
         .site-art {
           aspect-ratio: 2 / 1;
@@ -4408,18 +4445,40 @@
       }
       // PAGE RENDERERS
       function pageToday() {
-        let workflow = getTodayWorkflow(),
-          { decisions, actions, warnings } = workflow,
-          calm = !decisions.length && !warnings.length;
+        let { decisions, actions, warnings } = getTodayWorkflow(),
+          calm = !decisions.length && !warnings.length,
+          totalDecisions = app.decisions
+            .filter((d) => d.status === "required")
+            .map((d) => issue(d.issueId))
+            .filter((i) => i && i.status === "open").length,
+          totalWarnings = app.issues.filter(
+            (i) =>
+              i.status === "watching" ||
+              (i.source === "field" && i.status === "open"),
+          ).length,
+          s = (n) => (n > 1 ? "s" : ""),
+          hero = `<header class="today-hero"><h1>${calm ? "Tout est calme aujourd’hui." : "Bonjour Eric 👋"}</h1><p>${calm ? `${actions.length} action${s(actions.length)} prévue${s(actions.length)} · aucun point bloquant` : `${decisions.length} décision${s(decisions.length)} · ${actions.length} action${s(actions.length)} · ${warnings.length} surveillance${s(warnings.length)}`}</p></header>`,
+          decideMore =
+            totalDecisions > decisions.length
+              ? `<p class="multi-note">+ ${totalDecisions - decisions.length} autre décision${s(totalDecisions - decisions.length)} à traiter</p>`
+              : "",
+          watchMore =
+            totalWarnings > warnings.length
+              ? `<p class="multi-note">+ ${totalWarnings - warnings.length} autre point${s(totalWarnings - warnings.length)} sous surveillance</p>`
+              : "";
+        if (calm)
+          return (
+            hero +
+            `<div class="today-calm"><section class="zone zone-today"><h2 class="zone-head today"><span class="zdot"></span>Aujourd’hui<em>${actions.length}</em></h2><div class="zone-body">${actions.map(workflowTaskRow).join("") || empty("Rien aujourd’hui", "Vos chantiers avancent normalement.")}</div></section><p class="calm-note">✓ Aucun point à décider ou à surveiller.</p></div>`
+          );
         return (
-          `<header class="today-hero"><div><h1>${calm ? "Tout est calme aujourd’hui." : "Bonjour Eric 👋"}</h1><p>${calm ? `${actions.length} action${actions.length > 1 ? "s" : ""} utile${actions.length > 1 ? "s" : ""} aujourd’hui` : `${decisions.length} décision${decisions.length > 1 ? "s" : ""} · ${actions.length} actions aujourd’hui · ${warnings.length} surveillance${warnings.length > 1 ? "s" : ""}`}</p></div></header>` +
-          (calm
-            ? `<div class="today-workflow calm-workflow"><section class="workflow-lane today-lane"><h2>Aujourd’hui</h2><div class="lane-content">${actions.map(workflowTaskRow).join("") || empty("Rien aujourd’hui", "Vos chantiers avancent normalement.")}</div></section></div>`
-            : `<div class="today-workflow"><section class="workflow-lane decision-lane"><h2>À décider <span>${decisions.length}</span></h2><div class="lane-content">${decisions.map((i) => decisionCard(i)).join("") || '<div class="lane-empty">✓ <b>Rien à décider</b><small>Tout est sous contrôle.</small></div>'}</div></section><section class="workflow-lane today-lane"><h2>Aujourd’hui <span>${actions.length}</span></h2><div class="lane-content">${actions.map(workflowTaskRow).join("") || empty("Rien aujourd’hui", "Aucune action prévue.")}</div></section><section class="workflow-lane watch-lane"><h2>À surveiller <span>${warnings.length}</span></h2><div class="lane-content">${warnings.map((i) => watchCard(i)).join("") || '<div class="lane-empty">✓ <b>Rien à surveiller</b><small>Tout est confirmé.</small></div>'}</div></section></div>`)
+          hero +
+          `<div class="today-grid"><section class="zone zone-decide"><h2 class="zone-head decide"><span class="zdot"></span>À décider<em>${decisions.length}</em></h2><div class="zone-body">${decisions.map(decisionCard).join("") || '<div class="zone-empty">✓ <b>Rien à décider</b><span>Tout est sous contrôle.</span></div>'}${decideMore}</div></section><section class="zone zone-today"><h2 class="zone-head today"><span class="zdot"></span>Aujourd’hui<em>${actions.length}</em></h2><div class="zone-body">${actions.map(workflowTaskRow).join("") || empty("Rien aujourd’hui", "Aucune action prévue.")}</div></section><section class="zone zone-watch"><h2 class="zone-head watch"><span class="zdot"></span>À surveiller<em>${warnings.length}</em></h2><div class="zone-body">${warnings.map(watchCard).join("") || '<div class="zone-empty">✓ <b>Rien à surveiller</b><span>Tout est confirmé.</span></div>'}${watchMore}</div></section></div>`
         );
       }
       function workflowTaskRow(t) {
-        return `<article class="workflow-task" onclick="openTask('${t.id}')">${dot(taskTone(t))}<div><h3>${t.name}</h3><p>${project(t.projectId).name} · ${resource(t.resourceId).name}</p><small>${fmtTime(t.start)}–${fmtTime(t.end)}</small></div>${pill(taskTone(t), STATUS[t.status])}</article>`;
+        let pilot = app.settings.level !== "essential";
+        return `<article class="today-task ${t.status === "doing" ? "doing" : ""}" onclick="openTask('${t.id}')">${dot(taskTone(t))}<div><h3>${esc(t.name)}</h3><p>${project(t.projectId).name}${pilot ? ` · ${resource(t.resourceId).name}` : ""}</p><small>${fmtTime(t.start)} – ${fmtTime(t.end)}</small></div>${pill(taskTone(t), STATUS[t.status])}</article>`;
       }
       function decisionCard(i) {
         let t = task(i.taskId),
@@ -4428,7 +4487,7 @@
         let pilot = app.settings.level !== "essential",
           expert = app.settings.level === "expert",
           chain = t ? [t, ...getCriticalImpacts(t.id)] : [];
-        return `<article class="decision-card"><div class="decision-copy"><span class="eyebrow danger">Action nécessaire</span><h3>${i.title}</h3><p>${project(i.projectId).name}</p><div class="impact-facts"><b>+${delay} jours calculés</b>${pilot ? `<span><strong>Impact</strong> ${impacts} tâches · <strong>Ressource</strong> ${resource(t.resourceId).name}</span>` : ""}</div><div class="actions"><button class="btn" onclick="explainIssue('${i.id}')">Comprendre</button><button class="btn primary" onclick="openDecision('${i.id}')">Résoudre</button><button class="link" onclick="focusPlanningTask('${i.taskId}')">Voir dans le planning</button></div>${expert ? `<details class="technical-details"><summary>Détails techniques</summary><p><b>Cause racine :</b> ${i.comment}</p><p>${chain.map((x) => x.name).join(" → ")}</p></details>` : ""}</div>${pilot && t?.baselineStart ? impactMini(t) : ""}</article>`;
+        return `<article class="decision-card"><span class="eyebrow danger">Action nécessaire</span><h3>${esc(i.title)}</h3><p>${project(i.projectId).name}</p><div class="decide-facts"><b>+${delay} jour${delay > 1 ? "s" : ""} calculé${delay > 1 ? "s" : ""}</b>${pilot && t ? `<span>${impacts} tâche${impacts > 1 ? "s" : ""} affectée${impacts > 1 ? "s" : ""} · ${resource(t.resourceId).name}</span>` : ""}</div><div class="decide-actions"><button class="btn primary" onclick="openDecision('${i.id}')">Résoudre</button><button class="link" onclick="explainIssue('${i.id}')">Comprendre</button><button class="link" onclick="focusPlanningTask('${i.taskId}')">Voir dans le planning</button></div>${pilot && t?.baselineStart ? impactMini(t) : ""}${expert ? `<details class="technical-details"><summary>Détails techniques</summary><p><b>Cause racine :</b> ${esc(i.comment)}</p><p>${chain.map((x) => esc(x.name)).join(" → ")}</p></details>` : ""}</article>`;
       }
       function impactMini(t) {
         let points = [
@@ -4447,7 +4506,8 @@
       function watchCard(i) {
         let t = task(i.taskId),
           sent = i.relaunched;
-        return `<article class="watch-card"><div>${resourceAvatar(resource(t.resourceId), true)}</div><div><h3>${i.title}</h3><p>${project(i.projectId).name} · ${fmtDay(t.start)} · ${fmtTime(t.start)}</p></div>${sent ? '<span class="success">✓ Relance envoyée</span>' : `<button class="btn" onclick="relaunchIssue('${i.id}')">Relancer</button>`}</article>`;
+        let pilot = app.settings.level !== "essential";
+        return `<article class="watch-row">${resourceAvatar(resource(t.resourceId), true)}<div><h3>${esc(i.title)}</h3><p>${project(i.projectId).name} · ${fmtDay(t.start)} · ${fmtTime(t.start)}</p>${pilot ? `<small>${esc(i.comment)}</small>` : ""}</div>${sent ? '<span class="success">✓ Relance envoyée</span>' : `<button class="btn" onclick="relaunchIssue('${i.id}')">Relancer</button>`}</article>`;
       }
       function relaunchIssue(id) {
         let i = issue(id);
