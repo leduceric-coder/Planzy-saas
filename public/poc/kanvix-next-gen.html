@@ -922,31 +922,45 @@
       .portfolio-summary .success {
         color: var(--success-ink);
       }
-      .portfolio-list {
+      /* Portfolio grid — vertical cards */
+      .sites-grid {
         display: grid;
-        gap: 14px;
+        grid-template-columns: repeat(auto-fit, minmax(258px, 1fr));
+        gap: 18px;
       }
       .site-card {
-        display: grid;
-        grid-template-columns: 220px 1fr 240px;
-        gap: 26px;
-        align-items: center;
-        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+        width: 100%;
+        padding: 0;
         background: var(--surface);
         border: 1px solid var(--border-light);
         border-radius: var(--radius-lg);
         box-shadow: var(--shadow-xs);
+        overflow: hidden;
         cursor: pointer;
-        transition: box-shadow 0.16s, border-color 0.16s, transform 0.12s;
+        transition: transform 0.15s ease, box-shadow 0.15s ease,
+          border-color 0.15s ease;
       }
       .site-card:hover {
-        transform: translateY(-1px);
+        transform: translateY(-2px);
         box-shadow: var(--shadow-card);
         border-color: var(--border-strong);
       }
+      .site-card:focus-visible {
+        outline: 3px solid color-mix(in srgb, var(--accent) 42%, transparent);
+        outline-offset: 2px;
+      }
+      .site-card.danger {
+        border-color: var(--danger-border);
+      }
+      .site-card.warning {
+        border-color: var(--warning-border);
+      }
       .site-art {
-        height: 120px;
-        border-radius: var(--radius-md);
+        position: relative;
+        aspect-ratio: 16 / 9;
         overflow: hidden;
         background: var(--surface-muted);
       }
@@ -954,11 +968,116 @@
         width: 100%;
         height: 100%;
         display: block;
+        transition: transform 0.18s ease;
       }
-      .site-main h2 {
-        font-size: 18px;
-        margin: 6px 0 0;
+      .site-card:hover .site-art svg {
+        transform: scale(1.015);
       }
+      .site-badge {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 9px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.92);
+        color: var(--text);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.18);
+      }
+      body.dark .site-badge {
+        background: rgba(16, 32, 47, 0.9);
+      }
+      .site-badge i {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--success);
+      }
+      .site-badge.warning {
+        color: var(--warning-ink);
+      }
+      .site-badge.warning i {
+        background: var(--warning);
+      }
+      .site-badge.danger {
+        color: var(--danger-ink);
+      }
+      .site-badge.danger i {
+        background: var(--danger);
+      }
+      .site-body {
+        display: flex;
+        flex-direction: column;
+        padding: 14px 16px 15px;
+        flex: 1;
+      }
+      .site-body h2 {
+        font-size: 16px;
+        margin: 0;
+      }
+      .site-loc {
+        color: var(--text-secondary);
+        font-size: 12px;
+        margin: 2px 0 0;
+      }
+      .site-subject {
+        margin: 12px 0 0;
+        padding: 11px 12px;
+        border-radius: var(--radius-sm);
+        background: var(--surface-subtle);
+        border: 1px solid var(--border-light);
+      }
+      .site-subject b {
+        display: block;
+        font-size: 13px;
+      }
+      .site-subject span {
+        display: block;
+        margin-top: 2px;
+        font-size: 12px;
+        color: var(--text-secondary);
+      }
+      .site-subject.danger span {
+        color: var(--danger-ink);
+        font-weight: 600;
+      }
+      .site-subject.warning span {
+        color: var(--warning-ink);
+        font-weight: 600;
+      }
+      .site-foot {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-top: 14px;
+      }
+      .site-team {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+      }
+      .site-team > span {
+        font-size: 11px;
+        color: var(--text-secondary);
+      }
+      .site-open {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        color: var(--accent);
+        font-size: 12px;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+      /* status pill (project cockpit) */
       .location {
         color: var(--text-secondary);
         margin: 2px 0 12px;
@@ -992,13 +1111,6 @@
       .site-status.danger i {
         background: var(--danger);
       }
-      .site-meta {
-        display: flex;
-        gap: 30px;
-        flex-wrap: wrap;
-      }
-      .site-meta small,
-      .site-next > small,
       .team-filters small {
         display: block;
         color: var(--text-tertiary);
@@ -1006,9 +1118,6 @@
         font-weight: 700;
         letter-spacing: 0.09em;
         margin-bottom: 4px;
-      }
-      .site-meta b {
-        font-size: 13px;
       }
       .avatar-stack {
         display: flex;
@@ -1027,32 +1136,6 @@
         font-weight: 600;
         margin-left: 6px;
         color: var(--text-secondary);
-      }
-      .site-next {
-        display: grid;
-        gap: 4px;
-        border-left: 1px solid var(--border-light);
-        padding-left: 22px;
-      }
-      .site-next b {
-        font-size: 14px;
-      }
-      .site-next span {
-        font-size: 12px;
-        color: var(--text-secondary);
-      }
-      .site-next .btn {
-        margin-top: 10px;
-        justify-self: start;
-      }
-      .expert-links {
-        display: flex;
-        gap: 12px;
-        margin-top: 12px;
-        color: var(--accent);
-        font-size: 11px;
-        font-weight: 600;
-        flex-wrap: wrap;
       }
 
       /* Resource avatars (portraits + monograms) */
@@ -2036,6 +2119,7 @@
 
       /* ---------------- Floating add ---------------- */
       .add {
+        display: none; /* desktop: contextual actions in headers, no floating + */
         position: fixed;
         bottom: 24px;
         right: 24px;
@@ -2767,15 +2851,6 @@
         .cockpit .visual {
           order: -1;
         }
-        .site-card {
-          grid-template-columns: 180px 1fr;
-        }
-        .site-next {
-          grid-column: 1 / -1;
-          border-left: 0;
-          border-top: 1px solid var(--border-light);
-          padding: 12px 0 0;
-        }
       }
       @media (min-width: 601px) and (max-width: 1080px) {
         .today-workflow {
@@ -2858,16 +2933,8 @@
           flex-direction: column;
           gap: 14px;
         }
-        .site-card {
-          grid-template-columns: 96px 1fr;
-          padding: 12px;
-          gap: 13px;
-        }
         .site-art {
-          height: 84px;
-        }
-        .site-meta {
-          gap: 18px;
+          aspect-ratio: 2 / 1;
         }
         .team-card {
           grid-template-columns: 38px 1fr auto;
@@ -2877,6 +2944,9 @@
           grid-column: 2 / -1;
         }
         .add {
+          display: flex;
+          align-items: center;
+          justify-content: center;
           top: auto;
           bottom: 78px;
           right: 18px;
@@ -4394,6 +4464,18 @@
       function issueRow(i) {
         return `<div class="row" onclick="openIssue('${i.id}')">${dot("warning")}<div><h3>${i.title}</h3><p>${project(i.projectId).name} · ${i.source === "field" ? "Signalement terrain" : "Surveillance"}</p><p>${i.comment}</p></div>${pill("warning", "À voir")}</div>`;
       }
+      const HEALTH_ORDER = { danger: 0, warning: 1, success: 2 };
+      function sortedProjects() {
+        return app.projects.slice().sort((a, b) => {
+          let d = HEALTH_ORDER[getProjectHealth(a.id)] - HEALTH_ORDER[getProjectHealth(b.id)];
+          if (d) return d;
+          let na = getUpcomingTasks(a.id)[0],
+            nb = getUpcomingTasks(b.id)[0];
+          return (
+            (na ? +date(na.start) : Infinity) - (nb ? +date(nb.start) : Infinity)
+          );
+        });
+      }
       function renderSites() {
         let counts = { danger: 0, warning: 0, success: 0 };
         app.projects.forEach((p) => counts[getProjectHealth(p.id)]++);
@@ -4401,43 +4483,51 @@
           header(
             "Chantiers",
             "Vos chantiers en un coup d’œil",
-            `<div class="portfolio-summary"><b>${app.projects.length} actifs</b><span class="danger">${counts.danger} risque</span><span class="warning">${counts.warning} surveillance</span><span class="success">${counts.success} OK</span></div>`,
+            `<div class="portfolio-summary"><b>${app.projects.length} chantiers</b><span><span class="danger">${counts.danger} risque${counts.danger > 1 ? "s" : ""}</span> · <span class="warning">${counts.warning} à surveiller</span> · <span class="success">${counts.success} sous contrôle</span></span></div>`,
           ) +
-          `<div class="portfolio-list">${app.projects.map((p, i) => siteCard(p, i)).join("")}</div>`
+          `<div class="sites-grid">${sortedProjects().map(siteCard).join("")}</div>`
         );
       }
-      function siteCard(p, i) {
-        let next = getUpcomingTasks(p.id)[0],
+      function siteCard(p) {
+        let health = getProjectHealth(p.id),
+          issue0 = getProjectIssues(p.id)[0],
+          next = getUpcomingTasks(p.id)[0],
+          delay = calculateProjectDelay(p.id),
           team = [...new Set(getProjectTasks(p.id).map((t) => t.resourceId))]
             .map(resource)
             .filter(Boolean),
-          health = getProjectHealth(p.id),
-          active =
-            getProjectTasks(p.id).find((t) => t.status === "doing") || next,
-          action =
+          label =
             health === "danger"
-              ? `<button class="btn primary" onclick="event.stopPropagation();openDecision('${getProjectIssues(p.id)[0]?.id}')">Prendre une décision</button>`
+              ? "Risque"
               : health === "warning"
-                ? `<button class="btn" onclick="event.stopPropagation();openIssue('${getProjectIssues(p.id)[0]?.id}')">Contacter le prestataire</button>`
-                : "";
-        let pilot = app.settings.level !== "essential",
-          expert = app.settings.level === "expert",
-          open = getProjectIssues(p.id).length,
-          weekTasks = getProjectTasks(p.id).filter(
-            (t) =>
-              date(t.start) < date(getCurrentWeekRange().end) &&
-              date(t.end) >= date(getCurrentWeekRange().start),
-          ).length;
-        return `<article class="site-card" onclick="selectProject('${p.id}')"><div class="site-art">${art(i)}</div><div class="site-main"><div class="site-status ${health}"><i></i>${health === "danger" ? "Risque" : health === "warning" ? "À surveiller" : "OK"}</div><h2>${p.name}</h2><p class="location">${p.location}</p>${
-          pilot
-            ? `<div class="site-meta"><div><small>PHASE</small><b>${active?.phase || p.phase}</b></div><div><small>ÉQUIPE · ${team.length}</small><span class="avatar-stack">${team
-                .slice(0, 3)
-                .map((r) => resourceAvatar(r, true))
-                .join(
-                  "",
-                )}${team.length > 3 ? `<em>+${team.length - 3}</em>` : ""}</span></div><div><small>CETTE SEMAINE</small><b>${weekTasks} tâches · ${open} problème${open > 1 ? "s" : ""}</b></div></div>`
-            : ""
-        }${expert ? `<div class="expert-links"><span>Documents</span><span>Photos</span><span>Historique</span><span>Contraintes</span></div>` : ""}</div><div class="site-next"><small>PROCHAIN ÉVÉNEMENT</small><b>${next?.name || "Aucune intervention"}</b>${next ? `<span>${fmtDay(next.start)} · ${resource(next.resourceId).name}</span>` : ""}${action}</div></article>`;
+                ? "À surveiller"
+                : "Dans les temps",
+          sTitle,
+          sSub;
+        if (health === "danger") {
+          sTitle = issue0 ? issue0.title : next ? next.name : "À planifier";
+          sSub = delay
+            ? `Impact calculé : +${delay} j`
+            : issue0
+              ? issue0.comment
+              : "";
+        } else if (health === "warning") {
+          sTitle = issue0 ? issue0.title : next ? next.name : "À surveiller";
+          sSub = issue0
+            ? issue0.relaunched
+              ? "Relance envoyée"
+              : "À relancer"
+            : next
+              ? `Prochaine étape ${fmtDay(next.start)}`
+              : "Sous contrôle";
+        } else {
+          sTitle = next ? next.name : "Aucune intervention prévue";
+          sSub = next ? `${fmtDay(next.start)} · Aucun problème` : "Sous contrôle";
+        }
+        return `<article class="site-card ${health}" role="button" tabindex="0" aria-label="${esc(p.name)} — ${label}${delay ? `, +${delay} jours` : ""}" onclick="selectProject('${p.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectProject('${p.id}')}"><span class="site-art">${projectVisual(p.id)}<span class="site-badge ${health}"><i></i>${label}</span></span><span class="site-body"><h2>${esc(p.name)}</h2><span class="site-loc">${esc(p.location)}</span><span class="site-subject ${health}"><b>${esc(sTitle)}</b>${sSub ? `<span>${esc(sSub)}</span>` : ""}</span><span class="site-foot"><span class="site-team"><span class="avatar-stack">${team
+          .slice(0, 3)
+          .map((r) => resourceAvatar(r, true))
+          .join("")}${team.length > 3 ? `<em>+${team.length - 3}</em>` : ""}</span><span>${team.length} intervenant${team.length > 1 ? "s" : ""}</span></span><span class="site-open">Ouvrir →</span></span></span></article>`;
       }
       function selectProject(id) {
         app.ui.projectId = id;
@@ -4569,7 +4659,7 @@
           header(
             "Équipe",
             "Les bonnes personnes, au bon endroit",
-            `<b>${ids.length} ressources</b>${period === "today" ? "Aujourd’hui" : period === "tomorrow" ? "Demain" : "Cette semaine"}<button class="link" onclick="go('resources')">Voir la charge</button>`,
+            `<b>${ids.length} ressources</b><span>${period === "today" ? "Aujourd’hui" : period === "tomorrow" ? "Demain" : "Cette semaine"}</span><div style="margin-top:8px;display:flex;gap:8px;justify-content:flex-end"><button class="link" onclick="go('resources')">Voir la charge</button><button class="btn" onclick="openResourceForm()">${icon("plus")} Ressource</button></div>`,
           ) +
           teamSummary +
           `<div class="team-filters"><div><small>TEMPS</small><div class="segment">${[
