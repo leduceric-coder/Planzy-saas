@@ -1274,48 +1274,43 @@
         box-shadow: inset 0 -2px 0 var(--accent);
       }
 
-      /* ---------------- Team ---------------- */
+      /* ---------------- Équipe ---------------- */
+      .team-actions {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        justify-content: flex-end;
+      }
       .team-summary {
         display: flex;
-        gap: 10px;
-        margin-bottom: 18px;
+        gap: 18px;
         flex-wrap: wrap;
+        margin-bottom: 16px;
+        font-size: 13px;
+        color: var(--text-secondary);
       }
-      .team-stat {
-        display: flex;
+      .team-summary .ts-item {
+        display: inline-flex;
         align-items: center;
-        gap: 9px;
-        padding: 10px 15px;
-        background: var(--surface);
-        border: 1px solid var(--border-light);
-        border-radius: var(--radius-md);
-        box-shadow: var(--shadow-xs);
+        gap: 7px;
       }
-      .team-stat i {
+      .team-summary b {
+        color: var(--text);
+      }
+      .ts-dot {
         width: 8px;
         height: 8px;
         border-radius: 50%;
         background: var(--text-tertiary);
       }
-      .team-stat.people i {
+      .ts-dot.accent {
         background: var(--accent);
       }
-      .team-stat.absent i {
-        background: var(--danger);
-      }
-      .team-stat.field i {
+      .ts-dot.success {
         background: var(--success);
       }
-      .team-stat.confirm i {
+      .ts-dot.warning {
         background: var(--warning);
-      }
-      .team-stat b {
-        font-size: 16px;
-        line-height: 1;
-      }
-      .team-stat span {
-        color: var(--text-secondary);
-        font-size: 12px;
       }
       .team-filters {
         display: flex;
@@ -1329,6 +1324,14 @@
         display: grid;
         gap: 6px;
       }
+      .team-filters small {
+        display: block;
+        color: var(--text-tertiary);
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.09em;
+        margin-bottom: 4px;
+      }
       .team-list {
         background: var(--surface);
         border: 1px solid var(--border-light);
@@ -1338,7 +1341,7 @@
       }
       .team-card {
         display: grid;
-        grid-template-columns: 40px 1fr 1.4fr auto;
+        grid-template-columns: 40px 1.2fr 1.6fr auto;
         gap: 14px;
         align-items: center;
         padding: 14px 18px;
@@ -1351,79 +1354,292 @@
       .team-card:hover {
         background: var(--surface-subtle);
       }
-      .team-card.is-late {
-        box-shadow: inset 3px 0 var(--danger);
+      .team-card:focus-visible {
+        outline: 3px solid color-mix(in srgb, var(--accent) 42%, transparent);
+        outline-offset: -3px;
       }
-      .team-card h3 {
+      .tc-id h3 {
         margin: 0;
         font-size: 14px;
       }
-      .team-card p,
-      .mission-copy span,
-      .mission-copy small {
-        display: block;
-        margin: 2px 0;
+      .tc-id p {
+        margin: 2px 0 0;
         color: var(--text-secondary);
         font-size: 12px;
       }
-      .mission-copy b {
+      .tc-mission b {
         font-size: 13.5px;
       }
-      .mini-load {
-        width: 150px;
-        height: 5px;
-        margin-top: 7px;
-        overflow: hidden;
-        border-radius: 8px;
-        background: var(--surface-muted);
-      }
-      .mini-load i {
+      .tc-mission span,
+      .tc-mission small {
         display: block;
-        height: 100%;
+        margin: 2px 0 0;
+        color: var(--text-secondary);
+        font-size: 12px;
+      }
+      .tc-mission .tc-expert {
+        color: var(--text-tertiary);
+      }
+      .tc-status {
+        font-style: normal;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--text-tertiary);
+      }
+      /* état ressource : point + texte, discret (jamais un gros pill) */
+      .tc-state,
+      .rstate {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 12px;
+        font-weight: 600;
+        white-space: nowrap;
+        color: var(--text-secondary);
+      }
+      .tc-state i,
+      .rstate i {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--text-tertiary);
+      }
+      .tc-state.success,
+      .rstate.success {
+        color: var(--success-ink);
+      }
+      .tc-state.success i,
+      .rstate.success i {
+        background: var(--success);
+      }
+      .tc-state.accent,
+      .rstate.accent {
+        color: var(--accent-ink);
+      }
+      .tc-state.accent i,
+      .rstate.accent i {
         background: var(--accent);
       }
+      .tc-state.warning,
+      .rstate.warning {
+        color: var(--warning-ink);
+      }
+      .tc-state.warning i,
+      .rstate.warning i {
+        background: var(--warning);
+      }
+      .tc-state.danger,
+      .rstate.danger {
+        color: var(--danger-ink);
+      }
+      .tc-state.danger i,
+      .rstate.danger i {
+        background: var(--danger);
+      }
+      .rstate {
+        margin: 6px 0 4px;
+      }
 
-      /* ---------------- Resources load ---------------- */
+      /* ---------------- Charge des ressources ---------------- */
+      .back-link {
+        display: inline-block;
+        margin-bottom: 6px;
+      }
       .resources {
         overflow: auto;
         border: 1px solid var(--border-light);
         border-radius: var(--radius-lg);
         box-shadow: var(--shadow-xs);
+        background: var(--surface);
+        scrollbar-width: thin;
       }
       .load-row {
         display: grid;
-        grid-template-columns: 190px repeat(5, 1fr);
-        min-width: 730px;
+        grid-template-columns: 200px repeat(5, minmax(96px, 1fr));
+        min-width: 720px;
         border-top: 1px solid var(--border-light);
+        align-items: stretch;
       }
       .load-row:first-child {
         border-top: 0;
+      }
+      .load-head {
+        background: var(--surface-subtle);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        color: var(--text-tertiary);
+        text-transform: uppercase;
+      }
+      .load-head > div {
+        padding: 10px 13px;
+      }
+      .load-row:not(.load-head) {
+        cursor: pointer;
+      }
+      .load-row:not(.load-head):hover {
         background: var(--surface-subtle);
       }
-      .load-row > div {
-        padding: 13px;
+      .load-row:focus-visible {
+        outline: 3px solid color-mix(in srgb, var(--accent) 42%, transparent);
+        outline-offset: -3px;
       }
-      .load-track {
-        height: 8px;
+      .rc-name {
         display: flex;
-        gap: 3px;
         align-items: center;
+        gap: 10px;
+        padding: 11px 13px;
+        min-width: 0;
+        position: sticky;
+        left: 0;
+        z-index: 2;
+        background: var(--surface);
       }
-      .load-block {
+      .load-head > div:first-child {
+        position: sticky;
+        left: 0;
+        z-index: 2;
+        background: var(--surface-subtle);
+      }
+      .load-row:not(.load-head):hover .rc-name {
+        background: var(--surface-subtle);
+      }
+      .rc-name b {
+        font-size: 13px;
+      }
+      .rc-name small {
+        display: block;
+        color: var(--text-tertiary);
+        font-size: 11px;
+      }
+      .rc-cell-wrap {
+        padding: 8px;
+        border-left: 1px solid var(--border-light);
+        display: flex;
+      }
+      .rc-cell {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        width: 100%;
+        padding: 7px 10px;
+        border-radius: var(--radius-sm);
+        font-size: 12px;
+        font-weight: 600;
+        background: var(--surface-subtle);
+        color: var(--text-tertiary);
+      }
+      .rc-cell i {
+        width: 7px;
         height: 7px;
-        width: 28px;
-        border-radius: 4px;
-        background: var(--accent);
-        opacity: 0.55;
-      }
-      .load-block.free {
-        width: 10px;
+        border-radius: 50%;
         background: var(--border-strong);
-        opacity: 1;
+        flex: 0 0 7px;
       }
-      .load-block.over {
+      .rc-cell.available {
+        background: transparent;
+        color: var(--text-tertiary);
+        font-weight: 500;
+      }
+      .rc-cell.accent {
+        background: var(--accent-soft);
+        color: var(--accent-ink);
+      }
+      .rc-cell.accent i {
+        background: var(--accent);
+      }
+      .rc-cell.warning {
+        background: var(--warning-soft);
+        color: var(--warning-ink);
+      }
+      .rc-cell.warning i {
+        background: var(--warning);
+      }
+      .rc-cell.danger {
+        background: var(--danger-soft);
+        color: var(--danger-ink);
+      }
+      .rc-cell.danger i {
         background: var(--danger);
-        opacity: 0.8;
+      }
+
+      /* Drawer ressource */
+      .drawer-mission {
+        display: grid;
+        grid-template-columns: 88px 1fr auto;
+        gap: 10px;
+        align-items: center;
+        padding: 10px 0;
+        border-top: 1px solid var(--border-light);
+      }
+      .drawer-mission:first-child {
+        border-top: 0;
+      }
+      .drawer-mission > b {
+        font-size: 12.5px;
+        color: var(--text-secondary);
+      }
+      .drawer-mission span {
+        display: block;
+        font-size: 13px;
+      }
+      .drawer-mission small {
+        display: block;
+        color: var(--text-tertiary);
+        font-size: 12px;
+      }
+      .drawer-avail {
+        margin: 12px 0 0;
+        padding-top: 10px;
+        border-top: 1px dashed var(--border);
+        color: var(--text-secondary);
+        font-size: 13px;
+      }
+      .drawer-cap {
+        display: flex;
+        gap: 26px;
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px dashed var(--border);
+      }
+      .drawer-cap small {
+        display: block;
+        color: var(--text-tertiary);
+        font-size: 11px;
+      }
+      .drawer-cap b {
+        font-size: 14px;
+      }
+      .week-dots {
+        display: flex;
+        gap: 16px;
+      }
+      .week-dots .wd {
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+        font-size: 11px;
+        color: var(--text-tertiary);
+        font-weight: 600;
+      }
+      .week-dots .wd i {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--border-strong);
+      }
+      .week-dots .wd.success i {
+        background: var(--success);
+      }
+      .week-dots .wd.accent i {
+        background: var(--accent);
+      }
+      .week-dots .wd.warning i {
+        background: var(--warning);
+      }
+      .week-dots .wd.danger i {
+        background: var(--danger);
       }
       .ai-nudge {
         display: flex;
@@ -3141,10 +3357,27 @@
         }
         .team-card {
           grid-template-columns: 38px 1fr auto;
+          grid-template-areas: "av id st" "av mi mi";
+          gap: 4px 12px;
           padding: 13px;
         }
-        .team-card .mission-copy {
-          grid-column: 2 / -1;
+        .team-card > .resource-avatar {
+          grid-area: av;
+          align-self: start;
+        }
+        .team-card .tc-id {
+          grid-area: id;
+        }
+        .team-card .tc-state {
+          grid-area: st;
+          align-self: start;
+        }
+        .team-card .tc-mission {
+          grid-area: mi;
+          margin-top: 4px;
+        }
+        .load-row {
+          grid-template-columns: 150px repeat(5, minmax(88px, 1fr));
         }
         .add {
           display: flex;
@@ -3723,6 +3956,8 @@
         value.ui.planningResource = value.ui.planningResource || "all";
         value.ui.impactChain = false;
         value.ui.teamTypeFilter = value.ui.teamTypeFilter || "all";
+        if (value.ui.teamTypeFilter === "late")
+          value.ui.teamTypeFilter = "attention";
         if (value.settings.baseline === undefined) value.settings.baseline = true;
         value.ui.ai = {
           open: false,
@@ -4433,15 +4668,123 @@
               out.push([ts[i], ts[j]]);
         return out;
       }
-      function getResourceLoad(id, day) {
+      function getResourceLoad(id, day, tasks = app.tasks) {
         let range = { start: day + "T00:00", end: day + "T23:59" },
-          ts = getResourceTasks(id).filter(
+          ts = getResourceTasks(id, tasks).filter(
             (t) => overlap(t, range) && t.status !== "done",
           );
         return {
           tasks: ts,
-          conflict: getMaxConcurrentTasks(id, range) > resource(id).capacity,
+          conflict:
+            getMaxConcurrentTasks(id, range, tasks) > resource(id).capacity,
         };
+      }
+      /* ------- États qualitatifs de ressource (une seule vérité métier) -------
+         Dérivés des missions réelles — AUCUN pourcentage de capacité.
+         available : aucune mission active ce jour-là.
+         busy      : au moins une mission, sans saturation.
+         high      : signal de vigilance AVANT le conflit —
+                     personne  = plusieurs interventions distinctes le même jour ;
+                     entreprise= pic simultané == capacité déclarée.
+         conflict  : pic simultané > capacité (getMaxConcurrentTasks > capacity).
+         Le paramètre `tasks` permet de rester compatible avec les simulations. */
+      const RESOURCE_STATE = {
+        available: { label: "Disponible", tone: "success" },
+        busy: { label: "Occupé", tone: "accent" },
+        high: { label: "Charge forte", tone: "warning" },
+        conflict: { label: "Conflit", tone: "danger" },
+      };
+      const RESOURCE_STATE_ORDER = {
+        conflict: 0,
+        high: 1,
+        busy: 2,
+        available: 3,
+      };
+      function resourceStateLabel(s) {
+        return RESOURCE_STATE[s]?.label || "";
+      }
+      function resourceStateTone(s) {
+        return RESOURCE_STATE[s]?.tone || "success";
+      }
+      function getResourceState(resourceId, day, tasks = app.tasks) {
+        let r = resource(resourceId),
+          range = { start: day + "T00:00", end: day + "T23:59" },
+          active = getResourceTasks(resourceId, tasks).filter(
+            (t) => t.status !== "done" && overlap(t, range),
+          ),
+          peak = getMaxConcurrentTasks(resourceId, range, tasks);
+        if (!active.length) return "available";
+        if (peak > r.capacity) return "conflict";
+        if (r.type === "company") return peak >= r.capacity ? "high" : "busy";
+        return active.length > 1 ? "high" : "busy";
+      }
+      function getResourcePeriodState(resourceId, days, tasks = app.tasks) {
+        return days.reduce((worst, d) => {
+          let s = getResourceState(resourceId, d, tasks);
+          return RESOURCE_STATE_ORDER[s] < RESOURCE_STATE_ORDER[worst]
+            ? s
+            : worst;
+        }, "available");
+      }
+      function resourcePeakConcurrent(resourceId, days, tasks = app.tasks) {
+        return days.reduce(
+          (mx, d) =>
+            Math.max(
+              mx,
+              getMaxConcurrentTasks(
+                resourceId,
+                { start: d + "T00:00", end: d + "T23:59" },
+                tasks,
+              ),
+            ),
+          0,
+        );
+      }
+      function resourceNeedsAttention(resourceId, days, tasks = app.tasks) {
+        let s = getResourcePeriodState(resourceId, days, tasks);
+        if (s === "conflict" || s === "high") return true;
+        if (
+          getResourceTasks(resourceId, tasks).some((t) => t.status === "late")
+        )
+          return true;
+        return app.issues.some(
+          (i) =>
+            i.status !== "resolved" &&
+            i.severity === "critical" &&
+            task(i.taskId)?.resourceId === resourceId,
+        );
+      }
+      function teamPeriodDays() {
+        let p = app.ui.teamPeriod;
+        return p === "today"
+          ? [localDateKey(getDemoNow())]
+          : p === "tomorrow"
+            ? [getTomorrow()]
+            : getResourceWeekDays(TODAY);
+      }
+      function teamPeriodWord() {
+        return app.ui.teamPeriod === "today"
+          ? "aujourd’hui"
+          : app.ui.teamPeriod === "tomorrow"
+            ? "demain"
+            : "cette semaine";
+      }
+      function resourcePeriodTasks(resourceId, days, tasks = app.tasks) {
+        return getResourceTasks(resourceId, tasks)
+          .filter(
+            (t) =>
+              t.status !== "done" &&
+              days.some(
+                (d) =>
+                  date(t.start) < date(d + "T23:59") &&
+                  date(t.end) > date(d + "T00:00"),
+              ),
+          )
+          .sort((a, b) => a.start.localeCompare(b.start));
+      }
+      function resourceNextStart(resourceId, days) {
+        let ts = resourcePeriodTasks(resourceId, days);
+        return ts.length ? +date(ts[0].start) : Infinity;
       }
       function evaluateDependencyConflicts(tasks) {
         return tasks.flatMap((t) =>
@@ -4843,66 +5186,50 @@
       function renderTeam() {
         let period = app.ui.teamPeriod,
           type = app.ui.teamTypeFilter || "all",
-          base = getDemoNow(),
-          week = getResourceWeekDays(TODAY),
-          days =
-            period === "today"
-              ? [localDateKey(base)]
-              : period === "tomorrow"
-                ? [getTomorrow()]
-                : week,
-          missions = app.tasks.filter((t) =>
-            days.some(
-              (d) =>
-                date(t.start) < date(d + "T23:59") &&
-                date(t.end) > date(d + "T00:00"),
-            ),
-          ),
-          criticalResources = new Set(
-            app.issues
-              .filter(
-                (i) => i.status !== "resolved" && i.severity === "critical",
-              )
-              .map((i) => task(i.taskId)?.resourceId),
-          ),
-          ids = [...new Set(missions.map((t) => t.resourceId))].filter((id) => {
-            let r = resource(id),
-              ts = missions.filter((t) => t.resourceId === id);
-            return (
-              type === "all" ||
-              (type === "internal" && r.scope === "Interne") ||
-              (type === "external" && r.scope === "Externe") ||
-              (type === "late" &&
-                (ts.some((t) => t.status === "late") ||
-                  criticalResources.has(id)))
-            );
-          });
-        let summaryIds = [...new Set(missions.map((t) => t.resourceId))],
-          statField = summaryIds.filter((id) =>
-            missions.some(
-              (t) =>
-                t.resourceId === id &&
-                dayKey(t.start) <= dayKey(TODAY) &&
-                dayKey(t.end) >= dayKey(TODAY) &&
-                t.status === "doing",
-            ),
+          days = teamPeriodDays(),
+          pilot = app.settings.level !== "essential",
+          entries = app.resources.map((r) => ({
+            r,
+            state: getResourcePeriodState(r.id, days),
+            next: resourceNextStart(r.id, days),
+          })),
+          filtered = entries.filter(({ r }) =>
+            type === "all"
+              ? true
+              : type === "internal"
+                ? r.scope === "Interne"
+                : type === "external"
+                  ? r.scope === "Externe"
+                  : resourceNeedsAttention(r.id, days),
+          );
+        filtered.sort(
+          (a, b) =>
+            RESOURCE_STATE_ORDER[a.state] - RESOURCE_STATE_ORDER[b.state] ||
+            a.next - b.next,
+        );
+        let mobilized = entries.filter((e) => e.state !== "available").length,
+          available = entries.filter((e) => e.state === "available").length,
+          attention = entries.filter(
+            (e) => e.state === "high" || e.state === "conflict",
           ).length,
-          statConfirm = summaryIds.filter((id) =>
-            missions.some((t) => t.resourceId === id && t.status === "waiting"),
-          ).length,
-          statLate = summaryIds.filter(
-            (id) =>
-              missions.some((t) => t.resourceId === id && t.status === "late") ||
-              criticalResources.has(id),
-          ).length,
-          teamSummary = `<div class="team-summary"><div class="team-stat people"><i></i><div><b>${summaryIds.length}</b> <span>Ressources</span></div></div><div class="team-stat field"><i></i><div><b>${statField}</b> <span>Sur le terrain</span></div></div><div class="team-stat confirm"><i></i><div><b>${statConfirm}</b> <span>À confirmer</span></div></div><div class="team-stat absent"><i></i><div><b>${statLate}</b> <span>À surveiller</span></div></div></div>`;
+          plur = (n) => (n > 1 ? "s" : ""),
+          summary = `<div class="team-summary"><span class="ts-item"><span class="ts-dot accent"></span><b>${mobilized}</b> mobilisée${plur(mobilized)}</span><span class="ts-item"><span class="ts-dot success"></span><b>${available}</b> disponible${plur(available)}</span><span class="ts-item"><span class="ts-dot warning"></span><b>${attention}</b> à surveiller</span></div>`,
+          list = filtered.length
+            ? filtered.map(({ r, state }) => teamCard(r.id, days, state)).join("")
+            : type === "external"
+              ? empty("Aucune ressource externe", "Aucun intervenant externe sur cette période.")
+              : type === "internal"
+                ? empty("Aucune ressource interne", "Aucun intervenant interne sur cette période.")
+                : type === "attention"
+                  ? `<div class="zone-empty" style="padding:22px 18px">✓ <b>Aucun conflit de ressource</b><span>Toutes les affectations sont saines.</span></div>`
+                  : empty("Aucune ressource", "Aucune ressource ne correspond à ce filtre.");
         return (
           header(
             "Équipe",
-            "Les bonnes personnes, au bon endroit",
-            `<b>${ids.length} ressources</b><span>${period === "today" ? "Aujourd’hui" : period === "tomorrow" ? "Demain" : "Cette semaine"}</span><div style="margin-top:8px;display:flex;gap:8px;justify-content:flex-end"><button class="link" onclick="go('resources')">Voir la charge</button><button class="btn" onclick="openResourceForm()">${icon("plus")} Ressource</button></div>`,
+            "Qui fait quoi, aujourd’hui ?",
+            `<div class="team-actions">${pilot ? `<button class="link" onclick="go('resources')">Charge semaine →</button>` : ""}<button class="btn" onclick="openResourceForm()">${icon("plus")} Ressource</button></div>`,
           ) +
-          teamSummary +
+          summary +
           `<div class="team-filters"><div><small>TEMPS</small><div class="segment">${[
             ["today", "Aujourd’hui"],
             ["tomorrow", "Demain"],
@@ -4918,7 +5245,7 @@
             ["all", "Tous"],
             ["internal", "Internes"],
             ["external", "Externes"],
-            ["late", "En retard"],
+            ["attention", "Attention"],
           ]
             .map(
               (x) =>
@@ -4926,26 +5253,57 @@
             )
             .join(
               "",
-            )}</div></div></div><div class="team-list">${ids.map((id) => teamCard(id, missions)).join("") || empty("Aucune ressource", "Aucune mission ne correspond à ce filtre.")}</div>`
+            )}</div></div></div><div class="team-list">${list}</div>`
         );
       }
-      function teamCard(id, missions) {
+      function teamCard(id, days, state) {
         let r = resource(id),
-          ts = missions
-            .filter((t) => t.resourceId === id)
-            .sort((a, b) => a.start.localeCompare(b.start)),
-          main =
-            ts.find((t) => t.status === "doing" || t.status === "late") ||
-            ts[0];
-        let pilot = app.settings.level !== "essential",
+          tone = resourceStateTone(state),
+          pilot = app.settings.level !== "essential",
           expert = app.settings.level === "expert",
-          conflicts = getResourceConflicts(id),
-          weekCount = getResourceTasks(id).filter(
-            (t) =>
-              date(t.start) < date(getCurrentWeekRange().end) &&
-              date(t.end) >= date(getCurrentWeekRange().start),
-          ).length;
-        return `<article class="team-card ${main.status === "late" ? "is-late" : ""}" onclick="openResource('${id}')">${resourceAvatar(r)}<div><h3>${r.name}</h3><p>${r.scope} · ${r.type === "company" ? "Entreprise" : "Personne"}</p></div><div class="mission-copy"><b>${main.name}</b><span>${project(main.projectId).name} · ${fmtTime(main.start)}–${fmtTime(main.end)}</span>${pilot ? `<small>Disponible après ${fmtTime(main.end)}${ts.length > 1 ? ` · ${ts.length - 1} autre intervention` : ""}</small>` : ""}${expert ? `<div class="mini-load"><i style="width:${Math.min(100, weekCount * 18)}%"></i></div><small>${weekCount} tâches semaine · capacité ${Math.max(0, 100 - weekCount * 12)}%${conflicts.length ? ` · ${conflicts.length} conflit` : ""}</small>` : ""}</div>${pill(taskTone(main), STATUS[main.status])}</article>`;
+          isCompany = r.type === "company",
+          ts = resourcePeriodTasks(id, days),
+          main =
+            ts.find((t) => t.status === "doing" || t.status === "late") || ts[0],
+          typeLabel = isCompany ? "Entreprise" : "Personne",
+          block;
+        if (main) {
+          block = `<b>${esc(main.name)}</b><span>${project(main.projectId).name} · ${fmtTime(main.start)}–${fmtTime(main.end)} <em class="tc-status ${taskTone(main)}">${STATUS[main.status]}</em></span>`;
+          if (pilot && !expert) {
+            if (isCompany) {
+              let peak = resourcePeakConcurrent(id, days);
+              block += `<small>${ts.length} mission${ts.length > 1 ? "s" : ""}${peak > 1 ? ` · pic ${peak} simultanées` : ""}</small>`;
+            } else {
+              let lastEnd = ts
+                .filter((t) => dayKey(t.start) === dayKey(TODAY))
+                .reduce((mx, t) => Math.max(mx, +date(t.end)), 0);
+              block += `<small>${ts.length > 1 ? `${ts.length} interventions · ` : ""}Disponible après ${fmtTime(new Date(lastEnd || +date(main.end)))}</small>`;
+            }
+          }
+          if (expert) {
+            if (isCompany) {
+              let peak = resourcePeakConcurrent(id, days);
+              block += `<small class="tc-expert">${peak} mission${peak > 1 ? "s" : ""} simultanée${peak > 1 ? "s" : ""} · Capacité simultanée : ${r.capacity}</small>`;
+            } else {
+              let weekCount = getResourceTasks(id).filter(
+                  (t) =>
+                    t.status !== "done" &&
+                    date(t.start) < date(getCurrentWeekRange().end) &&
+                    date(t.end) >= date(getCurrentWeekRange().start),
+                ).length,
+                todayCount = getResourceTasks(id).filter(
+                  (t) =>
+                    t.status !== "done" &&
+                    dayKey(t.start) <= dayKey(TODAY) &&
+                    dayKey(t.end) >= dayKey(TODAY),
+                ).length;
+              block += `<small class="tc-expert">${weekCount} intervention${weekCount > 1 ? "s" : ""} cette semaine · ${todayCount} aujourd’hui</small>`;
+            }
+          }
+        } else {
+          block = `<b>Aucune intervention prévue</b><span>Disponible ${teamPeriodWord()}</span>`;
+        }
+        return `<article class="team-card" role="button" tabindex="0" aria-label="${esc(r.name)} — ${resourceStateLabel(state)}" onclick="openResource('${id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('${id}')}">${resourceAvatar(r)}<div class="tc-id"><h3>${esc(r.name)}</h3><p>${r.scope} · ${typeLabel}</p></div><div class="tc-mission">${block}</div><div class="tc-state ${tone}"><i></i>${resourceStateLabel(state)}</div></article>`;
       }
       function localDay(d) {
         return localDateKey(d);
@@ -5314,33 +5672,67 @@
         save();
         renderPage();
       }
+      const CHARGE_CELL_LABEL = {
+        available: "Libre",
+        busy: "Occupé",
+        high: "Forte",
+        conflict: "Conflit",
+      };
+      function resourceConflictNudge(days) {
+        for (let r of app.resources)
+          for (let d of days)
+            if (getResourceState(r.id, d) === "conflict") {
+              let peak = getMaxConcurrentTasks(r.id, {
+                start: d + "T00:00",
+                end: d + "T23:59",
+              });
+              return `${r.name} a ${peak} interventions simultanées ${fmtDay(d + "T12:00").split(" ")[0]} pour une capacité de ${r.capacity}.`;
+            }
+        return "Une surcharge de ressource est détectée.";
+      }
       function renderResources() {
-        let a = date(app.ui.periodAnchor || TODAY),
-          m = new Date(a);
-        m.setDate(a.getDate() - ((a.getDay() + 6) % 7));
-        let days = Array.from({ length: 5 }, (_, i) =>
-          localDateKey(new Date(+m + i * DAY)),
-        );
+        let days = getResourceWeekDays(app.ui.periodAnchor || TODAY),
+          anyConflict = app.resources.some((r) =>
+            days.some((d) => getResourceState(r.id, d) === "conflict"),
+          );
         return (
+          `<button class="link back-link" onclick="go('team')">← Équipe</button>` +
           header(
-            "Ressources",
-            "Qui est disponible ou surchargé ?",
-            "<b>Charge calculée</b>Plages horaires et capacités",
+            "Charge des ressources",
+            "Disponibilités et conflits de la semaine",
+            "",
           ) +
-          `<div class="resources"><div class="load-row"><div></div>${days.map((d) => `<div><b>${fmtDay(d + "T12:00").split(" ")[0]}</b></div>`).join("")}</div>${app.resources
+          `<div class="resources"><div class="load-row load-head"><div></div>${days.map((d) => `<div>${fmtDay(d + "T12:00").split(" ")[0]}</div>`).join("")}</div>${app.resources
             .map(
               (r) =>
-                `<div class="load-row" onclick="openResource('${r.id}')"><div><b>${r.name}</b><br><small class="muted">Capacité ${r.capacity}</small></div>${days
+                `<div class="load-row" role="button" tabindex="0" aria-label="Charge de ${esc(r.name)}" onclick="openResource('${r.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('${r.id}')}"><div class="rc-name">${resourceAvatar(r, true)}<div><b>${esc(r.name)}</b><small>${r.scope}${r.type === "company" ? ` · cap. ${r.capacity}` : ""}</small></div></div>${days
                   .map((d) => {
-                    let l = getResourceLoad(r.id, d),
-                      count = Math.max(1, l.tasks.length);
-                    return `<div title="${l.tasks.map((t) => `${t.name} ${fmtTime(t.start)}–${fmtTime(t.end)}`).join(" · ") || "Libre"}"><div class="load-track">${Array.from({ length: count }, () => `<i class="load-block ${l.conflict ? "over" : l.tasks.length ? "" : "free"}"></i>`).join("")}</div></div>`;
+                    let st = getResourceState(r.id, d),
+                      l = getResourceLoad(r.id, d),
+                      peak = getMaxConcurrentTasks(r.id, {
+                        start: d + "T00:00",
+                        end: d + "T23:59",
+                      }),
+                      tip =
+                        l.tasks
+                          .map(
+                            (t) =>
+                              `${t.name} ${fmtTime(t.start)}–${fmtTime(t.end)} · ${project(t.projectId).name}`,
+                          )
+                          .join("\n") || "Libre",
+                      note =
+                        st === "conflict"
+                          ? `${peak}/${r.capacity}`
+                          : st === "high" && r.type === "person" && l.tasks.length > 1
+                            ? `${l.tasks.length} interv.`
+                            : "";
+                    return `<div class="rc-cell-wrap"><div class="rc-cell ${resourceStateTone(st)} ${st}" title="${esc((st === "conflict" ? `${peak}/${r.capacity} missions simultanées\n` : "") + tip)}"><i></i><span>${CHARGE_CELL_LABEL[st]}${note ? ` · ${note}` : ""}</span></div></div>`;
                   })
                   .join("")}</div>`,
             )
             .join(
               "",
-            )}</div>${app.resources.some((r) => getResourceConflicts(r.id).length) ? `<div class="ai-nudge"><b>✦ Une surcharge est détectée</b><button class="btn" onclick="askAI('surcharge')">Voir pourquoi</button></div>` : ""}`
+            )}</div>${anyConflict ? `<div class="ai-nudge">${icon("assistant")}<span>${resourceConflictNudge(days)}</span><button class="link" onclick="askAI('surcharge')">Examiner</button></div>` : ""}`
         );
       }
       function getAIContext(override = null) {
@@ -5796,35 +6188,57 @@
         $("#drawer").classList.add("open");
       }
       function resourceRow(id) {
-        let r = resource(id);
-        return `<div class="row" style="grid-template-columns:30px 1fr auto" onclick="openResource('${id}')">${resourceAvatar(r, true)}<div><h3>${r.name}</h3><p>${r.scope} · capacité ${r.capacity}</p></div></div>`;
+        let r = resource(id),
+          st = getResourceState(id, dayKey(TODAY)),
+          tone = resourceStateTone(st);
+        return `<div class="row" style="grid-template-columns:30px 1fr auto" onclick="openResource('${id}')">${resourceAvatar(r, true)}<div><h3>${esc(r.name)}</h3><p>${r.scope} · ${r.type === "company" ? "Entreprise" : "Personne"}</p></div><span class="rstate ${tone}"><i></i>${resourceStateLabel(st)}</span></div>`;
       }
       function openResource(id) {
         app.ui.selectedResource = id;
         app.ui.selectedIssue = null;
         let r = resource(id),
-          today = getResourceTasks(id).filter(
-            (t) =>
-              dayKey(t.start) <= dayKey(TODAY) &&
-              dayKey(t.end) >= dayKey(TODAY),
-          ),
-          next = getResourceTasks(id)
-            .filter((t) => date(t.start) > date(TODAY))
+          isCompany = r.type === "company",
+          todayKey = dayKey(TODAY),
+          today = getResourceTasks(id)
+            .filter(
+              (t) =>
+                t.status !== "done" &&
+                dayKey(t.start) <= todayKey &&
+                dayKey(t.end) >= todayKey,
+            )
             .sort((a, b) => a.start.localeCompare(b.start)),
-          last = Math.max(
-            ...today.map((t) => date(t.end).getTime()),
-            date(TODAY).setHours(8),
-          ),
-          days = getResourceWeekDays(app.ui.periodAnchor || TODAY);
-        $("#drawerContent").innerHTML =
-          `<p class="muted">${r.scope.toUpperCase()} · ${r.type === "company" ? "ENTREPRISE" : "PERSONNE"}</p><h2>${r.name}</h2><div class="drawer-section"><h3>Aujourd’hui</h3>${today.map(taskRow).join("") || '<p class="muted">Libre</p>'}<p><b>Disponibilité</b><br>Disponible après ${new Intl.DateTimeFormat("fr-FR", { hour: "2-digit", minute: "2-digit" }).format(last)}.</p><button class="link" onclick="closeOverlay('drawer');app.ui.planningResource='${id}';go('planning')">Voir dans le planning</button></div><div class="drawer-section"><h3>Ensuite</h3>${next.slice(0, 3).map(taskRow).join("")}</div><div class="drawer-section"><h3>Charge période</h3><div class="load-track">${days
-            .map((d) => {
-              let l = getResourceLoad(id, d);
-              return `<i class="load-block ${l.conflict ? "over" : l.tasks.length ? "" : "free"}"></i>`;
+          next = getResourceTasks(id)
+            .filter((t) => t.status !== "done" && date(t.start) > date(TODAY))
+            .sort((a, b) => a.start.localeCompare(b.start)),
+          state = getResourceState(id, todayKey),
+          tone = resourceStateTone(state),
+          days = getResourceWeekDays(app.ui.periodAnchor || TODAY),
+          peakToday = getMaxConcurrentTasks(id, {
+            start: todayKey + "T00:00",
+            end: todayKey + "T23:59",
+          }),
+          showRebalance = state === "conflict" || state === "high",
+          missionLine = (t) =>
+            `<div class="drawer-mission"><b>${fmtTime(t.start)}–${fmtTime(t.end)}</b><div><span>${esc(t.name)}</span><small>${project(t.projectId).name}</small></div>${pill(taskTone(t), STATUS[t.status])}</div>`,
+          capacityBlock = isCompany
+            ? `<div class="drawer-cap"><div><small>Pic simultané</small><b>${peakToday} mission${peakToday > 1 ? "s" : ""}</b></div><div><small>Capacité simultanée</small><b>${r.capacity} mission${r.capacity > 1 ? "s" : ""}</b></div></div>`
+            : today.length
+              ? `<p class="drawer-avail">Disponible après ${fmtTime(new Date(today.reduce((mx, t) => Math.max(mx, +date(t.end)), 0)))}.</p>`
+              : "",
+          weekDots = `<div class="week-dots">${["L", "M", "M", "J", "V"]
+            .map((lbl, i) => {
+              let st = getResourceState(id, days[i]);
+              return `<span class="wd ${resourceStateTone(st)}" title="${esc(fmtDay(days[i] + "T12:00") + " · " + resourceStateLabel(st))}"><i></i>${lbl}</span>`;
             })
-            .join(
-              "",
-            )}</div></div><div class="drawer-section"><button class="btn" onclick="openAIPanel({type:'resource',resourceId:'${id}'})">✦ Rééquilibrer</button></div>`;
+            .join("")}</div>`;
+        $("#drawerContent").innerHTML =
+          `<p class="muted">${r.scope.toUpperCase()} · ${isCompany ? "ENTREPRISE" : "PERSONNE"}</p><h2>${esc(r.name)}</h2><div class="rstate ${tone}"><i></i>${resourceStateLabel(state)}</div>` +
+          `<div class="drawer-section"><h3>Aujourd’hui</h3>${today.length ? today.map(missionLine).join("") : '<p class="muted">Aucune intervention aujourd’hui.</p>'}${capacityBlock}</div>` +
+          (next.length
+            ? `<div class="drawer-section"><h3>Ensuite</h3>${next.slice(0, 3).map(missionLine).join("")}</div>`
+            : "") +
+          `<div class="drawer-section"><h3>Charge semaine</h3>${weekDots}</div>` +
+          `<div class="drawer-section actions"><button class="btn" onclick="closeOverlay('drawer');app.ui.planningResource='${id}';go('planning')">Voir dans le planning</button>${showRebalance ? `<button class="btn primary" onclick="openAIPanel({type:'resource',resourceId:'${id}'})">${icon("assistant")} Rééquilibrer</button>` : ""}</div>`;
         $("#drawer").classList.add("open");
       }
       function openIssue(id) {
@@ -6172,20 +6586,24 @@
         };
       }
       function openResourceForm() {
-        modalForm(
-          "Nouvelle ressource",
-          `<input name="name" required placeholder="Nom"><select name="scope"><option>Interne</option><option>Externe</option></select><select name="type"><option value="person">Personne</option><option value="company">Entreprise</option></select><input name="capacity" type="number" min="1" value="1">`,
-          (f) => {
-            app.resources.push({
-              id: "res-" + Date.now(),
-              name: f.get("name"),
-              scope: f.get("scope"),
-              type: f.get("type"),
-              capacity: +f.get("capacity"),
-            });
-            save();
-          },
-        );
+        $("#modalContent").innerHTML =
+          `<h2>Nouvelle ressource</h2><form id="resForm" style="display:grid;gap:12px"><input name="name" required placeholder="Nom"><label>Type<select name="type" onchange="document.getElementById('capField').style.display=this.value==='company'?'grid':'none'"><option value="person">Personne</option><option value="company">Entreprise</option></select></label><label>Rattachement<select name="scope"><option>Interne</option><option>Externe</option></select></label><label id="capField" style="display:none;gap:4px">Capacité simultanée<input name="capacity" type="number" min="1" value="2"><small class="muted">Nombre de missions pouvant être assurées au même moment.</small></label><button class="btn primary" type="submit">Ajouter</button></form>`;
+        $("#modal").classList.add("open");
+        $("#resForm").onsubmit = (e) => {
+          e.preventDefault();
+          let f = new FormData(e.currentTarget),
+            type = f.get("type");
+          app.resources.push({
+            id: "res-" + Date.now(),
+            name: f.get("name"),
+            scope: f.get("scope"),
+            type,
+            capacity: type === "company" ? Math.max(1, +f.get("capacity") || 1) : 1,
+          });
+          save();
+          closeOverlay("modal");
+          renderPage();
+        };
       }
       function openIssueForm(field = false, tid = "") {
         modalForm(
