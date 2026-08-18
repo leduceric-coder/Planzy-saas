@@ -50,6 +50,7 @@
         --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04),
           0 2px 6px rgba(15, 23, 42, 0.04);
         --shadow-card: 0 4px 16px rgba(15, 23, 42, 0.06);
+        --shadow-hover: 0 8px 24px rgba(15, 23, 42, 0.1);
         --shadow-pop: 0 12px 40px rgba(15, 23, 42, 0.14);
         /* Radius */
         --radius-xs: 6px;
@@ -100,6 +101,7 @@
         --danger-soft: #391c1f;
         --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.35);
         --shadow-card: 0 6px 22px rgba(0, 0, 0, 0.4);
+        --shadow-hover: 0 10px 30px rgba(0, 0, 0, 0.5);
         --shadow-pop: 0 18px 50px rgba(0, 0, 0, 0.55);
         --success-border: #1e5236;
         --warning-border: #5a441f;
@@ -449,13 +451,13 @@
         justify-content: space-between;
         align-items: flex-start;
         gap: 20px;
-        margin-bottom: 26px;
+        margin-bottom: 24px;
       }
       .header h1 {
         font-size: 27px;
         font-weight: 700;
         letter-spacing: -0.02em;
-        margin: 0 0 3px;
+        margin: 0 0 4px;
       }
       .muted {
         color: var(--text-secondary);
@@ -675,7 +677,7 @@
 
       /* ---------------- Today / workflow ---------------- */
       .today-hero {
-        padding: 2px 0 20px;
+        padding: 0 0 24px;
       }
       .today-hero h1 {
         font-size: 27px;
@@ -794,6 +796,182 @@
         color: var(--success);
         font-size: 13px;
         font-weight: 600;
+      }
+      /* Halo d'accueil sur la première décision (premium, discret, 2 cycles) */
+      .decision-card.halo {
+        border-radius: var(--radius-md);
+        animation: cardHalo 0.9s ease-out 2;
+      }
+      @keyframes cardHalo {
+        0% {
+          box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 42%, transparent);
+          background: color-mix(in srgb, var(--accent) 5%, transparent);
+        }
+        60% {
+          box-shadow: 0 0 0 7px color-mix(in srgb, var(--accent) 0%, transparent);
+        }
+        100% {
+          box-shadow: 0 0 0 0 transparent;
+          background: transparent;
+        }
+      }
+      .decision-card.halo.halo-critical {
+        animation-name: cardHaloCritical;
+      }
+      @keyframes cardHaloCritical {
+        0% {
+          box-shadow: 0 0 0 0 color-mix(in srgb, var(--danger) 38%, transparent);
+          background: color-mix(in srgb, var(--danger) 5%, transparent);
+        }
+        60% {
+          box-shadow: 0 0 0 7px color-mix(in srgb, var(--danger) 0%, transparent);
+        }
+        100% {
+          box-shadow: 0 0 0 0 transparent;
+          background: transparent;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .decision-card.halo {
+          animation: none;
+          outline: 2px solid var(--accent);
+          outline-offset: 3px;
+        }
+        .decision-card.halo.halo-critical {
+          outline-color: var(--danger);
+        }
+      }
+      /* Aperçu « Cette semaine » — bande légère sous le workflow */
+      .week-preview {
+        margin-top: 28px;
+      }
+      .wp-head {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        margin-bottom: 11px;
+      }
+      .wp-head h2 {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--text-tertiary);
+        margin: 0;
+      }
+      .wp-head span {
+        font-size: 12px;
+        color: var(--text-tertiary);
+      }
+      .wp-days {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 8px;
+      }
+      .wp-day {
+        display: grid;
+        gap: 7px;
+        align-content: start;
+        padding: 12px 12px 13px;
+        text-align: left;
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-md);
+        background: var(--surface);
+        box-shadow: var(--shadow-xs);
+        cursor: pointer;
+        transition: box-shadow 0.16s, border-color 0.16s;
+      }
+      .wp-day:hover {
+        box-shadow: var(--shadow-hover);
+        border-color: var(--border-strong);
+      }
+      .wp-day:focus-visible {
+        outline: 3px solid color-mix(in srgb, var(--accent) 42%, transparent);
+        outline-offset: 2px;
+      }
+      .wp-day.today {
+        border-color: var(--accent);
+        background: var(--accent-soft);
+      }
+      .wp-label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--text);
+        text-transform: capitalize;
+      }
+      .wp-day.today .wp-label {
+        color: var(--accent-ink);
+      }
+      .wp-today-tag {
+        font-size: 8px;
+        font-weight: 700;
+        letter-spacing: 0.07em;
+        padding: 2px 5px;
+        border-radius: 4px;
+        background: var(--accent);
+        color: #fff;
+        text-transform: uppercase;
+      }
+      .wp-count {
+        font-size: 12px;
+        color: var(--text-secondary);
+      }
+      .wp-count b {
+        color: var(--text);
+        font-size: 15px;
+        margin-right: 3px;
+      }
+      .wp-signals {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        min-height: 15px;
+        flex-wrap: wrap;
+      }
+      .wp-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        flex: none;
+      }
+      .wp-dot.danger {
+        background: var(--danger);
+      }
+      .wp-dot.warning {
+        background: var(--warning);
+      }
+      .wp-risk {
+        font-size: 11px;
+        color: var(--text-secondary);
+      }
+      .wp-tag {
+        font-size: 10px;
+        font-weight: 600;
+        padding: 1px 6px;
+        border-radius: 4px;
+        background: var(--surface-muted);
+        color: var(--text-tertiary);
+      }
+      .wp-quiet {
+        font-size: 11px;
+        color: var(--text-tertiary);
+      }
+      @media (max-width: 720px) {
+        .wp-days {
+          grid-template-columns: none;
+          grid-auto-flow: column;
+          grid-auto-columns: 46%;
+          overflow-x: auto;
+          scroll-snap-type: x mandatory;
+          margin: 0 -18px;
+          padding: 2px 18px 6px;
+        }
+        .wp-day {
+          scroll-snap-align: start;
+        }
       }
       /* Décision */
       .decision-card {
@@ -994,12 +1172,10 @@
         box-shadow: var(--shadow-xs);
         overflow: hidden;
         cursor: pointer;
-        transition: transform 0.15s ease, box-shadow 0.15s ease,
-          border-color 0.15s ease;
+        transition: box-shadow 0.16s ease, border-color 0.16s ease;
       }
       .site-card:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-card);
+        box-shadow: var(--shadow-hover);
         border-color: var(--border-strong);
       }
       .site-card:focus-visible {
@@ -1684,7 +1860,7 @@
         font-size: 27px;
         font-weight: 700;
         letter-spacing: -0.02em;
-        margin: 0 0 3px;
+        margin: 0 0 4px;
       }
       .planning-nav {
         display: flex;
@@ -2003,6 +2179,43 @@
           background: transparent;
         }
       }
+      /* Focus sur une tâche : la barre du planning pulse doucement (accent Kanvix) */
+      .g-bar.focus-bar {
+        animation: focusBar 0.72s ease-out 2;
+        outline: 2px solid var(--accent);
+        outline-offset: 1px;
+        z-index: 6;
+      }
+      .g-bar.focus-bar.focus-danger {
+        outline-color: var(--danger);
+        animation-name: focusBarDanger;
+      }
+      @keyframes focusBar {
+        0% {
+          box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 55%, transparent);
+        }
+        100% {
+          box-shadow: 0 0 0 11px color-mix(in srgb, var(--accent) 0%, transparent);
+        }
+      }
+      @keyframes focusBarDanger {
+        0% {
+          box-shadow: 0 0 0 0 color-mix(in srgb, var(--danger) 50%, transparent);
+        }
+        100% {
+          box-shadow: 0 0 0 11px color-mix(in srgb, var(--danger) 0%, transparent);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .g-bar.focus-bar {
+          animation: none;
+          outline-width: 3px;
+          outline-offset: 2px;
+        }
+        .focus-flash {
+          animation: none;
+        }
+      }
       .scroll-hint {
         text-align: center;
         color: var(--text-tertiary);
@@ -2249,11 +2462,10 @@
         border-radius: var(--radius-md);
         box-shadow: var(--shadow-xs);
         cursor: pointer;
-        transition: box-shadow 0.14s, border-color 0.14s, transform 0.12s;
+        transition: box-shadow 0.16s, border-color 0.16s;
       }
       .doc:hover {
-        transform: translateY(-1px);
-        box-shadow: var(--shadow-card);
+        box-shadow: var(--shadow-hover);
         border-color: var(--border-strong);
       }
       .doc-preview {
@@ -2300,6 +2512,11 @@
         overflow: hidden;
         cursor: pointer;
         background: var(--surface-muted);
+        box-shadow: var(--shadow-xs);
+        transition: box-shadow 0.16s;
+      }
+      .photo:hover {
+        box-shadow: var(--shadow-hover);
       }
       .photo svg {
         position: absolute;
@@ -2597,12 +2814,15 @@
         height: 100%;
         display: grid;
         grid-template-rows: auto auto 1fr auto;
-        background: #0f1a24;
-        color: #eef4f8;
-        border-left: 1px solid #26404f;
-        box-shadow: -18px 0 48px rgba(2, 9, 18, 0.4);
+        background: var(--surface);
+        color: var(--text);
+        border-left: 1px solid var(--border);
+        box-shadow: -18px 0 48px rgba(15, 23, 42, 0.18);
         transform: translateX(100%);
         transition: transform 0.24s ease;
+      }
+      body.dark .ai-panel {
+        box-shadow: -18px 0 48px rgba(2, 9, 18, 0.5);
       }
       .ai-overlay.open .ai-panel {
         transform: none;
@@ -2612,10 +2832,10 @@
         justify-content: space-between;
         align-items: center;
         padding: 20px 22px;
-        border-bottom: 1px solid #223644;
+        border-bottom: 1px solid var(--border-light);
       }
       .ai-header small {
-        color: #8fa5b5;
+        color: var(--text-tertiary);
         font-size: 9px;
         font-weight: 700;
         letter-spacing: 0.14em;
@@ -2623,38 +2843,39 @@
       .ai-header h2 {
         margin: 3px 0 0;
         font-size: 19px;
-        color: #fff;
+        color: var(--text);
       }
       .ai-header button {
         width: 34px;
         height: 34px;
         border-radius: 50%;
-        border: 1px solid #33505f;
-        background: #17262f;
-        color: #fff;
+        border: 1px solid var(--border);
+        background: var(--surface-subtle);
+        color: var(--text-secondary);
         font-size: 19px;
         line-height: 1;
       }
       .ai-header button:hover {
-        background: #223743;
-        border-color: #5f86a1;
+        background: var(--surface-muted);
+        border-color: var(--border-strong);
+        color: var(--text);
       }
       .ai-context {
         padding: 14px 22px;
-        background: #12212c;
-        border-bottom: 1px solid #223644;
-        color: #b6c6d2;
+        background: var(--surface-subtle);
+        border-bottom: 1px solid var(--border-light);
+        color: var(--text-secondary);
         font-size: 12px;
       }
       .ai-context small {
         font-size: 9px;
         font-weight: 700;
         letter-spacing: 0.12em;
-        color: #7f97a8;
+        color: var(--text-tertiary);
       }
       .ai-context b {
         display: block;
-        color: #fff;
+        color: var(--text);
         font-size: 14px;
         margin: 4px 0 2px;
       }
@@ -2663,10 +2884,10 @@
         padding: 20px 22px;
       }
       .ai-welcome {
-        color: #b6c6d2;
+        color: var(--text-secondary);
       }
       .ai-welcome h3 {
-        color: #fff;
+        color: var(--text);
         margin: 0 0 6px;
       }
       .ai-suggestions {
@@ -2677,15 +2898,15 @@
       .ai-suggestions button {
         padding: 11px 13px;
         text-align: left;
-        border: 1px solid #33505f;
+        border: 1px solid var(--border);
         border-radius: 10px;
-        background: #16242f;
-        color: #eef4f8;
+        background: var(--surface-subtle);
+        color: var(--text);
         font-size: 13px;
       }
       .ai-suggestions button:hover {
-        border-color: #5f86a1;
-        background: #1c2f3b;
+        border-color: var(--accent);
+        background: var(--accent-soft);
       }
       .ai-message {
         display: grid;
@@ -2716,17 +2937,19 @@
         font-weight: 700;
       }
       .ai-message.user .ai-mark {
-        background: #33505f;
+        background: var(--surface-muted);
+        color: var(--text-secondary);
       }
       .ai-bubble {
         padding: 11px 13px;
         border-radius: 12px;
-        background: #16242f;
-        color: #eef4f8;
+        background: var(--surface-subtle);
+        color: var(--text);
         font-size: 13px;
       }
       .ai-message.user .ai-bubble {
-        background: #1b3450;
+        background: var(--accent-soft);
+        color: var(--text);
       }
       .ai-bubble p {
         margin: 0 0 8px;
@@ -2742,9 +2965,9 @@
       }
       .ai-btn,
       .ai-actions button {
-        border: 1px solid #33505f;
-        background: #182731;
-        color: #e7eff5;
+        border: 1px solid var(--border);
+        background: var(--surface-subtle);
+        color: var(--text);
         border-radius: 8px;
         min-height: 34px;
         padding: 7px 11px;
@@ -2753,8 +2976,8 @@
       }
       .ai-btn:hover,
       .ai-actions button:hover {
-        background: #223743;
-        border-color: #5f86a1;
+        background: var(--surface-muted);
+        border-color: var(--border-strong);
       }
       .ai-btn-primary {
         background: var(--accent);
@@ -2766,9 +2989,9 @@
         border-color: var(--accent-hover);
       }
       .ai-btn-danger {
-        background: #8f241f;
-        border-color: #bd534c;
-        color: #fff;
+        background: var(--danger-soft);
+        border-color: var(--danger-border);
+        color: var(--danger-ink);
       }
       .ai-btn:active {
         transform: translateY(1px);
@@ -2778,9 +3001,9 @@
       .ai-suggestions button:disabled,
       .ai-header button:disabled,
       .ai-history-item:disabled {
-        background: #24333d;
-        color: #8fa5b5;
-        border-color: #3d5768;
+        background: var(--surface-muted);
+        color: var(--text-tertiary);
+        border-color: var(--border-light);
         cursor: not-allowed;
       }
       .ai-history-item {
@@ -2790,54 +3013,53 @@
         margin: 0 0 8px;
         padding: 11px 12px;
         text-align: left;
-        border: 1px solid #33505f;
+        border: 1px solid var(--border);
         border-radius: 9px;
-        background: #16242f;
-        color: #eef4f8;
+        background: var(--surface-subtle);
+        color: var(--text);
       }
       .ai-history-item small {
-        color: #b6c6d2;
+        color: var(--text-secondary);
       }
       .ai-history-item:hover {
-        background: #1c2f3b;
-        border-color: #5f86a1;
+        background: var(--accent-soft);
+        border-color: var(--accent);
       }
       .ai-history-link {
         display: inline-flex;
         align-items: center;
         border: 1px solid transparent;
         background: transparent;
-        color: #9fc1e4;
+        color: var(--accent);
         padding: 8px 4px;
         border-radius: 7px;
         font-weight: 500;
         text-align: left;
       }
       .ai-history-link:hover {
-        background: #182731;
-        border-color: #33505f;
-        color: #fff;
+        background: var(--accent-soft);
+        border-color: var(--border);
+        color: var(--accent-ink);
       }
       .ai-compose {
         display: grid;
         grid-template-columns: 1fr 40px;
         gap: 9px;
         padding: 14px 18px 18px;
-        border-top: 1px solid #223644;
-        background: #0f1a24;
+        border-top: 1px solid var(--border-light);
+        background: var(--surface);
       }
       .ai-compose textarea {
-        color-scheme: dark;
         resize: none;
         max-height: 110px;
-        border: 1px solid #33505f;
-        background: #15232e;
-        color: #fff;
+        border: 1px solid var(--border);
+        background: var(--surface-subtle);
+        color: var(--text);
         border-radius: 10px;
         padding: 11px 12px;
       }
       .ai-compose textarea::placeholder {
-        color: #90a4b3;
+        color: var(--text-tertiary);
       }
       .ai-compose button {
         border: 1px solid var(--accent);
@@ -2852,11 +3074,11 @@
       }
       .ai-scenario {
         padding: 13px 0;
-        border-top: 1px solid #223644;
+        border-top: 1px solid var(--border-light);
       }
       .ai-scenario h3 {
         font-size: 14px;
-        color: #fff;
+        color: var(--text);
       }
       .ai-scenario h3 small {
         display: inline-block;
@@ -2871,21 +3093,21 @@
       .ai-scenario.recommended {
         margin-inline: -10px;
         padding-inline: 10px;
-        border: 1px solid #4d7fd6;
+        border: 1px solid var(--accent);
         border-radius: 10px;
-        background: #172b3b;
+        background: var(--accent-soft);
       }
       .ai-scenario dl {
         display: grid;
         grid-template-columns: 1fr auto;
         gap: 5px;
         margin: 8px 0;
-        color: #b8c6d2;
+        color: var(--text-secondary);
         font-size: 13px;
       }
       .ai-scenario dd {
         margin: 0;
-        color: #fff;
+        color: var(--text);
       }
       @keyframes aiIn {
         from {
@@ -3194,6 +3416,128 @@
         justify-content: center;
       }
 
+      /* ---------------- « Comprendre » popup (chaîne d'impact) ---------------- */
+      .understand-head {
+        margin: 0 0 18px;
+      }
+      .understand-head .eyebrow {
+        color: var(--danger-ink);
+      }
+      .understand-head h2 {
+        margin: 6px 0 2px;
+        font-size: 21px;
+      }
+      .understand-head p {
+        margin: 0;
+        color: var(--text-secondary);
+        font-size: 13px;
+      }
+      .uc-chain {
+        display: grid;
+        gap: 0;
+      }
+      .uc-card {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px 12px;
+        align-items: start;
+        padding: 14px 16px;
+        border: 1px solid var(--border-light);
+        border-left: 3px solid var(--border-strong);
+        border-radius: var(--radius-md);
+        background: var(--surface);
+        box-shadow: var(--shadow-xs);
+      }
+      .uc-card.source {
+        border-color: var(--danger-border);
+        border-left-color: var(--danger);
+        background: var(--danger-soft);
+      }
+      .uc-card.milestone {
+        border-color: var(--accent);
+        border-left-color: var(--accent);
+        background: var(--accent-soft);
+      }
+      .uc-card .uc-role {
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--text-tertiary);
+      }
+      .uc-card.source .uc-role {
+        color: var(--danger-ink);
+      }
+      .uc-card.milestone .uc-role {
+        color: var(--accent-ink);
+      }
+      .uc-card h4 {
+        margin: 3px 0 0;
+        font-size: 15px;
+        color: var(--text);
+      }
+      .uc-card .uc-meta {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px 10px;
+        margin-top: 7px;
+        font-size: 12px;
+        color: var(--text-secondary);
+      }
+      .uc-card .uc-meta .uc-who {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .uc-card .uc-comment {
+        grid-column: 1 / -1;
+        margin: 8px 0 0;
+        font-size: 12.5px;
+        color: var(--text-secondary);
+        font-style: italic;
+      }
+      .uc-badge {
+        align-self: start;
+        white-space: nowrap;
+        padding: 4px 9px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+      }
+      .uc-badge.danger {
+        background: color-mix(in srgb, var(--danger) 16%, transparent);
+        color: var(--danger-ink);
+      }
+      .uc-badge.accent {
+        background: color-mix(in srgb, var(--accent) 16%, transparent);
+        color: var(--accent-ink);
+      }
+      .uc-badge.soft {
+        background: var(--surface-muted);
+        color: var(--text-tertiary);
+      }
+      .uc-arrow {
+        display: grid;
+        place-items: center;
+        height: 22px;
+        color: var(--text-tertiary);
+        font-size: 15px;
+        line-height: 1;
+      }
+      .uc-foot {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 18px;
+        padding-top: 14px;
+        border-top: 1px solid var(--border-light);
+      }
+      .uc-foot .link {
+        font-weight: 600;
+        font-size: 13px;
+      }
+
       /* ---------------- Documents (folder rail + library) ---------------- */
       .doc-layout {
         display: grid;
@@ -3447,6 +3791,19 @@
         .ai-compose {
           position: sticky;
           bottom: 0;
+        }
+        /* Sidewindow (drawer) plein écran sur mobile */
+        .drawer-panel {
+          width: 100vw;
+        }
+        /* Popup quasi plein écran sur mobile (marges 14px) */
+        .modal-box {
+          width: calc(100vw - 28px);
+          max-width: none;
+          max-height: calc(100vh - 28px);
+        }
+        .modal.full .modal-box {
+          width: calc(100vw - 28px);
         }
         .artisan-body .main {
           max-width: none;
@@ -4971,6 +5328,76 @@
         return `<div class="effect-summary"><h3>${r.valid ? "Effet du scénario" : "⚠ Scénario invalide"}</h3>${!r.valid ? `<p>${r.dependencyConflicts[0]?.message || "Les dates sont incohérentes."}</p>` : ""}<div class="effect"><div><small>Date finale</small>${fmtDay(before)} → <b>${fmtDay(r.finalDate)}</b></div><div><small>Tâches déplacées</small><b>${r.movedTasks}</b></div><div><small>Conflits ressources</small><b>${r.resourceConflicts}</b></div><div><small>Impact</small><b>${r.impactScore < 5 ? "Faible" : "Moyen"}</b></div></div></div>`;
       }
       // PAGE RENDERERS
+      // Bande « Cette semaine » — aperçu léger, niveau-conscient, sous le workflow.
+      function weekPreview() {
+        let level = app.settings.level,
+          expert = level === "expert",
+          pilot = level !== "essential",
+          days = getResourceWeekDays(),
+          todayKey = dayKey(TODAY),
+          cap = (s) => s.charAt(0).toUpperCase() + s.slice(1),
+          cells = days
+            .map((day) => {
+              let dt = date(day + "T12:00"),
+                wd = cap(
+                  new Intl.DateTimeFormat("fr-FR", { weekday: "short" }).format(
+                    dt,
+                  ),
+                ).replace(".", ""),
+                label = `${wd} ${dt.getDate()}`,
+                isToday = day === todayKey,
+                dayTasks = app.tasks.filter(
+                  (t) =>
+                    t.status !== "done" &&
+                    dayKey(t.start) <= day &&
+                    dayKey(t.end) >= day,
+                ),
+                count = dayTasks.length,
+                crit = app.issues.some(
+                  (i) =>
+                    i.status !== "resolved" &&
+                    i.severity === "critical" &&
+                    dayTasks.some((t) => t.id === i.taskId),
+                ),
+                warn =
+                  app.issues.some(
+                    (i) =>
+                      i.status !== "resolved" &&
+                      dayTasks.some((t) => t.id === i.taskId),
+                  ) ||
+                  dayTasks.some(
+                    (t) => t.status === "late" || t.status === "waiting",
+                  ),
+                conflict =
+                  expert &&
+                  app.resources.some(
+                    (r) => getResourceState(r.id, day) === "conflict",
+                  ),
+                signals = "";
+              if (crit) signals += `<span class="wp-dot danger"></span>`;
+              else if (warn) signals += `<span class="wp-dot warning"></span>`;
+              if (pilot && (crit || warn))
+                signals += `<span class="wp-risk">${crit ? "À décider" : "À surveiller"}</span>`;
+              if (conflict) signals += `<span class="wp-tag">Conflit</span>`;
+              if (!signals)
+                signals = `<span class="wp-quiet">${count ? "Sous contrôle" : "—"}</span>`;
+              return `<button class="wp-day ${isToday ? "today" : ""}" onclick="focusPlanningDay('${day}')" aria-label="${label}, ${count} intervention${count > 1 ? "s" : ""}"><span class="wp-label">${label}${isToday ? `<span class="wp-today-tag">Auj.</span>` : ""}</span><span class="wp-count"><b>${count}</b>${count > 1 ? "interventions" : "intervention"}</span><span class="wp-signals">${signals}</span></button>`;
+            })
+            .join("");
+        return `<section class="week-preview"><div class="wp-head"><h2>Cette semaine</h2><span>Cliquez un jour pour l’ouvrir dans le planning</span></div><div class="wp-days">${cells}</div></section>`;
+      }
+      function focusPlanningDay(day) {
+        app.ui.planningProject = "all";
+        app.ui.planningResource = "all";
+        app.settings.period =
+          app.settings.level === "essential" ? "week" : "day";
+        app.ui.periodAnchor = day + "T08:00";
+        app.ui.planningNeedsCenter = true;
+        app.ui.page = "planning";
+        save();
+        renderPage();
+        scrollTo(0, 0);
+      }
       function pageToday() {
         let { decisions, actions, warnings } = getTodayWorkflow(),
           calm = !decisions.length && !warnings.length,
@@ -4996,11 +5423,13 @@
         if (calm)
           return (
             hero +
-            `<div class="today-calm"><section class="zone zone-today"><h2 class="zone-head today"><span class="zdot"></span>Aujourd’hui<em>${actions.length}</em></h2><div class="zone-body">${actions.map(workflowTaskRow).join("") || empty("Rien aujourd’hui", "Vos chantiers avancent normalement.")}</div></section><p class="calm-note">✓ Aucun point à décider ou à surveiller.</p></div>`
+            `<div class="today-calm"><section class="zone zone-today"><h2 class="zone-head today"><span class="zdot"></span>Aujourd’hui<em>${actions.length}</em></h2><div class="zone-body">${actions.map(workflowTaskRow).join("") || empty("Rien aujourd’hui", "Vos chantiers avancent normalement.")}</div></section><p class="calm-note">✓ Aucun point à décider ou à surveiller.</p></div>` +
+            weekPreview()
           );
         return (
           hero +
-          `<div class="today-grid"><section class="zone zone-decide"><h2 class="zone-head decide"><span class="zdot"></span>À décider<em>${decisions.length}</em></h2><div class="zone-body">${decisions.map(decisionCard).join("") || '<div class="zone-empty">✓ <b>Rien à décider</b><span>Tout est sous contrôle.</span></div>'}${decideMore}</div></section><section class="zone zone-today"><h2 class="zone-head today"><span class="zdot"></span>Aujourd’hui<em>${actions.length}</em></h2><div class="zone-body">${actions.map(workflowTaskRow).join("") || empty("Rien aujourd’hui", "Aucune action prévue.")}</div></section><section class="zone zone-watch"><h2 class="zone-head watch"><span class="zdot"></span>À surveiller<em>${warnings.length}</em></h2><div class="zone-body">${warnings.map(watchCard).join("") || '<div class="zone-empty">✓ <b>Rien à surveiller</b><span>Tout est confirmé.</span></div>'}${watchMore}</div></section></div>`
+          `<div class="today-grid"><section class="zone zone-decide"><h2 class="zone-head decide"><span class="zdot"></span>À décider<em>${decisions.length}</em></h2><div class="zone-body">${decisions.map(decisionCard).join("") || '<div class="zone-empty">✓ <b>Rien à décider</b><span>Tout est sous contrôle.</span></div>'}${decideMore}</div></section><section class="zone zone-today"><h2 class="zone-head today"><span class="zdot"></span>Aujourd’hui<em>${actions.length}</em></h2><div class="zone-body">${actions.map(workflowTaskRow).join("") || empty("Rien aujourd’hui", "Aucune action prévue.")}</div></section><section class="zone zone-watch"><h2 class="zone-head watch"><span class="zdot"></span>À surveiller<em>${warnings.length}</em></h2><div class="zone-body">${warnings.map(watchCard).join("") || '<div class="zone-empty">✓ <b>Rien à surveiller</b><span>Tout est confirmé.</span></div>'}${watchMore}</div></section></div>` +
+          weekPreview()
         );
       }
       function workflowTaskRow(t) {
@@ -5014,7 +5443,7 @@
         let pilot = app.settings.level !== "essential",
           expert = app.settings.level === "expert",
           chain = t ? [t, ...getCriticalImpacts(t.id)] : [];
-        return `<article class="decision-card"><span class="eyebrow danger">Action nécessaire</span><h3>${esc(i.title)}</h3><p>${project(i.projectId).name}</p><div class="decide-facts"><b>+${delay} jour${delay > 1 ? "s" : ""} calculé${delay > 1 ? "s" : ""}</b>${pilot && t ? `<span>${impacts} tâche${impacts > 1 ? "s" : ""} affectée${impacts > 1 ? "s" : ""} · ${resource(t.resourceId).name}</span>` : ""}</div><div class="decide-actions"><button class="btn primary" onclick="openDecision('${i.id}')">Résoudre</button><button class="link" onclick="explainIssue('${i.id}')">Comprendre</button><button class="link" onclick="focusPlanningTask('${i.taskId}')">Voir dans le planning</button></div>${pilot && t?.baselineStart ? impactMini(t) : ""}${expert ? `<details class="technical-details"><summary>Détails techniques</summary><p><b>Cause racine :</b> ${esc(i.comment)}</p><p>${chain.map((x) => esc(x.name)).join(" → ")}</p></details>` : ""}</article>`;
+        return `<article class="decision-card" data-sev="${i.severity}"><span class="eyebrow danger">Action nécessaire</span><h3>${esc(i.title)}</h3><p>${project(i.projectId).name}</p><div class="decide-facts"><b>+${delay} jour${delay > 1 ? "s" : ""} calculé${delay > 1 ? "s" : ""}</b>${pilot && t ? `<span>${impacts} tâche${impacts > 1 ? "s" : ""} affectée${impacts > 1 ? "s" : ""} · ${resource(t.resourceId).name}</span>` : ""}</div><div class="decide-actions"><button class="btn primary" onclick="openDecision('${i.id}')">Résoudre</button><button class="link" onclick="explainIssue('${i.id}')">Comprendre</button><button class="link" onclick="focusPlanningTask('${i.taskId}')">Voir dans le planning</button></div>${pilot && t?.baselineStart ? impactMini(t) : ""}${expert ? `<details class="technical-details"><summary>Détails techniques</summary><p><b>Cause racine :</b> ${esc(i.comment)}</p><p>${chain.map((x) => esc(x.name)).join(" → ")}</p></details>` : ""}</article>`;
       }
       function impactMini(t) {
         let points = [
@@ -5145,6 +5574,38 @@
           );
         return `<section class="section">${ts.map(taskRow).join("") || empty("Rien aujourd’hui", "Le prochain jalon est sous contrôle.")}</section>`;
       }
+      // Documents / Photos rendus EN LIGNE dans la fiche chantier (zone contenu),
+      // filtrés sur le chantier — la page globale reste accessible par ailleurs.
+      function projectDocuments(id) {
+        let docs = app.documents.filter((d) => d.projectId === id);
+        return (
+          `<div class="toolbar"><span class="muted">${docs.length} document${docs.length > 1 ? "s" : ""}</span><button class="btn" onclick="openDocumentForm('${id}')">${icon("plus")} Ajouter</button></div>` +
+          `<div class="docs">${
+            docs
+              .map(
+                (d) =>
+                  `<div class="doc" onclick="viewDocument('${d.id}')"><div class="doc-preview">${documentPreview(d)}</div><b>${esc(d.name)}</b><p class="muted">${DOC_FOLDERS.find((f) => f[0] === docKind(d))?.[1] || d.type}</p><span class="doc-type">${d.type} · ${fmtDay(d.date)}</span></div>`,
+              )
+              .join("") ||
+            empty("Aucun document", "Aucun document pour ce chantier.")
+          }</div>`
+        );
+      }
+      function projectPhotos(id) {
+        let photos = app.photos.filter((p) => p.projectId === id);
+        return (
+          `<div class="toolbar"><span class="muted">${photos.length} photo${photos.length > 1 ? "s" : ""}</span><button class="btn" onclick="openPhotoForm('${id}')">${icon("plus")} Ajouter</button></div>` +
+          `<div class="photos">${
+            photos
+              .map(
+                (p, i) =>
+                  `<div class="photo" onclick="viewPhoto('${p.id}')">${fieldPhotoSVG(hashHue(p.id) + i)}<div class="photo-info"><b>${esc(p.comment)}</b><br>${esc(p.author)} · ${fmtDay(p.date)}</div></div>`,
+              )
+              .join("") ||
+            empty("Aucune photo", "Aucune photo pour ce chantier.")
+          }</div>`
+        );
+      }
       function projectTab(name, b) {
         $$(".tab").forEach((x) => x.classList.remove("active"));
         b.classList.add("active");
@@ -5180,10 +5641,8 @@
           box.innerHTML = [...new Set(ts.map((t) => t.resourceId))]
             .map((id) => resourceRow(id))
             .join("");
-        else if (name === "Documents") {
-          app.ui.documentProject = id;
-          go("documents");
-        } else if (name === "Photos") go("photos");
+        else if (name === "Documents") box.innerHTML = projectDocuments(id);
+        else if (name === "Photos") box.innerHTML = projectPhotos(id);
         else box.innerHTML = historyHTML();
       }
       function renderTeam() {
@@ -5615,20 +6074,64 @@
         if (wrap.scrollWidth > wrap.clientWidth && !app.ui.planningUserScrolled)
           $("#scrollHint")?.classList.add("show");
       }
+      // Halo d'accueil : ne se déclenche qu'à l'ARRIVÉE sur « Aujourd'hui »
+      // (pas à chaque re-render, ex. après avoir résolu une décision).
+      let todayHaloPending = true;
+      function setupTodayHalo() {
+        if (!todayHaloPending) return;
+        todayHaloPending = false;
+        if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          // reduced-motion : renfort d'outline temporaire, pas de pulsation
+          requestAnimationFrame(() => {
+            let card = $("#today .zone-decide .decision-card");
+            if (!card) return;
+            card.classList.add("halo");
+            if (card.dataset.sev === "critical")
+              card.classList.add("halo-critical");
+            setTimeout(
+              () => card.classList.remove("halo", "halo-critical"),
+              2000,
+            );
+          });
+          return;
+        }
+        requestAnimationFrame(() => {
+          let card = $("#today .zone-decide .decision-card");
+          if (!card) return;
+          card.classList.add("halo");
+          if (card.dataset.sev === "critical")
+            card.classList.add("halo-critical");
+          let clear = () => card.classList.remove("halo", "halo-critical");
+          card.addEventListener("animationend", clear, { once: true });
+          setTimeout(clear, 2400);
+        });
+      }
       function setupPlanningScroll() {
         let wrap = $(".gantt-wrap");
         if (!wrap) return;
         requestAnimationFrame(() => {
           if (app.ui.focusTask) {
-            let bar = $("#bar-" + app.ui.focusTask),
-              row = $("#row-" + app.ui.focusTask);
+            let id = app.ui.focusTask,
+              bar = $("#bar-" + id),
+              row = $("#row-" + id),
+              critical = app.issues.some(
+                (x) => x.taskId === id && x.severity === "critical",
+              );
+            row?.scrollIntoView({ behavior: "smooth", block: "center" });
             bar?.scrollIntoView({
               behavior: "smooth",
               block: "nearest",
               inline: "center",
             });
-            row?.scrollIntoView({ behavior: "smooth", block: "center" });
             row?.classList.add("focus-flash");
+            if (bar) {
+              bar.classList.add("focus-bar");
+              if (critical) bar.classList.add("focus-danger");
+              setTimeout(
+                () => bar.classList.remove("focus-bar", "focus-danger"),
+                2000,
+              );
+            }
             setTimeout(() => row?.classList.remove("focus-flash"), 1800);
             app.ui.focusTask = null;
             save();
@@ -5822,8 +6325,22 @@
         nav();
         save();
       }
+      function aiHeaderLabel(c) {
+        return (
+          "KANVIX" +
+          ({
+            issue: " · RÉSOUDRE",
+            resource: " · RÉÉQUILIBRER",
+            planning: " · EXAMINER",
+            task: " · EXAMINER",
+            project: " · CHANTIER",
+          }[c.type] || "")
+        );
+      }
       function renderAIPanel() {
         let c = getAIContext(app.ui.ai.context);
+        let hl = $("#aiPanel .ai-header small");
+        if (hl) hl.textContent = aiHeaderLabel(c);
         $("#aiContext").innerHTML = aiContextHTML(c);
         let body = $("#aiBody"),
           messages = app.ui.ai.messages || [];
@@ -6255,9 +6772,72 @@
         $("#drawer").classList.add("open");
       }
       function explainIssue(id) {
-        let i = issue(id);
-        $(`#modalContent`).innerHTML =
-          `<h2>Comprendre</h2><p>La ${i.title.toLowerCase()} affecte ${getCriticalImpacts(i.taskId).length} tâches dépendantes.</p><button class="btn" onclick="closeOverlay('modal');go('impact')">Voir l’impact</button>`;
+        let i = issue(id),
+          t = task(i.taskId),
+          proj = project(i.projectId),
+          who = (r) =>
+            r
+              ? `<span class="uc-who">${resourceAvatar(r, true)}${esc(r.name)}</span>`
+              : "";
+        // Chaîne de dépendance réelle depuis la tâche source
+        let successors = t ? getCriticalImpacts(t.id).slice(0, 3) : [];
+        // Décalages propagés (si calculables) pour chaque successeur
+        let shifts = {};
+        if (t)
+          propagateDependencies(t.id).forEach((c) => (shifts[c.taskId] = c));
+
+        // CAUSE — la tâche source
+        let srcDelay =
+          t && t.baselineEnd && date(t.end) > date(t.baselineEnd)
+            ? workdayDelay(t.baselineEnd, t.end)
+            : null;
+        let srcBadge = srcDelay
+          ? `<span class="uc-badge danger">● Retard : +${srcDelay} j${srcDelay > 1 ? "" : ""}</span>`
+          : `<span class="uc-badge danger">● ${i.severity === "critical" ? "Critique" : "À surveiller"}</span>`;
+        let sourceCard = t
+          ? `<div class="uc-card source"><div><div class="uc-role">Source du retard</div><h4>${esc(t.name)}</h4><div class="uc-meta">${who(resource(t.resourceId))}<span>${fmtRange(t)}</span></div></div>${srcBadge}${i.comment ? `<p class="uc-comment">« ${esc(i.comment)} »</p>` : ""}</div>`
+          : `<div class="uc-card source"><div><div class="uc-role">Source</div><h4>${esc(i.title)}</h4>${i.comment ? `<div class="uc-meta"><span>${esc(i.comment)}</span></div>` : ""}</div>${srcBadge}</div>`;
+
+        // CONSÉQUENCES — les tâches dépendantes
+        let conseqCards = successors
+          .map((s) => {
+            let sh = shifts[s.id],
+              d = sh ? workdayDelay(s.start, sh.start) : 0,
+              badge =
+                sh && d > 0
+                  ? `<span class="uc-badge danger">+${d} j</span>`
+                  : `<span class="uc-badge soft">Chemin critique</span>`,
+              when = sh
+                ? `${fmtDay(s.start)} → ${fmtDay(sh.start)}`
+                : fmtRange(s);
+            return `<div class="uc-arrow">↓</div><div class="uc-card step"><div><div class="uc-role">Conséquence</div><h4>${esc(s.name)}</h4><div class="uc-meta">${who(resource(s.resourceId))}<span>${when}</span></div></div>${badge}</div>`;
+          })
+          .join("");
+        // Si aucune tâche dépendante n'est calculable, énoncé qualitatif
+        if (!successors.length) {
+          conseqCards = `<div class="uc-arrow">↓</div><div class="uc-card step"><div><div class="uc-role">Conséquence</div><h4>Impact sur la suite du chantier</h4><div class="uc-meta"><span>Aucune tâche dépendante directe — surveiller l'enchaînement.</span></div></div><span class="uc-badge soft">À surveiller</span></div>`;
+        }
+
+        // JALON FINAL — le milestone du chantier
+        let ms = app.milestones.find((m) => m.projectId === i.projectId),
+          projDelay = calculateProjectDelay(i.projectId),
+          newEnd = calculateProjectEnd(i.projectId);
+        let msBadge =
+          projDelay > 0
+            ? `<span class="uc-badge accent">+${projDelay} j</span>`
+            : `<span class="uc-badge soft">Dans les temps</span>`;
+        let msCard = ms
+          ? `<div class="uc-arrow">↓</div><div class="uc-card milestone"><div><div class="uc-role">Jalon final</div><h4>${esc(ms.name)}</h4><div class="uc-meta">${
+              projDelay > 0
+                ? `<span>Prévu ${fmtDay(ms.date)} · désormais ${fmtDay(newEnd)}</span>`
+                : `<span>Prévu ${fmtDay(ms.date)}</span>`
+            }</div></div>${msBadge}</div>`
+          : "";
+
+        $("#modalContent").innerHTML =
+          `<div class="understand-head"><span class="eyebrow danger">Comprendre</span><h2>${esc(i.title)}</h2><p>${esc(proj.name)} · ${esc(proj.location)}</p></div>` +
+          `<div class="uc-chain">${sourceCard}${conseqCards}${msCard}</div>` +
+          `<div class="uc-foot"><button class="link" onclick="closeOverlay('modal');focusPlanningTask('${i.taskId}')">Voir dans le planning →</button></div>`;
         $("#modal").classList.add("open");
       }
       function openDecision(id) {
@@ -6635,10 +7215,10 @@
           },
         );
       }
-      function openDocumentForm() {
+      function openDocumentForm(preselect = app.ui.documentProject) {
         modalForm(
           "Ajouter un document",
-          `<input name="name" required placeholder="Nom du document"><select name="projectId">${app.projects.map((p) => `<option value="${p.id}">${p.name}</option>`)}</select><input name="file" type="file">`,
+          `<input name="name" required placeholder="Nom du document"><select name="projectId">${app.projects.map((p) => `<option value="${p.id}" ${p.id === preselect ? "selected" : ""}>${p.name}</option>`).join("")}</select><input name="file" type="file">`,
           (f) => {
             app.documents.push({
               id: "doc-" + Date.now(),
@@ -6907,14 +7487,14 @@
           ["planning", "Planning"],
           ["team", "Équipe"],
         ];
-        $("#nav").innerHTML =
-          primaryNavigation
-            .map(
-              (x) =>
-                `<button class="${app.ui.page === x[0] ? "active" : ""}" onclick="go('${x[0]}')">${icon(x[0])}<span>${x[1]}</span></button>`,
-            )
-            .join("") +
-          `<button class="assistant-entry ${app.ui.ai.open ? "ai-nav-active" : ""}" onclick="toggleAIPanel()">${icon("assistant")}<span>Assistant</span></button>`;
+        // Kanvix est désormais un assistant CONTEXTUEL : plus d'entrée globale
+        // dans la sidebar (accès via Résoudre / Rééquilibrer / Examiner / ⌘J).
+        $("#nav").innerHTML = primaryNavigation
+          .map(
+            (x) =>
+              `<button class="${app.ui.page === x[0] ? "active" : ""}" onclick="go('${x[0]}')">${icon(x[0])}<span>${x[1]}</span></button>`,
+          )
+          .join("");
         let pa = $(".profile-trigger .avatar");
         if (pa) pa.innerHTML = personPortrait("eric");
         renderUserMenu();
@@ -7016,6 +7596,7 @@
         nav();
         requestAnimationFrame(drawDeps);
         if (app.ui.page === "planning") setupPlanningScroll();
+        if (app.ui.page === "today") setupTodayHalo();
       }
       function render() {
         applyAppearance();
@@ -7029,6 +7610,7 @@
       function go(p) {
         if (p === "planning" && app.ui.page !== "planning")
           app.ui.planningNeedsCenter = true;
+        if (p === "today" && app.ui.page !== "today") todayHaloPending = true;
         app.ui.page = p;
         save();
         renderPage();
@@ -7076,6 +7658,9 @@
           if (e.target === x) closeOverlay(x.id);
         }),
       );
+      $("#aiOverlay")?.addEventListener("click", (e) => {
+        if (e.target === $("#aiOverlay")) closeAIPanel();
+      });
       document.addEventListener("click", (e) => {
         if (!e.target.closest("#profileArea")) closeUserMenu();
       });
