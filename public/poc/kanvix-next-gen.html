@@ -538,6 +538,16 @@
         background: var(--accent-hover);
         border-color: var(--accent-hover);
       }
+      .btn.danger {
+        background: var(--danger-soft);
+        border-color: var(--danger-border);
+        color: var(--danger-ink);
+      }
+      .btn.danger:hover {
+        background: var(--danger);
+        border-color: var(--danger);
+        color: #fff;
+      }
       .link {
         border: 0;
         background: none;
@@ -7483,13 +7493,19 @@
         go("today");
         actionToast("Scénario appliqué");
       }
+      // Suppression = confirmation POPUP (pas d'édition, choix simple)
       function deleteTask(id) {
-        if (!confirm("Supprimer cette tâche ?")) return;
+        $("#modalContent").innerHTML =
+          `<h2>Supprimer cette tâche ?</h2><p class="muted">${esc(task(id).name)} — cette action reste annulable.</p><div class="pop-actions"><button class="btn" onclick="closeOverlay('modal')">Annuler</button><button class="btn danger" onclick="confirmDeleteTask('${id}')">Supprimer</button></div>`;
+        $("#modal").classList.add("open");
+      }
+      function confirmDeleteTask(id) {
         snapshot();
         app.tasks = app.tasks.filter((t) => t.id !== id);
         app.tasks.forEach(
           (t) => (t.deps = (t.deps || []).filter((x) => x !== id)),
         );
+        closeOverlay("modal");
         closeOverlay("drawer");
         save();
         renderPage();
@@ -7571,70 +7587,73 @@
           p = current?.projectId || pid || "keravel",
           start = current?.start || localDateKey(TODAY) + "T08:00",
           end = current?.end || localDateKey(TODAY) + "T12:00";
-        $("#modalContent").innerHTML =
-          `<h2>${current ? "Modifier" : "Nouvelle"} tâche</h2><form id="taskForm" style="display:grid;gap:12px"><input name="name" required placeholder="Nom" value="${esc(current?.name || "")}"><label>Chantier<select name="projectId">${app.projects.map((x) => `<option value="${x.id}" ${x.id === p ? "selected" : ""}>${x.name}</option>`).join("")}</select></label><label>Ressource<select name="resourceId">${app.resources.map((r) => `<option value="${r.id}" ${r.id === current?.resourceId ? "selected" : ""}>${r.name}</option>`).join("")}</select></label><label>Début<input name="start" type="datetime-local" required value="${start}"></label><label>Fin<input name="end" type="datetime-local" required value="${end}"></label><label>Dépend de<select name="dep"><option value="">Aucune</option>${app.tasks
-            .filter((t) => t.id !== editId)
-            .map(
-              (t) =>
-                `<option value="${t.id}" ${(current?.deps || []).includes(t.id) ? "selected" : ""}>${t.name}</option>`,
-            )
-            .join(
-              "",
-            )}</select></label><p class="form-error" id="taskError"></p><button class="btn primary" type="submit">${current ? "Enregistrer" : "Ajouter"}</button></form>`;
-        $("#modal").classList.add("open");
-        $("#taskForm").onsubmit = (e) => {
-          e.preventDefault();
-          let f = new FormData(e.currentTarget);
-          if (date(f.get("end")) <= date(f.get("start"))) {
-            $("#taskError").textContent =
-              "La fin doit être postérieure au début.";
-            return;
-          }
-          snapshot();
-          let data = {
-            name: f.get("name"),
-            projectId: f.get("projectId"),
-            resourceId: f.get("resourceId"),
-            start: f.get("start"),
-            end: f.get("end"),
-            deps: f.get("dep") ? [f.get("dep")] : [],
-          };
-          current
-            ? Object.assign(current, data)
-            : app.tasks.push({
-                id: "task-" + Date.now(),
-                status: "todo",
-                ...data,
-              });
-          save();
-          closeOverlay("modal");
-          renderPage();
-        };
+        drawerForm(
+          current ? "Modifier la tâche" : "Nouvelle tâche",
+          `<label>Nom<input name="name" required placeholder="Nom" value="${esc(current?.name || "")}"></label>` +
+            `<label>Chantier<select name="projectId">${app.projects.map((x) => `<option value="${x.id}" ${x.id === p ? "selected" : ""}>${esc(x.name)}</option>`).join("")}</select></label>` +
+            `<label>Ressource<select name="resourceId">${app.resources.map((r) => `<option value="${r.id}" ${r.id === current?.resourceId ? "selected" : ""}>${esc(r.name)}</option>`).join("")}</select></label>` +
+            `<label>Début<input name="start" type="datetime-local" required value="${start}"></label>` +
+            `<label>Fin<input name="end" type="datetime-local" required value="${end}"></label>` +
+            `<label>Dépend de<select name="dep"><option value="">Aucune</option>${app.tasks.filter((t) => t.id !== editId).map((t) => `<option value="${t.id}" ${(current?.deps || []).includes(t.id) ? "selected" : ""}>${esc(t.name)}</option>`).join("")}</select></label>` +
+            `<p class="form-error" id="taskError"></p>`,
+          (f) => {
+            if (date(f.get("end")) <= date(f.get("start"))) {
+              $("#taskError").textContent =
+                "La fin doit être postérieure au début.";
+              return false;
+            }
+            snapshot();
+            let data = {
+              name: f.get("name"),
+              projectId: f.get("projectId"),
+              resourceId: f.get("resourceId"),
+              start: f.get("start"),
+              end: f.get("end"),
+              deps: f.get("dep") ? [f.get("dep")] : [],
+            };
+            current
+              ? Object.assign(current, data)
+              : app.tasks.push({
+                  id: "task-" + Date.now(),
+                  status: "todo",
+                  ...data,
+                });
+            save();
+            actionToast(current ? "Tâche modifiée" : "Tâche ajoutée");
+          },
+          current ? "Enregistrer" : "Ajouter",
+        );
       }
       function openResourceForm() {
-        $("#modalContent").innerHTML =
-          `<h2>Nouvelle ressource</h2><form id="resForm" style="display:grid;gap:12px"><input name="name" required placeholder="Nom"><label>Type<select name="type" onchange="document.getElementById('capField').style.display=this.value==='company'?'grid':'none'"><option value="person">Personne</option><option value="company">Entreprise</option></select></label><label>Rattachement<select name="scope"><option>Interne</option><option>Externe</option></select></label><label id="capField" style="display:none;gap:4px">Capacité simultanée<input name="capacity" type="number" min="1" value="2"><small class="muted">Nombre de missions pouvant être assurées au même moment.</small></label><button class="btn primary" type="submit">Ajouter</button></form>`;
-        $("#modal").classList.add("open");
-        $("#resForm").onsubmit = (e) => {
-          e.preventDefault();
-          let f = new FormData(e.currentTarget),
-            type = f.get("type");
-          app.resources.push({
-            id: "res-" + Date.now(),
-            name: f.get("name"),
-            scope: f.get("scope"),
-            type,
-            capacity: type === "company" ? Math.max(1, +f.get("capacity") || 1) : 1,
-          });
-          save();
-          closeOverlay("modal");
-          renderPage();
-        };
+        drawerForm(
+          "Nouvelle ressource",
+          `<label>Nom<input name="name" required placeholder="Nom"></label>` +
+            `<label>Type<select name="type" onchange="document.getElementById('capField').style.display=this.value==='company'?'grid':'none'"><option value="person">Personne</option><option value="company">Entreprise</option></select></label>` +
+            `<label>Rattachement<select name="scope"><option>Interne</option><option>Externe</option></select></label>` +
+            `<label id="capField" style="display:none">Capacité simultanée<input name="capacity" type="number" min="1" value="2"><small class="muted">Nombre de missions pouvant être assurées au même moment.</small></label>`,
+          (f) => {
+            let type = f.get("type");
+            app.resources.push({
+              id: "res-" + Date.now(),
+              name: f.get("name"),
+              scope: f.get("scope"),
+              type,
+              capacity:
+                type === "company" ? Math.max(1, +f.get("capacity") || 1) : 1,
+            });
+            save();
+            actionToast("Ressource ajoutée");
+          },
+        );
       }
       function openIssueForm(field = false, tid = "") {
-        modalForm(
-          "Nouveau problème",
-          `<input name="title" required value="${field ? "Fenêtre B bloquée" : ""}" placeholder="Nom"><select name="projectId">${app.projects.map((p) => `<option value="${p.id}">${p.name}</option>`)}</select><select name="taskId"><option value="">Aucune tâche</option>${app.tasks.map((t) => `<option value="${t.id}" ${t.id === tid ? "selected" : ""}>${t.name}</option>`)}</select><select name="severity"><option value="warning">Attention</option><option value="critical">Critique</option></select><input name="comment" placeholder="Commentaire">`,
+        drawerForm(
+          "Signaler un problème",
+          `<label>Titre<input name="title" required value="${field ? "Fenêtre B bloquée" : ""}" placeholder="Nom du problème"></label>` +
+            `<label>Chantier<select name="projectId">${app.projects.map((p) => `<option value="${p.id}">${esc(p.name)}</option>`).join("")}</select></label>` +
+            `<label>Tâche<select name="taskId"><option value="">Aucune tâche</option>${app.tasks.map((t) => `<option value="${t.id}" ${t.id === tid ? "selected" : ""}>${esc(t.name)}</option>`).join("")}</select></label>` +
+            `<label>Sévérité<select name="severity"><option value="warning">Attention</option><option value="critical">Critique</option></select></label>` +
+            `<label>Commentaire<textarea name="comment" rows="2" placeholder="Décrivez le problème"></textarea></label>`,
           (f) => {
             app.issues.push({
               id: "issue-" + Date.now(),
@@ -7653,7 +7672,9 @@
                 status: "required",
               });
             save();
+            actionToast("Problème signalé");
           },
+          "Signaler",
         );
       }
       // AGIR (ajouter / modifier / classer) = SIDEWINDOW (drawer)
@@ -7836,7 +7857,7 @@
         let t = task(taskId),
           p = project(t.projectId);
         $("#modalContent").innerHTML =
-          `<h2>Détails</h2><p><b>Chantier</b><br>${p.name} · ${p.location}</p><p><b>Conducteur</b><br>Eric Leduc</p><button class="btn" onclick="go('documents')">Documents</button> <button class="btn" onclick="renderConversation('${t.id}')">Conversation</button>`;
+          `<h2>Détails</h2><p><b>Chantier</b><br>${p.name} · ${p.location}</p><p><b>Conducteur</b><br>Eric Leduc</p><button class="btn" onclick="app.ui.documentProject='${t.projectId}';closeOverlay('modal');go('documents')">Documents du chantier</button> <button class="btn" onclick="renderConversation('${t.id}')">Conversation</button>`;
         $("#modal").classList.add("open");
       }
       // CONSULTER un document = POPUP (lecture / aperçu)
