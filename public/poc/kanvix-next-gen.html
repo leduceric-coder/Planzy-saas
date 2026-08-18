@@ -4740,18 +4740,21 @@
           0,
         );
       }
+      // Attention = une seule vérité, bornée à la période examinée.
       function resourceNeedsAttention(resourceId, days, tasks = app.tasks) {
         let s = getResourcePeriodState(resourceId, days, tasks);
         if (s === "conflict" || s === "high") return true;
-        if (
-          getResourceTasks(resourceId, tasks).some((t) => t.status === "late")
-        )
-          return true;
+        let periodTasks = resourcePeriodTasks(resourceId, days, tasks);
+        // mission en retard sur la période sélectionnée
+        if (periodTasks.some((t) => t.status === "late")) return true;
+        // incident critique dont la tâche concerne la période
+        let periodIds = new Set(periodTasks.map((t) => t.id));
         return app.issues.some(
           (i) =>
             i.status !== "resolved" &&
             i.severity === "critical" &&
-            task(i.taskId)?.resourceId === resourceId,
+            task(i.taskId)?.resourceId === resourceId &&
+            periodIds.has(i.taskId),
         );
       }
       function teamPeriodDays() {
@@ -5209,8 +5212,8 @@
         );
         let mobilized = entries.filter((e) => e.state !== "available").length,
           available = entries.filter((e) => e.state === "available").length,
-          attention = entries.filter(
-            (e) => e.state === "high" || e.state === "conflict",
+          attention = entries.filter((e) =>
+            resourceNeedsAttention(e.r.id, days),
           ).length,
           plur = (n) => (n > 1 ? "s" : ""),
           summary = `<div class="team-summary"><span class="ts-item"><span class="ts-dot accent"></span><b>${mobilized}</b> mobilisée${plur(mobilized)}</span><span class="ts-item"><span class="ts-dot success"></span><b>${available}</b> disponible${plur(available)}</span><span class="ts-item"><span class="ts-dot warning"></span><b>${attention}</b> à surveiller</span></div>`,
@@ -5273,10 +5276,12 @@
             if (isCompany) {
               let peak = resourcePeakConcurrent(id, days);
               block += `<small>${ts.length} mission${ts.length > 1 ? "s" : ""}${peak > 1 ? ` · pic ${peak} simultanées` : ""}</small>`;
+            } else if (app.ui.teamPeriod === "week") {
+              let daysMobilized = new Set(ts.map((t) => dayKey(t.start))).size;
+              block += `<small>${ts.length} intervention${ts.length > 1 ? "s" : ""} cette semaine${daysMobilized > 1 ? ` · ${daysMobilized} jours mobilisés` : ""}</small>`;
             } else {
-              let lastEnd = ts
-                .filter((t) => dayKey(t.start) === dayKey(TODAY))
-                .reduce((mx, t) => Math.max(mx, +date(t.end)), 0);
+              // ts est déjà borné à la période (aujourd'hui OU demain) : fin réelle du jour
+              let lastEnd = ts.reduce((mx, t) => Math.max(mx, +date(t.end)), 0);
               block += `<small>${ts.length > 1 ? `${ts.length} interventions · ` : ""}Disponible après ${fmtTime(new Date(lastEnd || +date(main.end)))}</small>`;
             }
           }
@@ -5705,7 +5710,7 @@
           `<div class="resources"><div class="load-row load-head"><div></div>${days.map((d) => `<div>${fmtDay(d + "T12:00").split(" ")[0]}</div>`).join("")}</div>${app.resources
             .map(
               (r) =>
-                `<div class="load-row" role="button" tabindex="0" aria-label="Charge de ${esc(r.name)}" onclick="openResource('${r.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('${r.id}')}"><div class="rc-name">${resourceAvatar(r, true)}<div><b>${esc(r.name)}</b><small>${r.scope}${r.type === "company" ? ` · cap. ${r.capacity}` : ""}</small></div></div>${days
+                `<div class="load-row" role="button" tabindex="0" aria-label="Charge de ${esc(r.name)}" onclick="openResource('${r.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('${r.id}')}"><div class="rc-name">${resourceAvatar(r, true)}<div><b>${esc(r.name)}</b><small>${r.scope}${r.type === "company" ? ` · ${r.capacity} mission${r.capacity > 1 ? "s" : ""} simultanée${r.capacity > 1 ? "s" : ""} max` : ""}</small></div></div>${days
                   .map((d) => {
                     let st = getResourceState(r.id, d),
                       l = getResourceLoad(r.id, d),
