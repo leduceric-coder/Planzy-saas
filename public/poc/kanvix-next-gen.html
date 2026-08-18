@@ -5047,23 +5047,43 @@
           span: Math.max(1, (end - start) / unit),
         };
       }
-      function planningAgenda(pid = "all") {
+      // Sélection commune des tâches du planning (Gantt desktop + agenda mobile) :
+      // filtres chantier + ressource + période, une seule logique.
+      function planningTasks(pid = "all") {
         let s = scale(),
-          tasks = effectiveTasks().filter(
-            (t) => (pid === "all" || t.projectId === pid) && s.filter(t),
-          );
-        return `<div class="mobile-agenda">${tasks.map((t) => `<div class="agenda-row" onclick="openTask('${t.id}')">${dot(taskTone(t))}<div><b>${t.name}</b><small>${project(t.projectId).name} · ${resource(t.resourceId).name}</small></div><span>${fmtDay(t.start)}<br>${fmtTime(t.start)}</span></div>`).join("")}</div>`;
+          projectFilter = pid !== "all" ? pid : app.ui.planningProject || "all",
+          resourceFilter = app.ui.planningResource || "all";
+        return effectiveTasks().filter(
+          (t) =>
+            (projectFilter === "all" || t.projectId === projectFilter) &&
+            (resourceFilter === "all" || t.resourceId === resourceFilter) &&
+            s.filter(t),
+        );
+      }
+      // Libellé de semaine dynamique (aucun nom de mois hardcodé).
+      function weekRangeLabel(s) {
+        let start = date(s.dates[0]),
+          end = date(s.dates.at(-1)),
+          fmt = (opts) => new Intl.DateTimeFormat("fr-FR", opts),
+          dayMonthYear = (d) =>
+            fmt({ day: "numeric", month: "long", year: "numeric" }).format(d),
+          dayMonth = (d) => fmt({ day: "numeric", month: "long" }).format(d),
+          dayOnly = (d) => fmt({ day: "numeric" }).format(d);
+        if (start.getFullYear() !== end.getFullYear())
+          return `Semaine du ${dayMonthYear(start)} au ${dayMonthYear(end)}`;
+        if (start.getMonth() !== end.getMonth())
+          return `Semaine du ${dayMonth(start)} au ${dayMonth(end)}`;
+        return `Semaine du ${dayOnly(start)} au ${dayMonth(end)}`;
+      }
+      function planningAgenda(pid = "all") {
+        let tasks = planningTasks(pid);
+        if (!tasks.length)
+          return `<div class="mobile-agenda"><div class="plan-empty" style="border:0;background:none;padding:28px 16px"><b>Aucune tâche sur cette période.</b><p>Modifiez les filtres ou revenez à aujourd’hui.</p></div></div>`;
+        return `<div class="mobile-agenda">${tasks.map((t) => `<div class="agenda-row" onclick="openTask('${t.id}')">${dot(taskTone(t))}<div><b>${esc(t.name)}</b><small>${project(t.projectId).name} · ${resource(t.resourceId).name}</small></div><span>${fmtDay(t.start)}<br>${fmtTime(t.start)}</span></div>`).join("")}</div>`;
       }
       function gantt(pid = "all") {
         let s = scale(),
-          projectFilter = pid !== "all" ? pid : app.ui.planningProject || "all",
-          resourceFilter = app.ui.planningResource || "all",
-          tasks = effectiveTasks().filter(
-            (t) =>
-              (projectFilter === "all" || t.projectId === projectFilter) &&
-              (resourceFilter === "all" || t.resourceId === resourceFilter) &&
-              s.filter(t),
-          ),
+          tasks = planningTasks(pid),
           cols = s.labels.length,
           groups = [...new Set(tasks.map((t) => t.projectId))],
           advanced = app.settings.level !== "essential",
@@ -5157,7 +5177,7 @@
           title = `Planning${resActive ? ` · ${esc(resource(resFilter).name)}` : ""}`,
           periodLabel =
             app.settings.period === "week"
-              ? `Semaine du ${date(s.dates[0]).getDate()} au ${date(s.dates.at(-1)).getDate()} août`
+              ? weekRangeLabel(s)
               : app.settings.period === "day"
                 ? fmtDay(s.start)
                 : new Intl.DateTimeFormat("fr-FR", {
