@@ -1428,16 +1428,32 @@
       .ai-nudge {
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 10px;
         flex-wrap: wrap;
-        padding: 14px 16px;
-        margin-top: 16px;
-        border: 1px solid var(--accent-soft);
-        background: var(--accent-soft);
+        padding: 10px 14px;
+        margin: 0 0 14px;
+        border: 1px solid var(--border-light);
+        background: var(--surface);
         border-radius: var(--radius-md);
+        box-shadow: var(--shadow-xs);
+        font-size: 13px;
+        color: var(--text-secondary);
+      }
+      .ai-nudge svg {
+        width: 16px;
+        height: 16px;
+        flex: 0 0 16px;
+        fill: none;
+        stroke: var(--accent);
+        stroke-width: 1.7;
+        stroke-linecap: round;
+        stroke-linejoin: round;
       }
       .ai-nudge b {
-        color: var(--accent-ink);
+        color: var(--text);
+      }
+      .ai-nudge .link {
+        margin-left: auto;
       }
 
       /* ---------------- Planning / Gantt ---------------- */
@@ -1467,16 +1483,6 @@
         margin-left: 8px;
         color: var(--text-secondary);
         font-size: 13px;
-      }
-      .planning-tools {
-        display: flex;
-        gap: 10px;
-        align-items: center;
-        flex-wrap: wrap;
-        margin: 12px 0 16px;
-      }
-      .planning-tools select {
-        min-width: 168px;
       }
       .toolbar {
         display: flex;
@@ -1631,6 +1637,9 @@
         border-radius: 50%;
         background: var(--success);
       }
+      .project-health.warning i {
+        background: var(--warning);
+      }
       .project-health.danger i {
         background: var(--danger);
       }
@@ -1650,14 +1659,34 @@
         font-weight: 600;
         white-space: nowrap;
         overflow: hidden;
+        cursor: pointer;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
+      }
+      /* drag & drop only from Pilotage upward */
+      body[data-level="pilot"] .g-bar,
+      body[data-level="expert"] .g-bar {
         cursor: grab;
-        box-shadow: 0 2px 5px rgba(15, 23, 42, 0.14);
+      }
+      body[data-level="pilot"] .g-bar:active,
+      body[data-level="expert"] .g-bar:active {
+        cursor: grabbing;
+      }
+      .g-bar.dragging {
+        opacity: 0.5;
+        box-shadow: 0 6px 16px rgba(15, 23, 42, 0.25);
       }
       .g-bar em {
         font-size: 8px;
         font-style: normal;
         letter-spacing: 0.06em;
         opacity: 0.85;
+      }
+      /* À faire = planifié (bleu creux) ; En cours = bleu plein */
+      .g-bar.todo {
+        background: var(--accent-soft);
+        color: var(--accent-ink);
+        box-shadow: inset 0 0 0 1px
+          color-mix(in srgb, var(--accent) 35%, transparent);
       }
       .g-bar.danger {
         background: var(--danger);
@@ -1668,16 +1697,21 @@
       .g-bar.success {
         background: var(--success);
       }
+      .g-bar.source {
+        outline: 2px solid var(--danger);
+        outline-offset: 1px;
+      }
       .g-bar.ghost {
         position: absolute;
         top: 11px;
         z-index: 1;
-        opacity: 0.24;
+        opacity: 0.22;
         filter: grayscale(1);
         box-shadow: none;
       }
       .g-bar.simulated {
         outline: 2px solid var(--surface);
+        box-shadow: 0 2px 8px rgba(23, 105, 255, 0.35);
       }
       .g-bar .bar-avatar {
         margin-left: auto;
@@ -1692,32 +1726,23 @@
         z-index: 1;
       }
       .g-slot.over {
-        outline: 2px dashed var(--accent);
-        outline-offset: -3px;
+        background: var(--accent-soft);
+        box-shadow: inset 0 0 0 1.5px
+          color-mix(in srgb, var(--accent) 45%, transparent);
+      }
+      .g-slot.weekend,
+      .g-head > div.weekend {
+        background: var(--surface-subtle);
       }
       .today-cell,
       .today-col {
-        background: var(--accent-soft) !important;
+        background: color-mix(in srgb, var(--accent) 6%, var(--surface)) !important;
       }
       .g-slot.today-cell {
-        border-left: 2px solid color-mix(in srgb, var(--accent) 55%, transparent);
+        border-left: 2px solid var(--accent);
       }
-      .today-marker {
-        position: absolute;
-        top: 50px;
-        bottom: 0;
-        width: 1px;
-        background: var(--accent);
-        z-index: 2;
-        pointer-events: none;
-      }
-      .today-marker span {
-        position: absolute;
-        top: -18px;
-        left: -24px;
-        color: var(--accent);
-        font-size: 9px;
-        font-weight: 700;
+      .g-head > div.today-cell {
+        border-left: 2px solid var(--accent);
       }
       .g-row.selected .g-label {
         box-shadow: inset 3px 0 var(--accent);
@@ -1733,6 +1758,22 @@
         fill: none;
         stroke: var(--text-tertiary);
         stroke-width: 1.3;
+        opacity: 0.5;
+      }
+      .deps path.faint {
+        opacity: 0.12;
+      }
+      .deps path.hot {
+        stroke: var(--danger);
+        stroke-width: 1.7;
+        opacity: 0.9;
+      }
+      .g-row.dim .g-bar,
+      .g-row.dim .g-label {
+        opacity: 0.4;
+      }
+      .g-row.dim {
+        pointer-events: auto;
       }
       .focus-flash {
         animation: focusFlash 1.8s ease;
@@ -1761,29 +1802,154 @@
         color: var(--text-secondary);
         font-size: 12px;
       }
-      .expert-options {
+      /* Toolbar Pilotage — segment + filtres compacts + toggle */
+      .plan-toolbar {
         display: flex;
         align-items: center;
-        gap: 16px;
+        gap: 14px;
+        flex-wrap: wrap;
+        margin: 12px 0 16px;
+      }
+      .plan-filters {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .plan-toolbar select {
+        min-width: auto;
+        padding: 7px 28px 7px 11px;
+        font-size: 13px;
+      }
+      /* Toggle switch */
+      .toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        color: var(--text-secondary);
+        cursor: pointer;
+        user-select: none;
+      }
+      .toggle input {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      .toggle .track {
+        width: 34px;
+        height: 20px;
+        flex: 0 0 34px;
+        border-radius: 20px;
+        background: var(--border-strong);
+        position: relative;
+        transition: background 0.15s;
+      }
+      .toggle .track::after {
+        content: "";
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #fff;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+        transition: transform 0.15s;
+      }
+      .toggle input:checked + .track {
+        background: var(--accent);
+      }
+      .toggle input:checked + .track::after {
+        transform: translateX(14px);
+      }
+      .toggle input:focus-visible + .track {
+        outline: 3px solid color-mix(in srgb, var(--accent) 42%, transparent);
+        outline-offset: 2px;
+      }
+      .toggle input:checked ~ * {
+        color: var(--text);
+      }
+      /* Expert — barre Analyse */
+      .analysis-bar {
+        display: flex;
+        align-items: center;
+        gap: 18px;
         flex-wrap: wrap;
         margin: 10px 0 14px;
-        padding: 11px 14px;
-        border: 1px solid var(--accent-soft);
+        padding: 11px 15px;
+        background: var(--surface-subtle);
+        border: 1px solid var(--border-light);
         border-radius: var(--radius-md);
-        background: var(--accent-soft);
-        color: var(--accent-ink);
-        font-size: 12px;
       }
-      .expert-options b {
+      .analysis-label {
         font-size: 10px;
+        font-weight: 700;
         letter-spacing: 0.09em;
+        text-transform: uppercase;
+        color: var(--text-tertiary);
       }
-      .expert-options label {
-        font-weight: 600;
-      }
-      .expert-options span {
+      .analysis-meta {
         margin-left: auto;
+        font-size: 12px;
         color: var(--text-secondary);
+      }
+      /* Légende Expert */
+      .plan-legend {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin: 10px 2px 0;
+        font-size: 11px;
+        color: var(--text-secondary);
+      }
+      .plan-legend .lg {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .plan-legend .lg::before {
+        content: "";
+        width: 14px;
+        height: 8px;
+        border-radius: 3px;
+        background: var(--accent);
+      }
+      .plan-legend .lg-base::before {
+        height: 4px;
+        background: var(--text-tertiary);
+        opacity: 0.6;
+      }
+      .plan-legend .lg-sim::before {
+        background: var(--accent);
+        box-shadow: 0 0 0 1.5px var(--surface), 0 0 0 3px var(--accent);
+      }
+      .plan-legend .lg-impact::before {
+        background: var(--danger);
+      }
+      /* Empty state */
+      .plan-empty {
+        text-align: center;
+        padding: 48px 20px;
+        border: 1px dashed var(--border);
+        border-radius: var(--radius-lg);
+        background: var(--surface-subtle);
+      }
+      .plan-empty b {
+        font-size: 15px;
+      }
+      .plan-empty p {
+        margin: 6px 0 14px;
+        color: var(--text-secondary);
+        font-size: 13px;
+      }
+      .plan-empty .actions {
+        justify-content: center;
+      }
+      .g-chevron {
+        display: inline-block;
+        width: 12px;
+        color: var(--text-tertiary);
       }
       /* Simulation banner + effect */
       .sim-banner {
@@ -3020,8 +3186,21 @@
           font-size: 11px;
           color: var(--text-secondary);
         }
-        .planning-tools select {
+        .plan-toolbar {
+          gap: 10px;
+        }
+        .plan-toolbar .segment,
+        .plan-toolbar > .toggle,
+        .analysis-bar,
+        .plan-legend,
+        .ai-nudge {
+          display: none;
+        }
+        .plan-filters {
           width: 100%;
+        }
+        .plan-filters select {
+          flex: 1;
           min-width: 0;
         }
         .ai-panel {
@@ -3542,7 +3721,9 @@
         value.ui.collapsedProjects = value.ui.collapsedProjects || [];
         value.ui.planningProject = value.ui.planningProject || "all";
         value.ui.planningResource = value.ui.planningResource || "all";
+        value.ui.impactChain = false;
         value.ui.teamTypeFilter = value.ui.teamTypeFilter || "all";
+        if (value.settings.baseline === undefined) value.settings.baseline = true;
         value.ui.ai = {
           open: false,
           context: null,
@@ -4885,13 +5066,22 @@
           ),
           cols = s.labels.length,
           groups = [...new Set(tasks.map((t) => t.projectId))],
-          advanced = app.settings.level !== "essential";
-        return `${effectSummary()}${planningAgenda(pid)}<div class="gantt-wrap"><div class="gantt" id="gantt" style="--cols:${cols}"><div class="g-head"><div><b>Tâche</b></div>${s.labels.map((x, i) => `<div class="${i === s.todayIndex ? "today-cell" : ""}">${i === s.todayIndex ? "<small>AUJOURD’HUI</small>" : ""}${x}</div>`).join("")}</div>${groups
+          advanced = app.settings.level !== "essential",
+          expert = app.settings.level === "expert",
+          active = impactChainActive(),
+          sensitive = active ? impactChainSet() : null,
+          sources = active ? impactChainSources() : null,
+          isWeekend = (i) =>
+            app.settings.period === "week" &&
+            [0, 6].includes(date(s.dates[i]).getDay());
+        if (!tasks.length)
+          return `${effectSummary()}<div class="plan-empty"><b>Aucune tâche sur cette période.</b><p>Modifiez les filtres ou revenez à aujourd’hui.</p><div class="actions"><button class="btn" onclick="planningToday()">Aujourd’hui</button>${app.ui.planningResource !== "all" || app.ui.planningProject !== "all" ? `<button class="btn" onclick="app.ui.planningProject='all';app.ui.planningResource='all';save();renderPage()">Réinitialiser les filtres</button>` : ""}</div></div>`;
+        return `${effectSummary()}${planningAgenda(pid)}<div class="gantt-wrap"><div class="gantt ${active ? "impact-mode" : ""}" id="gantt" style="--cols:${cols}"><div class="g-head"><div><b>Tâche</b></div>${s.labels.map((x, i) => `<div class="${i === s.todayIndex ? "today-cell" : ""} ${isWeekend(i) ? "weekend" : ""}">${i === s.todayIndex ? "<small>AUJOURD’HUI</small>" : ""}${x}</div>`).join("")}</div>${groups
           .map((g) => {
             let collapsed = app.ui.collapsedProjects.includes(g),
               p = project(g),
               health = getProjectHealth(g);
-            return `<div class="g-project"><button onclick="toggleProject('${g}')">${collapsed ? "›" : "⌄"} ${p.name}</button><span class="project-health ${health}"><i></i>${health === "danger" ? "Risque" : "OK"}</span></div>${
+            return `<div class="g-project"><button onclick="toggleProject('${g}')"><span class="g-chevron">${collapsed ? "›" : "⌄"}</span> ${esc(p.name)}</button><span class="project-health ${health}"><i></i>${health === "danger" ? "Risque" : health === "warning" ? "À surveiller" : "OK"}</span></div>${
               collapsed
                 ? ""
                 : tasks
@@ -4902,39 +5092,106 @@
                         changed = app.simulation?.changes.some(
                           (c) => c.taskId === t.id,
                         ),
-                        old = pos(real, s);
-                      return `<div class="g-row ${app.ui.selectedTask === t.id ? "selected" : ""}" id="row-${t.id}"><div class="g-label"><b>${t.name}</b><small>${resource(t.resourceId).name} · ${fmtDay(t.start)}</small></div>${s.labels.map((x, i) => `<div class="g-slot ${i === s.todayIndex ? "today-cell" : ""}" ondragover="${advanced ? "dragOver(event)" : ""}" ondragleave="this.classList.remove('over')" ondrop="${advanced ? `dropTask(event,${i})` : ""}">${changed && i === old.index ? `<div class="g-bar ghost" style="width:${Math.min(cols - i, old.span) * 100}%"></div>` : ""}${i === position.index ? `${app.settings.level === "expert" && real.baselineStart ? `<div class="baseline" style="width:${Math.min(cols - i, pos({ ...real, start: real.baselineStart, end: real.baselineEnd }, s).span) * 100}%"></div>` : ""}<div class="g-bar ${taskTone(t)} ${changed ? "simulated" : ""}" id="bar-${t.id}" ${advanced ? 'draggable="true"' : ""} ondragstart="dragStart(event,'${t.id}')" onclick="openTask('${t.id}')" title="${esc(t.name)} · ${fmtRange(t)}" style="width:${Math.min(cols - i, position.span) * 100}%">${app.settings.period === "month" ? t.name.split(" ").slice(0, 2).join(" ") : t.name}${changed ? "<em>SIMULÉ</em>" : ""}</div>` : ""}</div>`).join("")}</div>`;
+                        old = pos(real, s),
+                        dim = active && !sensitive.has(t.id),
+                        isSource = active && sources.has(t.id);
+                      return `<div class="g-row ${app.ui.selectedTask === t.id ? "selected" : ""} ${dim ? "dim" : ""}" id="row-${t.id}"><div class="g-label"><b>${esc(t.name)}</b><small>${esc(resource(t.resourceId).name)}</small></div>${s.labels.map((x, i) => `<div class="g-slot ${i === s.todayIndex ? "today-cell" : ""} ${isWeekend(i) ? "weekend" : ""}" ondragover="${advanced ? "dragOver(event)" : ""}" ondragleave="this.classList.remove('over')" ondrop="${advanced ? `dropTask(event,${i})` : ""}">${changed && i === old.index ? `<div class="g-bar ghost" style="width:${Math.min(cols - i, old.span) * 100}%"></div>` : ""}${i === position.index ? `${expert && app.settings.baseline && real.baselineStart ? `<div class="baseline" style="width:${Math.min(cols - i, pos({ ...real, start: real.baselineStart, end: real.baselineEnd }, s).span) * 100}%"></div>` : ""}<div class="g-bar ${taskTone(t)} ${t.status} ${changed ? "simulated" : ""} ${isSource ? "source" : ""}" id="bar-${t.id}" ${advanced ? 'draggable="true"' : ""} ondragstart="dragStart(event,'${t.id}')" ondragend="this.classList.remove('dragging')" onclick="openTask('${t.id}')" title="${esc(t.name)} · ${esc(resource(t.resourceId).name)} · ${fmtRange(t)}" style="width:${Math.min(cols - i, position.span) * 100}%">${app.settings.period === "month" ? esc(t.name.split(" ").slice(0, 2).join(" ")) : esc(t.name)}${changed ? "<em>SIMULÉ</em>" : ""}</div>` : ""}</div>`).join("")}</div>`;
                     })
                     .join("")
             }`;
           })
-          .join("")}<svg class="deps" id="deps"></svg></div></div>`;
+          .join("")}<svg class="deps" id="deps"></svg></div></div>${expert ? `<div class="plan-legend"><span class="lg lg-actual">Actuel</span>${app.settings.baseline ? '<span class="lg lg-base">Baseline</span>' : ""}${app.simulation ? '<span class="lg lg-sim">Simulation</span>' : ""}${active ? '<span class="lg lg-impact">Chaîne d’impact</span>' : ""}</div>` : ""}`;
+      }
+      // Chaîne d'impact (couche analytique — aucune donnée modifiée) :
+      // tâches liées à un incident actif + leurs conséquences en aval (deps).
+      function impactChainSources() {
+        return new Set(
+          app.issues
+            .filter((i) => i.status !== "resolved" && i.taskId)
+            .map((i) => i.taskId),
+        );
+      }
+      function impactChainSet() {
+        let set = new Set();
+        impactChainSources().forEach((tid) => {
+          set.add(tid);
+          getCriticalImpacts(tid).forEach((t) => set.add(t.id));
+        });
+        return set;
+      }
+      function impactChainActive() {
+        return app.settings.level === "expert" && app.ui.impactChain;
+      }
+      function toggleImpactChain(on) {
+        app.ui.impactChain = on;
+        save();
+        renderPage();
+        requestAnimationFrame(drawDeps);
+      }
+      function toggleBaseline(on) {
+        app.settings.baseline = on;
+        save();
+        renderPage();
+      }
+      function planningProblems() {
+        let deps = evaluateDependencyConflicts(effectiveTasks()).length,
+          res = app.resources.filter(
+            (r) => getResourceConflicts(r.id, effectiveTasks()).length,
+          ).length;
+        return { deps, res, total: deps + res };
+      }
+      function planningProblemText() {
+        let { deps, res } = planningProblems(),
+          parts = [];
+        if (res) parts.push(`${res} conflit${res > 1 ? "s" : ""} de ressource${res > 1 ? "s" : ""}`);
+        if (deps) parts.push(`${deps} dépendance${deps > 1 ? "s" : ""} à revoir`);
+        return parts.join(" et ");
       }
       function renderPlanning() {
         let s = scale(),
           advanced = app.settings.level !== "essential",
           expert = app.settings.level === "expert",
-          problems =
-            evaluateDependencyConflicts(effectiveTasks()).length +
-            app.resources.filter(
-              (r) => getResourceConflicts(r.id, effectiveTasks()).length,
-            ).length;
-        return `<div class="planning-header"><div><h1>Planning</h1><p class="muted">${app.settings.level === "essential" ? "Qui fait quoi et quand ?" : "Pilotez les engagements et les dépendances."}</p></div><button class="btn primary" onclick="openTaskForm()">+ Tâche</button></div><div class="planning-nav"><button class="btn" aria-label="Période précédente" onclick="shiftPlanning(-1)">←</button><button class="btn" onclick="planningToday()">Aujourd’hui</button><button class="btn" aria-label="Période suivante" onclick="shiftPlanning(1)">→</button><span class="period-label">${app.settings.period === "week" ? `Semaine du ${date(s.dates[0]).getDate()} au ${date(s.dates.at(-1)).getDate()} août` : app.settings.period === "day" ? fmtDay(s.start) : new Intl.DateTimeFormat("fr-FR", { month: "long", year: "numeric" }).format(date(app.ui.periodAnchor))}</span></div>${
-          advanced
-            ? `<div class="planning-tools"><div class="segment">${[
-                ["day", "Jour"],
-                ["week", "Semaine"],
-                ["month", "Mois"],
-              ]
-                .map(
-                  (x) =>
-                    `<button class="${app.settings.period === x[0] ? "active" : ""}" onclick="setPeriod('${x[0]}')">${x[1]}</button>`,
-                )
-                .join(
-                  "",
-                )}</div><select aria-label="Filtrer par chantier" onchange="setPlanningFilter('project',this.value)"><option value="all">Tous les chantiers</option>${app.projects.map((p) => `<option value="${p.id}" ${app.ui.planningProject === p.id ? "selected" : ""}>${p.name}</option>`)}</select><select aria-label="Filtrer par ressource" onchange="setPlanningFilter('resource',this.value)"><option value="all">Toutes les ressources</option>${app.resources.map((r) => `<option value="${r.id}" ${app.ui.planningResource === r.id ? "selected" : ""}>${r.name}</option>`)}</select><button class="btn" onclick="app.settings.dependencies=!app.settings.dependencies;save();renderPage()">Dépendances ${app.settings.dependencies ? "✓" : ""}</button></div>`
-            : ""
-        }${expert ? `<div class="expert-options"><b>OPTIONS EXPERT</b><label><input type="checkbox" checked disabled> Baseline</label><label><input type="checkbox" ${app.settings.dependencies ? "checked" : ""} onchange="app.settings.dependencies=this.checked;save();renderPage()"> Dépendances</label><label><input type="checkbox"> Chaîne sensible</label><span>${problems} indicateur${problems > 1 ? "s" : ""} de conflit · Historique disponible</span></div>` : ""}${advanced && problems ? `<div class="ai-nudge"><b>✦ Kanvix</b><span>${problems} point${problems > 1 ? "s" : ""} à vérifier dans ce planning.</span><button class="link" onclick="openScenarios()">Résoudre</button></div>` : ""}${gantt()}<div class="scroll-hint" id="scrollHint">← Faire défiler le planning →</div>`;
+          prob = planningProblems(),
+          resFilter = app.ui.planningResource,
+          resActive = resFilter && resFilter !== "all",
+          title = `Planning${resActive ? ` · ${esc(resource(resFilter).name)}` : ""}`,
+          periodLabel =
+            app.settings.period === "week"
+              ? `Semaine du ${date(s.dates[0]).getDate()} au ${date(s.dates.at(-1)).getDate()} août`
+              : app.settings.period === "day"
+                ? fmtDay(s.start)
+                : new Intl.DateTimeFormat("fr-FR", {
+                    month: "long",
+                    year: "numeric",
+                  }).format(date(app.ui.periodAnchor)),
+          toggle = (label, on, handler) =>
+            `<label class="toggle"><input type="checkbox" ${on ? "checked" : ""} onchange="${handler}"><span class="track"></span>${label}</label>`,
+          seg = `<div class="segment">${[
+            ["day", "Jour"],
+            ["week", "Semaine"],
+            ["month", "Mois"],
+          ]
+            .map(
+              (x) =>
+                `<button class="${app.settings.period === x[0] ? "active" : ""}" onclick="setPeriod('${x[0]}')">${x[1]}</button>`,
+            )
+            .join("")}</div>`,
+          filters = `<select aria-label="Filtrer par chantier" onchange="setPlanningFilter('project',this.value)"><option value="all">Tous les chantiers</option>${app.projects.map((p) => `<option value="${p.id}" ${app.ui.planningProject === p.id ? "selected" : ""}>${esc(p.name)}</option>`).join("")}</select><select aria-label="Filtrer par ressource" onchange="setPlanningFilter('resource',this.value)"><option value="all">Toutes les ressources</option>${app.resources.map((r) => `<option value="${r.id}" ${resFilter === r.id ? "selected" : ""}>${esc(r.name)}</option>`).join("")}</select>`;
+        return (
+          `<div class="planning-header"><div><h1>${title}</h1><p class="muted">${app.settings.level === "essential" ? "Qui fait quoi et quand ?" : expert ? "Analysez les dépendances et les conséquences." : "Organisez et arbitrez vos interventions."}</p></div><button class="btn primary" onclick="openTaskForm()">${icon("plus")} Tâche</button></div>` +
+          `<div class="planning-nav"><button class="btn" aria-label="Période précédente" onclick="shiftPlanning(-1)">←</button><button class="btn" onclick="planningToday()">Aujourd’hui</button><button class="btn" aria-label="Période suivante" onclick="shiftPlanning(1)">→</button><span class="period-label">${periodLabel}</span></div>` +
+          (advanced
+            ? `<div class="plan-toolbar">${seg}<div class="plan-filters">${filters}</div>${!expert ? toggle("Dépendances", app.settings.dependencies, "app.settings.dependencies=this.checked;save();renderPage();requestAnimationFrame(drawDeps)") : ""}</div>`
+            : "") +
+          (expert
+            ? `<div class="analysis-bar"><span class="analysis-label">Analyse</span>${toggle("Baseline", app.settings.baseline, "toggleBaseline(this.checked)")}${toggle("Dépendances", app.settings.dependencies, "app.settings.dependencies=this.checked;save();renderPage();requestAnimationFrame(drawDeps)")}${toggle("Chaîne d’impact", app.ui.impactChain, "toggleImpactChain(this.checked)")}<span class="analysis-meta">${prob.total ? planningProblemText() : "Aucun conflit détecté"}</span></div>`
+            : "") +
+          (advanced && prob.total
+            ? `<div class="ai-nudge">${icon("assistant")}<span><b>Kanvix</b> — ${planningProblemText()} à vérifier.</span><button class="link" onclick="openScenarios()">Examiner</button></div>`
+            : "") +
+          gantt() +
+          `<div class="scroll-hint" id="scrollHint">← Faire défiler le planning →</div>`
+        );
       }
       function shiftPlanning(direction) {
         let a = date(app.ui.periodAnchor || TODAY);
@@ -5780,6 +6037,8 @@
       }
       function dragStart(e, id) {
         e.dataTransfer.setData("text/plain", id);
+        e.dataTransfer.effectAllowed = "move";
+        e.currentTarget.classList.add("dragging");
       }
       function dragOver(e) {
         e.preventDefault();
@@ -5811,9 +6070,11 @@
         let off = svg.getBoundingClientRect();
         svg.setAttribute("width", off.width);
         svg.setAttribute("height", off.height);
+        let active = impactChainActive(),
+          sensitive = active ? impactChainSet() : null;
         svg.innerHTML = app.tasks
           .flatMap((t) =>
-            t.deps.map((id) => {
+            (t.deps || []).map((id) => {
               let a = $("#bar-" + id),
                 b = $("#bar-" + t.id);
               if (!a || !b) return "";
@@ -5821,10 +6082,15 @@
                 y = b.getBoundingClientRect(),
                 x1 = x.right - off.left,
                 y1 = x.top + x.height / 2 - off.top,
-                x2 = y.left - off.left,
+                x2 = y.left - off.left - 3,
                 y2 = y.top + y.height / 2 - off.top,
-                m = x1 + Math.max(12, (x2 - x1) / 2);
-              return `<path d="M${x1} ${y1} H${m} V${y2} H${x2}"/>`;
+                m = x1 + Math.max(12, (x2 - x1) / 2),
+                cls = active
+                  ? sensitive.has(id) && sensitive.has(t.id)
+                    ? "hot"
+                    : "faint"
+                  : "";
+              return `<path class="${cls}" d="M${x1} ${y1} H${m} V${y2} H${x2}"/><path class="dep-arrow ${cls}" d="M${x2 - 5} ${y2 - 4} L${x2 + 1} ${y2} L${x2 - 5} ${y2 + 4}"/>`;
             }),
           )
           .join("");
