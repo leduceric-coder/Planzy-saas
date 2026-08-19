@@ -548,6 +548,20 @@
         border-color: var(--danger);
         color: #fff;
       }
+      .btn.small {
+        padding: 6px 10px;
+        font-size: 12px;
+      }
+      .btn.secondary {
+        border-color: var(--border-light);
+        background: var(--surface);
+        color: var(--text-secondary);
+      }
+      .btn.secondary:hover {
+        background: var(--surface-subtle);
+        border-color: var(--border);
+        color: var(--text);
+      }
       .link {
         border: 0;
         background: none;
@@ -1402,19 +1416,131 @@
         border-radius: 8px;
       }
 
-      /* ---------------- Project cockpit ---------------- */
+      /* ---------------- Project cockpit V4.5 ---------------- */
       .cockpit {
-        display: grid;
-        grid-template-columns: 1fr 340px;
-        gap: 34px;
-        padding: 16px 0 26px;
+        padding: 20px 0;
         border-bottom: 1px solid var(--border-light);
+      }
+      .cockpit-header {
+        margin-bottom: 24px;
+      }
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+        color: var(--success-ink);
+        margin-bottom: 8px;
+      }
+      .status-badge i {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--success);
+      }
+      .status-badge.warning {
+        color: var(--warning-ink);
+      }
+      .status-badge.warning i {
+        background: var(--warning);
+      }
+      .status-badge.danger {
+        color: var(--danger-ink);
+      }
+      .status-badge.danger i {
+        background: var(--danger);
+      }
+      .cockpit-header h1 {
+        font-size: 27px;
+        margin: 0 0 4px;
+        letter-spacing: -0.02em;
+      }
+      .cockpit-header .location {
+        color: var(--text-secondary);
+        font-size: 13px;
+        margin: 2px 0 12px;
+      }
+      .cockpit-header .headline {
+        color: var(--text-secondary);
+        font-size: 14px;
+        margin: 0;
+      }
+      .cockpit-body {
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        gap: 32px;
         align-items: start;
       }
-      .cockpit h1 {
-        font-size: 27px;
-        margin: 8px 0 2px;
-        letter-spacing: -0.02em;
+      .cockpit-content {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      .cockpit-zone {
+      }
+      .cockpit-zone h2 {
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        color: var(--text-secondary);
+        margin: 0 0 12px;
+      }
+      .issue-card,
+      .milestone-card {
+        padding: 14px;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--border-light);
+        background: var(--surface);
+      }
+      .issue-card.issue-critical {
+        border-color: var(--danger-border);
+        background: linear-gradient(135deg, var(--surface) 0%, var(--danger-soft) 100%);
+      }
+      .issue-card.issue-warning {
+        border-color: var(--warning-border);
+        background: linear-gradient(135deg, var(--surface) 0%, var(--warning-soft) 100%);
+      }
+      .issue-card h3,
+      .milestone-card b {
+        font-size: 14px;
+        font-weight: 600;
+        margin: 0 0 4px;
+      }
+      .issue-card p,
+      .milestone-card p {
+        font-size: 13px;
+        color: var(--text-secondary);
+        margin: 0 0 10px;
+      }
+      .issue-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .issue-actions .btn {
+        font-size: 12px;
+      }
+      .success-state {
+        padding: 12px;
+        border-radius: var(--radius-md);
+        background: var(--success-soft);
+        color: var(--success-ink);
+        font-size: 13px;
+        margin: 0;
+      }
+      .cockpit-visual {
+        height: 240px;
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        background: var(--surface-muted);
+      }
+      .cockpit-visual svg {
+        width: 100%;
+        height: 100%;
       }
       .visual {
         height: 210px;
@@ -1425,19 +1551,6 @@
       .visual svg {
         width: 100%;
         height: 100%;
-      }
-      .milestone {
-        margin: 20px 0;
-        padding-left: 15px;
-        border-left: 2px solid var(--accent);
-      }
-      .milestone small {
-        display: block;
-        color: var(--text-secondary);
-        font-size: 12px;
-      }
-      .milestone b {
-        font-size: 15px;
       }
       .tabs {
         display: flex;
@@ -3999,6 +4112,13 @@
           grid-area: mi;
           margin-top: 4px;
         }
+        .cockpit-body {
+          grid-template-columns: 1fr;
+          gap: 20px;
+        }
+        .cockpit-visual {
+          height: 180px;
+        }
         .load-row {
           grid-template-columns: 150px repeat(5, minmax(88px, 1fr));
         }
@@ -5912,6 +6032,22 @@
         save();
         go("project");
       }
+      // Helper: résumer l'état d'un chantier pour cockpit
+      function getProjectSummary(projectId) {
+        let p = project(projectId),
+          xs = getProjectIssues(projectId),
+          h = getProjectHealth(projectId),
+          m = app.milestones.find(x => x.projectId === projectId),
+          critical = xs.find(i => i.severity === "critical"),
+          primary = critical || xs[0];
+        return {
+          health: h,
+          issues: xs,
+          primaryIssue: primary,
+          milestone: m,
+          headline: primary?.comment || xs[0]?.comment || "Le chantier avance normalement.",
+        };
+      }
       function projectTabs() {
         let a = ["Aujourd’hui", "À venir", "Documents", "Photos"];
         if (app.settings.level !== "essential") a.push("Planning", "Équipe");
@@ -5920,20 +6056,60 @@
       }
       function renderProject() {
         let p = project(app.ui.projectId),
-          xs = getProjectIssues(p.id),
-          h = getProjectHealth(p.id);
-        let tabs = projectTabs(),
+          sum = getProjectSummary(p.id),
+          tabs = projectTabs(),
           initial =
             app.ui.projectInitialTab && tabs.includes(app.ui.projectInitialTab)
               ? app.ui.projectInitialTab
-              : tabs[0];
+              : tabs[0],
+          pilot = app.settings.level !== "essential",
+          expert = app.settings.level === "expert";
         app.ui.projectInitialTab = null;
-        return `<button class="link" onclick="go('sites')">← Chantiers</button><div class="cockpit"><div><div class="site-status ${h}"><i></i>${h === "danger" ? "Risque" : h === "warning" ? "À surveiller" : "OK"}</div><h1>${p.name}</h1><p class="location">${p.location}</p><p class="muted">${xs[0]?.comment || "Le chantier avance normalement."}</p>${milestone(p.id)}<button class="link" onclick="app.ui.planningProject='${p.id}';go('planning')">Voir le planning</button>${xs.length ? `<div class="section"><h2 class="section-title">À traiter</h2>${xs.map((i) => `<div class="row" onclick="openDecision('${i.id}')">${dot(i.severity === "critical" ? "danger" : "warning")}<div><h3>${i.title}</h3><p>${i.comment}</p></div></div>`).join("")}</div>` : ""}</div><div class="visual">${art(app.projects.indexOf(p))}</div></div><div class="tabs">${tabs
-          .map(
-            (x) =>
-              `<button class="tab ${x === initial ? "active" : ""}" onclick="projectTab('${x}',this)">${x}</button>`,
-          )
-          .join("")}</div><div id="projectContent">${projectTabContent(initial, p.id)}</div>`;
+
+        // Construire le cockpit
+        let statusLabel = sum.health === "danger" ? "Risque" : sum.health === "warning" ? "À surveiller" : "Dans les temps",
+          cockpitBody = `<div class="cockpit-body">
+            <div class="cockpit-content">
+              ${sum.primaryIssue ? `<div class="cockpit-zone">
+                <h2 class="zone-title">À traiter</h2>
+                <div class="issue-card issue-${sum.primaryIssue.severity}">
+                  <h3>${esc(sum.primaryIssue.title)}</h3>
+                  <p>${esc(sum.primaryIssue.comment)}</p>
+                  <div class="issue-actions">
+                    <button class="btn small" onclick="openDecision('${sum.primaryIssue.id}')">Résoudre</button>
+                    <button class="btn small secondary" onclick="explainIssue('${sum.primaryIssue.id}')">Comprendre</button>
+                  </div>
+                  ${sum.issues.length > 1 ? `<p class="muted small">+${sum.issues.length - 1} autre${sum.issues.length > 2 ? "s" : ""} points</p>` : ""}
+                </div>
+              </div>` : `${sum.health === "success" ? `<p class="success-state">✓ Aucun point bloquant</p>` : ""}`}
+              ${sum.milestone ? `<div class="cockpit-zone">
+                <h2 class="zone-title">Prochaine étape</h2>
+                <div class="milestone-card">
+                  <b>${esc(sum.milestone.name)}</b>
+                  <p>${fmtDay(sum.milestone.date)}</p>
+                  <button class="btn small secondary" onclick="app.ui.planningProject='${p.id}';go('planning')">Voir dans le planning</button>
+                </div>
+              </div>` : ""}
+            </div>
+            <div class="cockpit-visual">${art(app.projects.indexOf(p))}</div>
+          </div>`;
+
+        return `<button class="link" onclick="go('sites')">← Chantiers</button>
+          <div class="cockpit">
+            <div class="cockpit-header">
+              <div class="status-badge ${sum.health}">
+                <i></i>${statusLabel}
+              </div>
+              <h1>${esc(p.name)}</h1>
+              <p class="location">${esc(p.location)}</p>
+              <p class="headline">${sum.headline}</p>
+            </div>
+            ${cockpitBody}
+          </div>
+          <div class="tabs">
+            ${tabs.map((x) => `<button class="tab ${x === initial ? "active" : ""}" onclick="projectTab('${x}',this)">${x}</button>`).join("")}
+          </div>
+          <div id="projectContent">${projectTabContent(initial, p.id)}</div>`;
       }
       function projectToday(id) {
         let d = dayKey(TODAY),
@@ -7647,10 +7823,12 @@
         );
       }
       function openIssueForm(field = false, tid = "") {
+        let linkedTask = tid ? task(tid) : null,
+          defaultProjectId = linkedTask?.projectId || app.ui.projectId || app.projects[0]?.id;
         drawerForm(
           "Signaler un problème",
           `<label>Titre<input name="title" required value="${field ? "Fenêtre B bloquée" : ""}" placeholder="Nom du problème"></label>` +
-            `<label>Chantier<select name="projectId">${app.projects.map((p) => `<option value="${p.id}">${esc(p.name)}</option>`).join("")}</select></label>` +
+            `<label>Chantier<select name="projectId">${app.projects.map((p) => `<option value="${p.id}" ${p.id === defaultProjectId ? "selected" : ""}>${esc(p.name)}</option>`).join("")}</select></label>` +
             `<label>Tâche<select name="taskId"><option value="">Aucune tâche</option>${app.tasks.map((t) => `<option value="${t.id}" ${t.id === tid ? "selected" : ""}>${esc(t.name)}</option>`).join("")}</select></label>` +
             `<label>Sévérité<select name="severity"><option value="warning">Attention</option><option value="critical">Critique</option></select></label>` +
             `<label>Commentaire<textarea name="comment" rows="2" placeholder="Décrivez le problème"></textarea></label>`,
@@ -7705,7 +7883,7 @@
           )
           .join("");
       }
-      function openDocumentForm(preselect = app.ui.documentProject) {
+      function openDocumentForm(preselect = app.ui.projectId || app.ui.documentProject) {
         drawerForm(
           "Ajouter un document",
           `<label>Titre<input name="name" required placeholder="Nom du document"></label>` +
@@ -7896,7 +8074,7 @@
         else if (app.ui.page === "project") {
           modalForm(
             "Ajouter à ce chantier",
-            `<button type="button" class="btn" onclick="closeOverlay('modal');openTaskForm()">Nouvelle tâche</button><button type="button" class="btn" onclick="closeOverlay('modal');openDocumentForm()">Document</button><button type="button" class="btn" onclick="closeOverlay('modal');openPhotoForm(app.ui.projectId)">Photo</button>`,
+            `<button type="button" class="btn" onclick="closeOverlay('modal');openTaskForm(app.ui.projectId)">Nouvelle tâche</button><button type="button" class="btn" onclick="closeOverlay('modal');openDocumentForm(app.ui.projectId)">Document</button><button type="button" class="btn" onclick="closeOverlay('modal');openPhotoForm(app.ui.projectId)">Photo</button>`,
             () => {},
           );
         } else
