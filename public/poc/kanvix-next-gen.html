@@ -1516,6 +1516,17 @@
         color: var(--text-secondary);
         margin: 0 0 10px;
       }
+      .impact-summary {
+        display: block;
+        padding: 8px 0;
+        font-size: 12px;
+        color: var(--text-secondary);
+        border-top: 1px solid var(--border-light);
+        margin: 8px 0;
+      }
+      .impact-summary strong {
+        color: var(--text);
+      }
       .issue-actions {
         display: flex;
         gap: 8px;
@@ -5987,65 +5998,58 @@
         );
       }
       function siteCard(p) {
-        let health = getProjectHealth(p.id),
-          issue0 = getProjectIssues(p.id)[0],
-          next = getUpcomingTasks(p.id)[0],
-          delay = calculateProjectDelay(p.id),
-          team = [...new Set(getProjectTasks(p.id).map((t) => t.resourceId))]
-            .map(resource)
-            .filter(Boolean),
-          label =
-            health === "danger"
-              ? "Risque"
-              : health === "warning"
-                ? "À surveiller"
-                : "Dans les temps",
-          sTitle,
-          sSub;
-        if (health === "danger") {
-          sTitle = issue0 ? issue0.title : next ? next.name : "À planifier";
-          sSub = delay
-            ? `Impact calculé : +${delay} j`
-            : issue0
-              ? issue0.comment
-              : "";
-        } else if (health === "warning") {
-          sTitle = issue0 ? issue0.title : next ? next.name : "À surveiller";
-          sSub = issue0
-            ? issue0.relaunched
-              ? "Relance envoyée"
-              : "À relancer"
-            : next
-              ? `Prochaine étape ${fmtDay(next.start)}`
-              : "Sous contrôle";
-        } else {
-          sTitle = next ? next.name : "Aucune intervention prévue";
-          sSub = next ? `${fmtDay(next.start)} · Aucun problème` : "Sous contrôle";
-        }
-        return `<article class="site-card ${health}" role="button" tabindex="0" aria-label="${esc(p.name)} — ${label}${delay ? `, +${delay} jours` : ""}" onclick="selectProject('${p.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectProject('${p.id}')}"><span class="site-art">${projectVisual(p.id)}<span class="site-badge ${health}"><i></i>${label}</span></span><span class="site-body"><h2>${esc(p.name)}</h2><span class="site-loc">${esc(p.location)}</span><span class="site-subject ${health}"><b>${esc(sTitle)}</b>${sSub ? `<span>${esc(sSub)}</span>` : ""}</span><span class="site-foot"><span class="site-team"><span class="avatar-stack">${team
+        let sum = getProjectSummary(p.id);
+        return `<article class="site-card ${sum.health}" role="button" tabindex="0" aria-label="${esc(p.name)} — ${sum.label}${sum.delay ? `, +${sum.delay} jours` : ""}" onclick="selectProject('${p.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectProject('${p.id}')}"><span class="site-art">${projectVisual(p.id)}<span class="site-badge ${sum.health}"><i></i>${sum.label}</span></span><span class="site-body"><h2>${esc(p.name)}</h2><span class="site-loc">${esc(p.location)}</span><span class="site-subject ${sum.health}"><b>${esc(sum.sTitle)}</b>${sum.sDetail ? `<span>${esc(sum.sDetail)}</span>` : ""}</span><span class="site-foot"><span class="site-team"><span class="avatar-stack">${sum.team
           .slice(0, 3)
           .map((r) => resourceAvatar(r, true))
-          .join("")}${team.length > 3 ? `<em>+${team.length - 3}</em>` : ""}</span><span>${team.length} intervenant${team.length > 1 ? "s" : ""}</span></span><span class="site-open">Ouvrir →</span></span></span></article>`;
+          .join("")}${sum.team.length > 3 ? `<em>+${sum.team.length - 3}</em>` : ""}</span><span>${sum.team.length} intervenant${sum.team.length > 1 ? "s" : ""}</span></span><span class="site-open">Ouvrir →</span></span></span></article>`;
       }
       function selectProject(id) {
         app.ui.projectId = id;
         save();
         go("project");
       }
-      // Helper: résumer l'état d'un chantier pour cockpit
+      // Synthèse projet = source unique pour siteCard() et renderProject()
       function getProjectSummary(projectId) {
         let p = project(projectId),
-          xs = getProjectIssues(projectId),
           h = getProjectHealth(projectId),
+          xs = getProjectIssues(projectId),
+          nextTask = getUpcomingTasks(projectId)[0],
           m = app.milestones.find(x => x.projectId === projectId),
+          delay = calculateProjectDelay(projectId),
           critical = xs.find(i => i.severity === "critical"),
-          primary = critical || xs[0];
+          primaryIssue = critical || xs[0],
+          impacts = primaryIssue ? getCriticalImpacts(primaryIssue.taskId).length : 0,
+          tasks = getProjectTasks(projectId),
+          team = [...new Set(tasks.map((t) => t.resourceId))].map(resource).filter(Boolean),
+          label = h === "danger" ? "Risque" : h === "warning" ? "À surveiller" : "Dans les temps",
+          // Titre de synthèse (danger, warning, success)
+          sTitle = h === "danger"
+            ? (primaryIssue ? primaryIssue.title : nextTask ? nextTask.name : "À planifier")
+            : h === "warning"
+              ? (primaryIssue ? primaryIssue.title : nextTask ? nextTask.name : "À surveiller")
+              : (nextTask ? nextTask.name : "Aucune intervention prévue"),
+          // Sous-titre/détail
+          sDetail = h === "danger"
+            ? (delay ? `Impact calculé : +${delay} j` : primaryIssue?.comment || "")
+            : h === "warning"
+              ? (primaryIssue?.comment || (nextTask ? `Prochaine étape ${fmtDay(nextTask.start)}` : "Sous contrôle"))
+              : (nextTask ? `${fmtDay(nextTask.start)} · Aucun problème` : "Sous contrôle"),
+          headline = primaryIssue?.comment || xs[0]?.comment || "Le chantier avance normalement.";
+
         return {
           health: h,
+          label,
           issues: xs,
-          primaryIssue: primary,
+          primaryIssue,
+          delay,
+          nextTask,
           milestone: m,
-          headline: primary?.comment || xs[0]?.comment || "Le chantier avance normalement.",
+          impacts,
+          team,
+          sTitle,
+          sDetail,
+          headline,
         };
       }
       function projectTabs() {
@@ -6066,8 +6070,11 @@
           expert = app.settings.level === "expert";
         app.ui.projectInitialTab = null;
 
-        // Construire le cockpit
+        // Construire le cockpit avec progressive disclosure
         let statusLabel = sum.health === "danger" ? "Risque" : sum.health === "warning" ? "À surveiller" : "Dans les temps",
+          primaryTaskId = sum.primaryIssue?.taskId,
+          primaryTask = primaryTaskId ? task(primaryTaskId) : null,
+          primaryResource = primaryTask ? resource(primaryTask.resourceId) : null,
           cockpitBody = `<div class="cockpit-body">
             <div class="cockpit-content">
               ${sum.primaryIssue ? `<div class="cockpit-zone">
@@ -6075,11 +6082,13 @@
                 <div class="issue-card issue-${sum.primaryIssue.severity}">
                   <h3>${esc(sum.primaryIssue.title)}</h3>
                   <p>${esc(sum.primaryIssue.comment)}</p>
+                  ${sum.delay ? `<div class="impact-summary"><strong>+${sum.delay} jour${sum.delay > 1 ? "s" : ""}</strong>${pilot ? ` · ${sum.impacts} tâche${sum.impacts > 1 ? "s" : ""} affectée${sum.impacts > 1 ? "s" : ""}` : ""}${pilot && primaryResource ? ` · ${esc(primaryResource.name)}` : ""}</div>` : ""}
                   <div class="issue-actions">
                     <button class="btn small" onclick="openDecision('${sum.primaryIssue.id}')">Résoudre</button>
                     <button class="btn small secondary" onclick="explainIssue('${sum.primaryIssue.id}')">Comprendre</button>
+                    ${primaryTaskId ? `<button class="btn small secondary" onclick="focusPlanningTask('${primaryTaskId}')">Voir dans le planning</button>` : ""}
                   </div>
-                  ${sum.issues.length > 1 ? `<p class="muted small">+${sum.issues.length - 1} autre${sum.issues.length > 2 ? "s" : ""} points</p>` : ""}
+                  ${sum.issues.length > 1 ? `<p class="muted small">+${sum.issues.length - 1} autre${sum.issues.length > 2 ? "s" : ""} point${sum.issues.length > 2 ? "s" : ""}</p>` : ""}
                 </div>
               </div>` : `${sum.health === "success" ? `<p class="success-state">✓ Aucun point bloquant</p>` : ""}`}
               ${sum.milestone ? `<div class="cockpit-zone">
