@@ -3247,14 +3247,16 @@
       .close:hover {
         background: var(--surface-muted);
       }
-      /* Menu contextuel « ••• » — contexte de positionnement = la barre d'actions,
-         jamais le petit bouton : le menu reste toujours contenu dans le sidewindow. */
-      .task-actions {
-        position: relative;
-      }
+      /* Menu contextuel « ••• » — petit popover flottant ancré sous le bouton,
+         jamais un second tiroir : reste toujours contenu dans le sidewindow. */
       .more-menu {
-        position: static;
+        position: relative;
         display: inline-flex;
+      }
+      /* La barre d'actions Tâche pousse le ••• au bord droit : le popover
+         (right:0) reste ainsi toujours contenu dans le sidewindow. */
+      .task-actions .more-menu {
+        margin-left: auto;
       }
       .more-trigger[aria-expanded="true"] {
         background: var(--surface-muted);
@@ -3265,8 +3267,7 @@
         top: calc(100% + 6px);
         right: 0;
         left: auto;
-        width: 224px;
-        max-width: calc(100% - 4px);
+        width: min(220px, calc(100vw - 32px));
         padding: 6px;
         background: var(--surface);
         border: 1px solid var(--border);
@@ -3312,14 +3313,6 @@
       }
       .more-pop button.danger:hover {
         background: var(--danger-soft);
-      }
-      @media (max-width: 720px) {
-        .more-pop {
-          left: 0;
-          right: 0;
-          width: auto;
-          max-width: none;
-        }
       }
       /* Messages (drawer conversation) */
       .message {
@@ -4574,7 +4567,9 @@
           late: "En retard",
         };
       // DEMO DATA
+      const SCHEMA_VERSION = 2;
       const INITIAL_STATE = {
+        schemaVersion: SCHEMA_VERSION,
         settings: {
           level: "essential",
           appearance: "light",
@@ -4582,6 +4577,7 @@
           period: "week",
           dependencies: true,
           artisanResourceId: "thomas",
+          driverResourceId: "eric",
         },
         projects: [
           {
@@ -5064,10 +5060,27 @@
         };
         value.settings.artisanResourceId =
           value.settings.artisanResourceId || "thomas";
+        value.settings.driverResourceId =
+          value.settings.driverResourceId || "eric";
         if (value.settings.level === "essential") {
           value.settings.period = "week";
           value.settings.dependencies = false;
         }
+        // --- V4.6 : compléter les ressources sans écraser les modifs utilisateur
+        if (Array.isArray(value.resources)) {
+          value.resources.forEach((r) => {
+            let src = INITIAL_STATE.resources.find((x) => x.id === r.id);
+            if (src) {
+              for (const [key, val] of Object.entries(src)) {
+                if (r[key] === undefined) r[key] = structuredClone(val);
+              }
+            }
+            if (r.status === undefined) r.status = "active";
+            if (r.type === "person" && r.accountStatus === undefined)
+              r.accountStatus = "none";
+          });
+        }
+        value.schemaVersion = SCHEMA_VERSION;
         return value;
       }
       function load() {
@@ -6795,7 +6808,9 @@
       function planningProblems() {
         let deps = evaluateDependencyConflicts(effectiveTasks()).length,
           res = app.resources.filter(
-            (r) => getResourceConflicts(r.id, effectiveTasks()).length,
+            (r) =>
+              resourceActive(r) &&
+              getResourceConflicts(r.id, effectiveTasks()).length,
           ).length;
         return { deps, res, total: deps + res };
       }
@@ -7004,7 +7019,7 @@
         conflict: "Conflit",
       };
       function resourceConflictNudge(days) {
-        for (let r of app.resources)
+        for (let r of app.resources.filter(resourceActive))
           for (let d of days)
             if (getResourceState(r.id, d) === "conflict") {
               let peak = getMaxConcurrentTasks(r.id, {
@@ -7017,7 +7032,8 @@
       }
       function renderResources() {
         let days = getResourceWeekDays(app.ui.periodAnchor || TODAY),
-          anyConflict = app.resources.some((r) =>
+          loadResources = app.resources.filter(resourceActive),
+          anyConflict = loadResources.some((r) =>
             days.some((d) => getResourceState(r.id, d) === "conflict"),
           );
         return (
@@ -7027,7 +7043,7 @@
             "Disponibilités et conflits de la semaine",
             "",
           ) +
-          `<div class="resources"><div class="load-row load-head"><div></div>${days.map((d) => `<div>${fmtDay(d + "T12:00").split(" ")[0]}</div>`).join("")}</div>${app.resources
+          `<div class="resources"><div class="load-row load-head"><div></div>${days.map((d) => `<div>${fmtDay(d + "T12:00").split(" ")[0]}</div>`).join("")}</div>${loadResources
             .map(
               (r) =>
                 `<div class="load-row" role="button" tabindex="0" aria-label="Charge de ${esc(r.name)}" onclick="openResource('${r.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('${r.id}')}"><div class="rc-name">${resourceAvatar(r, true)}<div><b>${esc(r.name)}</b><small>${r.scope}${r.type === "company" ? ` · ${r.capacity} mission${r.capacity > 1 ? "s" : ""} simultanée${r.capacity > 1 ? "s" : ""} max` : ""}</small></div></div>${days
@@ -7251,7 +7267,7 @@
           return `<p><b>${getTodayDecisions().length} décision et ${getTodayWarnings().length} surveillance aujourd’hui.</b></p><p>${getTodayDecisions()[0]?.title || "Aucune décision urgente."}</p>`;
         if (intent === "RESOURCE_LOAD") {
           let over = app.resources.filter(
-            (x) => getResourceConflicts(x.id).length,
+            (x) => resourceActive(x) && getResourceConflicts(x.id).length,
           );
           return `<p><b>${over.length ? over.map((x) => x.name).join(", ") : "Aucune ressource"} ${over.length ? "est surchargée." : "n’est surchargée."}</b></p>`;
         }
@@ -7536,10 +7552,23 @@
             photo =
               /photo/i.test(m.text) && photos.length
                 ? `<span class="bubble-photo">${fieldPhotoSVG(hashHue(String(m.id)))}</span>`
-                : "";
-          out += `<div class="bubble ${mine ? "me" : "them"}">${photo}${esc(m.text)}<time>${m.time}${mine ? " ✓✓" : ""}</time></div>`;
+                : "",
+            receipt = mine ? (m.read ? " ✓✓" : " ✓") : "";
+          out += `<div class="bubble ${mine ? "me" : "them"}">${photo}${esc(m.text)}<time>${m.time}${receipt}</time></div>`;
         });
         return out;
+      }
+      // L'Artisan lit les messages du conducteur pour la tâche affichée
+      function markArtisanRead(t) {
+        if (!t) return;
+        let changed = false;
+        app.messages.forEach((m) => {
+          if (m.taskId === t.id && m.from === "driver" && !m.read) {
+            m.read = true;
+            changed = true;
+          }
+        });
+        if (changed) save();
       }
       function renderArtisan() {
         let rid = app.settings.artisanResourceId || "thomas",
@@ -7551,6 +7580,7 @@
           headAvatar = p
             ? `<span class="resource-avatar">${art(app.projects.indexOf(p))}</span>`
             : resourceAvatar(r);
+        markArtisanRead(t);
         let mission = t
           ? `<div class="chat-mission"><span class="eyebrow">${esc((p?.name || "").toUpperCase())}</span><h2>${esc(t.name)}</h2><p class="mission-time">${fmtTime(t.start)} — ${fmtTime(t.end)}</p>${
               t.status === "doing"
@@ -7580,7 +7610,7 @@
           from: "artisan",
           text: v,
           time: fmtTime(getDemoNow()),
-          read: true,
+          read: false,
         });
         save();
         renderPage();
@@ -7636,7 +7666,15 @@
       }
       function canAccessArtisan(resourceId) {
         let r = resource(resourceId);
-        return r?.type === "person" && r?.accountStatus === "active";
+        return (
+          r?.type === "person" &&
+          r?.accountStatus === "active" &&
+          resourceActive(r)
+        );
+      }
+      // La ressource représentant l'utilisateur conducteur connecté
+      function isDriverSelf(resourceId) {
+        return resourceId === (app.settings.driverResourceId || "eric");
       }
       // Filtre central des messages selon le contexte de conversation.
       function conversationMessages({ resourceId, taskId, projectId } = {}) {
@@ -7745,7 +7783,8 @@
           }),
           showRebalance = !archived && (state === "conflict" || state === "high"),
           acct = r.accountStatus || "none",
-          canMessage = canAccessArtisan(id) && !archived,
+          self = isDriverSelf(id),
+          canMessage = canAccessArtisan(id) && !archived && !self,
           missionLine = (t) =>
             `<div class="drawer-mission"><b>${fmtTime(t.start)}–${fmtTime(t.end)}</b><div><span>${esc(t.name)}</span><small>${project(t.projectId).name}</small></div>${pill(taskTone(t), STATUS[t.status])}</div>`,
           capacityBlock = isCompany
@@ -7803,33 +7842,34 @@
             detail = `<small class="rc-sub">Dernière activité · ${fmtDay(r.lastSeen)} · ${fmtTime(r.lastSeen)}</small>`;
           if (acct === "invited" && r.invitedAt)
             detail = `<small class="rc-sub">${fmtDay(r.invitedAt)} · ${fmtTime(r.invitedAt)}</small>`;
-          let actions =
-            acct === "none"
+          if (acct === "active" && self)
+            detail = detail || `<small class="rc-sub">Vous</small>`;
+          // Le conducteur connecté ne peut ni s'inviter ni se désactiver
+          let actions = self
+            ? ""
+            : acct === "none"
               ? `<button class="btn" onclick="openInviteForm('${id}')">Inviter sur Kanvix</button>`
               : acct === "invited"
                 ? `<button class="btn" onclick="resendInvite('${id}')">Renvoyer</button><button class="btn" onclick="cancelInvite('${id}')">Annuler l’invitation</button>`
                 : acct === "active"
                   ? `<button class="btn" onclick="disableAccount('${id}')">Désactiver l’accès</button>`
                   : `<button class="btn" onclick="openInviteForm('${id}')">Réinviter</button>`;
-          accountBlock = `<div class="drawer-section"><h3>Accès Kanvix</h3><div class="rc-account"><span class="rstate ${dot}"><i></i>${label}</span>${detail}</div><div class="rc-account-actions">${actions}</div></div>`;
+          accountBlock = `<div class="drawer-section"><h3>Accès Kanvix</h3><div class="rc-account"><span class="rstate ${dot}"><i></i>${label}</span>${detail}</div>${actions ? `<div class="rc-account-actions">${actions}</div>` : ""}</div>`;
         }
 
         // Menu ••• (toujours disponible, indépendant du niveau)
         let deletable = canDeleteResource(id),
-          menu = `<div class="more-menu"><button class="btn more-trigger" aria-haspopup="menu" aria-expanded="false" aria-label="Plus d’actions" onclick="toggleDrawerMenu(this)">${icon("more")}</button><div class="more-pop" role="menu"><button role="menuitem" onclick="closeDrawerMenu();openResourceForm('${id}')">Modifier</button>${archived ? `<button role="menuitem" onclick="closeDrawerMenu();restoreResource('${id}')">Réactiver</button>` : `<button role="menuitem" onclick="closeDrawerMenu();archiveResource('${id}')">Archiver</button>`}${isPerson && acct === "active" ? `<button role="menuitem" onclick="closeDrawerMenu();disableAccount('${id}')">Désactiver accès Kanvix</button>` : ""}<div class="more-sep"></div><button role="menuitem" class="danger" onclick="closeDrawerMenu();deleteResource('${id}')">Supprimer</button></div></div>`;
+          menu = `<div class="more-menu"><button class="btn more-trigger" aria-haspopup="menu" aria-expanded="false" aria-label="Plus d’actions" onclick="toggleDrawerMenu(this)">${icon("more")}</button><div class="more-pop" role="menu"><button role="menuitem" onclick="closeDrawerMenu();openResourceForm('${id}')">Modifier</button>${archived ? `<button role="menuitem" onclick="closeDrawerMenu();restoreResource('${id}')">Réactiver</button>` : `<button role="menuitem" onclick="closeDrawerMenu();archiveResource('${id}')">Archiver</button>`}${isPerson && acct === "active" && !self ? `<button role="menuitem" onclick="closeDrawerMenu();disableAccount('${id}')">Désactiver accès Kanvix</button>` : ""}<div class="more-sep"></div><button role="menuitem" class="danger" onclick="closeDrawerMenu();deleteResource('${id}')">Supprimer</button></div></div>`;
 
         // Actions principales
         let primaryActions = "";
         if (archived) {
           primaryActions = `<button class="btn primary" onclick="restoreResource('${id}')">Réactiver</button>`;
         } else {
+          // Footer = actions OPÉRATIONNELLES uniquement (l'invitation vit dans Accès Kanvix)
           let msgBtn = canMessage
             ? `<button class="btn primary" onclick="openConversation({resourceId:'${id}',back:{type:'resource',id:'${id}'}})">${icon("resources")} Message</button>`
-            : isPerson && acct === "none"
-              ? `<button class="btn primary" onclick="openInviteForm('${id}')">Inviter sur Kanvix</button>`
-              : isPerson && acct === "invited"
-                ? `<span class="rc-pending">Invitation en attente</span>`
-                : "";
+            : "";
           let planBtn = `<button class="btn" onclick="closeOverlay('drawer');app.ui.planningResource='${id}';go('planning')">Voir dans le planning</button>`;
           let rebalanceBtn = showRebalance
             ? `<button class="btn" onclick="openAIPanel({type:'resource',resourceId:'${id}'})">${icon("assistant")} Rééquilibrer</button>`
@@ -8407,7 +8447,7 @@
         }
         let t = taskId ? task(taskId) : null,
           p = projectId ? project(projectId) : t ? project(t.projectId) : null,
-          msgs = conversationMessages({ resourceId, taskId });
+          msgs = conversationMessages({ resourceId, taskId, projectId });
         // Marquer comme lus les messages reçus (côté conducteur)
         let changed = false;
         msgs.forEach((m) => {
@@ -8447,8 +8487,9 @@
           return `<div class="conv-day muted">Aucun message pour le moment.</div>`;
         return msgs
           .map((m) => {
-            let mine = m.from === "driver";
-            return `<div class="conv-bubble ${mine ? "me" : "them"}">${esc(m.text)}<time>${m.time}${mine ? " ✓✓" : ""}</time></div>`;
+            let mine = m.from === "driver",
+              receipt = mine ? (m.read ? " ✓✓" : " ✓") : "";
+            return `<div class="conv-bubble ${mine ? "me" : "them"}">${esc(m.text)}<time>${m.time}${receipt}</time></div>`;
           })
           .join("");
       }
