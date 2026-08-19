@@ -1679,6 +1679,28 @@
       .tc-mission .tc-expert {
         color: var(--text-tertiary);
       }
+      /* Raison de surveillance (Équipe > À surveiller) */
+      .tc-reason {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        margin-top: 7px;
+        padding: 3px 9px;
+        border-radius: 20px;
+        font-size: 11.5px;
+        font-weight: 600;
+        background: var(--warning-soft);
+        color: var(--warning-ink);
+      }
+      .tc-reason .tc-reason-ico {
+        font-size: 11px;
+      }
+      .tc-reason.late,
+      .tc-reason.conflict,
+      .tc-reason.issue {
+        background: var(--danger-soft);
+        color: var(--danger-ink);
+      }
       .tc-status {
         font-style: normal;
         font-size: 11px;
@@ -2555,8 +2577,8 @@
         background: var(--danger);
       }
       .g-bar {
-        height: 27px;
-        top: 11px;
+        height: 26px;
+        top: 16px;
         position: relative;
         z-index: 2;
         display: flex;
@@ -2614,7 +2636,7 @@
       }
       .g-bar.ghost {
         position: absolute;
-        top: 11px;
+        top: 16px;
         z-index: 1;
         opacity: 0.22;
         filter: grayscale(1);
@@ -2627,13 +2649,16 @@
       .g-bar .bar-avatar {
         margin-left: auto;
       }
+      /* Baseline = rail fantôme « prévu initialement », au-dessus de la barre actuelle.
+         L'espace est réservé en permanence (barre à top:16px) : aucun saut au toggle. */
       .baseline {
         position: absolute;
-        height: 4px;
-        top: 41px;
-        border-radius: 4px;
-        background: var(--text-tertiary);
-        opacity: 0.5;
+        height: 9px;
+        top: 3px;
+        border-radius: 3px;
+        background: color-mix(in srgb, var(--text-tertiary) 22%, var(--surface));
+        border: 1px dashed var(--text-tertiary);
+        opacity: 0.85;
         z-index: 1;
       }
       .g-slot.over {
@@ -2668,20 +2693,31 @@
       .deps path {
         fill: none;
         stroke: var(--text-tertiary);
-        stroke-width: 1.3;
-        opacity: 0.5;
+        stroke-width: 1.6;
+        opacity: 0.75;
       }
       .deps path.faint {
-        opacity: 0.12;
+        opacity: 0.18;
       }
+      /* Lien appartenant à la chaîne d'impact : renforcé, accent Kanvix (pas rouge) */
       .deps path.hot {
+        stroke: var(--accent);
+        stroke-width: 2.2;
+        opacity: 0.95;
+      }
+      /* Dépendance non respectée temporellement : signalée distinctement */
+      .deps path.conflict {
         stroke: var(--danger);
-        stroke-width: 1.7;
-        opacity: 0.9;
+        stroke-width: 2;
+        opacity: 0.95;
+        stroke-dasharray: 5 3;
+      }
+      .deps path.dep-arrow.conflict {
+        stroke-dasharray: none;
       }
       .g-row.dim .g-bar,
       .g-row.dim .g-label {
-        opacity: 0.4;
+        opacity: 0.28;
       }
       .g-row.dim {
         pointer-events: auto;
@@ -2864,16 +2900,189 @@
         background: var(--accent);
       }
       .plan-legend .lg-base::before {
-        height: 4px;
-        background: var(--text-tertiary);
-        opacity: 0.6;
+        height: 9px;
+        background: color-mix(in srgb, var(--text-tertiary) 22%, var(--surface));
+        border: 1px dashed var(--text-tertiary);
+        opacity: 0.85;
       }
       .plan-legend .lg-sim::before {
         background: var(--accent);
         box-shadow: 0 0 0 1.5px var(--surface), 0 0 0 3px var(--accent);
       }
       .plan-legend .lg-impact::before {
+        background: var(--accent);
+      }
+      /* Bande explicative « Chaîne d'impact » (compacte, au-dessus du Gantt) */
+      .impact-band {
+        margin: 4px 0 12px;
+        padding: 12px 14px;
+        border: 1px solid var(--border-light);
+        border-left: 3px solid var(--accent);
+        border-radius: var(--radius-md);
+        background: var(--surface-subtle);
+      }
+      .impact-band .ic-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 8px;
+      }
+      .impact-band .ic-eyebrow {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--text-secondary);
+      }
+      .impact-band .ic-delay {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--danger-ink);
+      }
+      .impact-band .ic-steps {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        flex-wrap: wrap;
+      }
+      .ic-step {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        color: var(--text);
+        padding: 5px 10px 5px 6px;
+        border-radius: 20px;
+        font-size: 12.5px;
+        font-weight: 500;
+      }
+      .ic-step:hover {
+        border-color: var(--accent);
+        box-shadow: var(--shadow-xs);
+      }
+      .ic-step .ic-num {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--accent);
+        color: #fff;
+        font-size: 11px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .ic-step.cause {
+        border-color: var(--danger-border);
+      }
+      .ic-step.cause .ic-num {
         background: var(--danger);
+      }
+      .ic-arrow {
+        color: var(--text-tertiary);
+        font-size: 13px;
+      }
+      /* Marqueur numéroté sur la barre en mode Chaîne d'impact */
+      .g-bar .ic-marker {
+        flex: 0 0 auto;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.9);
+        color: var(--accent-ink);
+        font-size: 10px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1px;
+      }
+      .g-bar.todo .ic-marker {
+        background: var(--accent);
+        color: #fff;
+      }
+      .g-bar .ic-marker.cause {
+        background: var(--danger);
+        color: #fff;
+      }
+      /* Liens de la chaîne d'impact : renforcés (accent), le rouge reste à la cause */
+      .gantt.impact-mode .g-row:not(.dim) {
+        z-index: 2;
+      }
+      /* Couleurs de tâche personnalisées (todo/doing uniquement — états métier prioritaires) */
+      .g-bar.tcolor-blue {
+        --tc: #1769ff;
+        --tc-soft: #edf4ff;
+        --tc-ink: #1456c7;
+      }
+      .g-bar.tcolor-indigo {
+        --tc: #4f46e5;
+        --tc-soft: #ecebfd;
+        --tc-ink: #3730a3;
+      }
+      .g-bar.tcolor-violet {
+        --tc: #8b5cf6;
+        --tc-soft: #f3ecfe;
+        --tc-ink: #6d28d9;
+      }
+      .g-bar.tcolor-teal {
+        --tc: #0d9488;
+        --tc-soft: #e2f5f2;
+        --tc-ink: #0f766e;
+      }
+      .g-bar.tcolor-green {
+        --tc: #1f9d57;
+        --tc-soft: #e7f7ee;
+        --tc-ink: #0f7a41;
+      }
+      .g-bar.tcolor-slate {
+        --tc: #64748b;
+        --tc-soft: #eef1f5;
+        --tc-ink: #475569;
+      }
+      body.dark .g-bar.tcolor-blue {
+        --tc: #5c9bff;
+        --tc-soft: #17335a;
+        --tc-ink: #cfe1ff;
+      }
+      body.dark .g-bar.tcolor-indigo {
+        --tc: #8b83f0;
+        --tc-soft: #232159;
+        --tc-ink: #d5d2fb;
+      }
+      body.dark .g-bar.tcolor-violet {
+        --tc: #a985f7;
+        --tc-soft: #2c1d52;
+        --tc-ink: #e6d8fd;
+      }
+      body.dark .g-bar.tcolor-teal {
+        --tc: #3bb5a6;
+        --tc-soft: #103a35;
+        --tc-ink: #b9eee5;
+      }
+      body.dark .g-bar.tcolor-green {
+        --tc: #46c17d;
+        --tc-soft: #123821;
+        --tc-ink: #bdefd0;
+      }
+      body.dark .g-bar.tcolor-slate {
+        --tc: #93a3b6;
+        --tc-soft: #26333f;
+        --tc-ink: #d5dde6;
+      }
+      /* doing = plein ; todo = creux (même langage que le bleu) */
+      .g-bar.has-color {
+        background: var(--tc);
+        color: #fff;
+        box-shadow: none;
+      }
+      .g-bar.has-color.todo {
+        background: var(--tc-soft);
+        color: var(--tc-ink);
+        box-shadow: inset 0 0 0 1px
+          color-mix(in srgb, var(--tc) 35%, transparent);
       }
       /* Empty state */
       .plan-empty {
@@ -3288,6 +3497,66 @@
       .drawer-form-actions .btn {
         flex: 1;
         justify-content: center;
+      }
+      /* Sélecteur de couleur de tâche (palette maîtrisée) */
+      .color-field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .color-field-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-secondary);
+      }
+      .swatches {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .swatch {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        border: 2px solid transparent;
+        cursor: pointer;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--text-secondary);
+        box-shadow: inset 0 0 0 1px var(--border);
+        transition: transform 0.1s;
+      }
+      .swatch:hover {
+        transform: scale(1.08);
+      }
+      .swatch.selected {
+        border-color: var(--text);
+        box-shadow: inset 0 0 0 1px var(--surface);
+      }
+      .swatch-auto {
+        background: var(--surface-muted);
+      }
+      .swatch-blue {
+        background: #1769ff;
+      }
+      .swatch-indigo {
+        background: #4f46e5;
+      }
+      .swatch-violet {
+        background: #8b5cf6;
+      }
+      .swatch-teal {
+        background: #0d9488;
+      }
+      .swatch-green {
+        background: #1f9d57;
+      }
+      .swatch-slate {
+        background: #64748b;
       }
 
       /* ---------------- Drawer / Modal ---------------- */
@@ -4705,7 +4974,7 @@
           late: "En retard",
         };
       // DEMO DATA
-      const SCHEMA_VERSION = 2;
+      const SCHEMA_VERSION = 3;
       const INITIAL_STATE = {
         schemaVersion: SCHEMA_VERSION,
         settings: {
@@ -5218,6 +5487,11 @@
               r.accountStatus = "none";
           });
         }
+        // V4.7 : couleur de tâche optionnelle (ancienne tâche → auto)
+        if (Array.isArray(value.tasks))
+          value.tasks.forEach((t) => {
+            if (t.colorKey === undefined) t.colorKey = "auto";
+          });
         value.schemaVersion = SCHEMA_VERSION;
         return value;
       }
@@ -5590,6 +5864,17 @@
       };
       function getDemoNow() {
         return date(TODAY);
+      }
+      // Messagerie : heure réelle (le Planning garde sa date démo déterministe)
+      function getMessageNow() {
+        return new Date();
+      }
+      function messageTime(m) {
+        return m.createdAt ? fmtTime(new Date(m.createdAt)) : m.time || "";
+      }
+      // Clé de tri chronologique d'un message (compatible anciens messages)
+      function messageSortKey(m) {
+        return m.createdAt ? +new Date(m.createdAt) : typeof m.id === "number" ? m.id : 0;
       }
       function getTomorrow() {
         return localDateKey(new Date(+getDemoNow() + DAY));
@@ -5990,21 +6275,61 @@
         );
       }
       // Attention = une seule vérité, bornée à la période examinée.
+      // Raisons de surveillance d'une ressource (vérité unique : filtre + compteur + affichage)
+      function getResourceAttentionReasons(resourceId, days, tasks = app.tasks) {
+        let reasons = [],
+          state = getResourcePeriodState(resourceId, days, tasks),
+          periodTasks = resourcePeriodTasks(resourceId, days, tasks),
+          r = resource(resourceId);
+        if (state === "conflict") {
+          let detail = "";
+          for (let d of days) {
+            let peak = getMaxConcurrentTasks(resourceId, {
+              start: d + "T00:00",
+              end: d + "T23:59",
+            });
+            if (peak > (r?.capacity || 1)) {
+              detail = `${peak} missions simultanées`;
+              break;
+            }
+          }
+          reasons.push({
+            type: "conflict",
+            label: "Conflit d’affectation",
+            detail,
+          });
+        } else if (state === "high") {
+          reasons.push({
+            type: "high",
+            label: "Charge forte",
+            detail: `${periodTasks.length} intervention${periodTasks.length > 1 ? "s" : ""}`,
+          });
+        }
+        let late = periodTasks.find((t) => t.status === "late");
+        if (late)
+          reasons.push({
+            type: "late",
+            label: "Tâche en retard",
+            detail: late.name,
+          });
+        let periodIds = new Set(periodTasks.map((t) => t.id)),
+          crit = app.issues.find(
+            (i) =>
+              i.status !== "resolved" &&
+              i.severity === "critical" &&
+              task(i.taskId)?.resourceId === resourceId &&
+              periodIds.has(i.taskId),
+          );
+        if (crit)
+          reasons.push({
+            type: "issue",
+            label: "Incident critique",
+            detail: crit.title,
+          });
+        return reasons;
+      }
       function resourceNeedsAttention(resourceId, days, tasks = app.tasks) {
-        let s = getResourcePeriodState(resourceId, days, tasks);
-        if (s === "conflict" || s === "high") return true;
-        let periodTasks = resourcePeriodTasks(resourceId, days, tasks);
-        // mission en retard sur la période sélectionnée
-        if (periodTasks.some((t) => t.status === "late")) return true;
-        // incident critique dont la tâche concerne la période
-        let periodIds = new Set(periodTasks.map((t) => t.id));
-        return app.issues.some(
-          (i) =>
-            i.status !== "resolved" &&
-            i.severity === "critical" &&
-            task(i.taskId)?.resourceId === resourceId &&
-            periodIds.has(i.taskId),
-        );
+        return getResourceAttentionReasons(resourceId, days, tasks).length > 0;
       }
       function teamPeriodDays() {
         let p = app.ui.teamPeriod;
@@ -6673,7 +6998,7 @@
             ["all", "Tous"],
             ["internal", "Internes"],
             ["external", "Externes"],
-            ["attention", "Attention"],
+            ["attention", "À surveiller"],
           ]
             .map(
               (x) =>
@@ -6737,7 +7062,15 @@
           unreadBadge = unread
             ? `<span class="tc-unread" aria-label="${unread} message${unread > 1 ? "s" : ""} non lu${unread > 1 ? "s" : ""}">●&nbsp;${unread}</span>`
             : "";
-        return `<article class="team-card" role="button" tabindex="0" aria-label="${esc(r.name)} — ${resourceStateLabel(state)}" onclick="openResource('${id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('${id}')}">${resourceAvatar(r)}<div class="tc-id"><h3>${esc(r.name)}${unreadBadge}</h3><p>${r.scope} · ${typeLabel}</p></div><div class="tc-mission">${block}</div><div class="tc-state ${tone}"><i></i>${resourceStateLabel(state)}</div></article>`;
+        // Raison de surveillance : obligatoire dans le filtre « À surveiller »,
+        // sinon un signal discret. État ≠ raison (Occupé peut cacher une tâche en retard).
+        let reasons = getResourceAttentionReasons(id, days),
+          inWatch = (app.ui.teamTypeFilter || "all") === "attention",
+          reasonLine =
+            reasons.length && (inWatch || reasons[0].type !== "high")
+              ? `<div class="tc-reason ${reasons[0].type}"><span class="tc-reason-ico" aria-hidden="true">⚠</span>${esc(reasons[0].label)}${reasons[0].detail ? ` · ${esc(reasons[0].detail)}` : ""}</div>`
+              : "";
+        return `<article class="team-card${reasonLine ? " has-reason" : ""}" role="button" tabindex="0" aria-label="${esc(r.name)} — ${resourceStateLabel(state)}${reasons.length ? " — " + reasons[0].label : ""}" onclick="openResource('${id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('${id}')}">${resourceAvatar(r)}<div class="tc-id"><h3>${esc(r.name)}${unreadBadge}</h3><p>${r.scope} · ${typeLabel}</p></div><div class="tc-mission">${block}${reasonLine}</div><div class="tc-state ${tone}"><i></i>${resourceStateLabel(state)}</div></article>`;
       }
       function localDay(d) {
         return localDateKey(d);
@@ -6883,12 +7216,13 @@
           active = impactChainActive(),
           sensitive = active ? impactChainSet() : null,
           sources = active ? impactChainSources() : null,
+          chainOrder = active ? impactChainOrdered() : [],
           isWeekend = (i) =>
             app.settings.period === "week" &&
             [0, 6].includes(date(s.dates[i]).getDay());
         if (!tasks.length)
           return `${effectSummary()}<div class="plan-empty"><b>Aucune tâche sur cette période.</b><p>Modifiez les filtres ou revenez à aujourd’hui.</p><div class="actions"><button class="btn" onclick="planningToday()">Aujourd’hui</button>${app.ui.planningResource !== "all" || app.ui.planningProject !== "all" ? `<button class="btn" onclick="app.ui.planningProject='all';app.ui.planningResource='all';save();renderPage()">Réinitialiser les filtres</button>` : ""}</div></div>`;
-        return `${effectSummary()}${planningAgenda(pid)}<div class="gantt-wrap"><div class="gantt ${active ? "impact-mode" : ""}" id="gantt" style="--cols:${cols}"><div class="g-head"><div><b>Tâche</b></div>${s.labels.map((x, i) => `<div class="${i === s.todayIndex ? "today-cell" : ""} ${isWeekend(i) ? "weekend" : ""}">${i === s.todayIndex ? "<small>AUJOURD’HUI</small>" : ""}${x}</div>`).join("")}</div>${groups
+        return `${effectSummary()}${active ? impactBandHTML() : ""}${planningAgenda(pid)}<div class="gantt-wrap"><div class="gantt ${active ? "impact-mode" : ""}" id="gantt" style="--cols:${cols}"><div class="g-head"><div><b>Tâche</b></div>${s.labels.map((x, i) => `<div class="${i === s.todayIndex ? "today-cell" : ""} ${isWeekend(i) ? "weekend" : ""}">${i === s.todayIndex ? "<small>AUJOURD’HUI</small>" : ""}${x}</div>`).join("")}</div>${groups
           .map((g) => {
             let collapsed = app.ui.collapsedProjects.includes(g),
               p = project(g),
@@ -6906,8 +7240,25 @@
                         ),
                         old = pos(real, s),
                         dim = active && !sensitive.has(t.id),
-                        isSource = active && sources.has(t.id);
-                      return `<div class="g-row ${app.ui.selectedTask === t.id ? "selected" : ""} ${dim ? "dim" : ""}" id="row-${t.id}"><div class="g-label"><b>${esc(t.name)}</b><small>${esc(resource(t.resourceId).name)}</small></div>${s.labels.map((x, i) => `<div class="g-slot ${i === s.todayIndex ? "today-cell" : ""} ${isWeekend(i) ? "weekend" : ""}" ondragover="${advanced ? "dragOver(event)" : ""}" ondragleave="this.classList.remove('over')" ondrop="${advanced ? `dropTask(event,${i})` : ""}">${changed && i === old.index ? `<div class="g-bar ghost" style="width:${Math.min(cols - i, old.span) * 100}%"></div>` : ""}${i === position.index ? `${expert && app.settings.baseline && real.baselineStart ? `<div class="baseline" style="width:${Math.min(cols - i, pos({ ...real, start: real.baselineStart, end: real.baselineEnd }, s).span) * 100}%"></div>` : ""}<div class="g-bar ${taskTone(t)} ${t.status} ${changed ? "simulated" : ""} ${isSource ? "source" : ""}" id="bar-${t.id}" ${advanced ? 'draggable="true"' : ""} ondragstart="dragStart(event,'${t.id}')" ondragend="this.classList.remove('dragging')" onclick="openTask('${t.id}')" title="${esc(t.name)} · ${esc(resource(t.resourceId).name)} · ${fmtRange(t)}" style="width:${Math.min(cols - i, position.span) * 100}%">${app.settings.period === "month" ? esc(t.name.split(" ").slice(0, 2).join(" ")) : esc(t.name)}${changed ? "<em>SIMULÉ</em>" : ""}</div>` : ""}</div>`).join("")}</div>`;
+                        isSource = active && sources.has(t.id),
+                        chainNum = active ? chainOrder.indexOf(t.id) : -1,
+                        baseShown =
+                          expert && app.settings.baseline && real.baselineStart,
+                        basePos = baseShown
+                          ? pos(
+                              {
+                                ...real,
+                                start: real.baselineStart,
+                                end: real.baselineEnd,
+                              },
+                              s,
+                            )
+                          : null,
+                        marker =
+                          chainNum >= 0
+                            ? `<span class="ic-marker ${chainNum === 0 ? "cause" : ""}">${chainNum === 0 ? "!" : chainNum + 1}</span>`
+                            : "";
+                      return `<div class="g-row ${app.ui.selectedTask === t.id ? "selected" : ""} ${dim ? "dim" : ""}" id="row-${t.id}"><div class="g-label"><b>${esc(t.name)}</b><small>${esc(resource(t.resourceId).name)}</small></div>${s.labels.map((x, i) => `<div class="g-slot ${i === s.todayIndex ? "today-cell" : ""} ${isWeekend(i) ? "weekend" : ""}" ondragover="${advanced ? "dragOver(event)" : ""}" ondragleave="this.classList.remove('over')" ondrop="${advanced ? `dropTask(event,${i})` : ""}">${changed && i === old.index ? `<div class="g-bar ghost" style="width:${Math.min(cols - i, old.span) * 100}%"></div>` : ""}${baseShown && basePos && basePos.index >= 0 && i === basePos.index ? `<div class="baseline" title="Prévu initialement" style="width:${Math.min(cols - i, basePos.span) * 100}%"></div>` : ""}${i === position.index ? `<div class="g-bar ${taskTone(t)} ${t.status} ${taskColorClass(t)} ${changed ? "simulated" : ""} ${isSource ? "source" : ""}" id="bar-${t.id}" ${advanced ? 'draggable="true"' : ""} ondragstart="dragStart(event,'${t.id}')" ondragend="this.classList.remove('dragging')" onclick="openTask('${t.id}')" title="${esc(t.name)} · ${esc(resource(t.resourceId).name)} · ${fmtRange(t)}" style="width:${Math.min(cols - i, position.span) * 100}%">${marker}${app.settings.period === "month" ? esc(t.name.split(" ").slice(0, 2).join(" ")) : esc(t.name)}${changed ? "<em>SIMULÉ</em>" : ""}</div>` : ""}</div>`).join("")}</div>`;
                     })
                     .join("")
             }`;
@@ -6933,6 +7284,54 @@
       }
       function impactChainActive() {
         return app.settings.level === "expert" && app.ui.impactChain;
+      }
+      // Chaîne d'impact ordonnée (cause → conséquences) pour numérotation + bande
+      function impactChainOrdered() {
+        let seen = new Set(),
+          order = [];
+        [...impactChainSources()].forEach((src) => {
+          if (!seen.has(src)) {
+            seen.add(src);
+            order.push(src);
+          }
+          getCriticalImpacts(src).forEach((t) => {
+            if (!seen.has(t.id)) {
+              seen.add(t.id);
+              order.push(t.id);
+            }
+          });
+        });
+        return order.filter((id) => task(id));
+      }
+      function impactBandHTML() {
+        let order = impactChainOrdered();
+        if (!order.length) return "";
+        let firstTask = task(order[0]),
+          delay = firstTask ? calculateProjectDelay(firstTask.projectId) : 0,
+          steps = order
+            .map(
+              (id, idx) =>
+                `<button class="ic-step ${idx === 0 ? "cause" : ""}" onclick="focusPlanningTask('${id}')"><span class="ic-num">${idx === 0 ? "!" : idx + 1}</span>${esc(task(id).name)}</button>`,
+            )
+            .join('<span class="ic-arrow">→</span>');
+        return `<div class="impact-band"><div class="ic-head"><span class="ic-eyebrow">Chaîne d’impact</span>${delay ? `<span class="ic-delay">+${delay} j sur le jalon final</span>` : ""}</div><div class="ic-steps">${steps}</div></div>`;
+      }
+      // Palette couleurs de tâche (organisation visuelle ; jamais rouge/orange réservés aux états)
+      const TASK_COLORS = [
+        ["auto", "Automatique"],
+        ["blue", "Bleu"],
+        ["indigo", "Indigo"],
+        ["violet", "Violet"],
+        ["teal", "Turquoise"],
+        ["green", "Vert"],
+        ["slate", "Ardoise"],
+      ];
+      // La couleur ne s'applique qu'aux tâches todo/doing : late/waiting/done gardent leur état métier
+      function taskColorClass(t) {
+        let key = t.colorKey || "auto";
+        if (key === "auto") return "";
+        if (t.status !== "todo" && t.status !== "doing") return "";
+        return `has-color tcolor-${key}`;
       }
       function toggleImpactChain(on) {
         app.ui.impactChain = on;
@@ -7694,7 +8093,7 @@
                 ? `<span class="bubble-photo">${fieldPhotoSVG(hashHue(String(m.id)))}</span>`
                 : "",
             receipt = mine ? (m.read ? " ✓✓" : " ✓") : "";
-          out += `<div class="bubble ${mine ? "me" : "them"}">${photo}${esc(m.text)}<time>${m.time}${receipt}</time></div>`;
+          out += `<div class="bubble ${mine ? "me" : "them"}">${photo}${esc(m.text)}<time>${messageTime(m)}${receipt}</time></div>`;
         });
         return out;
       }
@@ -7741,7 +8140,8 @@
         let el = $("#messageInput"),
           v = el ? el.value.trim() : "";
         if (!v) return;
-        let t = task(taskId);
+        let t = task(taskId),
+          now = getMessageNow();
         app.messages.push({
           id: Date.now(),
           projectId: t?.projectId || null,
@@ -7749,7 +8149,8 @@
           resourceId: t?.resourceId || app.settings.artisanResourceId,
           from: "artisan",
           text: v,
-          time: fmtTime(getDemoNow()),
+          createdAt: now.toISOString(),
+          time: fmtTime(now),
           read: false,
         });
         save();
@@ -8374,26 +8775,45 @@
         svg.setAttribute("width", off.width);
         svg.setAttribute("height", off.height);
         let active = impactChainActive(),
-          sensitive = active ? impactChainSet() : null;
+          sensitive = active ? impactChainSet() : null,
+          GAP = 14;
         svg.innerHTML = app.tasks
           .flatMap((t) =>
-            (t.deps || []).map((id) => {
-              let a = $("#bar-" + id),
-                b = $("#bar-" + t.id);
+            (t.deps || []).map((depId) => {
+              let a = $("#bar-" + depId),
+                b = $("#bar-" + t.id),
+                src = task(depId);
+              // Ne dessiner que si les deux barres sont réellement rendues (visibles)
               if (!a || !b) return "";
               let x = a.getBoundingClientRect(),
                 y = b.getBoundingClientRect(),
                 x1 = x.right - off.left,
                 y1 = x.top + x.height / 2 - off.top,
-                x2 = y.left - off.left - 3,
+                x2 = y.left - off.left - 4,
                 y2 = y.top + y.height / 2 - off.top,
-                m = x1 + Math.max(12, (x2 - x1) / 2),
-                cls = active
-                  ? sensitive.has(id) && sensitive.has(t.id)
-                    ? "hot"
-                    : "faint"
-                  : "";
-              return `<path class="${cls}" d="M${x1} ${y1} H${m} V${y2} H${x2}"/><path class="dep-arrow ${cls}" d="M${x2 - 5} ${y2 - 4} L${x2 + 1} ${y2} L${x2 - 5} ${y2 + 4}"/>`;
+                // Conflit temporel : la cible commence avant la fin de la source
+                conflict =
+                  src && date(t.start) < date(src.end),
+                cls = conflict
+                  ? "conflict"
+                  : active
+                    ? sensitive.has(depId) && sensitive.has(t.id)
+                      ? "hot"
+                      : "faint"
+                    : "",
+                d;
+              if (x2 - x1 >= GAP * 2) {
+                // Cas normal : cible après la source, routage orthogonal simple
+                let mid = x1 + Math.max(GAP, (x2 - x1) / 2);
+                d = `M${x1} ${y1} H${mid} V${y2} H${x2}`;
+              } else {
+                // Cas serré / arrière (conflit) : détour propre, approche par la gauche
+                let xr = x1 + GAP,
+                  xl = x2 - GAP,
+                  ym = (y1 + y2) / 2;
+                d = `M${x1} ${y1} H${xr} V${ym} H${xl} V${y2} H${x2}`;
+              }
+              return `<path class="${cls}" d="${d}"/><path class="dep-arrow ${cls}" d="M${x2 - 6} ${y2 - 4} L${x2} ${y2} L${x2 - 6} ${y2 + 4}"/>`;
             }),
           )
           .join("");
@@ -8422,6 +8842,7 @@
             `<label>Début<input name="start" type="datetime-local" required value="${start}"></label>` +
             `<label>Fin<input name="end" type="datetime-local" required value="${end}"></label>` +
             `<label>Dépend de<select name="dep"><option value="">Aucune</option>${app.tasks.filter((t) => t.id !== editId).map((t) => `<option value="${t.id}" ${(current?.deps || []).includes(t.id) ? "selected" : ""}>${esc(t.name)}</option>`).join("")}</select></label>` +
+            `<div class="color-field"><span class="color-field-label">Couleur</span><input type="hidden" name="colorKey" value="${current?.colorKey || "auto"}"><div class="swatches">${TASK_COLORS.map((c) => `<button type="button" class="swatch swatch-${c[0]} ${(current?.colorKey || "auto") === c[0] ? "selected" : ""}" data-color="${c[0]}" title="${c[1]}" aria-label="${c[1]}" onclick="pickTaskColor(this,'${c[0]}')">${c[0] === "auto" ? "A" : ""}</button>`).join("")}</div></div>` +
             `<p class="form-error" id="taskError"></p>`,
           (f) => {
             if (date(f.get("end")) <= date(f.get("start"))) {
@@ -8437,6 +8858,7 @@
               start: f.get("start"),
               end: f.get("end"),
               deps: f.get("dep") ? [f.get("dep")] : [],
+              colorKey: f.get("colorKey") || "auto",
             };
             current
               ? Object.assign(current, data)
@@ -8450,6 +8872,15 @@
           },
           current ? "Enregistrer" : "Ajouter",
         );
+      }
+      function pickTaskColor(btn, key) {
+        let form = btn.closest("form");
+        if (!form) return;
+        form
+          .querySelectorAll(".swatch")
+          .forEach((s) => s.classList.remove("selected"));
+        btn.classList.add("selected");
+        form.querySelector("[name=colorKey]").value = key;
       }
       function openResourceForm(editId = "") {
         let r = editId ? resource(editId) : null,
@@ -8634,7 +9065,7 @@
           .map((m) => {
             let mine = m.from === "driver",
               receipt = mine ? (m.read ? " ✓✓" : " ✓") : "";
-            return `<div class="conv-bubble ${mine ? "me" : "them"}">${esc(m.text)}<time>${m.time}${receipt}</time></div>`;
+            return `<div class="conv-bubble ${mine ? "me" : "them"}">${esc(m.text)}<time>${messageTime(m)}${receipt}</time></div>`;
           })
           .join("");
       }
@@ -8643,6 +9074,7 @@
           el = $("#convInput"),
           v = el ? el.value.trim() : "";
         if (!v || !c) return;
+        let now = getMessageNow();
         app.messages.push({
           id: Date.now(),
           projectId: c.projectId || null,
@@ -8650,7 +9082,8 @@
           resourceId: c.resourceId,
           from: app.settings.role === "artisan" ? "artisan" : "driver",
           text: v,
-          time: fmtTime(getDemoNow()),
+          createdAt: now.toISOString(),
+          time: fmtTime(now),
           read: false,
         });
         save();
@@ -8690,13 +9123,18 @@
             }).msgs.push(m);
         });
         let list = Object.values(groups).map((g) => {
-          let last = g.msgs.reduce((a, b) => (b.id > a.id ? b : a), g.msgs[0]),
+          let last = g.msgs.reduce(
+              (a, b) => (messageSortKey(b) > messageSortKey(a) ? b : a),
+              g.msgs[0],
+            ),
             unread = g.msgs.filter((m) => m.from === "artisan" && !m.read).length,
             taskId = last.taskId || g.msgs.find((m) => m.taskId)?.taskId || null;
           return { ...g, last, unread, taskId };
         });
         list.sort(
-          (a, b) => (b.unread > 0) - (a.unread > 0) || b.last.id - a.last.id,
+          (a, b) =>
+            (b.unread > 0) - (a.unread > 0) ||
+            messageSortKey(b.last) - messageSortKey(a.last),
         );
         return list;
       }
@@ -8714,7 +9152,7 @@
           badge = c.unread
             ? `<span class="conv-unread" aria-label="${c.unread} non lu${c.unread > 1 ? "s" : ""}">${c.unread}</span>`
             : "";
-        return `<button class="conv-item ${c.unread ? "unread" : ""}" onclick="openConversation({resourceId:'${c.resourceId}',projectId:${c.projectId ? `'${c.projectId}'` : "null"},taskId:${c.taskId ? `'${c.taskId}'` : "null"},back:{type:'messages'}})">${resourceAvatar(r)}<span class="conv-body"><span class="conv-line1"><b>${esc(r.name)}</b><time>${esc(c.last.time)}</time></span>${sub ? `<span class="conv-sub">${sub}</span>` : ""}${ctx ? `<span class="conv-ctx-line">${ctx}</span>` : ""}<span class="conv-last">${c.last.from === "driver" ? "Vous : " : ""}${esc(c.last.text)}</span></span>${badge}</button>`;
+        return `<button class="conv-item ${c.unread ? "unread" : ""}" onclick="openConversation({resourceId:'${c.resourceId}',projectId:${c.projectId ? `'${c.projectId}'` : "null"},taskId:${c.taskId ? `'${c.taskId}'` : "null"},back:{type:'messages'}})">${resourceAvatar(r)}<span class="conv-body"><span class="conv-line1"><b>${esc(r.name)}</b><time>${esc(messageTime(c.last))}</time></span>${sub ? `<span class="conv-sub">${sub}</span>` : ""}${ctx ? `<span class="conv-ctx-line">${ctx}</span>` : ""}<span class="conv-last">${c.last.from === "driver" ? "Vous : " : ""}${esc(c.last.text)}</span></span>${badge}</button>`;
       }
       function openMessagingHub() {
         app.ui.selectedResource = null;
