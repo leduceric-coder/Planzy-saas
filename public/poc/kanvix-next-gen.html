@@ -2684,9 +2684,14 @@
         box-shadow: inset 3px 0 var(--accent);
         background: var(--accent-soft);
       }
+      /* SVG des dépendances : couvre TOUT le Gantt (référentiel unique = .gantt).
+         Les coordonnées sont calculées dans ce même repère, sans double décalage. */
       .deps {
         position: absolute;
-        inset: 50px 0 0 var(--task-col);
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        overflow: visible;
         pointer-events: none;
         z-index: 3;
       }
@@ -3602,6 +3607,57 @@
       .drawer-section h3 {
         font-size: 13px;
         margin: 0 0 8px;
+      }
+      /* Section Dépendances de la fiche Tâche */
+      .dep-rel {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .dep-line {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .dep-line .dep-dir {
+        flex: 0 0 auto;
+        width: 22px;
+        height: 22px;
+        border-radius: 6px;
+        background: var(--surface-muted);
+        color: var(--text-secondary);
+        font-size: 13px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .dep-line .dep-body {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+      }
+      .dep-line .dep-task {
+        text-align: left;
+        font-size: 14px;
+        font-weight: 500;
+        padding: 0;
+      }
+      .dep-line .dep-body small {
+        color: var(--text-tertiary);
+        font-size: 11px;
+      }
+      .dep-line .dep-focus {
+        flex: 0 0 auto;
+        font-size: 12px;
+        padding: 0;
+      }
+      .dep-mini {
+        font-size: 12px;
+        color: var(--text-tertiary);
+        margin: 2px 0 8px;
       }
       .modal-box {
         position: absolute;
@@ -7503,10 +7559,29 @@
                 2000,
               );
             }
+            // Pulse également la source de la relation, si demandé
+            if (app.ui.focusDepSource) {
+              let sBar = $("#bar-" + app.ui.focusDepSource);
+              if (sBar) {
+                sBar.classList.add("focus-bar");
+                setTimeout(() => sBar.classList.remove("focus-bar"), 2000);
+              }
+              app.ui.focusDepSource = null;
+            }
             setTimeout(() => row?.classList.remove("focus-flash"), 1800);
             app.ui.focusTask = null;
             save();
           } else scrollPlanningToToday();
+        });
+        // Redessine les dépendances au scroll (throttlé via RAF) : les flèches
+        // restent alignées aux barres quand on fait défiler le Gantt.
+        let depRaf = 0;
+        wrap.addEventListener("scroll", () => {
+          if (depRaf) return;
+          depRaf = requestAnimationFrame(() => {
+            depRaf = 0;
+            drawDeps();
+          });
         });
         wrap.addEventListener(
           "scroll",
@@ -7546,6 +7621,24 @@
         app.ui.selectedTask = taskId;
         app.ui.periodAnchor = t.start;
         app.ui.focusTask = taskId;
+        app.ui.focusDepSource = null;
+        app.ui.planningNeedsCenter = false;
+        app.ui.page = "planning";
+        save();
+        renderPage();
+      }
+      // Met en évidence une relation de dépendance (source → cible) dans le planning
+      function focusPlanningDependency(sourceId, targetId) {
+        let tgt = task(targetId),
+          src = task(sourceId);
+        if (!tgt && !src) return;
+        app.settings.dependencies = true;
+        app.ui.planningProject = (tgt || src).projectId;
+        app.ui.planningResource = "all";
+        app.ui.selectedTask = targetId;
+        app.ui.periodAnchor = (src || tgt).start;
+        app.ui.focusTask = targetId;
+        app.ui.focusDepSource = sourceId;
         app.ui.planningNeedsCenter = false;
         app.ui.page = "planning";
         save();
@@ -8162,11 +8255,28 @@
       function openTask(id) {
         let t = task(id),
           succ = getTaskSuccessors(id),
+          preds = getTaskPredecessors(id),
           docs = app.documents.filter((d) => d.taskId === id),
           photos = app.photos.filter((p) => p.taskId === id),
           pilot = app.settings.level !== "essential",
           expert = app.settings.level === "expert";
         app.ui.selectedTask = id;
+        // Section Dépendances : prédécesseurs (Dépend de) + successeurs (Bloque)
+        let depLine = (other, dir, role, sourceId, targetId) =>
+            `<div class="dep-line"><span class="dep-dir">${dir}</span><div class="dep-body"><button class="link dep-task" onclick="openTask('${other.id}')">${esc(other.name)}</button><small>${role}${expert ? " · Fin → début" : ""}</small></div><button class="link dep-focus" onclick="closeOverlay('drawer');focusPlanningDependency('${sourceId}','${targetId}')" aria-label="Voir la relation dans le planning">Voir →</button></div>`,
+          depsSection =
+            pilot && (preds.length || succ.length)
+              ? `<div class="drawer-section"><h3>Dépendances</h3><div class="dep-rel">${preds
+                  .map((pr) => depLine(pr, "←", "Dépend de", pr.id, id))
+                  .join("")}${succ
+                  .map((s) => depLine(s, "→", "Bloque", id, s.id))
+                  .join("")}</div></div>`
+              : "";
+        // Essentiel : ligne discrète « Dépend de · X » si une dépendance directe existe
+        let essentialDep =
+          !pilot && preds.length
+            ? `<p class="dep-mini">Dépend de · ${preds.map((pr) => esc(pr.name)).join(", ")}</p>`
+            : "";
         let menu = pilot
           ? `<div class="more-menu"><button class="btn more-trigger" aria-haspopup="menu" aria-expanded="false" aria-label="Plus d’actions" onclick="toggleDrawerMenu(this)">${icon("more")}</button><div class="more-pop" role="menu"><button role="menuitem" onclick="closeDrawerMenu();openTaskForm('${t.projectId}','${id}')">Modifier</button><button role="menuitem" onclick="closeDrawerMenu();moveTask('${id}',1)">Replanifier</button><button role="menuitem" onclick="closeDrawerMenu();showWhatIf('${id}')">Tester un décalage</button><button role="menuitem" onclick="closeDrawerMenu();openIssueForm(false,'${id}')">Signaler problème</button>${expert ? `<div class="more-sep"></div><button role="menuitem" class="danger" onclick="closeDrawerMenu();deleteTask('${id}')">Supprimer</button>` : ""}</div></div>`
           : "";
@@ -8179,11 +8289,9 @@
           : "";
         $("#drawerContent").innerHTML =
           `<p class="muted">TÂCHE</p><h2>${esc(t.name)}</h2>${pill(taskTone(t), STATUS[t.status])}` +
-          `<div class="drawer-section"><b>${esc(project(t.projectId).name)}</b><p>${esc(resource(t.resourceId).name)}<br>${fmtRange(t)}</p><button class="link" onclick="closeOverlay('drawer');focusPlanningTask('${id}')">Voir dans le planning</button>${canAccessArtisan(t.resourceId) ? ` · <button class="link" onclick="openConversation({resourceId:'${t.resourceId}',taskId:'${id}',projectId:'${t.projectId}',back:{type:'task',id:'${id}'}})">Message</button>` : ""}</div>` +
+          `<div class="drawer-section"><b>${esc(project(t.projectId).name)}</b><p>${esc(resource(t.resourceId).name)}<br>${fmtRange(t)}</p>${essentialDep}<button class="link" onclick="closeOverlay('drawer');focusPlanningTask('${id}')">Voir dans le planning</button>${canAccessArtisan(t.resourceId) ? ` · <button class="link" onclick="openConversation({resourceId:'${t.resourceId}',taskId:'${id}',projectId:'${t.projectId}',back:{type:'task',id:'${id}'}})">Message</button>` : ""}</div>` +
           `<div class="drawer-section"><div class="actions task-actions"><button class="btn primary" onclick="setTaskStatus('${id}', '${t.status === "doing" ? "done" : "doing"}')">${t.status === "doing" ? "Terminer" : "Démarrer"}</button>${menu}</div></div>` +
-          (pilot
-            ? `<div class="drawer-section"><h3>Impact</h3><p>${succ.length ? "Bloque : " + succ.map((x) => esc(x.name)).join(" → ") : "Aucun successeur direct"}</p></div>`
-            : "") +
+          depsSection +
           pieces +
           (expert ? historyHTML() : "");
         $("#drawer").classList.add("open");
@@ -8769,31 +8877,43 @@
         else actionToast(`${t.name} déplacée au ${fmtDay(t.start)}`);
       }
       function drawDeps() {
-        let svg = $("#deps");
-        if (!svg || !app.settings.dependencies) return;
-        let off = svg.getBoundingClientRect();
-        svg.setAttribute("width", off.width);
-        svg.setAttribute("height", off.height);
-        let active = impactChainActive(),
+        let svg = $("#deps"),
+          gantt = $("#gantt");
+        if (!svg || !gantt || !app.settings.dependencies) {
+          if (svg) svg.innerHTML = "";
+          return;
+        }
+        // Référentiel unique = rectangle du Gantt (couvre labels + timeline).
+        let root = gantt.getBoundingClientRect();
+        svg.setAttribute("width", root.width);
+        svg.setAttribute("height", root.height);
+        svg.setAttribute("viewBox", `0 0 ${root.width} ${root.height}`);
+        // Ne relier que les tâches réellement visibles dans le Gantt
+        let visibleIds = new Set(planningTasks().map((t) => t.id)),
+          active = impactChainActive(),
           sensitive = active ? impactChainSet() : null,
-          GAP = 14;
+          GAP = 14,
+          // Bord droit de la colonne des noms : les flèches n'y pénètrent jamais
+          taskColX =
+            parseFloat(getComputedStyle(gantt).getPropertyValue("--task-col")) ||
+            210;
         svg.innerHTML = app.tasks
-          .flatMap((t) =>
-            (t.deps || []).map((depId) => {
+          .flatMap((t) => {
+            if (!visibleIds.has(t.id)) return [];
+            return (t.deps || []).map((depId) => {
+              if (!visibleIds.has(depId)) return "";
               let a = $("#bar-" + depId),
                 b = $("#bar-" + t.id),
                 src = task(depId);
-              // Ne dessiner que si les deux barres sont réellement rendues (visibles)
               if (!a || !b) return "";
               let x = a.getBoundingClientRect(),
                 y = b.getBoundingClientRect(),
-                x1 = x.right - off.left,
-                y1 = x.top + x.height / 2 - off.top,
-                x2 = y.left - off.left - 4,
-                y2 = y.top + y.height / 2 - off.top,
-                // Conflit temporel : la cible commence avant la fin de la source
-                conflict =
-                  src && date(t.start) < date(src.end),
+                x1 = x.right - root.left,
+                y1 = x.top + x.height / 2 - root.top,
+                x2 = y.left - root.left - 4,
+                y2 = y.top + y.height / 2 - root.top,
+                minX = taskColX + 4,
+                conflict = src && date(t.start) < date(src.end),
                 cls = conflict
                   ? "conflict"
                   : active
@@ -8803,19 +8923,20 @@
                     : "",
                 d;
               if (x2 - x1 >= GAP * 2) {
-                // Cas normal : cible après la source, routage orthogonal simple
+                // Cible après la source : routage orthogonal simple
                 let mid = x1 + Math.max(GAP, (x2 - x1) / 2);
                 d = `M${x1} ${y1} H${mid} V${y2} H${x2}`;
               } else {
-                // Cas serré / arrière (conflit) : détour propre, approche par la gauche
+                // Cible avant/au même niveau (conflit) : détour propre par la gauche,
+                // borné à la colonne des noms pour ne jamais la traverser
                 let xr = x1 + GAP,
-                  xl = x2 - GAP,
+                  xl = Math.max(minX, x2 - GAP),
                   ym = (y1 + y2) / 2;
                 d = `M${x1} ${y1} H${xr} V${ym} H${xl} V${y2} H${x2}`;
               }
               return `<path class="${cls}" d="${d}"/><path class="dep-arrow ${cls}" d="M${x2 - 6} ${y2 - 4} L${x2} ${y2} L${x2 - 6} ${y2 + 4}"/>`;
-            }),
-          )
+            });
+          })
           .join("");
       }
       function modalForm(title, body, submit) {
