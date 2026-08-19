@@ -250,6 +250,24 @@
       .nav button.active svg {
         stroke: var(--accent);
       }
+      .nav-messaging {
+        position: relative;
+      }
+      .nav-badge {
+        margin-left: auto;
+        min-width: 18px;
+        height: 18px;
+        padding: 0 5px;
+        border-radius: 9px;
+        background: var(--accent);
+        color: #fff;
+        font-size: 11px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+      }
       /* Profile */
       .profile {
         margin-top: auto;
@@ -1957,6 +1975,116 @@
       }
       .conv-compose .send {
         flex: 0 0 auto;
+      }
+      /* Messagerie — hub / liste de conversations */
+      .conv-hub-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin: 2px 0 12px;
+      }
+      .conv-hub-head h2 {
+        margin: 0;
+      }
+      .conv-search {
+        width: 100%;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 9px 12px;
+        font-size: 13.5px;
+        background: var(--surface);
+        color: var(--text);
+        margin-bottom: 8px;
+      }
+      .conv-search:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+      .conv-list {
+        display: flex;
+        flex-direction: column;
+      }
+      .conv-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        width: 100%;
+        text-align: left;
+        border: 0;
+        background: none;
+        padding: 12px 6px;
+        border-bottom: 1px solid var(--border-light);
+        border-radius: 0;
+        color: var(--text);
+        transition: background 0.14s;
+      }
+      .conv-item:hover {
+        background: var(--surface-subtle);
+      }
+      .conv-body {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+      }
+      .conv-line1 {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .conv-line1 b {
+        font-size: 14px;
+        font-weight: 600;
+      }
+      .conv-line1 time {
+        font-size: 11px;
+        color: var(--text-tertiary);
+        flex: 0 0 auto;
+      }
+      .conv-sub,
+      .conv-ctx-line {
+        font-size: 12px;
+        color: var(--text-tertiary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .conv-ctx-line {
+        color: var(--text-secondary);
+      }
+      .conv-last {
+        font-size: 13px;
+        color: var(--text-secondary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-top: 2px;
+      }
+      .conv-item.unread .conv-last {
+        color: var(--text);
+        font-weight: 500;
+      }
+      .conv-unread {
+        flex: 0 0 auto;
+        align-self: center;
+        min-width: 18px;
+        height: 18px;
+        padding: 0 5px;
+        border-radius: 9px;
+        background: var(--accent);
+        color: #fff;
+        font-size: 11px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .conv-empty {
+        padding: 28px 6px;
+        text-align: center;
       }
       /* Détails techniques cockpit (Expert) */
       .cockpit-tech {
@@ -4256,6 +4384,16 @@
           background: none;
           color: var(--accent);
         }
+        .nav-badge {
+          position: absolute;
+          top: 2px;
+          right: calc(50% - 20px);
+          margin-left: 0;
+          min-width: 15px;
+          height: 15px;
+          padding: 0 4px;
+          font-size: 9px;
+        }
         .main {
           padding: 22px 16px 84px;
         }
@@ -5192,6 +5330,8 @@
             '<rect x="3.5" y="5" width="17" height="14" rx="2.5"/><circle cx="8.5" cy="10" r="1.6"/><path d="M4 17l4.5-4 3.5 3 3-2.5 5.5 5"/>',
           send: '<path d="M4 12l16-7-7 16-2.5-6.5z"/>',
           more: '<path d="M5 12h.01M12 12h.01M19 12h.01"/>',
+          messages:
+            '<path d="M4.5 6.5A2 2 0 0 1 6.5 4.5h11a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H9l-4.5 3.7z"/><path d="M8.5 9h7M8.5 12h4.5"/>',
         };
         return `<svg viewBox="0 0 24 24" aria-hidden="true">${shapes[n] || '<path d="M5 12h.01M12 12h.01M19 12h.01"/>'}</svg>`;
       }
@@ -8469,7 +8609,12 @@
               ? `<span class="conv-online"><i></i>Compte actif</span>`
               : "",
           ctx = [p?.name, t?.name].filter(Boolean).map(esc).join(" · "),
-          backLabel = back?.type === "task" ? esc(task(back.id)?.name || "") : esc(r.name);
+          backLabel =
+            back?.type === "messages"
+              ? "Messagerie"
+              : back?.type === "task"
+                ? esc(task(back.id)?.name || "")
+                : esc(r.name);
         $("#drawerContent").innerHTML =
           `<button class="link drawer-back" onclick="convBack()">← ${backLabel}</button>` +
           `<p class="muted">MESSAGERIE</p>` +
@@ -8506,7 +8651,7 @@
           from: app.settings.role === "artisan" ? "artisan" : "driver",
           text: v,
           time: fmtTime(getDemoNow()),
-          read: app.settings.role === "artisan",
+          read: false,
         });
         save();
         openConversation(c);
@@ -8517,7 +8662,134 @@
         let b = c?.back;
         if (b?.type === "resource") openResource(b.id);
         else if (b?.type === "task") openTask(b.id);
-        else closeOverlay("drawer");
+        else if (b?.type === "messages") {
+          app.ui.msgQuery = "";
+          openMessagingHub();
+        } else closeOverlay("drawer");
+      }
+      // MESSAGERIE — accès transversal (sidewindow, jamais une page)
+      function messagingUnreadTotal() {
+        return app.messages.filter(
+          (m) =>
+            m.from === "artisan" && !m.read && canAccessArtisan(m.resourceId),
+        ).length;
+      }
+      // Regroupe app.messages en conversations (par personne + chantier)
+      function getConversations() {
+        let driverId = app.settings.driverResourceId || "eric",
+          groups = {};
+        app.messages.forEach((m) => {
+          if (!m.resourceId || m.resourceId === driverId) return;
+          if (!canAccessArtisan(m.resourceId)) return; // conversations actives uniquement
+          let key = m.resourceId + "::" + (m.projectId || "");
+          (groups[key] =
+            groups[key] || {
+              resourceId: m.resourceId,
+              projectId: m.projectId || null,
+              msgs: [],
+            }).msgs.push(m);
+        });
+        let list = Object.values(groups).map((g) => {
+          let last = g.msgs.reduce((a, b) => (b.id > a.id ? b : a), g.msgs[0]),
+            unread = g.msgs.filter((m) => m.from === "artisan" && !m.read).length,
+            taskId = last.taskId || g.msgs.find((m) => m.taskId)?.taskId || null;
+          return { ...g, last, unread, taskId };
+        });
+        list.sort(
+          (a, b) => (b.unread > 0) - (a.unread > 0) || b.last.id - a.last.id,
+        );
+        return list;
+      }
+      function conversationRow(c) {
+        let r = resource(c.resourceId),
+          p = c.projectId ? project(c.projectId) : null,
+          t = c.taskId ? task(c.taskId) : null,
+          sub = [
+            r.type === "person" && r.jobTitle ? esc(r.jobTitle) : "",
+            r.type === "person" && r.companyName ? esc(r.companyName) : "",
+          ]
+            .filter(Boolean)
+            .join(" · "),
+          ctx = [p?.name, t?.name].filter(Boolean).map(esc).join(" · "),
+          badge = c.unread
+            ? `<span class="conv-unread" aria-label="${c.unread} non lu${c.unread > 1 ? "s" : ""}">${c.unread}</span>`
+            : "";
+        return `<button class="conv-item ${c.unread ? "unread" : ""}" onclick="openConversation({resourceId:'${c.resourceId}',projectId:${c.projectId ? `'${c.projectId}'` : "null"},taskId:${c.taskId ? `'${c.taskId}'` : "null"},back:{type:'messages'}})">${resourceAvatar(r)}<span class="conv-body"><span class="conv-line1"><b>${esc(r.name)}</b><time>${esc(c.last.time)}</time></span>${sub ? `<span class="conv-sub">${sub}</span>` : ""}${ctx ? `<span class="conv-ctx-line">${ctx}</span>` : ""}<span class="conv-last">${c.last.from === "driver" ? "Vous : " : ""}${esc(c.last.text)}</span></span>${badge}</button>`;
+      }
+      function openMessagingHub() {
+        app.ui.selectedResource = null;
+        app.ui.selectedIssue = null;
+        app.ui.selectedTask = null;
+        app.ui.conversation = null;
+        let q = norm(app.ui.msgQuery || ""),
+          convs = getConversations().filter((c) => {
+            if (!q) return true;
+            let r = resource(c.resourceId),
+              p = c.projectId ? project(c.projectId) : null;
+            return norm(
+              [r.name, r.jobTitle, r.companyName, p?.name].filter(Boolean).join(" "),
+            ).includes(q);
+          }),
+          showSearch = getConversations().length > 3,
+          list = convs.length
+            ? convs.map(conversationRow).join("")
+            : `<p class="muted conv-empty">${app.ui.msgQuery ? "Aucune conversation ne correspond." : "Aucune conversation pour le moment."}</p>`;
+        $("#drawerContent").innerHTML =
+          `<p class="muted">MESSAGERIE</p>` +
+          `<div class="conv-hub-head"><h2>Conversations</h2><button class="btn small" onclick="openNewMessage()">${icon("plus")} Nouveau message</button></div>` +
+          (showSearch
+            ? `<input class="conv-search" id="msgSearch" autocomplete="off" placeholder="Rechercher une personne ou un chantier…" value="${esc(app.ui.msgQuery || "")}" oninput="app.ui.msgQuery=this.value;filterMessagingHub()">`
+            : "") +
+          `<div class="conv-list" id="convList">${list}</div>`;
+        $("#drawer").classList.add("open");
+        if (app.ui.msgQuery) {
+          let s = $("#msgSearch");
+          if (s) {
+            s.focus();
+            s.setSelectionRange(s.value.length, s.value.length);
+          }
+        }
+      }
+      function filterMessagingHub() {
+        let q = norm(app.ui.msgQuery || ""),
+          convs = getConversations().filter((c) => {
+            if (!q) return true;
+            let r = resource(c.resourceId),
+              p = c.projectId ? project(c.projectId) : null;
+            return norm(
+              [r.name, r.jobTitle, r.companyName, p?.name].filter(Boolean).join(" "),
+            ).includes(q);
+          }),
+          host = $("#convList");
+        if (host)
+          host.innerHTML = convs.length
+            ? convs.map(conversationRow).join("")
+            : `<p class="muted conv-empty">Aucune conversation ne correspond.</p>`;
+      }
+      function openNewMessage() {
+        let driverId = app.settings.driverResourceId || "eric",
+          people = app.resources.filter(
+            (r) => canAccessArtisan(r.id) && r.id !== driverId,
+          );
+        $("#drawerContent").innerHTML =
+          `<button class="link drawer-back" onclick="app.ui.msgQuery='';openMessagingHub()">← Messagerie</button>` +
+          `<p class="muted">NOUVEAU MESSAGE</p><h2>À qui écrire ?</h2>` +
+          `<div class="conv-list">${
+            people.length
+              ? people
+                  .map((r) => {
+                    let sub = [
+                      r.jobTitle ? esc(r.jobTitle) : "",
+                      r.companyName ? esc(r.companyName) : "",
+                    ]
+                      .filter(Boolean)
+                      .join(" · ");
+                    return `<button class="conv-item" onclick="openConversation({resourceId:'${r.id}',back:{type:'messages'}})">${resourceAvatar(r)}<span class="conv-body"><span class="conv-line1"><b>${esc(r.name)}</b></span>${sub ? `<span class="conv-sub">${sub}</span>` : ""}</span></button>`;
+                  })
+                  .join("")
+              : `<p class="muted conv-empty">Aucune personne disponible.</p>`
+          }</div>`;
+        $("#drawer").classList.add("open");
       }
       function openIssueForm(field = false, tid = "") {
         let linkedTask = tid ? task(tid) : null,
@@ -8891,12 +9163,19 @@
         ];
         // Kanvix est désormais un assistant CONTEXTUEL : plus d'entrée globale
         // dans la sidebar (accès via Résoudre / Rééquilibrer / Examiner / ⌘J).
-        $("#nav").innerHTML = primaryNavigation
-          .map(
-            (x) =>
-              `<button class="${app.ui.page === x[0] ? "active" : ""}" onclick="go('${x[0]}')">${icon(x[0])}<span>${x[1]}</span></button>`,
-          )
-          .join("");
+        // La Messagerie est une ACTION transversale : ouvre un sidewindow, jamais une page.
+        let unread = messagingUnreadTotal(),
+          msgBadge = unread
+            ? `<span class="nav-badge" aria-label="${unread} non lu${unread > 1 ? "s" : ""}">${unread}</span>`
+            : "";
+        $("#nav").innerHTML =
+          primaryNavigation
+            .map(
+              (x) =>
+                `<button class="${app.ui.page === x[0] ? "active" : ""}" onclick="go('${x[0]}')">${icon(x[0])}<span>${x[1]}</span></button>`,
+            )
+            .join("") +
+          `<button class="nav-messaging" onclick="app.ui.msgQuery='';openMessagingHub()">${icon("messages")}<span>Messagerie</span>${msgBadge}</button>`;
         let pa = $(".profile-trigger .avatar");
         if (pa) pa.innerHTML = personPortrait("eric");
         renderUserMenu();
