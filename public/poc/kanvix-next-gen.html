@@ -3993,6 +3993,200 @@
         overflow: auto;
         padding: 20px 22px;
       }
+      /* KANVIX · RÉSOUDRE — panneau de décision (pas de composeur) */
+      .ai-panel.resolve-mode {
+        grid-template-rows: auto auto 1fr;
+      }
+      .ai-panel.resolve-mode .ai-compose {
+        display: none;
+      }
+      .rv-block {
+        padding: 14px 0;
+        border-bottom: 1px solid var(--border-light);
+      }
+      .rv-block:first-child {
+        padding-top: 2px;
+      }
+      .rv-title {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+        color: var(--text-tertiary);
+        margin: 0 0 8px;
+      }
+      .rv-lead {
+        font-size: 15px;
+        font-weight: 600;
+        margin: 0 0 3px;
+      }
+      .rv-text {
+        font-size: 13px;
+        color: var(--text-secondary);
+        margin: 0;
+      }
+      .rv-impact {
+        display: flex;
+        align-items: flex-start;
+        gap: 9px;
+        font-size: 13px;
+        color: var(--text-secondary);
+      }
+      .rv-impact b {
+        color: var(--text);
+      }
+      .rv-impact .rv-dot {
+        flex: 0 0 auto;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--danger);
+        margin-top: 5px;
+      }
+      .rv-solutions {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        padding-top: 16px;
+      }
+      .rv-scenario {
+        padding: 15px;
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-md);
+        background: var(--surface);
+      }
+      .rv-scenario.recommended {
+        border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+        background: var(--accent-soft);
+      }
+      .rv-scenario-head {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-bottom: 10px;
+      }
+      .rv-scenario-head h3 {
+        font-size: 16px;
+        margin: 0;
+      }
+      .rv-tag {
+        align-self: flex-start;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 3px 8px;
+        border-radius: 20px;
+      }
+      .rv-tag.reco {
+        background: var(--accent);
+        color: #fff;
+      }
+      .rv-tag.alt {
+        background: var(--surface-muted);
+        color: var(--text-secondary);
+      }
+      .rv-why {
+        margin: 0 0 12px;
+        padding: 10px 12px;
+        background: color-mix(in srgb, var(--surface) 70%, transparent);
+        border-radius: var(--radius-sm);
+      }
+      body:not(.dark) .rv-scenario.recommended .rv-why {
+        background: rgba(255, 255, 255, 0.6);
+      }
+      .rv-why small {
+        display: block;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--text-secondary);
+        margin-bottom: 5px;
+      }
+      .rv-why ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+      .rv-why li {
+        font-size: 13px;
+        color: var(--text);
+        padding-left: 18px;
+        position: relative;
+      }
+      .rv-why li::before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: var(--success);
+        font-weight: 700;
+      }
+      .rv-metrics {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px 14px;
+        margin: 0 0 12px;
+      }
+      .rv-metrics > div {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+      }
+      .rv-metrics dt {
+        font-size: 11px;
+        color: var(--text-tertiary);
+      }
+      .rv-metrics dd {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text);
+      }
+      .rv-jalon.ok {
+        color: var(--success-ink);
+      }
+      .rv-jalon.warn {
+        color: var(--warning-ink);
+      }
+      .rv-details {
+        margin: 0 0 12px;
+        font-size: 12px;
+      }
+      .rv-details summary {
+        cursor: pointer;
+        color: var(--accent);
+        font-weight: 600;
+      }
+      .rv-changes {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-top: 8px;
+      }
+      .rv-change {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        font-size: 12.5px;
+      }
+      .rv-change b {
+        font-weight: 500;
+      }
+      .rv-change span {
+        color: var(--text-secondary);
+        white-space: nowrap;
+      }
+      .rv-scenario .ai-btn {
+        width: 100%;
+      }
+      .rv-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 10px;
+      }
       .ai-welcome {
         color: var(--text-secondary);
       }
@@ -6517,7 +6711,10 @@
           valid,
         };
       }
-      function scenarioOptions() {
+      // Scénarios réellement calculés — uniquement pour l'incident windows-delay.
+      // Tout autre incident renvoie [] (pas de fausse recommandation Keravel).
+      function scenarioOptions(issueId = "windows-delay") {
+        if (issueId !== "windows-delay") return [];
         let a = {
             id: "a",
             name: "Décaler la chaîne",
@@ -6533,7 +6730,7 @@
           },
           b = {
             id: "b",
-            name: "Compresser",
+            name: "Maintenir le jalon",
             projectId: "keravel",
             issueId: "windows-delay",
             changes: [
@@ -7808,7 +8005,15 @@
         if (hl) hl.textContent = aiHeaderLabel(c);
         $("#aiContext").innerHTML = aiContextHTML(c);
         let body = $("#aiBody"),
-          messages = app.ui.ai.messages || [];
+          messages = app.ui.ai.messages || [],
+          panel = $("#aiPanel"),
+          isResolve = app.ui.ai.view === "resolve";
+        // Mode Résoudre : décision, pas conversation → pas de composeur, pas d'historique
+        panel.classList.toggle("resolve-mode", isResolve);
+        if (isResolve) {
+          renderResolveView(c);
+          return;
+        }
         if (app.ui.ai.view === "history") {
           body.innerHTML = `<button class="ai-history-link" onclick="app.ui.ai.view='chat';renderAIPanel()">← Conversation</button><h3>Analyses précédentes</h3>${app.ui.ai.history.map((h, i) => `<button class="ai-history-item" onclick="reloadAIHistory(${i})"><small>${h.time} · ${h.context?.type || "global"}</small><b>${h.query}</b></button>`).join("") || '<p class="ai-welcome">Aucune analyse enregistrée.</p>'}`;
           return;
@@ -7967,25 +8172,103 @@
         app.ui.ai.view = "chat";
         renderAIPanel();
       }
-      function scenariosHTML() {
-        let xs = scenarioOptions();
-        return xs
-          .map(
-            (s) =>
-              `<div class="ai-scenario ${s.recommended ? "recommended" : ""}"><h3>Option ${s.id.toUpperCase()} — ${s.name}${s.recommended ? "<small>RECOMMANDÉ</small>" : ""}</h3><dl><dt>Date finale</dt><dd>${fmtDay(s.result.finalDate)}</dd><dt>Conflits</dt><dd>${s.result.resourceConflicts + s.result.dependencyConflicts.length}</dd><dt>Tâches déplacées</dt><dd>${s.result.movedTasks}</dd></dl>${s.result.valid ? `<button class="ai-btn ${s.recommended ? "ai-btn-primary" : "ai-btn-secondary"}" onclick="simulate('${s.id}')">${s.recommended ? "Simuler cette option" : "Simuler"}</button>` : `<button class="ai-btn ai-btn-secondary" onclick="simulate('${s.id}');autoFixSimulation()">Corriger et simuler</button>`}</div>`,
-          )
-          .join("");
-      }
+      // KANVIX · RÉSOUDRE — expérience de décision (pas de conversation)
       function openScenarios(issueId = "windows-delay") {
-        let i = issue(issueId);
         openAIPanel({ type: "issue", issueId });
-        app.ui.ai.messages = [
-          {
-            role: "assistant",
-            html: `<p><b>Situation</b><br>${i.comment}</p><p><b>Impact</b><br>${getCriticalImpacts(i.taskId).length} tâches en aval.</p>${scenariosHTML()}`,
-          },
-        ];
+        app.ui.ai.view = "resolve";
         renderAIPanel();
+      }
+      // Justification « pourquoi recommandé » depuis les résultats réels du moteur
+      function scenarioRationale(s, ms) {
+        let r = s.result,
+          pts = [];
+        if (!r.milestoneConflicts.length) pts.push("Jalon final conservé");
+        else
+          pts.push(
+            `Jalon repoussé de ${r.projectDelay} jour${r.projectDelay > 1 ? "s" : ""}`,
+          );
+        if (!r.resourceConflicts) pts.push("Aucun conflit de ressource");
+        else
+          pts.push(
+            `${r.resourceConflicts} conflit${r.resourceConflicts > 1 ? "s" : ""} de ressource`,
+          );
+        pts.push(
+          `Impact limité à ${r.movedTasks} tâche${r.movedTasks > 1 ? "s" : ""}`,
+        );
+        return pts;
+      }
+      function scenarioJalonText(s, ms) {
+        let r = s.result;
+        if (r.milestoneConflicts.length)
+          return `${fmtDay(r.finalDate)} · +${r.projectDelay} j`;
+        return `${ms ? fmtDay(ms.date) : fmtDay(r.finalDate)} · conservé`;
+      }
+      function resolveScenarioCard(s, ms, primary) {
+        let r = s.result,
+          changes = (s.changes || [])
+            .map((ch) => {
+              let tk = task(ch.taskId);
+              if (!tk) return "";
+              return `<div class="rv-change"><b>${esc(tk.name)}</b><span>${fmtDay(tk.start)} → ${fmtDay(ch.start)}</span></div>`;
+            })
+            .join(""),
+          rationale = primary
+            ? `<div class="rv-why"><small>Pourquoi cette option ?</small><ul>${scenarioRationale(s, ms)
+                .map((p) => `<li>${esc(p)}</li>`)
+                .join("")}</ul></div>`
+            : "",
+          jalonClass = r.milestoneConflicts.length ? "warn" : "ok",
+          btn = r.valid
+            ? `<button class="ai-btn ${primary ? "ai-btn-primary" : "ai-btn-secondary"}" onclick="simulate('${s.id}')">Simuler dans le planning</button>`
+            : `<button class="ai-btn ai-btn-secondary" onclick="simulate('${s.id}');autoFixSimulation()">Corriger et simuler</button>`;
+        return `<section class="rv-scenario ${primary ? "recommended" : ""}" aria-label="${primary ? "Recommandé : " : "Alternative : "}${esc(s.name)}">
+          <div class="rv-scenario-head"><span class="rv-tag ${primary ? "reco" : "alt"}">${primary ? "Recommandé" : "Autre option"}</span><h3>${esc(s.name)}</h3></div>
+          ${rationale}
+          <dl class="rv-metrics">
+            <div><dt>Jalon final</dt><dd class="rv-jalon ${jalonClass}">${scenarioJalonText(s, ms)}</dd></div>
+            <div><dt>Tâches réorganisées</dt><dd>${r.movedTasks}</dd></div>
+            <div><dt>Conflits ressources</dt><dd>${r.resourceConflicts || "0"}</dd></div>
+            <div><dt>Dépendances</dt><dd>${r.dependencyConflicts.length ? `${r.dependencyConflicts.length} incompatible${r.dependencyConflicts.length > 1 ? "s" : ""}` : "✓ cohérentes"}</dd></div>
+          </dl>
+          ${changes ? `<details class="rv-details"><summary>Voir les changements</summary><div class="rv-changes">${changes}</div></details>` : ""}
+          ${btn}
+        </section>`;
+      }
+      function renderResolveView(c) {
+        let body = $("#aiBody"),
+          i = issue(c.issueId),
+          t = i ? task(i.taskId) : null,
+          ms = i ? app.milestones.find((m) => m.projectId === i.projectId) : null,
+          scenarios = [...scenarioOptions(c.issueId)].sort(
+            (a, b) => (b.recommended ? 1 : 0) - (a.recommended ? 1 : 0),
+          );
+        // SITUATION
+        let situation = `<div class="rv-block"><h4 class="rv-title">Situation</h4><p class="rv-lead">${esc(t ? t.name : i?.title || "")}</p><p class="rv-text">${esc(i?.comment || "")}</p></div>`;
+        // IMPACT (données réelles, petit indicateur — pas de gros bloc rouge)
+        let impacts = t ? getCriticalImpacts(t.id) : [],
+          delay = i ? calculateProjectDelay(i.projectId) : 0,
+          end = i ? calculateProjectEnd(i.projectId) : null,
+          msLate = ms && end && date(end) > date(ms.date);
+        let impactRows = [
+          delay ? `<b>+${delay} jour${delay > 1 ? "s" : ""}</b> calculé${delay > 1 ? "s" : ""}` : "",
+          impacts.length ? `${impacts.length} tâche${impacts.length > 1 ? "s" : ""} affectée${impacts.length > 1 ? "s" : ""}` : "",
+          ms && msLate ? `${esc(ms.name)} repoussé au ${fmtDay(end)}` : "",
+        ].filter(Boolean);
+        let impact = impactRows.length
+          ? `<div class="rv-block"><h4 class="rv-title">Impact</h4><div class="rv-impact"><span class="rv-dot"></span><div>${impactRows.map((r) => `<div>${r}</div>`).join("")}</div></div></div>`
+          : "";
+        if (!scenarios.length) {
+          // §24 — état honnête : aucun scénario automatique pour cet incident
+          body.innerHTML =
+            situation +
+            impact +
+            `<div class="rv-block"><h4 class="rv-title">Analyse du problème</h4><p class="rv-text">Aucun scénario automatique n’est encore disponible pour ce type de situation dans le POC.</p><div class="rv-actions">${t ? `<button class="ai-btn ai-btn-secondary" onclick="closeAIPanel();focusPlanningTask('${t.id}')">Voir dans le planning</button>` : ""}${t ? `<button class="ai-btn ai-btn-secondary" onclick="closeAIPanel();explainIssue('${i.id}')">Examiner les impacts</button>` : ""}</div></div>`;
+          return;
+        }
+        body.innerHTML =
+          situation +
+          impact +
+          `<div class="rv-solutions">${scenarios.map((s, idx) => resolveScenarioCard(s, ms, idx === 0)).join("")}</div>`;
       }
       // ---------------- Documents & Photos (composants partagés) ----------------
       const DOC_CATEGORIES = [
@@ -8722,9 +9005,11 @@
         setTimeout(() => t.classList.remove("show"), 4000);
       }
       function simulate(id) {
+        let issueId = app.ui.ai.context?.issueId || "windows-delay";
         closeOverlay("modal");
         closeAIPanel();
-        app.simulation = scenarioOptions().find((s) => s.id === id);
+        app.simulation = scenarioOptions(issueId).find((s) => s.id === id);
+        if (!app.simulation) return;
         app.ui.planningProject = app.simulation.projectId;
         app.ui.periodAnchor = app.simulation.changes[0].start;
         save();
