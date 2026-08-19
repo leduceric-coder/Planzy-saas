@@ -7627,6 +7627,7 @@
       // Modifier un chantier (SIDEWINDOW, champs minimaux)
       function openProjectEdit(id) {
         closeDrawerMenu();
+        if (!guardEditable(id)) return;
         let p = project(id),
           ms = app.milestones.find((m) => m.projectId === id);
         drawerForm(
@@ -7803,7 +7804,7 @@
           host.innerHTML =
             `<button class="link drawer-back" onclick="wizardGo('inprogress-1')">← Retour</button>` +
             `<p class="muted">REPRENDRE UN CHANTIER EN COURS · 2/2</p><h2>Où en êtes-vous aujourd’hui ?</h2>` +
-            `<form id="wizForm" class="drawer-form" onsubmit="event.preventDefault();wizardGo('inprogress-summary')">` +
+            `<form id="wizForm" class="drawer-form" onsubmit="event.preventDefault();wizardSubmitInProgress2()">` +
             `<label>Prochain jalon / objectif<input name="milestoneName" value="${esc(d.milestoneName || "")}" placeholder="Contrôle second œuvre"></label>` +
             `<label>Date du prochain jalon<input name="milestoneDate" type="date" value="${d.milestoneDate || ""}"></label>` +
             `<label>Intervention en cours (facultatif)<input name="currentName" value="${esc(d.currentName || "")}" placeholder="Pose des menuiseries"></label>` +
@@ -7816,6 +7817,7 @@
             `<label>Date de début<input name="nextStart" type="date" value="${d.nextStart || ""}"></label>` +
             `<label>Date de fin<input name="nextEnd" type="date" value="${d.nextEnd || ""}"></label>` +
             `</details>` +
+            `<p class="form-error" id="wizError"></p>` +
             `<div class="drawer-form-actions"><button type="button" class="btn" onclick="closeOverlay('drawer')">Annuler</button><button class="btn primary" type="submit">Continuer</button></div></form>`;
           return;
         }
@@ -7918,9 +7920,42 @@
         });
         finishWizard(pid);
       }
+      // Validation des dates du wizard « reprendre un chantier » (dates au
+      // format YYYY-MM-DD → comparaison lexicographique = ordre chronologique).
+      function validateInProgressDates(d) {
+        if (
+          d.nextName &&
+          d.nextName.trim() &&
+          d.nextStart &&
+          d.nextEnd &&
+          d.nextEnd < d.nextStart
+        )
+          return "La date de fin doit être postérieure à la date de début.";
+        if (
+          d.currentName &&
+          d.currentName.trim() &&
+          d.currentEnd &&
+          d.currentEnd < localDateKey(getDemoNow())
+        )
+          return "L’intervention en cours ne peut pas se terminer avant aujourd’hui.";
+        return "";
+      }
+      // Soumission étape 2/2 : on valide les dates avant d'atteindre le résumé.
+      function wizardSubmitInProgress2() {
+        captureWizard();
+        let err = validateInProgressDates(app.ui.wizard.data),
+          el = document.getElementById("wizError");
+        if (err) {
+          if (el) el.textContent = err;
+          return;
+        }
+        wizardGo("inprogress-summary");
+      }
       function createInProgressFromWizard() {
         let d = app.ui.wizard.data;
         if (!d.name || !d.name.trim()) return;
+        // Backstop : ne jamais créer sur dates incohérentes (appel direct).
+        if (validateInProgressDates(d)) return;
         snapshot();
         let pid = "project-" + Date.now(),
           now = localDateTime(getDemoNow());
@@ -9461,13 +9496,15 @@
             );
       }
       function renderDocuments() {
-        let pid = app.ui.documentProject || "all";
+        let pid = app.ui.documentProject || "all",
+          // Filtre sur un chantier non actif : pas de « + Ajouter » (lecture seule).
+          addBtn =
+            pid === "all" || isProjectActive(pid)
+              ? `<button class="btn primary" onclick="openDocumentForm('${pid === "all" ? "" : pid}')">${icon("plus")} Ajouter</button>`
+              : "";
         return (
-          header(
-            "Documents",
-            "Les bons documents, au bon moment",
-            `<button class="btn primary" onclick="openDocumentForm('${pid === "all" ? "" : pid}')">${icon("plus")} Ajouter</button>`,
-          ) + documentsBody(pid, true)
+          header("Documents", "Les bons documents, au bon moment", addBtn) +
+          documentsBody(pid, true)
         );
       }
       function filteredPhotos(pid) {
@@ -9491,13 +9528,15 @@
         );
       }
       function renderPhotos() {
-        let pid = app.ui.photoProject || "all";
+        let pid = app.ui.photoProject || "all",
+          // Filtre sur un chantier non actif : pas de « + Ajouter » (lecture seule).
+          addBtn =
+            pid === "all" || isProjectActive(pid)
+              ? `<button class="btn primary" onclick="openPhotoForm('${pid === "all" ? "" : pid}')">${icon("plus")} Ajouter</button>`
+              : "";
         return (
-          header(
-            "Photos",
-            "Ce qui s’est passé sur le terrain",
-            `<button class="btn primary" onclick="openPhotoForm('${pid === "all" ? "" : pid}')">${icon("plus")} Ajouter</button>`,
-          ) + photosBody(pid, true)
+          header("Photos", "Ce qui s’est passé sur le terrain", addBtn) +
+          photosBody(pid, true)
         );
       }
       function renderImpact() {
@@ -10810,21 +10849,50 @@
           )
           .join("");
       }
+      // Options « Lié à une tâche » : uniquement les tâches de chantiers ACTIFS.
+      // Si un chantier est fourni, on restreint à ses propres tâches (cohérence
+      // document.projectId === task.projectId).
+      function docTaskOptions(pid) {
+        return (
+          `<option value="">Aucune</option>` +
+          app.tasks
+            .filter(
+              (t) => isProjectActive(t.projectId) && (!pid || t.projectId === pid),
+            )
+            .map((t) => `<option value="${t.id}">${esc(t.name)}</option>`)
+            .join("")
+        );
+      }
+      // Quand le chantier change, le select Tâche ne propose que ses tâches.
+      function syncDocTaskOptions(sel) {
+        let ts = sel.closest("form")?.querySelector('[name="taskId"]');
+        if (ts) ts.innerHTML = docTaskOptions(sel.value);
+      }
       function openDocumentForm(preselect = app.ui.projectId || app.ui.documentProject) {
         if (preselect && !guardEditable(preselect)) return;
+        let actives = app.projects.filter(isProjectActive),
+          initialPid =
+            preselect && isProjectActive(preselect)
+              ? preselect
+              : actives[0]?.id || "";
         drawerForm(
           "Ajouter un document",
           `<label>Titre<input name="name" required placeholder="Nom du document"></label>` +
-            `<label>Chantier<select name="projectId">${app.projects.filter(isProjectActive).map((p) => `<option value="${p.id}" ${p.id === preselect ? "selected" : ""}>${esc(p.name)}</option>`).join("")}</select></label>` +
+            `<label>Chantier<select name="projectId" onchange="syncDocTaskOptions(this)">${actives.map((p) => `<option value="${p.id}" ${p.id === initialPid ? "selected" : ""}>${esc(p.name)}</option>`).join("")}</select></label>` +
             `<label>Catégorie<select name="category">${docCategoryOptions("plans")}</select></label>` +
-            `<label>Lié à une tâche (facultatif)<select name="taskId"><option value="">Aucune</option>${app.tasks.map((t) => `<option value="${t.id}">${esc(t.name)} · ${esc(project(t.projectId).name)}</option>`).join("")}</select></label>` +
+            `<label>Lié à une tâche (facultatif)<select name="taskId">${docTaskOptions(initialPid)}</select></label>` +
             `<label>Représentation<select name="type"><option value="PDF">PDF</option><option value="XLSX">Tableur</option><option value="IMG">Image</option></select></label>`,
           (f) => {
+            // Intégrité : une tâche liée impose son propre chantier (jamais un mix).
+            let taskId = f.get("taskId") || null,
+              linkedTask = taskId ? task(taskId) : null,
+              projectId = linkedTask ? linkedTask.projectId : f.get("projectId");
+            if (!guardEditable(projectId)) return false;
             app.documents.push({
               id: "doc-" + Date.now(),
               name: f.get("name"),
-              projectId: f.get("projectId"),
-              taskId: f.get("taskId") || null,
+              projectId,
+              taskId,
               category: f.get("category"),
               type: f.get("type") || "PDF",
               date: localDateTime(getDemoNow()),
@@ -10909,7 +10977,10 @@
       function openPhotoForm(projectId = app.ui.projectId) {
         if (projectId && !guardEditable(projectId)) return;
         let hasProject = projectId && project(projectId),
-          taskList = hasProject ? getProjectTasks(projectId) : app.tasks;
+          // En global, jamais toutes les tâches : uniquement chantiers actifs.
+          taskList = hasProject
+            ? getProjectTasks(projectId)
+            : app.tasks.filter((t) => isProjectActive(t.projectId));
         drawerForm(
           "Ajouter une photo",
           (hasProject
@@ -10919,12 +10990,16 @@
             `<label>Commentaire<textarea name="comment" rows="2" placeholder="Ce que montre la photo">Photo chantier</textarea></label>`,
           (f) => {
             let tid = f.get("taskId"),
-              t = task(tid),
-              pid = hasProject ? projectId : f.get("projectId");
+              linkedTask = tid ? task(tid) : null,
+              pid = hasProject ? projectId : f.get("projectId"),
+              targetProjectId = linkedTask?.projectId || pid;
+            // Verrou obligatoire : aucune photo sur un chantier non actif,
+            // même via une tâche historique.
+            if (!guardEditable(targetProjectId)) return false;
             addPhoto({
-              projectId: t?.projectId || pid,
+              projectId: targetProjectId,
               taskId: tid || null,
-              resourceId: t?.resourceId || null,
+              resourceId: linkedTask?.resourceId || null,
               author: "Eric",
               comment: f.get("comment") || "Photo chantier",
             });
