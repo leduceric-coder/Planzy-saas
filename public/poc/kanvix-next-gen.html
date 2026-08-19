@@ -250,35 +250,6 @@
       .nav button.active svg {
         stroke: var(--accent);
       }
-      .nav .assistant-entry {
-        position: relative;
-        margin-top: 18px;
-        color: var(--sidebar-text);
-      }
-      .nav .assistant-entry svg {
-        stroke: var(--accent);
-      }
-      .nav .assistant-entry:before {
-        content: "";
-        position: absolute;
-        top: -10px;
-        left: 10px;
-        right: 10px;
-        height: 1px;
-        background: var(--sidebar-border);
-      }
-      .nav .assistant-entry.ai-nav-active {
-        background: var(--sidebar-active-bg) !important;
-        color: var(--sidebar-active-text) !important;
-      }
-      .nav .assistant-entry.ai-nav-active:after {
-        content: "";
-        width: 6px;
-        height: 6px;
-        margin-left: auto;
-        border-radius: 50%;
-        background: var(--accent);
-      }
       /* Profile */
       .profile {
         margin-top: auto;
@@ -1748,6 +1719,258 @@
       }
       .rstate {
         margin: 6px 0 4px;
+      }
+      .rstate.muted {
+        color: var(--text-tertiary);
+      }
+      .rstate.muted i {
+        background: var(--text-tertiary);
+      }
+
+      /* ---------------- Fiche Ressource V4.6 ---------------- */
+      .rfiche-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .rfiche-id {
+        min-width: 0;
+      }
+      .rfiche-role {
+        color: var(--text-secondary);
+        font-size: 13px;
+        margin: 2px 0 0;
+      }
+      .rc-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .rc-row {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .rc-row small {
+        color: var(--text-tertiary);
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+      .rc-row a,
+      .rc-row b {
+        font-size: 14px;
+        color: var(--text);
+        text-decoration: none;
+      }
+      .rc-row a:hover {
+        color: var(--accent);
+        text-decoration: underline;
+      }
+      .rc-account {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+      .rc-sub {
+        color: var(--text-tertiary);
+        font-size: 12px;
+      }
+      .rc-account-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+      }
+      .rc-pending {
+        display: inline-flex;
+        align-items: center;
+        font-size: 13px;
+        color: var(--warning-ink);
+        padding: 8px 4px;
+      }
+      .invite-intro {
+        font-size: 13px;
+        color: var(--text-secondary);
+        margin: 0;
+      }
+      .invite-list {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 4px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        font-size: 13px;
+        color: var(--text-secondary);
+      }
+      /* Badge non-lu (Équipe) */
+      .tc-unread {
+        display: inline-flex;
+        align-items: center;
+        margin-left: 8px;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--accent-ink);
+        vertical-align: middle;
+      }
+      /* Archives */
+      .arch-card {
+        display: grid;
+        grid-template-columns: 36px 1fr auto;
+        gap: 12px;
+        align-items: center;
+        padding: 12px 14px;
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-md);
+        background: var(--surface);
+        margin-bottom: 10px;
+      }
+      .arch-id {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+      }
+      .arch-id small {
+        color: var(--text-secondary);
+        font-size: 12px;
+      }
+      .arch-id .arch-date {
+        color: var(--text-tertiary);
+      }
+      /* Messagerie sidewindow */
+      .drawer-back {
+        display: inline-block;
+        margin-bottom: 8px;
+      }
+      .conv-head {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 4px 0 8px;
+      }
+      .conv-who {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+        min-width: 0;
+      }
+      .conv-who b {
+        font-size: 15px;
+      }
+      .conv-who small {
+        color: var(--text-secondary);
+        font-size: 12px;
+      }
+      .conv-online {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 11px;
+        color: var(--success-ink);
+        margin-top: 2px;
+      }
+      .conv-online i {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--success);
+      }
+      .conv-ctx {
+        font-size: 12px;
+        color: var(--text-secondary);
+        padding: 8px 12px;
+        background: var(--surface-subtle);
+        border-radius: var(--radius-sm);
+        margin-bottom: 12px;
+      }
+      .conv-thread {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 4px 0 12px;
+        overflow-y: auto;
+        flex: 1;
+        min-height: 120px;
+      }
+      .conv-day {
+        text-align: center;
+        font-size: 11px;
+        color: var(--text-tertiary);
+        margin: 4px 0;
+      }
+      .conv-day.muted {
+        padding: 20px 0;
+      }
+      .conv-bubble {
+        max-width: 78%;
+        padding: 9px 12px 6px;
+        border-radius: 14px;
+        font-size: 14px;
+        line-height: 1.4;
+        position: relative;
+      }
+      .conv-bubble time {
+        display: block;
+        font-size: 10px;
+        opacity: 0.65;
+        margin-top: 3px;
+        text-align: right;
+      }
+      .conv-bubble.them {
+        align-self: flex-start;
+        background: var(--surface-muted);
+        color: var(--text);
+        border-bottom-left-radius: 4px;
+      }
+      .conv-bubble.me {
+        align-self: flex-end;
+        background: var(--accent);
+        color: #fff;
+        border-bottom-right-radius: 4px;
+      }
+      .conv-compose {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        position: sticky;
+        bottom: 0;
+        padding: 12px 0 4px;
+        background: var(--surface);
+        border-top: 1px solid var(--border-light);
+      }
+      .conv-compose input {
+        flex: 1;
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 9px 14px;
+        font-size: 14px;
+        background: var(--surface);
+        color: var(--text);
+      }
+      .conv-compose input:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+      .conv-compose .send {
+        flex: 0 0 auto;
+      }
+      /* Détails techniques cockpit (Expert) */
+      .cockpit-tech {
+        margin-top: 10px;
+        font-size: 12px;
+      }
+      .cockpit-tech summary {
+        cursor: pointer;
+        color: var(--text-secondary);
+        font-weight: 600;
+      }
+      .cockpit-tech p {
+        margin: 6px 0 0;
+        color: var(--text-secondary);
       }
 
       /* ---------------- Charge des ressources ---------------- */
@@ -4040,17 +4263,6 @@
           background: none;
           color: var(--accent);
         }
-        .nav .assistant-entry {
-          margin-top: 0;
-        }
-        .nav .assistant-entry:before,
-        .nav .assistant-entry.ai-nav-active:after {
-          display: none;
-        }
-        .nav .assistant-entry.ai-nav-active {
-          background: none !important;
-          color: var(--accent) !important;
-        }
         .main {
           padding: 22px 16px 84px;
         }
@@ -4438,6 +4650,12 @@
             scope: "Interne",
             type: "person",
             capacity: 1,
+            jobTitle: "Conducteur de travaux",
+            phone: "06 12 34 56 78",
+            email: "eric@exemple-kanvix.test",
+            status: "active",
+            accountStatus: "active",
+            lastSeen: "2026-08-19T08:17",
           },
           {
             id: "mathieu",
@@ -4445,6 +4663,12 @@
             scope: "Interne",
             type: "person",
             capacity: 1,
+            jobTitle: "Plaquiste",
+            phone: "06 23 45 67 89",
+            email: "mathieu@exemple-kanvix.test",
+            status: "active",
+            accountStatus: "active",
+            lastSeen: "2026-08-19T07:52",
           },
           {
             id: "marc",
@@ -4452,13 +4676,24 @@
             scope: "Interne",
             type: "person",
             capacity: 1,
+            jobTitle: "Plombier",
+            phone: "06 34 56 78 90",
+            status: "active",
+            accountStatus: "none",
           },
           {
             id: "thomas",
-            name: "Thomas",
+            name: "Thomas Martin",
             scope: "Externe",
             type: "person",
             capacity: 1,
+            jobTitle: "Menuisier",
+            companyName: "Menuiserie Armor",
+            phone: "06 45 67 89 01",
+            email: "thomas@exemple-kanvix.test",
+            status: "active",
+            accountStatus: "active",
+            lastSeen: "2026-08-19T08:04",
           },
           {
             id: "legall",
@@ -4466,6 +4701,10 @@
             scope: "Externe",
             type: "company",
             capacity: 2,
+            phone: "02 98 00 11 22",
+            email: "contact@legall-elec.test",
+            contactName: "Yann Le Gall",
+            status: "active",
           },
           {
             id: "armor",
@@ -4473,6 +4712,10 @@
             scope: "Externe",
             type: "company",
             capacity: 2,
+            phone: "02 98 33 44 55",
+            email: "contact@menuiserie-armor.test",
+            contactName: "Thomas Martin",
+            status: "active",
           },
           {
             id: "coloris",
@@ -4480,6 +4723,9 @@
             scope: "Externe",
             type: "company",
             capacity: 2,
+            phone: "02 98 66 77 88",
+            email: "contact@coloris-peinture.test",
+            status: "active",
           },
         ],
         tasks: [
@@ -6089,6 +6335,7 @@
                     ${primaryTaskId ? `<button class="btn small secondary" onclick="focusPlanningTask('${primaryTaskId}')">Voir dans le planning</button>` : ""}
                   </div>
                   ${sum.issues.length > 1 ? `<p class="muted small">+${sum.issues.length - 1} autre${sum.issues.length > 2 ? "s" : ""} point${sum.issues.length > 2 ? "s" : ""}</p>` : ""}
+                  ${expert && primaryTask ? `<details class="cockpit-tech"><summary>Détails techniques</summary><p><b>Cause :</b> ${esc(sum.primaryIssue.comment)}</p><p><b>Tâche source :</b> ${esc(primaryTask.name)}${primaryResource ? ` · ${esc(primaryResource.name)}` : ""}</p>${sum.impacts ? `<p><b>Chaîne d’impact :</b> ${getCriticalImpacts(primaryTaskId).map((x) => esc(x.name)).join(" → ")}</p>` : ""}</details>` : ""}
                 </div>
               </div>` : `${sum.health === "success" ? `<p class="success-state">✓ Aucun point bloquant</p>` : ""}`}
               ${sum.milestone ? `<div class="cockpit-zone">
@@ -6195,7 +6442,28 @@
           type = app.ui.teamTypeFilter || "all",
           days = teamPeriodDays(),
           pilot = app.settings.level !== "essential",
-          entries = app.resources.map((r) => ({
+          showArchived = pilot && app.ui.teamArchived,
+          activeResources = app.resources.filter((r) => resourceActive(r)),
+          archivedResources = app.resources.filter((r) => !resourceActive(r));
+        // Vue Archives (pilotage / expert) : liste calme
+        if (showArchived) {
+          let archList = archivedResources.length
+            ? archivedResources
+                .map(
+                  (r) =>
+                    `<div class="arch-card"><div>${resourceAvatar(r, true)}</div><div class="arch-id"><b>${esc(r.name)}</b><small>${[r.jobTitle, r.companyName].filter(Boolean).map(esc).join(" · ") || (r.type === "company" ? "Entreprise" : "Personne")}</small>${r.archivedAt ? `<small class="arch-date">Archivé le ${fmtDay(r.archivedAt)}</small>` : ""}</div><button class="btn" onclick="restoreResource('${r.id}')">Réactiver</button></div>`,
+                )
+                .join("")
+            : empty("Aucune archive", "Aucune ressource archivée.");
+          return (
+            header(
+              "Équipe",
+              "Ressources archivées",
+              `<div class="team-actions"><button class="link" onclick="app.ui.teamArchived=false;save();renderPage()">← Tous actifs</button></div>`,
+            ) + `<div class="team-list">${archList}</div>`
+          );
+        }
+        let entries = activeResources.map((r) => ({
             r,
             state: getResourcePeriodState(r.id, days),
             next: resourceNextStart(r.id, days),
@@ -6260,7 +6528,7 @@
             )
             .join(
               "",
-            )}</div></div></div><div class="team-list">${list}</div>`
+            )}</div></div>${pilot && archivedResources.length ? `<div><small>&nbsp;</small><div class="segment"><button onclick="app.ui.teamArchived=true;save();renderPage()">Archives · ${archivedResources.length}</button></div></div>` : ""}</div><div class="team-list">${list}</div>`
         );
       }
       function teamCard(id, days, state) {
@@ -6312,7 +6580,11 @@
         } else {
           block = `<b>Aucune intervention prévue</b><span>Disponible ${teamPeriodWord()}</span>`;
         }
-        return `<article class="team-card" role="button" tabindex="0" aria-label="${esc(r.name)} — ${resourceStateLabel(state)}" onclick="openResource('${id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('${id}')}">${resourceAvatar(r)}<div class="tc-id"><h3>${esc(r.name)}</h3><p>${r.scope} · ${typeLabel}</p></div><div class="tc-mission">${block}</div><div class="tc-state ${tone}"><i></i>${resourceStateLabel(state)}</div></article>`;
+        let unread = unreadFromArtisan(id),
+          unreadBadge = unread
+            ? `<span class="tc-unread" aria-label="${unread} message${unread > 1 ? "s" : ""} non lu${unread > 1 ? "s" : ""}">●&nbsp;${unread}</span>`
+            : "";
+        return `<article class="team-card" role="button" tabindex="0" aria-label="${esc(r.name)} — ${resourceStateLabel(state)}" onclick="openResource('${id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('${id}')}">${resourceAvatar(r)}<div class="tc-id"><h3>${esc(r.name)}${unreadBadge}</h3><p>${r.scope} · ${typeLabel}</p></div><div class="tc-mission">${block}</div><div class="tc-state ${tone}"><i></i>${resourceStateLabel(state)}</div></article>`;
       }
       function localDay(d) {
         return localDateKey(d);
@@ -7336,7 +7608,7 @@
           : "";
         $("#drawerContent").innerHTML =
           `<p class="muted">TÂCHE</p><h2>${esc(t.name)}</h2>${pill(taskTone(t), STATUS[t.status])}` +
-          `<div class="drawer-section"><b>${esc(project(t.projectId).name)}</b><p>${esc(resource(t.resourceId).name)}<br>${fmtRange(t)}</p><button class="link" onclick="closeOverlay('drawer');focusPlanningTask('${id}')">Voir dans le planning</button></div>` +
+          `<div class="drawer-section"><b>${esc(project(t.projectId).name)}</b><p>${esc(resource(t.resourceId).name)}<br>${fmtRange(t)}</p><button class="link" onclick="closeOverlay('drawer');focusPlanningTask('${id}')">Voir dans le planning</button>${canAccessArtisan(t.resourceId) ? ` · <button class="link" onclick="openConversation({resourceId:'${t.resourceId}',taskId:'${id}',projectId:'${t.projectId}',back:{type:'task',id:'${id}'}})">Message</button>` : ""}</div>` +
           `<div class="drawer-section"><div class="actions task-actions"><button class="btn primary" onclick="setTaskStatus('${id}', '${t.status === "doing" ? "done" : "doing"}')">${t.status === "doing" ? "Terminer" : "Démarrer"}</button>${menu}</div></div>` +
           (pilot
             ? `<div class="drawer-section"><h3>Impact</h3><p>${succ.length ? "Bloque : " + succ.map((x) => esc(x.name)).join(" → ") : "Aucun successeur direct"}</p></div>`
@@ -7351,11 +7623,105 @@
           tone = resourceStateTone(st);
         return `<div class="row" style="grid-template-columns:30px 1fr auto" onclick="openResource('${id}')">${resourceAvatar(r, true)}<div><h3>${esc(r.name)}</h3><p>${r.scope} · ${r.type === "company" ? "Entreprise" : "Personne"}</p></div><span class="rstate ${tone}"><i></i>${resourceStateLabel(st)}</span></div>`;
       }
+      // --- V4.6 RESSOURCE : lifecycle, accès, messagerie ---
+      function resourceActive(r) {
+        return (r?.status || "active") !== "archived";
+      }
+      // Ressources assignables aux nouvelles tâches (archivées exclues,
+      // sauf la valeur courante d'une tâche en cours de modification).
+      function assignableResources(keepId) {
+        return app.resources.filter(
+          (r) => resourceActive(r) || r.id === keepId,
+        );
+      }
+      function canAccessArtisan(resourceId) {
+        let r = resource(resourceId);
+        return r?.type === "person" && r?.accountStatus === "active";
+      }
+      // Filtre central des messages selon le contexte de conversation.
+      function conversationMessages({ resourceId, taskId, projectId } = {}) {
+        return app.messages.filter((m) => {
+          if (resourceId && m.resourceId !== resourceId) return false;
+          if (taskId && m.taskId !== taskId) return false;
+          if (projectId && m.projectId !== projectId) return false;
+          return true;
+        });
+      }
+      // Messages non lus reçus (côté conducteur) pour une ressource.
+      function unreadFromArtisan(resourceId) {
+        return app.messages.filter(
+          (m) => m.resourceId === resourceId && m.from === "artisan" && !m.read,
+        ).length;
+      }
+      function resourceReferences(id) {
+        return {
+          tasks: app.tasks.filter((t) => t.resourceId === id).length,
+          messages: app.messages.filter((m) => m.resourceId === id).length,
+          photos: app.photos.filter((p) => p.resourceId === id).length,
+          documents: app.documents.filter((d) => d.resourceId === id).length,
+        };
+      }
+      function canDeleteResource(id) {
+        let r = resourceReferences(id);
+        return r.tasks + r.messages + r.photos + r.documents === 0;
+      }
+      function archiveResource(id) {
+        let r = resource(id);
+        $("#modalContent").innerHTML =
+          `<h2>Archiver ${esc(r.name)} ?</h2><p class="muted">La ressource ne sera plus proposée dans les nouvelles affectations. Son historique restera disponible.</p><div class="pop-actions"><button class="btn" onclick="closeOverlay('modal')">Annuler</button><button class="btn primary" onclick="confirmArchiveResource('${id}')">Archiver</button></div>`;
+        $("#modal").classList.add("open");
+      }
+      function confirmArchiveResource(id) {
+        snapshot();
+        let r = resource(id);
+        r.status = "archived";
+        r.archivedAt = localDateTime(getDemoNow());
+        closeOverlay("modal");
+        closeOverlay("drawer");
+        save();
+        renderPage();
+        actionToast("Ressource archivée · Annuler disponible");
+      }
+      function restoreResource(id) {
+        snapshot();
+        let r = resource(id);
+        r.status = "active";
+        delete r.archivedAt;
+        save();
+        renderPage();
+        actionToast("Ressource réactivée");
+      }
+      function deleteResource(id) {
+        let r = resource(id);
+        if (!canDeleteResource(id)) {
+          $("#modalContent").innerHTML =
+            `<h2>Suppression impossible</h2><p class="muted">${esc(r.name)} est utilisée dans l’historique du chantier. Pour conserver la cohérence des données, archivez-la plutôt que de la supprimer.</p><div class="pop-actions"><button class="btn" onclick="closeOverlay('modal')">Annuler</button><button class="btn primary" onclick="closeOverlay('modal');archiveResource('${id}')">Archiver</button></div>`;
+          $("#modal").classList.add("open");
+          return;
+        }
+        $("#modalContent").innerHTML =
+          `<h2>Supprimer cette ressource ?</h2><p class="muted">Cette action supprimera définitivement la fiche de ${esc(r.name)}. Elle reste annulable.</p><div class="pop-actions"><button class="btn" onclick="closeOverlay('modal')">Annuler</button><button class="btn danger" onclick="confirmDeleteResource('${id}')">Supprimer</button></div>`;
+        $("#modal").classList.add("open");
+      }
+      function confirmDeleteResource(id) {
+        snapshot();
+        app.resources = app.resources.filter((r) => r.id !== id);
+        closeOverlay("modal");
+        closeOverlay("drawer");
+        save();
+        renderPage();
+        actionToast("Ressource supprimée · Annuler disponible");
+      }
       function openResource(id) {
         app.ui.selectedResource = id;
         app.ui.selectedIssue = null;
+        app.ui.conversation = null;
         let r = resource(id),
           isCompany = r.type === "company",
+          isPerson = r.type === "person",
+          archived = !resourceActive(r),
+          pilot = app.settings.level !== "essential",
+          expert = app.settings.level === "expert",
           todayKey = dayKey(TODAY),
           today = getResourceTasks(id)
             .filter(
@@ -7366,7 +7732,9 @@
             )
             .sort((a, b) => a.start.localeCompare(b.start)),
           next = getResourceTasks(id)
-            .filter((t) => t.status !== "done" && date(t.start) > date(TODAY))
+            .filter(
+              (t) => t.status !== "done" && dayKey(t.start) > todayKey,
+            )
             .sort((a, b) => a.start.localeCompare(b.start)),
           state = getResourceState(id, todayKey),
           tone = resourceStateTone(state),
@@ -7375,7 +7743,9 @@
             start: todayKey + "T00:00",
             end: todayKey + "T23:59",
           }),
-          showRebalance = state === "conflict" || state === "high",
+          showRebalance = !archived && (state === "conflict" || state === "high"),
+          acct = r.accountStatus || "none",
+          canMessage = canAccessArtisan(id) && !archived,
           missionLine = (t) =>
             `<div class="drawer-mission"><b>${fmtTime(t.start)}–${fmtTime(t.end)}</b><div><span>${esc(t.name)}</span><small>${project(t.projectId).name}</small></div>${pill(taskTone(t), STATUS[t.status])}</div>`,
           capacityBlock = isCompany
@@ -7389,14 +7759,106 @@
               return `<span class="wd ${resourceStateTone(st)}" title="${esc(fmtDay(days[i] + "T12:00") + " · " + resourceStateLabel(st))}"><i></i>${lbl}</span>`;
             })
             .join("")}</div>`;
+
+        // Identité : sous-titre métier / entreprise
+        let identityLine = [
+          isPerson && r.jobTitle ? esc(r.jobTitle) : isCompany ? "Entreprise" : "",
+          isPerson && r.companyName ? esc(r.companyName) : "",
+        ]
+          .filter(Boolean)
+          .join(" · ");
+
+        // Contact : seulement les infos disponibles
+        let contactRows = [];
+        if (r.phone)
+          contactRows.push(
+            `<div class="rc-row"><small>Téléphone</small><a href="tel:${esc(r.phone.replace(/\s/g, ""))}">${esc(r.phone)}</a></div>`,
+          );
+        if (r.email)
+          contactRows.push(
+            `<div class="rc-row"><small>Email</small><a href="mailto:${esc(r.email)}">${esc(r.email)}</a></div>`,
+          );
+        if (isCompany && r.contactName)
+          contactRows.push(
+            `<div class="rc-row"><small>Contact</small><b>${esc(r.contactName)}</b></div>`,
+          );
+        let contactBlock = contactRows.length
+          ? `<div class="drawer-section"><h3>Contact</h3><div class="rc-list">${contactRows.join("")}</div></div>`
+          : "";
+
+        // Accès Kanvix (personnes uniquement) — expert voit le détail complet
+        let accountBlock = "";
+        if (isPerson) {
+          let dot = acct === "active" ? "success" : acct === "invited" ? "warning" : acct === "disabled" ? "danger" : "muted",
+            label =
+              acct === "active"
+                ? "Compte Kanvix actif"
+                : acct === "invited"
+                  ? "Invitation envoyée"
+                  : acct === "disabled"
+                    ? "Accès désactivé"
+                    : "Aucun accès Kanvix",
+            detail = "";
+          if (acct === "active" && r.lastSeen && expert)
+            detail = `<small class="rc-sub">Dernière activité · ${fmtDay(r.lastSeen)} · ${fmtTime(r.lastSeen)}</small>`;
+          if (acct === "invited" && r.invitedAt)
+            detail = `<small class="rc-sub">${fmtDay(r.invitedAt)} · ${fmtTime(r.invitedAt)}</small>`;
+          let actions =
+            acct === "none"
+              ? `<button class="btn" onclick="openInviteForm('${id}')">Inviter sur Kanvix</button>`
+              : acct === "invited"
+                ? `<button class="btn" onclick="resendInvite('${id}')">Renvoyer</button><button class="btn" onclick="cancelInvite('${id}')">Annuler l’invitation</button>`
+                : acct === "active"
+                  ? `<button class="btn" onclick="disableAccount('${id}')">Désactiver l’accès</button>`
+                  : `<button class="btn" onclick="openInviteForm('${id}')">Réinviter</button>`;
+          accountBlock = `<div class="drawer-section"><h3>Accès Kanvix</h3><div class="rc-account"><span class="rstate ${dot}"><i></i>${label}</span>${detail}</div><div class="rc-account-actions">${actions}</div></div>`;
+        }
+
+        // Menu ••• (toujours disponible, indépendant du niveau)
+        let deletable = canDeleteResource(id),
+          menu = `<div class="more-menu"><button class="btn more-trigger" aria-haspopup="menu" aria-expanded="false" aria-label="Plus d’actions" onclick="toggleDrawerMenu(this)">${icon("more")}</button><div class="more-pop" role="menu"><button role="menuitem" onclick="closeDrawerMenu();openResourceForm('${id}')">Modifier</button>${archived ? `<button role="menuitem" onclick="closeDrawerMenu();restoreResource('${id}')">Réactiver</button>` : `<button role="menuitem" onclick="closeDrawerMenu();archiveResource('${id}')">Archiver</button>`}${isPerson && acct === "active" ? `<button role="menuitem" onclick="closeDrawerMenu();disableAccount('${id}')">Désactiver accès Kanvix</button>` : ""}<div class="more-sep"></div><button role="menuitem" class="danger" onclick="closeDrawerMenu();deleteResource('${id}')">Supprimer</button></div></div>`;
+
+        // Actions principales
+        let primaryActions = "";
+        if (archived) {
+          primaryActions = `<button class="btn primary" onclick="restoreResource('${id}')">Réactiver</button>`;
+        } else {
+          let msgBtn = canMessage
+            ? `<button class="btn primary" onclick="openConversation({resourceId:'${id}',back:{type:'resource',id:'${id}'}})">${icon("resources")} Message</button>`
+            : isPerson && acct === "none"
+              ? `<button class="btn primary" onclick="openInviteForm('${id}')">Inviter sur Kanvix</button>`
+              : isPerson && acct === "invited"
+                ? `<span class="rc-pending">Invitation en attente</span>`
+                : "";
+          let planBtn = `<button class="btn" onclick="closeOverlay('drawer');app.ui.planningResource='${id}';go('planning')">Voir dans le planning</button>`;
+          let rebalanceBtn = showRebalance
+            ? `<button class="btn" onclick="openAIPanel({type:'resource',resourceId:'${id}'})">${icon("assistant")} Rééquilibrer</button>`
+            : "";
+          primaryActions = msgBtn + planBtn + rebalanceBtn;
+        }
+
+        // État affiché : ARCHIVÉ ne calcule pas d'état opérationnel
+        let stateHeader = archived
+          ? `<div class="rstate muted"><i></i>Archivé${r.archivedAt ? ` le ${fmtDay(r.archivedAt)}` : ""}</div>`
+          : `<div class="rstate ${tone}"><i></i>${resourceStateLabel(state)}</div>`;
+
+        // Opérationnel (mission/charge) masqué si archivé
+        let operationalBlocks = archived
+          ? ""
+          : `<div class="drawer-section"><h3>Aujourd’hui</h3>${today.length ? today.map(missionLine).join("") : '<p class="muted">Aucune intervention aujourd’hui.</p>'}${capacityBlock}</div>` +
+            (pilot && next.length
+              ? `<div class="drawer-section"><h3>Ensuite</h3>${next.slice(0, 3).map(missionLine).join("")}</div>`
+              : "") +
+            (pilot
+              ? `<div class="drawer-section"><h3>Charge semaine</h3>${weekDots}</div>`
+              : "");
+
         $("#drawerContent").innerHTML =
-          `<p class="muted">${r.scope.toUpperCase()} · ${isCompany ? "ENTREPRISE" : "PERSONNE"}</p><h2>${esc(r.name)}</h2><div class="rstate ${tone}"><i></i>${resourceStateLabel(state)}</div>` +
-          `<div class="drawer-section"><h3>Aujourd’hui</h3>${today.length ? today.map(missionLine).join("") : '<p class="muted">Aucune intervention aujourd’hui.</p>'}${capacityBlock}</div>` +
-          (next.length
-            ? `<div class="drawer-section"><h3>Ensuite</h3>${next.slice(0, 3).map(missionLine).join("")}</div>`
-            : "") +
-          `<div class="drawer-section"><h3>Charge semaine</h3>${weekDots}</div>` +
-          `<div class="drawer-section actions"><button class="btn" onclick="closeOverlay('drawer');app.ui.planningResource='${id}';go('planning')">Voir dans le planning</button>${showRebalance ? `<button class="btn primary" onclick="openAIPanel({type:'resource',resourceId:'${id}'})">${icon("assistant")} Rééquilibrer</button>` : ""}</div>`;
+          `<div class="rfiche-head"><div class="rfiche-id"><span class="muted">${r.scope.toUpperCase()} · ${isCompany ? "ENTREPRISE" : "PERSONNE"}</span><h2>${esc(r.name)}</h2>${identityLine ? `<p class="rfiche-role">${identityLine}</p>` : ""}${stateHeader}</div>${menu}</div>` +
+          contactBlock +
+          accountBlock +
+          operationalBlocks +
+          `<div class="drawer-section actions">${primaryActions}</div>`;
         $("#drawer").classList.add("open");
       }
       function openIssue(id) {
@@ -7776,7 +8238,7 @@
           current ? "Modifier la tâche" : "Nouvelle tâche",
           `<label>Nom<input name="name" required placeholder="Nom" value="${esc(current?.name || "")}"></label>` +
             `<label>Chantier<select name="projectId">${app.projects.map((x) => `<option value="${x.id}" ${x.id === p ? "selected" : ""}>${esc(x.name)}</option>`).join("")}</select></label>` +
-            `<label>Ressource<select name="resourceId">${app.resources.map((r) => `<option value="${r.id}" ${r.id === current?.resourceId ? "selected" : ""}>${esc(r.name)}</option>`).join("")}</select></label>` +
+            `<label>Ressource<select name="resourceId">${assignableResources(current?.resourceId).map((r) => `<option value="${r.id}" ${r.id === current?.resourceId ? "selected" : ""}>${esc(r.name)}${resourceActive(r) ? "" : " (archivée)"}</option>`).join("")}</select></label>` +
             `<label>Début<input name="start" type="datetime-local" required value="${start}"></label>` +
             `<label>Fin<input name="end" type="datetime-local" required value="${end}"></label>` +
             `<label>Dépend de<select name="dep"><option value="">Aucune</option>${app.tasks.filter((t) => t.id !== editId).map((t) => `<option value="${t.id}" ${(current?.deps || []).includes(t.id) ? "selected" : ""}>${esc(t.name)}</option>`).join("")}</select></label>` +
@@ -7809,27 +8271,212 @@
           current ? "Enregistrer" : "Ajouter",
         );
       }
-      function openResourceForm() {
+      function openResourceForm(editId = "") {
+        let r = editId ? resource(editId) : null,
+          isCompany = r?.type === "company",
+          sel = (v, opt) => (v === opt ? "selected" : ""),
+          personFields = (show) =>
+            `<div id="personFields" style="display:${show ? "grid" : "none"};gap:12px">` +
+            `<label>Poste / métier<input name="jobTitle" placeholder="Menuisier, plaquiste…" value="${esc(r?.jobTitle || "")}"></label>` +
+            `<label>Entreprise (facultatif)<input name="companyName" placeholder="Entreprise de rattachement" value="${esc(r?.companyName || "")}"></label>` +
+            `</div>`,
+          companyFields = (show) =>
+            `<div id="companyFields" style="display:${show ? "grid" : "none"};gap:12px">` +
+            `<label>Contact principal (facultatif)<input name="contactName" placeholder="Nom du contact" value="${esc(r?.contactName || "")}"></label>` +
+            `<label>Capacité simultanée<input name="capacity" type="number" min="1" value="${r?.capacity || 2}"><small class="muted">Nombre de missions pouvant être assurées au même moment.</small></label>` +
+            `</div>`,
+          typeSelect = editId
+            ? `<input type="hidden" name="type" value="${r.type}">`
+            : `<label>Type<select name="type" onchange="document.getElementById('personFields').style.display=this.value==='person'?'grid':'none';document.getElementById('companyFields').style.display=this.value==='company'?'grid':'none'"><option value="person">Personne</option><option value="company">Entreprise</option></select></label>`;
         drawerForm(
-          "Nouvelle ressource",
-          `<label>Nom<input name="name" required placeholder="Nom"></label>` +
-            `<label>Type<select name="type" onchange="document.getElementById('capField').style.display=this.value==='company'?'grid':'none'"><option value="person">Personne</option><option value="company">Entreprise</option></select></label>` +
-            `<label>Rattachement<select name="scope"><option>Interne</option><option>Externe</option></select></label>` +
-            `<label id="capField" style="display:none">Capacité simultanée<input name="capacity" type="number" min="1" value="2"><small class="muted">Nombre de missions pouvant être assurées au même moment.</small></label>`,
+          editId ? "Modifier la ressource" : "Nouvelle ressource",
+          `<label>Nom<input name="name" required placeholder="Nom" value="${esc(r?.name || "")}"></label>` +
+            typeSelect +
+            `<label>Rattachement<select name="scope"><option ${sel(r?.scope, "Interne")}>Interne</option><option ${sel(r?.scope, "Externe")}>Externe</option></select></label>` +
+            personFields(editId ? !isCompany : true) +
+            companyFields(editId ? isCompany : false) +
+            `<label>Téléphone<input name="phone" placeholder="06 .. .. .. .." value="${esc(r?.phone || "")}"></label>` +
+            `<label>Email<input name="email" type="email" placeholder="email@exemple.test" value="${esc(r?.email || "")}"></label>`,
           (f) => {
-            let type = f.get("type");
-            app.resources.push({
-              id: "res-" + Date.now(),
-              name: f.get("name"),
-              scope: f.get("scope"),
-              type,
-              capacity:
-                type === "company" ? Math.max(1, +f.get("capacity") || 1) : 1,
-            });
-            save();
-            actionToast("Ressource ajoutée");
+            let type = editId ? r.type : f.get("type");
+            if (editId) {
+              r.name = f.get("name");
+              r.scope = f.get("scope");
+              r.phone = f.get("phone") || undefined;
+              r.email = f.get("email") || undefined;
+              if (type === "person") {
+                r.jobTitle = f.get("jobTitle") || undefined;
+                r.companyName = f.get("companyName") || undefined;
+              } else {
+                r.contactName = f.get("contactName") || undefined;
+                r.capacity = Math.max(1, +f.get("capacity") || 1);
+              }
+              save();
+              actionToast("Ressource modifiée");
+            } else {
+              let base = {
+                id: "res-" + Date.now(),
+                name: f.get("name"),
+                scope: f.get("scope"),
+                type,
+                status: "active",
+                phone: f.get("phone") || undefined,
+                email: f.get("email") || undefined,
+              };
+              if (type === "person")
+                app.resources.push({
+                  ...base,
+                  capacity: 1,
+                  jobTitle: f.get("jobTitle") || undefined,
+                  companyName: f.get("companyName") || undefined,
+                  accountStatus: "none",
+                });
+              else
+                app.resources.push({
+                  ...base,
+                  capacity: Math.max(1, +f.get("capacity") || 1),
+                  contactName: f.get("contactName") || undefined,
+                });
+              save();
+              actionToast("Ressource ajoutée");
+            }
           },
+          editId ? "Enregistrer" : "Ajouter",
         );
+      }
+      // Invitation Kanvix (accès Artisan) = SIDEWINDOW
+      function openInviteForm(id) {
+        let r = resource(id);
+        drawerForm(
+          "Inviter " + r.name.split(" ")[0] + " sur Kanvix",
+          `<p class="invite-intro">${esc(r.name.split(" ")[0])} recevra un accès simple à :</p>` +
+            `<ul class="invite-list"><li>✓ ses tâches du jour</li><li>✓ ses chantiers concernés</li><li>✓ ses documents utiles</li><li>✓ la messagerie</li></ul>` +
+            `<label>Email<input name="email" type="email" required value="${esc(r.email || "")}" placeholder="email@exemple.test"></label>` +
+            `<label>Rôle<select name="role"><option value="artisan">Artisan / Intervenant terrain</option></select></label>`,
+          (f) => {
+            r.email = f.get("email");
+            r.accountStatus = "invited";
+            r.invitedAt = localDateTime(getDemoNow());
+            save();
+            actionToast("Invitation enregistrée · démonstration");
+            openResource(id);
+            return false;
+          },
+          "Envoyer l’invitation",
+        );
+      }
+      function resendInvite(id) {
+        let r = resource(id);
+        r.invitedAt = localDateTime(getDemoNow());
+        save();
+        openResource(id);
+        actionToast("Invitation renvoyée · démonstration");
+      }
+      function cancelInvite(id) {
+        let r = resource(id);
+        r.accountStatus = "none";
+        delete r.invitedAt;
+        save();
+        openResource(id);
+        actionToast("Invitation annulée");
+      }
+      function disableAccount(id) {
+        let r = resource(id);
+        r.accountStatus = "disabled";
+        save();
+        openResource(id);
+        actionToast("Accès Kanvix désactivé");
+      }
+      // MESSAGERIE = SIDEWINDOW contextuelle (réutilise #drawer, pas de pile)
+      function openConversation(opts) {
+        let { resourceId, taskId, projectId, back } = opts,
+          r = resource(resourceId);
+        // Contexte tâche : par défaut la mission courante/à venir de la ressource
+        if (!taskId) {
+          let rt = getResourceTasks(resourceId)
+            .filter((t) => t.status !== "done")
+            .sort((a, b) => a.start.localeCompare(b.start));
+          let todayKey = dayKey(TODAY),
+            cur =
+              rt.find(
+                (t) =>
+                  dayKey(t.start) <= todayKey && dayKey(t.end) >= todayKey,
+              ) || rt[0];
+          taskId = cur?.id || null;
+          projectId = projectId || cur?.projectId || null;
+        }
+        let t = taskId ? task(taskId) : null,
+          p = projectId ? project(projectId) : t ? project(t.projectId) : null,
+          msgs = conversationMessages({ resourceId, taskId });
+        // Marquer comme lus les messages reçus (côté conducteur)
+        let changed = false;
+        msgs.forEach((m) => {
+          if (m.from === "artisan" && !m.read) {
+            m.read = true;
+            changed = true;
+          }
+        });
+        if (changed) save();
+        app.ui.conversation = { resourceId, taskId, projectId, back };
+        let sub = [
+          r.type === "person" && r.jobTitle ? esc(r.jobTitle) : "",
+          r.type === "person" && r.companyName ? esc(r.companyName) : "",
+        ]
+          .filter(Boolean)
+          .join(" · "),
+          online =
+            canAccessArtisan(resourceId)
+              ? `<span class="conv-online"><i></i>Compte actif</span>`
+              : "",
+          ctx = [p?.name, t?.name].filter(Boolean).map(esc).join(" · "),
+          backLabel = back?.type === "task" ? esc(task(back.id)?.name || "") : esc(r.name);
+        $("#drawerContent").innerHTML =
+          `<button class="link drawer-back" onclick="convBack()">← ${backLabel}</button>` +
+          `<p class="muted">MESSAGERIE</p>` +
+          `<div class="conv-head">${resourceAvatar(r)}<div class="conv-who"><b>${esc(r.name)}</b>${sub ? `<small>${sub}</small>` : ""}${online}</div></div>` +
+          (ctx ? `<div class="conv-ctx">${ctx}</div>` : "") +
+          `<div class="conv-thread" id="convThread"><div class="conv-day">Aujourd’hui</div>${convBubbles(msgs)}</div>` +
+          `<form class="conv-compose" onsubmit="event.preventDefault();sendConversationMessage()"><input id="convInput" autocomplete="off" aria-label="Écrire un message" placeholder="Écrire un message…"><button type="submit" class="chat-icon-btn send" aria-label="Envoyer" title="Envoyer">${icon("send")}</button></form>`;
+        $("#drawer").classList.add("open");
+        let thread = $("#convThread");
+        if (thread) thread.scrollTop = thread.scrollHeight;
+        setTimeout(() => $("#convInput")?.focus(), 120);
+      }
+      function convBubbles(msgs) {
+        if (!msgs.length)
+          return `<div class="conv-day muted">Aucun message pour le moment.</div>`;
+        return msgs
+          .map((m) => {
+            let mine = m.from === "driver";
+            return `<div class="conv-bubble ${mine ? "me" : "them"}">${esc(m.text)}<time>${m.time}${mine ? " ✓✓" : ""}</time></div>`;
+          })
+          .join("");
+      }
+      function sendConversationMessage() {
+        let c = app.ui.conversation,
+          el = $("#convInput"),
+          v = el ? el.value.trim() : "";
+        if (!v || !c) return;
+        app.messages.push({
+          id: Date.now(),
+          projectId: c.projectId || null,
+          taskId: c.taskId || null,
+          resourceId: c.resourceId,
+          from: app.settings.role === "artisan" ? "artisan" : "driver",
+          text: v,
+          time: fmtTime(getDemoNow()),
+          read: app.settings.role === "artisan",
+        });
+        save();
+        openConversation(c);
+      }
+      function convBack() {
+        let c = app.ui.conversation;
+        app.ui.conversation = null;
+        let b = c?.back;
+        if (b?.type === "resource") openResource(b.id);
+        else if (b?.type === "task") openTask(b.id);
+        else closeOverlay("drawer");
       }
       function openIssueForm(field = false, tid = "") {
         let linkedTask = tid ? task(tid) : null,
@@ -8011,40 +8658,11 @@
           },
         );
       }
-      function renderConversation(taskId = "") {
-        let t =
-            task(taskId) ||
-            getArtisanTodayTasks(app.settings.artisanResourceId)[0],
-          r = t
-            ? resource(t.resourceId)
-            : resource(app.settings.artisanResourceId),
-          messages = app.messages.filter((m) => !t || m.taskId === t.id);
-        $("#modalContent").innerHTML =
-          `<h2>${t ? project(t.projectId).name : "Messages"}</h2><p class="muted">${r.name}${t ? " · " + t.name : ""}</p>${messages.map((m) => `<div class="message ${m.from}">${m.text}<small>${m.time}${m.from === "artisan" ? " · Lu" : ""}</small></div>`).join("")}<div class="toolbar"><input id="messageInput" style="flex:1" placeholder="Écrire un message…"><button class="btn primary" onclick="sendMessage('${t?.id || ""}')">Envoyer</button></div>`;
-        $("#modal").classList.add("open");
-      }
-      function sendMessage(taskId = "") {
-        let v = $("#messageInput").value,
-          t = task(taskId);
-        if (!v) return;
-        app.messages.push({
-          id: Date.now(),
-          projectId: t?.projectId || null,
-          taskId: t?.id || null,
-          resourceId: t?.resourceId || app.settings.artisanResourceId,
-          from: app.settings.role === "artisan" ? "artisan" : "driver",
-          text: v,
-          time: fmtTime(getDemoNow()),
-          read: true,
-        });
-        save();
-        renderConversation(taskId);
-      }
       function artisanDetails(taskId) {
         let t = task(taskId),
           p = project(t.projectId);
         $("#modalContent").innerHTML =
-          `<h2>Détails</h2><p><b>Chantier</b><br>${p.name} · ${p.location}</p><p><b>Conducteur</b><br>Eric Leduc</p><button class="btn" onclick="app.ui.documentProject='${t.projectId}';closeOverlay('modal');go('documents')">Documents du chantier</button> <button class="btn" onclick="renderConversation('${t.id}')">Conversation</button>`;
+          `<h2>Détails</h2><p><b>Chantier</b><br>${p.name} · ${p.location}</p><p><b>Conducteur</b><br>Eric Leduc</p><button class="btn" onclick="app.ui.documentProject='${t.projectId}';closeOverlay('modal');go('documents')">Documents du chantier</button> <button class="btn" onclick="closeOverlay('modal')">Revenir à la conversation</button>`;
         $("#modal").classList.add("open");
       }
       // CONSULTER un document = POPUP (lecture / aperçu)
@@ -8060,7 +8678,7 @@
           (t
             ? `<div class="pop-linked"><small>LIÉ À</small><b>${esc(t.name)}</b>${li ? `<button class="pop-flag" onclick="closeOverlay('modal');explainIssue('${li.id}')">● Point à traiter — comprendre</button>` : ""}</div>`
             : "") +
-          `<div class="pop-actions"><button class="btn" onclick="closeOverlay('modal');openProjectTab('${d.projectId}','Documents')">Voir le chantier</button><button class="btn" onclick="openDocumentEdit('${d.id}')">Classer / modifier</button></div>`;
+          `<div class="pop-actions"><button class="btn" onclick="openDocumentEdit('${d.id}')">Classer / modifier</button></div>`;
         $("#modal").classList.add("open");
       }
       function viewPhoto(id) {
