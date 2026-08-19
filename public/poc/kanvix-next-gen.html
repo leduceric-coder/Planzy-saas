@@ -1167,6 +1167,9 @@
       .portfolio-summary .success {
         color: var(--success-ink);
       }
+      .portfolio-summary .setup {
+        color: var(--accent-ink);
+      }
       /* Portfolio grid — vertical cards */
       .sites-grid {
         display: grid;
@@ -1327,6 +1330,26 @@
         display: flex;
         gap: 8px;
       }
+      /* Bandeau lecture seule discret (sidewindow tâche / planning historique) */
+      .lock-note {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0;
+        padding: 10px 12px;
+        font-size: 13px;
+        color: var(--text-secondary);
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-md);
+        background: var(--surface-subtle);
+      }
+      .lock-note svg {
+        width: 15px;
+        height: 15px;
+        flex: none;
+        stroke: var(--text-secondary);
+        fill: none;
+      }
       .setup-zone .setup-lead {
         color: var(--text-secondary);
         font-size: 14px;
@@ -1341,6 +1364,37 @@
         margin-top: 12px;
       }
       /* Wizard création chantier */
+      .wiz-next {
+        border: 1px dashed var(--border);
+        border-radius: var(--radius-md);
+        padding: 0 12px;
+        margin: 4px 0 2px;
+        background: var(--surface-subtle);
+      }
+      .wiz-next > summary {
+        cursor: pointer;
+        list-style: none;
+        padding: 12px 0;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--accent-ink);
+        user-select: none;
+      }
+      .wiz-next > summary::-webkit-details-marker {
+        display: none;
+      }
+      .wiz-next[open] > summary {
+        border-bottom: 1px solid var(--border-light);
+        margin-bottom: 8px;
+      }
+      .wiz-next[open] > summary::after {
+        content: " — replier";
+        font-weight: 400;
+        color: var(--text-secondary);
+      }
+      .wiz-next > label:last-child {
+        margin-bottom: 12px;
+      }
       .wiz-choices {
         display: flex;
         flex-direction: column;
@@ -6102,6 +6156,27 @@
       function isProjectActive(p) {
         return projectLifecycle(p) === "active";
       }
+      // Un chantier n'est modifiable que s'il est actif (verrou lecture seule)
+      function canEditProject(p) {
+        return isProjectActive(p);
+      }
+      // Garde métier réutilisable : bloque une modification sur un chantier non actif
+      // et affiche un message clair avec le chemin de réouverture / restauration.
+      function guardEditable(pid) {
+        if (canEditProject(pid)) return true;
+        let p = project(pid),
+          archived = isProjectArchived(p);
+        $("#modalContent").innerHTML =
+          `<h2>Chantier ${archived ? "archivé" : "clôturé"}</h2>` +
+          `<p class="muted">Ce chantier est ${archived ? "archivé" : "clôturé"}. Réouvrez-le pour le modifier.</p>` +
+          `<div class="pop-actions"><button class="btn" onclick="closeOverlay('modal')">Fermer</button>${
+            archived
+              ? `<button class="btn primary" onclick="closeOverlay('modal');restoreProject('${pid}')">Restaurer le chantier</button>`
+              : `<button class="btn primary" onclick="closeOverlay('modal');reopenProject('${pid}')">Réouvrir le chantier</button>`
+          }</div>`;
+        $("#modal").classList.add("open");
+        return false;
+      }
       function isProjectClosed(p) {
         return projectLifecycle(p) === "closed";
       }
@@ -6211,6 +6286,7 @@
             '<rect x="3.5" y="5" width="17" height="14" rx="2.5"/><circle cx="8.5" cy="10" r="1.6"/><path d="M4 17l4.5-4 3.5 3 3-2.5 5.5 5"/>',
           send: '<path d="M4 12l16-7-7 16-2.5-6.5z"/>',
           more: '<path d="M5 12h.01M12 12h.01M19 12h.01"/>',
+          lock: '<rect x="5" y="10.5" width="14" height="9" rx="2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/>',
           messages:
             '<path d="M4.5 6.5A2 2 0 0 1 6.5 4.5h11a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H9l-4.5 3.7z"/><path d="M8.5 9h7M8.5 12h4.5"/>',
         };
@@ -7334,9 +7410,11 @@
           active = app.projects.filter(isProjectActive),
           closed = app.projects.filter(isProjectClosed),
           archived = app.projects.filter(isProjectArchived),
-          counts = { danger: 0, warning: 0, success: 0 };
+          counts = { danger: 0, warning: 0, success: 0, setup: 0 };
         active.forEach((p) => {
+          // Chantier actif sans tâche = à configurer ; sinon santé opérationnelle.
           if (getProjectTasks(p.id).length) counts[getProjectHealth(p.id)]++;
+          else counts.setup++;
         });
         let list = view === "closed" ? closed : view === "archived" ? archived : active,
           sorted =
@@ -7347,7 +7425,7 @@
             `<button class="sites-tab ${view === key ? "active" : ""}" onclick="app.ui.sitesView='${key}';save();renderPage()">${label}${n ? ` <em>${n}</em>` : ""}</button>`,
           summary =
             view === "active"
-              ? `<div class="portfolio-summary"><b>${active.length} chantier${active.length > 1 ? "s" : ""}</b><span><span class="danger">${counts.danger} risque${counts.danger > 1 ? "s" : ""}</span> · <span class="warning">${counts.warning} à surveiller</span> · <span class="success">${counts.success} sous contrôle</span></span></div>`
+              ? `<div class="portfolio-summary"><b>${active.length} chantier${active.length > 1 ? "s" : ""}</b><span><span class="danger">${counts.danger} risque${counts.danger > 1 ? "s" : ""}</span> · <span class="warning">${counts.warning} à surveiller</span> · <span class="success">${counts.success} sous contrôle</span>${counts.setup ? ` · <span class="setup">${counts.setup} à configurer</span>` : ""}</span></div>`
               : "";
         let empty =
           view === "active"
@@ -7731,6 +7809,13 @@
             `<label>Intervention en cours (facultatif)<input name="currentName" value="${esc(d.currentName || "")}" placeholder="Pose des menuiseries"></label>` +
             `<label>Ressource<select name="currentResource"><option value="">Non affecté</option>${app.resources.filter((r) => r.type === "person" && resourceActive(r)).map((r) => `<option value="${r.id}" ${d.currentResource === r.id ? "selected" : ""}>${esc(r.name)}</option>`).join("")}</select></label>` +
             `<label>Date de fin prévue<input name="currentEnd" type="date" value="${d.currentEnd || ""}"></label>` +
+            // Zone facultative repliée — prochaine intervention (pas de 3e étape)
+            `<details class="wiz-next"${d.nextName ? " open" : ""}><summary>+ Ajouter la prochaine intervention</summary>` +
+            `<label>Nom<input name="nextName" value="${esc(d.nextName || "")}" placeholder="Pose des cloisons"></label>` +
+            `<label>Ressource<select name="nextResource"><option value="">Non affecté</option>${app.resources.filter((r) => r.type === "person" && resourceActive(r)).map((r) => `<option value="${r.id}" ${d.nextResource === r.id ? "selected" : ""}>${esc(r.name)}</option>`).join("")}</select></label>` +
+            `<label>Date de début<input name="nextStart" type="date" value="${d.nextStart || ""}"></label>` +
+            `<label>Date de fin<input name="nextEnd" type="date" value="${d.nextEnd || ""}"></label>` +
+            `</details>` +
             `<div class="drawer-form-actions"><button type="button" class="btn" onclick="closeOverlay('drawer')">Annuler</button><button class="btn primary" type="submit">Continuer</button></div></form>`;
           return;
         }
@@ -7739,7 +7824,7 @@
             `<button class="link drawer-back" onclick="wizardGo('inprogress-2')">← Retour</button>` +
             `<p class="muted">RÉSUMÉ</p><h2>${esc(d.name || "Chantier")}</h2><p class="location">${esc(d.location || "")}</p>` +
             `<div class="wiz-summary"><span class="wiz-badge">Chantier déjà en cours</span>` +
-            `<dl>${d.phase ? `<div><dt>Phase</dt><dd>${esc(d.phase)}</dd></div>` : ""}${d.currentName ? `<div><dt>Aujourd’hui</dt><dd>${esc(d.currentName)}${d.currentResource ? ` · ${esc(resourceLabel(d.currentResource))}` : ""}</dd></div>` : ""}${d.milestoneName ? `<div><dt>Prochain jalon</dt><dd>${esc(d.milestoneName)}${d.milestoneDate ? ` · ${fmtDay(d.milestoneDate + "T17:00")}` : ""}</dd></div>` : ""}</dl></div>` +
+            `<dl>${d.phase ? `<div><dt>Phase</dt><dd>${esc(d.phase)}</dd></div>` : ""}${d.currentName ? `<div><dt>Aujourd’hui</dt><dd>${esc(d.currentName)}${d.currentResource ? ` · ${esc(resourceLabel(d.currentResource))}` : ""}</dd></div>` : ""}${d.nextName ? `<div><dt>Prochaine intervention</dt><dd>${esc(d.nextName)}${d.nextResource ? ` · ${esc(resourceLabel(d.nextResource))}` : ""}</dd></div>` : ""}${d.milestoneName ? `<div><dt>Prochain jalon</dt><dd>${esc(d.milestoneName)}${d.milestoneDate ? ` · ${fmtDay(d.milestoneDate + "T17:00")}` : ""}</dd></div>` : ""}</dl></div>` +
             `<div class="drawer-form-actions"><button type="button" class="btn" onclick="closeOverlay('drawer')">Annuler</button><button class="btn primary" onclick="createInProgressFromWizard()">Reprendre dans Kanvix</button></div>`;
           return;
         }
@@ -7874,6 +7959,23 @@
             colorKey: "auto",
           });
         }
+        // Prochaine intervention facultative : une tâche "todo", sans dépendance auto
+        if (d.nextName && d.nextName.trim()) {
+          let fallback = d.currentEnd || localDateKey(getDemoNow()),
+            ns = (d.nextStart || fallback) + "T08:00",
+            ne = (d.nextEnd || d.nextStart || fallback) + "T17:00";
+          app.tasks.push({
+            id: pid + "-next",
+            projectId: pid,
+            name: d.nextName.trim(),
+            resourceId: d.nextResource || null,
+            start: ns,
+            end: ne,
+            status: "todo",
+            deps: [],
+            colorKey: "auto",
+          });
+        }
         finishWizard(pid);
       }
       function finishWizard(pid) {
@@ -7997,7 +8099,7 @@
                 </div>
               </div>` : ""}
             </div>
-            <div class="cockpit-visual">${art(app.projects.indexOf(p))}</div>
+            <div class="cockpit-visual">${projectVisual(p.id)}</div>
           </div>`;
 
         // Badge selon le cycle de vie (prime sur la santé)
@@ -8044,6 +8146,7 @@
       }
       // Définir / modifier le jalon d'un chantier (SIDEWINDOW)
       function openMilestoneForm(pid) {
+        if (!guardEditable(pid)) return;
         let ms = app.milestones.find((m) => m.projectId === pid);
         drawerForm(
           ms ? "Modifier le jalon" : "Définir un jalon",
@@ -8111,10 +8214,21 @@
           app.ui.planningProject = id;
           return `<button class="btn primary" onclick="go('planning')">Ouvrir le planning complet</button>${gantt(id)}`;
         }
-        if (name === "Équipe")
-          return [...new Set(ts.map((t) => t.resourceId))]
-            .map((rid) => resourceRow(rid))
-            .join("");
+        if (name === "Équipe") {
+          // Ressources réellement affectées (jamais de faux "Non affecté")
+          let assignedIds = [
+              ...new Set(ts.map((t) => t.resourceId).filter(Boolean)),
+            ],
+            unassigned = ts.filter((t) => !t.resourceId).length,
+            rows = assignedIds.map((rid) => resourceRow(rid)).join(""),
+            unassignedBlock = unassigned
+              ? `<div class="row" style="grid-template-columns:30px 1fr auto"><span style="width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--surface-2,#eee);color:var(--muted);font-weight:600">?</span><div><h3>${unassigned} intervention${unassigned > 1 ? "s" : ""} non affectée${unassigned > 1 ? "s" : ""}</h3><p class="muted">Aucune ressource assignée</p></div><button class="btn small secondary" onclick="app.ui.planningProject='${id}';go('planning')">Voir dans le planning</button></div>`
+              : "";
+          return (
+            rows + unassignedBlock ||
+            '<p class="muted">Aucune intervention planifiée</p>'
+          );
+        }
         if (name === "Documents") return projectDocuments(id);
         if (name === "Photos") return projectPhotos(id);
         if (name === "Historique") return historyHTML();
@@ -8411,6 +8525,13 @@
             s.filter(t),
         );
       }
+      // V4.8.1 — Planning en lecture seule quand le chantier ciblé est non actif.
+      // Consultation autorisée (zoom/période/baseline/dépendances) mais aucune
+      // création ni drag/drop. "all" reste éditable (chantiers actifs uniquement).
+      function planningIsReadOnly(pid = "all") {
+        let eff = pid !== "all" ? pid : app.ui.planningProject || "all";
+        return eff !== "all" && !isProjectActive(eff);
+      }
       // Libellé de semaine dynamique (aucun nom de mois hardcodé).
       function weekRangeLabel(s) {
         let start = date(s.dates[0]),
@@ -8438,6 +8559,9 @@
           cols = s.labels.length,
           groups = [...new Set(tasks.map((t) => t.projectId))],
           advanced = app.settings.level !== "essential",
+          readOnly = planningIsReadOnly(pid),
+          // Drag/drop réservé aux niveaux avancés ET aux chantiers éditables
+          canDrag = advanced && !readOnly,
           expert = app.settings.level === "expert",
           active = impactChainActive(),
           sensitive = active ? impactChainSet() : null,
@@ -8484,7 +8608,7 @@
                           chainNum >= 0
                             ? `<span class="ic-marker ${chainNum === 0 ? "cause" : ""}">${chainNum === 0 ? "!" : chainNum + 1}</span>`
                             : "";
-                      return `<div class="g-row ${app.ui.selectedTask === t.id ? "selected" : ""} ${dim ? "dim" : ""}" id="row-${t.id}"><div class="g-label"><b>${esc(t.name)}</b><small>${esc(resourceLabel(t.resourceId))}</small></div>${s.labels.map((x, i) => `<div class="g-slot ${i === s.todayIndex ? "today-cell" : ""} ${isWeekend(i) ? "weekend" : ""}" ondragover="${advanced ? "dragOver(event)" : ""}" ondragleave="this.classList.remove('over')" ondrop="${advanced ? `dropTask(event,${i})` : ""}">${changed && i === old.index ? `<div class="g-bar ghost" style="width:${Math.min(cols - i, old.span) * 100}%"></div>` : ""}${baseShown && basePos && basePos.index >= 0 && i === basePos.index ? `<div class="baseline" title="Prévu initialement" style="width:${Math.min(cols - i, basePos.span) * 100}%"></div>` : ""}${i === position.index ? `<div class="g-bar ${taskTone(t)} ${t.status} ${taskColorClass(t)} ${changed ? "simulated" : ""} ${isSource ? "source" : ""}" id="bar-${t.id}" ${advanced ? 'draggable="true"' : ""} ondragstart="dragStart(event,'${t.id}')" ondragend="this.classList.remove('dragging')" onclick="openTask('${t.id}')" title="${esc(t.name)} · ${esc(resourceLabel(t.resourceId))} · ${fmtRange(t)}" style="width:${Math.min(cols - i, position.span) * 100}%">${marker}${app.settings.period === "month" ? esc(t.name.split(" ").slice(0, 2).join(" ")) : esc(t.name)}${changed ? "<em>SIMULÉ</em>" : ""}</div>` : ""}</div>`).join("")}</div>`;
+                      return `<div class="g-row ${app.ui.selectedTask === t.id ? "selected" : ""} ${dim ? "dim" : ""}" id="row-${t.id}"><div class="g-label"><b>${esc(t.name)}</b><small>${esc(resourceLabel(t.resourceId))}</small></div>${s.labels.map((x, i) => `<div class="g-slot ${i === s.todayIndex ? "today-cell" : ""} ${isWeekend(i) ? "weekend" : ""}" ondragover="${canDrag ? "dragOver(event)" : ""}" ondragleave="this.classList.remove('over')" ondrop="${canDrag ? `dropTask(event,${i})` : ""}">${changed && i === old.index ? `<div class="g-bar ghost" style="width:${Math.min(cols - i, old.span) * 100}%"></div>` : ""}${baseShown && basePos && basePos.index >= 0 && i === basePos.index ? `<div class="baseline" title="Prévu initialement" style="width:${Math.min(cols - i, basePos.span) * 100}%"></div>` : ""}${i === position.index ? `<div class="g-bar ${taskTone(t)} ${t.status} ${taskColorClass(t)} ${changed ? "simulated" : ""} ${isSource ? "source" : ""}" id="bar-${t.id}" ${canDrag ? 'draggable="true"' : ""} ondragstart="dragStart(event,'${t.id}')" ondragend="this.classList.remove('dragging')" onclick="openTask('${t.id}')" title="${esc(t.name)} · ${esc(resourceLabel(t.resourceId))} · ${fmtRange(t)}" style="width:${Math.min(cols - i, position.span) * 100}%">${marker}${app.settings.period === "month" ? esc(t.name.split(" ").slice(0, 2).join(" ")) : esc(t.name)}${changed ? "<em>SIMULÉ</em>" : ""}</div>` : ""}</div>`).join("")}</div>`;
                     })
                     .join("")
             }`;
@@ -8591,6 +8715,7 @@
           advanced = app.settings.level !== "essential",
           expert = app.settings.level === "expert",
           prob = planningProblems(),
+          readOnly = planningIsReadOnly(),
           resFilter = app.ui.planningResource,
           resActive = resFilter && resFilter !== "all",
           title = `Planning${resActive ? ` · ${esc(resource(resFilter).name)}` : ""}`,
@@ -8617,7 +8742,8 @@
             .join("")}</div>`,
           filters = `<select aria-label="Filtrer par chantier" onchange="setPlanningFilter('project',this.value)"><option value="all">Tous les chantiers</option>${app.projects.filter((p) => isProjectActive(p) || app.ui.planningProject === p.id).map((p) => `<option value="${p.id}" ${app.ui.planningProject === p.id ? "selected" : ""}>${esc(p.name)}${isProjectActive(p) ? "" : " (clôturé)"}</option>`).join("")}</select><select aria-label="Filtrer par ressource" onchange="setPlanningFilter('resource',this.value)"><option value="all">Toutes les ressources</option>${app.resources.filter(resourceActive).map((r) => `<option value="${r.id}" ${resFilter === r.id ? "selected" : ""}>${esc(r.name)}</option>`).join("")}</select>`;
         return (
-          `<div class="planning-header"><div><h1>${title}</h1><p class="muted">${app.settings.level === "essential" ? "Qui fait quoi et quand ?" : expert ? "Analysez les dépendances et les conséquences." : "Organisez et arbitrez vos interventions."}</p></div><button class="btn primary" onclick="openTaskForm()">${icon("plus")} Tâche</button></div>` +
+          `<div class="planning-header"><div><h1>${title}</h1><p class="muted">${app.settings.level === "essential" ? "Qui fait quoi et quand ?" : expert ? "Analysez les dépendances et les conséquences." : "Organisez et arbitrez vos interventions."}</p></div>${readOnly ? "" : `<button class="btn primary" onclick="openTaskForm()">${icon("plus")} Tâche</button>`}</div>` +
+          (readOnly ? `<p class="lock-note">${icon("lock")} Planning historique · lecture seule</p>` : "") +
           `<div class="planning-nav"><button class="btn" aria-label="Période précédente" onclick="shiftPlanning(-1)">←</button><button class="btn" onclick="planningToday()">Aujourd’hui</button><button class="btn" aria-label="Période suivante" onclick="shiftPlanning(1)">→</button><span class="period-label">${periodLabel}</span></div>` +
           (advanced
             ? `<div class="plan-toolbar">${seg}<div class="plan-filters">${filters}</div>${!expert ? toggle("Dépendances", app.settings.dependencies, "app.settings.dependencies=this.checked;save();renderPage();requestAnimationFrame(drawDeps)") : ""}</div>`
@@ -9305,7 +9431,9 @@
         let search = `<div class="search-field">${icon("search")}<input type="search" placeholder="Rechercher un document…" value="${esc(app.ui.docQuery || "")}" oninput="setDocQuery(this.value,'${pid}')" aria-label="Rechercher un document"></div>`,
           right = isGlobal
             ? `<select class="scope-select" aria-label="Filtrer par chantier" onchange="app.ui.documentProject=this.value;app.ui.docCategory='all';app.ui.docQuery='';save();renderPage()"><option value="all">Tous les chantiers</option>${app.projects.map((p) => `<option value="${p.id}" ${p.id === pid ? "selected" : ""}>${esc(p.name)}</option>`).join("")}</select>`
-            : `<button class="btn" onclick="openDocumentForm('${pid}')">${icon("plus")} Ajouter</button>`;
+            : canEditProject(pid)
+              ? `<button class="btn" onclick="openDocumentForm('${pid}')">${icon("plus")} Ajouter</button>`
+              : "";
         return (
           `<div class="lib-controls">${search}${right}</div>` +
           `<div class="chips" id="docChips">${documentChips(pid)}</div>` +
@@ -9356,7 +9484,7 @@
         let list = filteredPhotos(pid),
           controls = isGlobal
             ? `<div class="lib-controls"><span class="muted">${list.length} photo${list.length > 1 ? "s" : ""}</span><select class="scope-select" aria-label="Filtrer par chantier" onchange="app.ui.photoProject=this.value;save();renderPage()"><option value="all">Tous les chantiers</option>${app.projects.map((p) => `<option value="${p.id}" ${p.id === pid ? "selected" : ""}>${esc(p.name)}</option>`).join("")}</select></div>`
-            : `<div class="lib-controls"><span class="muted">${list.length} photo${list.length > 1 ? "s" : ""}</span><button class="btn" onclick="openPhotoForm('${pid}')">${icon("plus")} Ajouter</button></div>`;
+            : `<div class="lib-controls"><span class="muted">${list.length} photo${list.length > 1 ? "s" : ""}</span>${canEditProject(pid) ? `<button class="btn" onclick="openPhotoForm('${pid}')">${icon("plus")} Ajouter</button>` : ""}</div>`;
         return (
           controls +
           `<div class="photos">${list.map(photoCard).join("") || empty("Aucune photo", "Aucune photo pour ce chantier.")}</div>`
@@ -9466,7 +9594,7 @@
           p = t ? project(t.projectId) : null,
           trade = ARTISAN_TRADE[rid] || r.scope,
           headAvatar = p
-            ? `<span class="resource-avatar">${art(app.projects.indexOf(p))}</span>`
+            ? `<span class="resource-avatar">${projectVisual(p.id)}</span>`
             : resourceAvatar(r);
         markArtisanRead(t);
         let mission = t
@@ -9515,7 +9643,9 @@
           docs = app.documents.filter((d) => d.taskId === id),
           photos = app.photos.filter((p) => p.taskId === id),
           pilot = app.settings.level !== "essential",
-          expert = app.settings.level === "expert";
+          expert = app.settings.level === "expert",
+          // V4.8.1 — verrou lecture seule : chantier non actif = consultation seule
+          projectEditable = canEditProject(t.projectId);
         app.ui.selectedTask = id;
         // Section Dépendances : prédécesseurs (Dépend de) + successeurs (Bloque)
         let depLine = (other, dir, role, sourceId, targetId) =>
@@ -9533,9 +9663,14 @@
           !pilot && preds.length
             ? `<p class="dep-mini">Dépend de · ${preds.map((pr) => esc(pr.name)).join(", ")}</p>`
             : "";
-        let menu = pilot
-          ? `<div class="more-menu"><button class="btn more-trigger" aria-haspopup="menu" aria-expanded="false" aria-label="Plus d’actions" onclick="toggleDrawerMenu(this)">${icon("more")}</button><div class="more-pop" role="menu"><button role="menuitem" onclick="closeDrawerMenu();openTaskForm('${t.projectId}','${id}')">Modifier</button><button role="menuitem" onclick="closeDrawerMenu();moveTask('${id}',1)">Replanifier</button><button role="menuitem" onclick="closeDrawerMenu();showWhatIf('${id}')">Tester un décalage</button><button role="menuitem" onclick="closeDrawerMenu();openIssueForm(false,'${id}')">Signaler problème</button>${expert ? `<div class="more-sep"></div><button role="menuitem" class="danger" onclick="closeDrawerMenu();deleteTask('${id}')">Supprimer</button>` : ""}</div></div>`
-          : "";
+        let menu =
+          pilot && projectEditable
+            ? `<div class="more-menu"><button class="btn more-trigger" aria-haspopup="menu" aria-expanded="false" aria-label="Plus d’actions" onclick="toggleDrawerMenu(this)">${icon("more")}</button><div class="more-pop" role="menu"><button role="menuitem" onclick="closeDrawerMenu();openTaskForm('${t.projectId}','${id}')">Modifier</button><button role="menuitem" onclick="closeDrawerMenu();moveTask('${id}',1)">Replanifier</button><button role="menuitem" onclick="closeDrawerMenu();showWhatIf('${id}')">Tester un décalage</button><button role="menuitem" onclick="closeDrawerMenu();openIssueForm(false,'${id}')">Signaler problème</button>${expert ? `<div class="more-sep"></div><button role="menuitem" class="danger" onclick="closeDrawerMenu();deleteTask('${id}')">Supprimer</button>` : ""}</div></div>`
+            : "";
+        // Zone d'action : boutons opérationnels si éditable, sinon bandeau lecture seule
+        let actionSection = projectEditable
+          ? `<div class="drawer-section"><div class="actions task-actions"><button class="btn primary" onclick="setTaskStatus('${id}', '${t.status === "doing" ? "done" : "doing"}')">${t.status === "doing" ? "Terminer" : "Démarrer"}</button>${menu}</div></div>`
+          : `<div class="drawer-section"><p class="lock-note">${icon("lock")} Chantier ${isProjectArchived(t.projectId) ? "archivé" : "clôturé"} · lecture seule</p></div>`;
         let pieces = pilot
           ? `<div class="drawer-section"><h3>Pièces liées</h3>${
               docs.length || photos.length
@@ -9546,7 +9681,7 @@
         $("#drawerContent").innerHTML =
           `<p class="muted">TÂCHE</p><h2>${esc(t.name)}</h2>${pill(taskTone(t), STATUS[t.status])}` +
           `<div class="drawer-section"><b>${esc(project(t.projectId).name)}</b><p>${esc(resourceLabel(t.resourceId))}<br>${fmtRange(t)}</p>${essentialDep}<button class="link" onclick="closeOverlay('drawer');focusPlanningTask('${id}')">Voir dans le planning</button>${canAccessArtisan(t.resourceId) ? ` · <button class="link" onclick="openConversation({resourceId:'${t.resourceId}',taskId:'${id}',projectId:'${t.projectId}',back:{type:'task',id:'${id}'}})">Message</button>` : ""}</div>` +
-          `<div class="drawer-section"><div class="actions task-actions"><button class="btn primary" onclick="setTaskStatus('${id}', '${t.status === "doing" ? "done" : "doing"}')">${t.status === "doing" ? "Terminer" : "Démarrer"}</button>${menu}</div></div>` +
+          actionSection +
           depsSection +
           pieces +
           (expert ? historyHTML() : "");
@@ -9905,8 +10040,9 @@
         actionToast("Incident mis à jour");
       }
       function setTaskStatus(id, status) {
-        snapshot();
         let t = task(id);
+        if (!guardEditable(t.projectId)) return;
+        snapshot();
         t.status = status;
         app.history.unshift({
           date: fmtTime(getDemoNow()),
@@ -9920,6 +10056,7 @@
       }
       function moveTask(id, days) {
         let t = task(id);
+        if (!guardEditable(t.projectId)) return;
         snapshot();
         t.start = add(t.start, days * DAY);
         t.end = add(t.end, days * DAY);
@@ -10089,6 +10226,7 @@
       }
       // Suppression = confirmation POPUP (pas d'édition, choix simple)
       function deleteTask(id) {
+        if (!guardEditable(task(id).projectId)) return;
         $("#modalContent").innerHTML =
           `<h2>Supprimer cette tâche ?</h2><p class="muted">${esc(task(id).name)} — cette action reste annulable.</p><div class="pop-actions"><button class="btn" onclick="closeOverlay('modal')">Annuler</button><button class="btn danger" onclick="confirmDeleteTask('${id}')">Supprimer</button></div>`;
         $("#modal").classList.add("open");
@@ -10122,6 +10260,7 @@
           s = scale(),
           dur = duration(t);
         if (!t) return;
+        if (!guardEditable(t.projectId)) return;
         snapshot();
         let newStart = s.dates[index];
         if (app.settings.period === "day") newStart = newStart;
@@ -10210,8 +10349,9 @@
       }
       function openTaskForm(pid = app.ui.projectId, editId = "") {
         let current = editId ? task(editId) : null,
-          p = current?.projectId || pid || "keravel",
-          start = current?.start || localDateKey(TODAY) + "T08:00",
+          p = current?.projectId || pid || "keravel";
+        if (!guardEditable(p)) return;
+        let start = current?.start || localDateKey(TODAY) + "T08:00",
           end = current?.end || localDateKey(TODAY) + "T12:00";
         drawerForm(
           current ? "Modifier la tâche" : "Nouvelle tâche",
@@ -10609,8 +10749,9 @@
         $("#drawer").classList.add("open");
       }
       function openIssueForm(field = false, tid = "") {
-        let linkedTask = tid ? task(tid) : null,
-          defaultProjectId = linkedTask?.projectId || app.ui.projectId || app.projects[0]?.id;
+        let linkedTask = tid ? task(tid) : null;
+        if (linkedTask && !guardEditable(linkedTask.projectId)) return;
+        let defaultProjectId = linkedTask?.projectId || app.ui.projectId || app.projects[0]?.id;
         drawerForm(
           "Signaler un problème",
           `<label>Titre<input name="title" required value="${field ? "Fenêtre B bloquée" : ""}" placeholder="Nom du problème"></label>` +
@@ -10670,6 +10811,7 @@
           .join("");
       }
       function openDocumentForm(preselect = app.ui.projectId || app.ui.documentProject) {
+        if (preselect && !guardEditable(preselect)) return;
         drawerForm(
           "Ajouter un document",
           `<label>Titre<input name="name" required placeholder="Nom du document"></label>` +
@@ -10693,8 +10835,9 @@
         );
       }
       function openDocumentEdit(id) {
-        closeOverlay("modal");
         let d = app.documents.find((x) => x.id === id);
+        if (!guardEditable(d.projectId)) return;
+        closeOverlay("modal");
         drawerForm(
           "Classer le document",
           `<label>Titre<input name="name" required value="${esc(d.name)}"></label>` +
@@ -10764,6 +10907,7 @@
         actionToast("Photo ajoutée");
       }
       function openPhotoForm(projectId = app.ui.projectId) {
+        if (projectId && !guardEditable(projectId)) return;
         let hasProject = projectId && project(projectId),
           taskList = hasProject ? getProjectTasks(projectId) : app.tasks;
         drawerForm(
@@ -10808,7 +10952,10 @@
           (t
             ? `<div class="pop-linked"><small>LIÉ À</small><b>${esc(t.name)}</b>${li ? `<button class="pop-flag" onclick="closeOverlay('modal');explainIssue('${li.id}')">● Point à traiter — comprendre</button>` : ""}</div>`
             : "") +
-          `<div class="pop-actions"><button class="btn" onclick="openDocumentEdit('${d.id}')">Classer / modifier</button></div>`;
+          // Chantier non actif : document consultable mais non reclassable
+          (canEditProject(d.projectId)
+            ? `<div class="pop-actions"><button class="btn" onclick="openDocumentEdit('${d.id}')">Classer / modifier</button></div>`
+            : "");
         $("#modal").classList.add("open");
       }
       function viewPhoto(id) {
