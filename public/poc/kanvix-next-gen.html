@@ -1363,6 +1363,55 @@
       .setup-origin {
         margin-top: 12px;
       }
+      /* V4.8.3 — fin de chantier guidée */
+      .closure-zone {
+        border: 1px solid var(--success-border, var(--border-light));
+        background: var(--success-surface, var(--surface-subtle));
+        border-radius: var(--radius-md);
+        padding: 18px 18px 16px;
+      }
+      .closure-zone.discreet {
+        padding: 12px 14px;
+      }
+      .closure-lead {
+        margin: 0 0 6px;
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--success-ink, var(--text));
+      }
+      .closure-zone.discreet .closure-lead {
+        font-size: 14px;
+      }
+      .closure-actions {
+        margin-top: 14px;
+      }
+      .closure-zone.discreet .closure-actions {
+        margin-top: 10px;
+      }
+      .closure-remaining {
+        margin: 6px 0 4px;
+        padding-left: 18px;
+        color: var(--text-secondary);
+        font-size: 14px;
+      }
+      .closure-remaining li {
+        margin: 2px 0;
+      }
+      /* Case à cocher inline (jalon de fin, wizard) */
+      .drawer-form label.check-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-direction: row;
+        font-size: 13px;
+        color: var(--text);
+        cursor: pointer;
+      }
+      .drawer-form label.check-row input {
+        width: auto;
+        margin: 0;
+        flex: none;
+      }
       /* Wizard création chantier */
       .wiz-next {
         border: 1px dashed var(--border);
@@ -5585,7 +5634,7 @@
           late: "En retard",
         };
       // DEMO DATA
-      const SCHEMA_VERSION = 4;
+      const SCHEMA_VERSION = 5;
       const INITIAL_STATE = {
         schemaVersion: SCHEMA_VERSION,
         settings: {
@@ -6116,6 +6165,12 @@
             if (p.visualIndex === undefined || p.visualIndex === null)
               p.visualIndex =
                 PROJECT_VISUAL_INDEX[p.id] ?? hashHue(String(p.id)) % 4;
+          });
+        // V4.8.3 : jalon de fin de chantier (ancien jalon → isFinal false)
+        if (Array.isArray(value.milestones))
+          value.milestones.forEach((m) => {
+            if (m.isFinal === undefined) m.isFinal = false;
+            if (m.taskId === undefined) m.taskId = null;
           });
         value.schemaVersion = SCHEMA_VERSION;
         return value;
@@ -7527,6 +7582,9 @@
         let p = project(id);
         p.lifecycle = "active";
         delete p.closedAt;
+        // V4.8.3 — on conserve le jalon final / la tâche terminée, mais on ne
+        // repropose pas immédiatement la clôture (état « déjà écarté »).
+        p.closureDismissed = localDateTime(getDemoNow());
         save();
         renderPage();
         actionToast("Chantier réouvert");
@@ -7708,7 +7766,8 @@
       // Capture des champs nommés présents dans le drawer → wizard.data
       function captureWizard() {
         $$("#drawerContent [name]").forEach((el) => {
-          app.ui.wizard.data[el.name] = el.value;
+          app.ui.wizard.data[el.name] =
+            el.type === "checkbox" ? el.checked : el.value;
         });
       }
       function wizardGo(step) {
@@ -7807,6 +7866,7 @@
             `<form id="wizForm" class="drawer-form" onsubmit="event.preventDefault();wizardSubmitInProgress2()">` +
             `<label>Prochain jalon / objectif<input name="milestoneName" value="${esc(d.milestoneName || "")}" placeholder="Contrôle second œuvre"></label>` +
             `<label>Date du prochain jalon<input name="milestoneDate" type="date" value="${d.milestoneDate || ""}"></label>` +
+            `<label class="check-row"><input type="checkbox" name="milestoneIsFinal" ${d.milestoneIsFinal ? "checked" : ""}> Ce jalon correspond à la fin du chantier</label>` +
             `<label>Intervention en cours (facultatif)<input name="currentName" value="${esc(d.currentName || "")}" placeholder="Pose des menuiseries"></label>` +
             `<label>Ressource<select name="currentResource"><option value="">Non affecté</option>${app.resources.filter((r) => r.type === "person" && resourceActive(r)).map((r) => `<option value="${r.id}" ${d.currentResource === r.id ? "selected" : ""}>${esc(r.name)}</option>`).join("")}</select></label>` +
             `<label>Date de fin prévue<input name="currentEnd" type="date" value="${d.currentEnd || ""}"></label>` +
@@ -7866,6 +7926,9 @@
             projectId: pid,
             name: "Prochain jalon",
             date: d.targetDate + "T17:00",
+            // Création vierge : jalon final non imposé (facultatif ensuite).
+            isFinal: false,
+            taskId: null,
           });
         finishWizard(pid);
       }
@@ -7904,6 +7967,9 @@
           projectId: pid,
           name: tpl.milestone,
           date: last,
+          // Jalon de PHASE (modèle) — jamais fin de chantier par défaut.
+          isFinal: false,
+          taskId: null,
         });
         app.projects.push({
           id: pid,
@@ -7978,6 +8044,9 @@
             projectId: pid,
             name: d.milestoneName,
             date: d.milestoneDate + "T17:00",
+            // Coché dans le wizard : ce jalon marque la fin du chantier.
+            isFinal: !!d.milestoneIsFinal,
+            taskId: null,
           });
         if (d.currentName && d.currentName.trim()) {
           let s = localDateKey(getDemoNow()) + "T08:00",
@@ -8083,7 +8152,100 @@
           sTitle,
           sDetail,
           headline,
+          // V4.8.3 — état de préparation à la clôture (jamais automatique)
+          closure: getProjectClosureStatus(projectId),
         };
+      }
+      // Un chantier est « prêt à clôturer » si son jalon FINAL est atteint,
+      // qu'il ne reste aucune tâche non terminée (hors la tâche finale) et
+      // aucun incident ouvert. Ne clôture jamais : ne fait que renseigner.
+      function getProjectClosureStatus(projectId) {
+        let tasks = getProjectTasks(projectId),
+          finalMilestone = app.milestones.find(
+            (m) => m.projectId === projectId && m.isFinal,
+          ),
+          finalTask = finalMilestone?.taskId ? task(finalMilestone.taskId) : null,
+          openIssues = getProjectIssues(projectId),
+          // Tâches non terminées, hors la tâche finale elle-même
+          openTasks = tasks.filter(
+            (t) => t.status !== "done" && t.id !== finalMilestone?.taskId,
+          ),
+          finalReached = false;
+        if (finalMilestone) {
+          if (finalTask) finalReached = finalTask.status === "done";
+          else
+            // Jalon final sans tâche : atteint si date passée ET tout terminé.
+            finalReached =
+              date(finalMilestone.date) <= getDemoNow() &&
+              tasks.every((t) => t.status === "done");
+        }
+        let ready =
+          !!finalMilestone &&
+          finalReached &&
+          openTasks.length === 0 &&
+          openIssues.length === 0;
+        return {
+          finalMilestone,
+          finalTask,
+          openTasks,
+          openIssues,
+          finalReached,
+          ready,
+        };
+      }
+      // Déclenché quand la tâche liée au jalon final vient d'être terminée.
+      // Propose (jamais n'impose) la clôture, selon l'état réel du chantier.
+      function checkProjectReadyToClose(projectId) {
+        let st = getProjectClosureStatus(projectId),
+          p = project(projectId),
+          eventName =
+            st.finalTask?.name || st.finalMilestone?.name || "Le jalon final";
+        if (st.ready) {
+          $("#modalContent").innerHTML =
+            `<h2>✓ ${esc(eventName)} terminée</h2>` +
+            `<p><b>${esc(p.name)}</b> semble prêt à être clôturé.</p>` +
+            `<p class="muted">Toutes les interventions sont terminées et aucun point ouvert ne subsiste.</p>` +
+            `<div class="pop-actions"><button class="btn" onclick="dismissClosurePrompt('${projectId}')">Plus tard</button><button class="btn primary" onclick="closeOverlay('modal');confirmCloseProject('${projectId}')">Clôturer le chantier</button></div>`;
+        } else {
+          let bits = [];
+          if (st.openTasks.length)
+            bits.push(
+              `${st.openTasks.length} intervention${st.openTasks.length > 1 ? "s" : ""} reste${st.openTasks.length > 1 ? "nt" : ""} ouverte${st.openTasks.length > 1 ? "s" : ""}`,
+            );
+          if (st.openIssues.length)
+            bits.push(
+              `${st.openIssues.length} point${st.openIssues.length > 1 ? "s" : ""} reste${st.openIssues.length > 1 ? "nt" : ""} à traiter`,
+            );
+          $("#modalContent").innerHTML =
+            `<h2>${esc(eventName)} terminée</h2>` +
+            `<p>Le chantier n’est pas encore prêt à être clôturé.</p>` +
+            `<ul class="closure-remaining">${bits.map((b) => `<li>${b}</li>`).join("")}</ul>` +
+            `<div class="pop-actions"><button class="btn primary" onclick="dismissClosurePrompt('${projectId}')">Continuer le chantier</button><button class="btn secondary" onclick="closeOverlay('modal');closeProjectPrompt('${projectId}')">Clôturer quand même</button></div>`;
+        }
+        $("#modal").classList.add("open");
+      }
+      // « Plus tard » / « Continuer » : on n'insiste plus (état écarté mémorisé).
+      function dismissClosurePrompt(pid) {
+        let p = project(pid);
+        if (p) p.closureDismissed = localDateTime(getDemoNow());
+        save();
+        closeOverlay("modal");
+        renderPage();
+      }
+      // Cockpit d'un chantier prêt à clôturer : état calme, jamais « Dans les
+      // temps ». discreet = version discrète (après « Plus tard » ou réouverture).
+      function closureReadyCockpit(p, closure, discreet) {
+        let fm = closure.finalMilestone,
+          dateBased = fm && !fm.taskId,
+          lead = discreet
+            ? "✓ Chantier prêt à clôturer"
+            : dateBased
+              ? "Le jalon final est atteint."
+              : "✓ Fin de chantier atteinte",
+          fmLine = fm
+            ? `<p class="muted small">Jalon final : ${esc(fm.name)}${fm.date ? " · " + fmtDay(fm.date) : ""}</p>`
+            : "";
+        return `<div class="cockpit-body"><div class="cockpit-content"><div class="cockpit-zone closure-zone${discreet ? " discreet" : ""}"><p class="closure-lead">${lead}</p><p class="muted">Toutes les interventions sont terminées.</p>${fmLine}<div class="closure-actions"><button class="btn primary" onclick="confirmCloseProject('${p.id}')">Clôturer le chantier</button></div></div></div><div class="cockpit-visual">${projectVisual(p.id)}</div></div>`;
       }
       function projectTabs() {
         let a = ["Aujourd’hui", "À venir", "Documents", "Photos"];
@@ -8102,6 +8264,10 @@
           pilot = app.settings.level !== "essential",
           expert = app.settings.level === "expert";
         app.ui.projectInitialTab = null;
+        // V4.8.3 — chantier actif prêt à clôturer (fin de chantier atteinte)
+        let closure = sum.closure,
+          closureReady = sum.lifecycle === "active" && closure.ready,
+          closureDiscreet = closureReady && !!p.closureDismissed;
 
         // Construire le cockpit avec progressive disclosure
         let statusLabel = sum.health === "danger" ? "Risque" : sum.health === "warning" ? "À surveiller" : "Dans les temps",
@@ -8143,19 +8309,30 @@
             ? `<div class="status-badge neutral"><i></i>${sum.displayLabel}</div>`
             : sum.setupNeeded
               ? `<div class="status-badge setup"><i></i>À configurer</div>`
-              : `<div class="status-badge ${sum.health}"><i></i>${statusLabel}</div>`;
+              : closureReady
+                ? `<div class="status-badge success"><i></i>Prêt à clôturer</div>`
+                : `<div class="status-badge ${sum.health}"><i></i>${statusLabel}</div>`;
+        // §19 — trace métier sur la fiche clôturée : jalon final atteint
+        let finalMs = closure.finalMilestone,
+          closedFinalLine =
+            finalMs && sum.lifecycle === "closed"
+              ? `<br>Jalon final : ${esc(finalMs.name)}${finalMs.date ? " · " + fmtDay(finalMs.date) : ""}`
+              : "";
         // Bandeau d'actions cycle de vie (closed / archived = lecture seule)
         let lifecycleBar =
           sum.lifecycle === "closed"
-            ? `<div class="cockpit-lifecycle"><span class="muted">${p.closedAt ? "Clôturé le " + fmtDay(p.closedAt) : "Chantier clôturé"} · lecture seule</span><div class="cl-actions"><button class="btn small" onclick="reopenProject('${p.id}')">Réouvrir</button><button class="btn small secondary" onclick="archiveProjectPrompt('${p.id}')">Archiver</button></div></div>`
+            ? `<div class="cockpit-lifecycle"><span class="muted">${p.closedAt ? "Clôturé le " + fmtDay(p.closedAt) : "Chantier clôturé"} · lecture seule${closedFinalLine}</span><div class="cl-actions"><button class="btn small" onclick="reopenProject('${p.id}')">Réouvrir</button><button class="btn small secondary" onclick="archiveProjectPrompt('${p.id}')">Archiver</button></div></div>`
             : sum.lifecycle === "archived"
               ? `<div class="cockpit-lifecycle"><span class="muted">${p.archivedAt ? "Archivé le " + fmtDay(p.archivedAt) : "Chantier archivé"} · lecture seule</span><div class="cl-actions"><button class="btn small" onclick="restoreProject('${p.id}')">Restaurer</button></div></div>`
               : "";
-        // Corps selon lifecycle / setup
+        // Corps selon lifecycle / setup / clôture
         let bodyHTML;
         if (sum.lifecycle !== "active") {
           // Lecture seule : pas d'actions de résolution
           bodyHTML = `<div class="cockpit-body"><div class="cockpit-content">${lifecycleBar}${sum.milestone ? `<div class="cockpit-zone"><h2 class="zone-title">Jalon</h2><div class="milestone-card"><b>${esc(sum.milestone.name)}</b><p>${fmtDay(sum.milestone.date)}</p></div></div>` : ""}</div><div class="cockpit-visual">${projectVisual(p.id)}</div></div>`;
+        } else if (closureReady) {
+          // Fin de chantier atteinte : état calme, proposition de clôture.
+          bodyHTML = closureReadyCockpit(p, closure, closureDiscreet);
         } else if (sum.setupNeeded) {
           bodyHTML = `<div class="cockpit-body"><div class="cockpit-content"><div class="cockpit-zone setup-zone"><h2 class="zone-title">Pour commencer</h2><p class="setup-lead">Ajoutez votre première intervention ou un jalon pour démarrer le pilotage.</p><div class="setup-steps"><button class="btn" onclick="openTaskForm('${p.id}')">${icon("plus")} Ajouter la première tâche</button>${pilot ? `<button class="btn secondary" onclick="openMilestoneForm('${p.id}')">Définir un jalon</button>` : ""}</div>${p.creationMode === "template" && p.templateId ? `<p class="muted small setup-origin">Planning créé à partir de : ${esc(templateById(p.templateId)?.name || "modèle")}</p>` : ""}</div></div><div class="cockpit-visual">${projectVisual(p.id)}</div></div>`;
         } else {
@@ -8170,7 +8347,7 @@
               </div>
               <h1>${esc(p.name)}</h1>
               <p class="location">${esc(p.location)}</p>
-              ${sum.lifecycle === "active" && !sum.setupNeeded ? `<p class="headline">${sum.headline}</p>` : sum.setupNeeded ? `<p class="headline">Votre chantier est prêt.</p>` : ""}
+              ${closureReady ? `<p class="headline">Le chantier est prêt à être clôturé.</p>` : sum.lifecycle === "active" && !sum.setupNeeded ? `<p class="headline">${sum.headline}</p>` : sum.setupNeeded ? `<p class="headline">Votre chantier est prêt.</p>` : ""}
             </div>
             ${bodyHTML}
           </div>
@@ -8182,22 +8359,32 @@
       // Définir / modifier le jalon d'un chantier (SIDEWINDOW)
       function openMilestoneForm(pid) {
         if (!guardEditable(pid)) return;
-        let ms = app.milestones.find((m) => m.projectId === pid);
+        let ms = app.milestones.find((m) => m.projectId === pid),
+          projTasks = getProjectTasks(pid);
         drawerForm(
           ms ? "Modifier le jalon" : "Définir un jalon",
           `<label>Nom du jalon<input name="name" required value="${esc(ms?.name || "")}" placeholder="Contrôle final"></label>` +
-            `<label>Date cible<input name="date" type="date" required value="${ms ? ms.date.slice(0, 10) : ""}"></label>`,
+            `<label>Date cible<input name="date" type="date" required value="${ms ? ms.date.slice(0, 10) : ""}"></label>` +
+            `<label>Tâche associée (facultatif)<select name="taskId"><option value="">Aucune</option>${projTasks.map((t) => `<option value="${t.id}" ${ms?.taskId === t.id ? "selected" : ""}>${esc(t.name)}</option>`).join("")}</select></label>` +
+            `<label class="check-row"><input type="checkbox" name="isFinal" ${ms?.isFinal ? "checked" : ""}> Jalon de fin de chantier</label>` +
+            `<p class="muted small">Lorsque ce jalon est atteint, Kanvix pourra proposer de clôturer le chantier.</p>`,
           (f) => {
-            let d = f.get("date") + "T17:00";
+            let d = f.get("date") + "T17:00",
+              isFinal = f.get("isFinal") === "on",
+              taskId = f.get("taskId") || null;
             if (ms) {
               ms.name = f.get("name");
               ms.date = d;
+              ms.isFinal = isFinal;
+              ms.taskId = taskId;
             } else {
               app.milestones.push({
                 id: "m-" + pid + "-" + Date.now(),
                 projectId: pid,
                 name: f.get("name"),
                 date: d,
+                isFinal,
+                taskId,
               });
             }
             project(pid).baselineEnd = d;
@@ -10092,6 +10279,19 @@
         closeOverlay("drawer");
         render();
         actionToast("Tâche mise à jour");
+        // V4.8.3 — la tâche liée à un jalon FINAL vient d'être terminée :
+        // proposer la clôture (jamais automatique).
+        if (status === "done") {
+          let fm = app.milestones.find(
+            (m) => m.projectId === t.projectId && m.isFinal && m.taskId === id,
+          );
+          if (fm) {
+            let p = project(t.projectId);
+            if (p) delete p.closureDismissed; // événement frais → proposition pleine
+            save();
+            checkProjectReadyToClose(t.projectId);
+          }
+        }
       }
       function moveTask(id, days) {
         let t = task(id);
