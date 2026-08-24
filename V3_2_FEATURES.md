@@ -263,3 +263,30 @@ propriété homonyme de l'élément, donc `form.id` renvoyait le nœud input et 
 | Tri colonnes Commandes | ✅ asc/desc |
 | Réf. patient CAB+NOM+PRE | ✅ DRMDUPJEA / CABBERALI |
 | Erreurs console | ✅ Aucune |
+
+---
+
+## Améliorations (7ᵉ retour)
+
+1. **Journal d'audit — recherche** : champ de recherche filtrant les entrées par acteur, commande, type,
+   détail ou date (`auditMatch` / `filterAudit`), mise à jour instantanée sans perte de focus, compteur
+   d'entrées recalculé.
+2. **Espace cabinet — détail commande** : clic sur une commande de « Mes commandes » ouvre une fiche détaillée
+   (statut, livraison prévue, localisation, suivi de fabrication, bouton « Écrire au laboratoire »).
+3. **Numéro de commande = code anonymisé** : l'identifiant de la nouvelle commande est généré à partir de
+   3 lettres du cabinet + 3 du nom + 3 du prénom du patient (`uniqueOrderCode`, unicité garantie). **Le nom et
+   le prénom du patient ne sont visibles que dans l'espace cabinet** ; le laboratoire ne voit que le code
+   (tables, fiches, recherche). Les commandes de démo reçoivent des noms fictifs pour illustrer.
+4. **Accueil — vignette Répartition plus lisible** : donut agrandi et épaissi, texte de survol contraint dans
+   le centre (catégorie + %), segment survolé mis en avant et légende synchronisée (survol/estompage).
+5. **Mode sombre — donut réparé** : une ancienne règle peignait le centre (désormais en `inset:0`) par-dessus
+   le SVG en thème sombre ; fond du centre rendu transparent → le camembert s'affiche correctement en dark.
+
+| Point | Vérification |
+|---|---|
+| Recherche journal d'audit | ✅ 35 → 6 (« Marc ») → 2 (« Stock ») |
+| Détail commande dentiste | ✅ fiche + nom patient visible |
+| N° commande = code, nom masqué labo | ✅ CABBERALI, labo sans nom |
+| Donut visible + lisible (light) | ✅ survol = catégorie + % |
+| Donut visible en dark | ✅ arcs affichés |
+| Erreurs console (light + dark) | ✅ Aucune |
