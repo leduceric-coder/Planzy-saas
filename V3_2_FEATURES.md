@@ -162,3 +162,38 @@ propriété homonyme de l'élément, donc `form.id` renvoyait le nœud input et 
 | Greeting | ✅ « Bonjour Eric 👋 » |
 | Utilisateurs ajout/édition | ✅ 4 → 5, édition appliquée |
 | Erreurs console | ✅ Aucune |
+
+---
+
+## Correctifs & améliorations (4ᵉ retour)
+
+### Corrections
+1. **Cohérence graduation / infobulle du graphique** — l'axe des Y était réparti sur 4 lignes égales (0/32/64/96 px)
+   alors que barres et grille utilisaient l'échelle réelle (0→128 px) : le « 0 » ne tombait pas sur la ligne de base.
+   Graphique réécrit (`chartBars`) : axe aligné sur la grille via `justify-content:space-between`, hauteurs de barres
+   en pourcentage de `axMax`. La valeur au survol correspond désormais exactement à la graduation.
+2. **Barre de recherche** — suppression du badge « ⌘ K » (le raccourci clavier reste actif).
+
+### Améliorations
+3. **Espace cabinet (portail dentiste)** — accessible via `?mode=dentist` ou depuis Paramètres → « Ouvrir l'espace
+   cabinet ». Un cabinet peut :
+   - **passer une commande** (`renderDentistMode` / `createDentistOrder`) avec un bon de commande proposant **3 dates
+     de livraison calculées** : délai de fabrication par type (`fabricationDays`) + tampon selon la charge du
+     laboratoire (`labLoadBufferDays`, jours ouvrés) ;
+   - **suivre ses commandes** (statut, poste, date de livraison) ;
+   - **communiquer** avec le laboratoire (messagerie bidirectionnelle : `addCabinetMessage`).
+   Les commandes et messages créés côté cabinet apparaissent immédiatement côté laboratoire (état partagé via
+   `localStorage`, cloche et badge messages incrémentés).
+4. **Plan de charge (GTA)** — nouvelle vue « Plan de charge » : capacité hebdomadaire de l'équipe (capacité par
+   membre, éditable dans la fiche utilisateur), **projection sur 8 semaines** (capacité nette vs charge prévue,
+   occupation, solde coloré), et **gestion des absences** (ajout/suppression via formulaire latéral) qui réduisent la
+   capacité nette des semaines concernées. Absences journalisées dans l'audit.
+
+| Élément | Vérification |
+|---|---|
+| Graphique : graduation = infobulle | ✅ barre 30 → 50 % (axe max 60) ; 228 → bonne hauteur (axe 300) |
+| Badge ⌘K retiré | ✅ 0 |
+| Portail : dates calculées selon type + charge | ✅ Zircone 27/08 vs Denture 01/09 |
+| Portail → commande visible côté labo | ✅ CMD-0191 + message non lu |
+| Plan de charge : capacité/charge/solde sur 8 sem. | ✅ absences réduisent la capacité |
+| Erreurs console (labo + portail) | ✅ Aucune |
