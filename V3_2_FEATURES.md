@@ -103,3 +103,32 @@ propriété homonyme de l'élément, donc `form.id` renvoyait le nœud input et 
 | Paramètres en pied de menu | ✅ absent du nav, gear footer actif |
 | Menu pliable + persistance | ✅ 248 → 76 px, conservé au reload |
 | Erreurs console | ✅ Aucune |
+
+---
+
+## Correctifs (2ᵉ retour)
+
+1. **Mode clair plus nuancé** — fond app `#eceff5` (plus froid), surfaces/bordures resserrées
+   (`--border #dbe1ec`, `--border-strong #c6cedd`) et ombre de carte renforcée. Les cartes se détachent
+   mieux, de façon homogène entre navigateurs.
+2. **Production sans chariot** — la grille des 6 postes passe en `repeat(6,minmax(0,1fr))` sans `overflow-x`
+   ni `min-width` : les colonnes remplissent toute la largeur, plus de défilement horizontal.
+3. **Messagerie (dark)** — les panneaux liste/conversation reçoivent une surface plus claire, une bordure
+   renforcée et une **ombre lumineuse** (rim clair) en thème sombre, pour se détacher du fond.
+4. **Apparence Système par défaut** — `seed()` remet le thème sur `system` ; la réinitialisation des données
+   démo restaure l'apparence Système (et l'applique aussitôt).
+5. **Rapports — graphique Production adapté à la période** — nouveau jeu de données agrégé
+   (`reportProductionData`) et `renderReportBars()` : 7 j → 7 barres (jours), 30 j → 4 barres (semaines),
+   90 j → 3 barres (mois). Titre « Production · {période} ».
+6. **Rapports — donut supprimé** — la vignette « Répartition des commandes » (pertinente seulement le jour J)
+   est retirée des Rapports ; le graphique Production occupe désormais toute la largeur. Le donut reste sur
+   l'Accueil.
+
+| Correctif | Vérification |
+|---|---|
+| Production sans scroll | ✅ scrollWidth == clientWidth |
+| Rapports barres 7/30/90 | ✅ 7 / 4 / 3 barres |
+| Rapports sans donut | ✅ 0 donut |
+| Messagerie dark relief | ✅ box-shadow appliquée |
+| Thème par défaut | ✅ system |
+| Erreurs console | ✅ Aucune |
