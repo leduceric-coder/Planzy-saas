@@ -197,3 +197,42 @@ propriété homonyme de l'élément, donc `form.id` renvoyait le nœud input et 
 | Portail → commande visible côté labo | ✅ CMD-0191 + message non lu |
 | Plan de charge : capacité/charge/solde sur 8 sem. | ✅ absences réduisent la capacité |
 | Erreurs console (labo + portail) | ✅ Aucune |
+
+---
+
+## Modifications (5ᵉ retour)
+
+1. **Données réalistes (labo ~15 personnes)** — clé de stockage passée en `v3` (réinitialise automatiquement
+   l'ancien état). Effectif porté à **15 collaborateurs** avec capacités individuelles (total 278 cmd/sem., soit
+   ~56/jour, < 60). Dataset de commandes en cours enrichi (**19 commandes**), production hebdo/mensuelle et
+   prévisions du plan de charge recalées sur une production ≤ ~58/jour.
+2. **Menu réorganisable (drag & drop)** — la navigation est un conteneur unique réordonnable par glisser-déposer
+   (`renderNav`, `setupNavDnD`), avec poignée au survol ; l'ordre est **persisté** (`state.navOrder`).
+3. **Plan de charge sous Production** — ordre par défaut : Accueil, Commandes, Production, **Plan de charge**,
+   Stocks, Messages, Rapports, Utilisateurs.
+4. **Accueil — vignettes KPI colorées** — barre de couleur en haut **et** sur le côté gauche, + **icône colorée**
+   par KPI (sac, horloge, alerte, cadenas), comme la maquette de référence.
+5. **Accueil — suppression de « Dernières commandes »**.
+6. **Accueil — comparatif de production** — le graphique « 7 derniers jours » devient **« cette semaine vs semaine
+   précédente »** : pour chaque jour, deux colonnes accolées (semaine courante / précédente) avec légende et
+   infobulle au survol.
+7. **Bouton « + Nouvelle commande »** — retiré du bandeau supérieur, conservé uniquement dans la page Commandes.
+8. **Icônes** — jeu d'icônes enrichi (sac, horloge, coche, cadenas, camion, calendrier, cube, équipe) et réaffecté
+   (KPI Accueil, stock « En transit », plan de charge).
+9. **Plan de charge — espacement** entre le tableau de projection et les blocs Équipe / Absences.
+10. **Plan de charge — vignettes** — « Capacité hebdo » = somme des capacités individuelles (définies par
+    collaborateur dans la fiche utilisateur ; la vignette renvoie vers Utilisateurs pour ajuster). « Absences à
+    venir » affiche la **date de la prochaine absence** (et la personne), ou « Aucune dans les 30 prochains jours ».
+11. **Plan de charge fonctionnel** avec les 15 collaborateurs et 3 absences de démonstration.
+
+| Modification | Vérification |
+|---|---|
+| Effectif 15 · capacité 278 · donut 19 | ✅ |
+| Menu drag & drop + persistance | ✅ Stocks→avant Commandes, conservé au reload |
+| Plan de charge sous Production | ✅ ordre par défaut |
+| KPI Accueil colorés (haut+côté+icône) | ✅ 4 vignettes |
+| « Dernières commandes » supprimée | ✅ |
+| Comparatif 2 colonnes/jour | ✅ 14 barres |
+| + Nouvelle commande hors topbar | ✅ uniquement dans Commandes |
+| Prochaine absence datée | ✅ « jeu. 27 août · Nora » |
+| Erreurs console (light + dark) | ✅ Aucune |
