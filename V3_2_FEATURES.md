@@ -236,3 +236,30 @@ propriété homonyme de l'élément, donc `form.id` renvoyait le nœud input et 
 | + Nouvelle commande hors topbar | ✅ uniquement dans Commandes |
 | Prochaine absence datée | ✅ « jeu. 27 août · Nora » |
 | Erreurs console (light + dark) | ✅ Aucune |
+
+---
+
+## Améliorations & corrections (6ᵉ retour)
+
+1. **Accueil — accents de couleur** : retrait de la bande latérale sur les vignettes KPI du haut (seule la barre
+   supérieure reste colorée) ; la barre latérale colorée passe sur les cartes de « À surveiller » (rouge/orange/bleu
+   selon l'alerte).
+2. **Accueil — camembert interactif** : donut réécrit en SVG (arcs `stroke-dasharray`). Au survol d'un segment ou
+   d'une ligne de légende, le centre affiche la catégorie et son pourcentage (ex. « 14 · En production · 74 % »),
+   et retourne au total à la sortie.
+3. **Side-windows fluides** : ouverture/fermeture animées (panneau qui glisse via `translateX`, fond en fondu),
+   au lieu d'un affichage instantané.
+4. **Commandes — tri des colonnes** : en-têtes cliquables (Commande, Référence, Type, Cabinet, État, Localisation,
+   Dernier scan, Échéance) avec tri ascendant/descendant et indicateur ; compatible recherche + filtres.
+5. **Référence patient automatique** : générée à la prise de commande sous la forme **3 lettres du cabinet + 3 du
+   nom + 3 du prénom** (`buildPatientRef`), ex. « Dr. Morvan / Dupont / Jean » → `DRMDUPJEA`. Les formulaires
+   (laboratoire et espace cabinet) demandent désormais nom et prénom du patient.
+
+| Point | Vérification |
+|---|---|
+| KPI sans bande latérale · À surveiller accentué | ✅ |
+| Donut interactif au survol | ✅ centre = catégorie + % |
+| Side-window animée | ✅ transition transform/opacity |
+| Tri colonnes Commandes | ✅ asc/desc |
+| Réf. patient CAB+NOM+PRE | ✅ DRMDUPJEA / CABBERALI |
+| Erreurs console | ✅ Aucune |
