@@ -132,3 +132,33 @@ propriété homonyme de l'élément, donc `form.id` renvoyait le nœud input et 
 | Messagerie dark relief | ✅ box-shadow appliquée |
 | Thème par défaut | ✅ system |
 | Erreurs console | ✅ Aucune |
+
+---
+
+## Correctifs (3ᵉ retour)
+
+1. **Cohérence des compteurs (8 partout)** — une commande non encore scannée était absente du « Flux de
+   production » et de la page Production (7) alors que le donut comptait 8. Nouveau helper
+   `effectiveStation(o)` : poste confirmé par scan, sinon poste déclaré de la commande. Flux + Production
+   totalisent désormais 8, comme le donut.
+2. **Règle info → pop-up / action → side-window** — le détail d'une commande (actions : messagerie,
+   traçabilité) s'ouvre désormais dans une **side-window** (`renderOrderPanel`) au lieu du pop-up centré,
+   depuis « À surveiller », le tableau Commandes, la Production, la recherche et les Alertes.
+3. **Icônes « À surveiller »** — items transformés en cartes bordées avec padding et centrage vertical :
+   les icônes ne touchent plus les lignes de séparation.
+4. **Graphiques Production (Accueil + Rapports)** — lignes de grille horizontales aux paliers, et
+   **interactivité** : au survol d'une colonne, une infobulle affiche le total ; la barre s'éclaircit.
+5. **Accueil plus amical** — en-tête « Bonjour Eric 👋 / Voici la vue d'ensemble de votre laboratoire »
+   (Bonjour/Bonsoir selon l'heure).
+6. **Utilisateurs CRUD** — bouton « ＋ Nouvel utilisateur » et « Modifier » par ligne, formulaire latéral
+   (`renderUserFormPanel` / `submitUserForm`), données `demoUsers` persistées ; chaque ajout/édition est
+   journalisé dans l'audit (type « Utilisateur »). Avatars à initiales calculées.
+
+| Correctif | Vérification |
+|---|---|
+| Cohérence donut/flux/production | ✅ 8 = 8 = 8 |
+| Clic commande → side-window | ✅ side ouvert, pop-up fermé, actions présentes |
+| Barres : grille + tooltip au survol | ✅ background grille + tip opacity 1 |
+| Greeting | ✅ « Bonjour Eric 👋 » |
+| Utilisateurs ajout/édition | ✅ 4 → 5, édition appliquée |
+| Erreurs console | ✅ Aucune |
