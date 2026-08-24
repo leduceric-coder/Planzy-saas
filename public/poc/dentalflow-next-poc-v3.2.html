@@ -199,7 +199,7 @@ function isoDay(n){const d=new Date(baseNow);d.setDate(d.getDate()+n);d.setHours
 function escapeHTML(value){return String(value??'').replace(/[&<>\"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[ch]))}
 const h=escapeHTML;
 function refPart(s){return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z]/g,'').slice(0,3).toUpperCase().padEnd(3,'X')}
-function buildPatientRef(cabinet,nom,prenom){return `${refPart(cabinet)}${refPart(nom)}${refPart(prenom)}`}
+function buildPatientRef(cabinet,nom,prenom){return `${refPart(cabinet)}-${refPart(nom)}-${refPart(prenom)}`}
 function uniqueOrderCode(cabinet,nom,prenom){const base=buildPatientRef(cabinet,nom,prenom);let code=base,i=2;while(state.orders.some(o=>o.id===code)){code=base+'-'+i;i++}return code}
 function patientDisplay(o){const n=`${o.patientFirst||''} ${o.patientLast||''}`.trim();return n||o.patientRef||o.id}
 function isScanMode(){return new URLSearchParams(location.search).get('mode')==='scan'}
