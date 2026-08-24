@@ -66,3 +66,40 @@ Les cartes (KPI, sections, articles de stock) se distinguent désormais nettemen
 | Mode sombre — contraste | ✅ cartes détachées du fond |
 | Mode clair — non-régression | ✅ |
 | Erreurs console | ✅ Aucune (light + dark, toutes les vues) |
+
+---
+
+## Correctifs (retour utilisateur)
+
+1. **Contraste mode sombre** — teinte des vignettes recalée sur la version de référence :
+   fond app `#0A0D14`, cartes `#171D2B` (navy plus clair), surfaces et bordures ajustées.
+   Les vignettes se détachent nettement du fond.
+2. **Commandes** — suppression des boutons « Accueil » et « ＋ Nouvelle commande » de l'en-tête de la page.
+3. **Stocks — saisie** — chaque article dispose d'un pas rapide **− / +** (`adjustStock`) et d'un bouton
+   **Ajuster** (formulaire latéral pré-rempli) ; bouton **＋ Nouvel article** (`renderStockFormPanel` /
+   `submitStockForm`) pour créer une référence. Chaque mouvement est journalisé dans l'audit
+   (type « Stock ») et persisté.
+4. **Rapports — cohérence période/vignettes** — les données de démonstration (scans, blocages, livraisons)
+   sont désormais réparties sur toute la fenêtre 90 j, de sorte que **les 4 vignettes** varient avec le filtre
+   (mesuré 7/30/90 j : Événements 18/26/37 · Livrées 2/3/6 · Blocages 3/4/6 · Scans 8/11/14). Les mini-courbes
+   décoratives (tendance non liée à la période) sont remplacées par une étiquette de période sur chaque vignette.
+5. **Menu** — « Paramètres » retiré du bloc Secondaire et déplacé **en bas, à côté de l'utilisateur**
+   (engrenage dans le pied de la sidebar).
+6. **Menu pliable/dépliable** — bouton de repli dans l'en-tête (`state.sidebarCollapsed`, persistant) :
+   la sidebar passe en rail d'icônes 76 px (libellés masqués, badges en pastilles), chevron inversé.
+
+### Détail technique notable
+Le formulaire de stock utilisait un champ `name="id"` : sur un `<form>`, un contrôle nommé masque la
+propriété homonyme de l'élément, donc `form.id` renvoyait le nœud input et la délégation `submit`
+(`e.target.id==='stock-form'`) échouait → le formulaire partait en navigation native. Champ renommé `ref`.
+
+| Correctif | Vérification Playwright |
+|---|---|
+| Contraste dark | ✅ vignettes navy détachées |
+| Commandes sans boutons | ✅ 0 bloc page-actions |
+| Stock − / + | ✅ 45 → 44 |
+| Stock nouvel article | ✅ 8 → 9 cartes, réf. créée visible |
+| Rapports 4 vignettes vs période | ✅ croissance monotone 7/30/90 j |
+| Paramètres en pied de menu | ✅ absent du nav, gear footer actif |
+| Menu pliable + persistance | ✅ 248 → 76 px, conservé au reload |
+| Erreurs console | ✅ Aucune |
