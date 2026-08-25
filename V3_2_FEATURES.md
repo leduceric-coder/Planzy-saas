@@ -483,3 +483,43 @@ propriété homonyme de l'élément, donc `form.id` renvoyait le nœud input et 
 | What-If : calendrier de scénario | ✅ congés simulés repérés |
 | Utilisateurs : email = identifiant | ✅ 15 emails + champ formulaire |
 | Erreurs console | ✅ Aucune |
+
+---
+
+## Améliorations (14ᵉ retour) — Scroll, messagerie fichiers, impression
+
+**Accueil / side-windows**
+- **Isolation du défilement** : le contenu de la side-window défile désormais dans son propre panneau
+  (hauteur bornée à l'écran, `overscroll-behavior:contain`, page d'arrière-plan verrouillée pendant l'ouverture) —
+  le « chariot » n'entraîne plus le défilement de la page derrière.
+
+**Production**
+- **Bouton « ＋ Ajouter un poste » déplacé** dans une barre d'action au-dessus du tableau (plus à côté des colonnes).
+- L'ajout d'un poste **crée une colonne et redimensionne** automatiquement les autres (colonnes fluides).
+
+**Plan de charge**
+- Le **texte des boutons** (ex. « Approuver la sélection ») ne touche plus les bords (padding interne).
+
+**Messagerie (laboratoire ⇄ cabinet)**
+- **Transmission de fichiers** : bouton 📎 dans la zone de saisie (côté laboratoire **et** côté dentiste),
+  sélection multiple, aperçu des fichiers choisis (retirables), et **pièces jointes cliquables** dans la
+  conversation (icône selon le type, taille, ouverture/téléchargement). Les fichiers > 2 Mo transmettent leur
+  nom (aperçu non embarqué, pour rester dans la limite de stockage du POC).
+
+**Rapports**
+- **Impression / génération PDF** : bouton « 🖨️ Imprimer / PDF » produisant une mise en page dédiée
+  (synthèse + journal d'audit complet de la période/filtre courant) via l'impression du navigateur.
+- **Journal d'audit** : **alignement des colonnes constant** d'une page de résultats à l'autre
+  (largeurs fixes `table-layout:fixed` + `colgroup`).
+
+| Point | Vérification |
+|---|---|
+| Side-window : défilement isolé | ✅ panneau borné à l'écran, page verrouillée |
+| Production : bouton ajouter hors colonnes | ✅ barre d'action au-dessus |
+| Production : ajout redimensionne | ✅ 6 → 7 colonnes fluides |
+| Bouton What-If : padding interne | ✅ 18px |
+| Messagerie labo : pièce jointe | ✅ 📎 + chips + envoi |
+| Messagerie dentiste : pièce jointe | ✅ 📎 + envoi |
+| Rapports : imprimer / PDF | ✅ mise en page dédiée |
+| Audit : colonnes alignées page à page | ✅ offsets identiques |
+| Erreurs console | ✅ Aucune |
