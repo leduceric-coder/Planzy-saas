@@ -339,3 +339,25 @@ propriété homonyme de l'élément, donc `form.id` renvoyait le nœud input et 
 | What‑If : congé hypothétique + suppression | ✅ |
 | What‑If : approuver la sélection / réinitialiser | ✅ |
 | Erreurs console | ✅ Aucune |
+
+---
+
+## Amélioration (10ᵉ retour) — charge pilotée par les données
+
+- **Charge du plan de charge dérivée des vraies échéances de commandes** (fin du tableau `demoWeeklyForecast`
+  codé en dur). Un parser `orderDueDate()` convertit les échéances (« Aujourd'hui », « Demain », « 26 août »,
+  « jeu. 27 août », « 02 septembre »…) en dates réelles. Un **carnet de commandes** (`buildOrderBook`) combine les
+  commandes en cours (échéances réelles) et une projection déterministe du carnet aux semaines suivantes, calée sur
+  la capacité de l'équipe. `weekForecast(i)` **compte les échéances tombant dans la semaine i** — la charge n'est
+  plus un nombre magique mais le décompte d'échéances réelles.
+- La projection sur 8 semaines et le simulateur What‑If utilisent cette charge : soldes et sous‑capacités
+  reflètent le carnet réel (ex. mesuré : charge [271, 278, 280, 248, 309, 297, 297, 272], soldes négatifs sur les
+  semaines chargées). Colonne renommée « Charge à livrer ».
+
+| Point | Vérification |
+|---|---|
+| Parser d'échéances | ✅ Aujourd'hui/Demain/DD mois/dentiste |
+| Charge = décompte d'échéances par semaine | ✅ [271…272], variée |
+| Déterministe & stable au reload | ✅ |
+| What‑If sur charge réelle | ✅ semaines en sous‑capacité |
+| Erreurs console | ✅ Aucune |
