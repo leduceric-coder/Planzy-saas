@@ -361,3 +361,37 @@ propriété homonyme de l'élément, donc `form.id` renvoyait le nœud input et 
 | Déterministe & stable au reload | ✅ |
 | What‑If sur charge réelle | ✅ semaines en sous‑capacité |
 | Erreurs console | ✅ Aucune |
+
+---
+
+## Améliorations (11ᵉ retour) — Plan de charge interactif & notifications
+
+1. **Suppression de la cloche à alerte** (barre supérieure). L'accès aux alertes se fait désormais uniquement
+   depuis l'Accueil.
+2. **Vignette « À surveiller » → « Tout voir »** ouvre la **side‑window Alertes** (comme le faisait la cloche),
+   au lieu de basculer vers la liste filtrée.
+3. **Notification « Plan de charge »** : lorsqu'une **demande de congés est en attente de validation**, un
+   **badge orange** apparaît dans le menu au niveau de « Plan de charge » (compteur des demandes `pending`,
+   masqué à 0, mis à jour en temps réel après approbation/refus).
+4. **Plan de charge — refonte de la projection** :
+   - **Tableau de projection interactif** : chaque ligne de semaine est cliquable et ouvre une **fenêtre pop‑up**
+     détaillée (capacité brute, impact des absences, capacité nette, charge à livrer, occupation %, marge, et la
+     liste des absences de la semaine).
+   - **Occupation sans barre** : remplacée par un **signal de couleur** (pastille + libellé « À l'aise » / « Tendu »
+     / « Surcharge » selon le taux d'occupation).
+   - **Solde mis en valeur** : chip coloré (vert/rouge) dans le tableau et grand nombre coloré dans la pop‑up.
+   - **Suppression du tableau « Équipe & capacités »**.
+   - **Vignette Absences revisitée** : cartes claires colorées par motif (formation = bleu, maladie = rouge,
+     congé/autre = orange), pour les demandes à valider comme pour les absences planifiées.
+
+| Point | Vérification |
+|---|---|
+| Cloche supprimée | ✅ 0 bouton cloche |
+| « Tout voir » → side‑window Alertes | ✅ ouverture, titre « Alertes » |
+| Badge Plan de charge sur congés en attente | ✅ « 2 » visible, « 1 » après approbation |
+| Ligne de semaine cliquable → pop‑up détail | ✅ titre « Semaine 5 · Surcharge », solde −53 |
+| Occupation = signal couleur (pas de barre) | ✅ pastilles À l'aise/Tendu/Surcharge |
+| Solde mis en valeur (chip + grand nombre) | ✅ 8 chips colorés |
+| Tableau « Équipe » supprimé | ✅ absent |
+| Absences en cartes colorées | ✅ 5 cartes |
+| Erreurs console | ✅ Aucune |
