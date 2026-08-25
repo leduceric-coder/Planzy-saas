@@ -395,3 +395,50 @@ propriété homonyme de l'élément, donc `form.id` renvoyait le nœud input et 
 | Tableau « Équipe » supprimé | ✅ absent |
 | Absences en cartes colorées | ✅ 5 cartes |
 | Erreurs console | ✅ Aucune |
+
+---
+
+## Améliorations (12ᵉ retour) — Production interactive, rapports & personnalisation
+
+**Espace collaborateur**
+- Espace ajouté entre les deux vignettes (scan / derniers scans).
+- La vignette « Mes derniers scans » ne présente plus que les scans **du collaborateur connecté**
+  (filtrage par technicien).
+
+**Espace cabinet**
+- Icône des cartes commande corrigée : pictogramme **dent** coloré selon le statut (au lieu du « i »).
+- **Bouton « Messagerie » retiré** de la barre d'onglets (la communication reste accessible par commande
+  via « Écrire au laboratoire » depuis le détail).
+
+**Production — tableau de flux interactif**
+- **Glisser‑déposer des commandes** d'un poste à l'autre : la commande repasse automatiquement
+  « **en attente de scan** » (elle sera reconfirmée au prochain scan du technicien).
+- **Couleur en haut de chaque colonne** (repère visuel par poste).
+- **Postes éditables** : renommer un poste (clic sur le titre) et **ajouter de nouveaux postes**.
+- **Colonnes réorganisables par glisser‑déposer** (poignée ⠿) — l'ordre redéfinit le **flux de production**.
+- **Pop‑up de détail** : ajout d'un **calendrier de la semaine** (échéance de la commande mise en évidence).
+- **Vue calendrier du plan de charge** : depuis la vignette *Projection*, bouton « 📅 Vue calendrier » ouvrant
+  un **calendrier mensuel navigable** avec la **charge quotidienne** (nombre d'échéances/jour), un signal de
+  couleur (sous‑capacité / pleine charge / surcharge) et la capacité indicative par jour.
+
+**Rapports — journal d'audit**
+- **Pagination** : 10 résultats maximum par page (navigation Précédent / Suivant).
+- **Tri des colonnes** (Date, Type, Commande, Acteur) et **filtres par type** d'événement (puces).
+
+**Utilisateurs**
+- **Couleur d'avatar personnalisable** : sélecteur de couleur dans le formulaire ; **couleurs distinctes**
+  attribuées aux 15 collaborateurs du POC (avatars repris dans le plan de charge et l'espace collaborateur).
+
+| Point | Vérification |
+|---|---|
+| Collaborateur : espace + scans filtrés | ✅ « Mes derniers scans » = scans du user, isolés |
+| Cabinet : icône dent + Messagerie retirée | ✅ onglets [Mes commandes, Nouvelle commande] |
+| Production : déplacer une commande → attente de scan | ✅ pastille orange, effacée au scan |
+| Production : couleur en tête de colonne | ✅ bandeau coloré par poste |
+| Production : renommer / ajouter un poste | ✅ édition inline + ＋ Ajouter |
+| Production : réorganiser les colonnes (flux) | ✅ DnD colonnes, ordre persistant |
+| Détail : calendrier de la semaine | ✅ 7 jours, échéance mise en avant |
+| Projection : calendrier mensuel de charge | ✅ 36 cellules, couleurs, navigation mois |
+| Rapports : 10 max + tri + filtres | ✅ page 1/4 (36), tri, filtre par type |
+| Utilisateurs : couleur d'avatar | ✅ 15 avatars colorés + sélecteur (15 teintes) |
+| Erreurs console | ✅ Aucune |
