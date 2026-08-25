@@ -523,3 +523,20 @@ propriété homonyme de l'élément, donc `form.id` renvoyait le nœud input et 
 | Rapports : imprimer / PDF | ✅ mise en page dédiée |
 | Audit : colonnes alignées page à page | ✅ offsets identiques |
 | Erreurs console | ✅ Aucune |
+
+---
+
+## Correctifs (14ᵉ retour · suite)
+
+- **Production** : l'ajout d'un poste crée désormais une colonne **à côté des autres** (colonnes en rangée unique
+  `flex-wrap:nowrap`, largeurs recalculées) au lieu d'une colonne pleine largeur passée à la ligne. En-tête de
+  colonne réorganisé (grille sur deux lignes) pour garder les **titres lisibles** même en colonnes étroites.
+- **Messagerie** : le bouton de pièce jointe utilise désormais une **icône SVG (trombone)** au lieu de l'emoji 📎
+  (toujours visible quel que soit le système/police).
+
+| Point | Vérification |
+|---|---|
+| Ajout poste → colonne à côté, redimensionnement | ✅ 7 colonnes, même rangée, sans scroll |
+| Titres de colonnes lisibles (colonnes étroites) | ✅ 1–2 lignes, pas de coupure lettre par lettre |
+| Bouton pièce jointe visible (labo + dentiste) | ✅ icône SVG |
+| Erreurs console | ✅ Aucune |
