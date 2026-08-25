@@ -559,3 +559,19 @@ commande — peu visible. Ajout d'un point d'entrée évident **là où le denti
 | Fichiers transmis avec la commande | ✅ joints au 1er message |
 | Pièce jointe conversation labo + cabinet | ✅ bouton trombone présent |
 | Erreurs console | ✅ Aucune |
+
+---
+
+## Correctif (espace cabinet · largeur)
+
+- **Espace cabinet** : contenu élargi (largeur utile 960 → 1180 px) pour réduire l'espace vide à droite des listes.
+- **Nouvelle commande** : formulaire réorganisé en **deux colonnes** (champs à gauche, panneau « Dates de livraison
+  proposées » + bouton d'envoi à droite) au lieu d'une colonne étroite alignée à gauche — l'espace est désormais
+  pleinement utilisé.
+
+| Point | Vérification |
+|---|---|
+| Largeur du portail cabinet élargie | ✅ 1180 px |
+| Nouvelle commande sur 2 colonnes | ✅ champs + panneau livraison |
+| Listes sans espace vide à droite | ✅ cartes pleine largeur |
+| Erreurs console | ✅ Aucune |
