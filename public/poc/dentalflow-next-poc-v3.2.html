@@ -53,7 +53,13 @@
     .nav-grip{color:var(--text-tertiary);font-size:13px;letter-spacing:-3px;cursor:grab;opacity:0;transition:opacity .12s;flex:0 0 auto;width:8px}.side-item:hover .nav-grip{opacity:.55}.side-item.dragging{opacity:.4}.side-item.drag-over{box-shadow:inset 0 3px 0 -1px var(--accent)}.nav-collapsed .nav-grip{display:none}
     .donut-svg-wrap{position:relative;width:172px;height:172px}.donut-svg{width:172px;height:172px}.donut-svg-wrap .donut-center{position:absolute;inset:0;background:transparent!important;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:850;font-size:30px;line-height:1;pointer-events:none;padding:0 30px}.donut-svg-wrap .donut-center span{margin-top:4px;font-size:11px;font-weight:750;color:var(--text-tertiary);line-height:1.25;text-align:center}.donut-seg{transition:stroke-width .12s}.donut-seg.sel{stroke-width:6}.donut-seg.dim{opacity:.35}.legend-row{cursor:pointer;border-radius:8px;padding:2px 6px;margin:0 -6px;transition:background .12s}.legend-row.sel{background:var(--surface-hover)}.legend-row.dim{opacity:.5}
     .pdetail-layer{position:fixed;inset:0;background:rgba(11,18,32,.55);display:flex;align-items:center;justify-content:center;padding:22px;z-index:60}.pdetail-card{width:min(620px,100%);max-height:calc(100dvh - 44px);overflow:auto;background:var(--surface-1);border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow-strong);padding:24px}
-    .audit-search{display:flex;align-items:center;gap:10px;height:42px;background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:0 12px;margin:2px 0 14px;color:var(--text-tertiary)}.audit-search input{border:0;outline:0;background:transparent;color:var(--text-primary);width:100%;font-size:13px}.donut-seg{cursor:pointer;transition:stroke-width .12s,opacity .12s}.donut-seg.sel{stroke-width:6.5}.donut-seg.dim{opacity:.32}.legend-row{cursor:pointer;border-radius:8px;padding:3px 6px;margin:0 -6px;transition:background .12s,opacity .12s}.legend-row.sel{background:var(--surface-hover)}.legend-row.dim{opacity:.42}
+    .audit-search{display:flex;align-items:center;gap:10px;height:42px;background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:0 12px;margin:2px 0 14px;color:var(--text-tertiary)}.audit-search input{border:0;outline:0;background:transparent;color:var(--text-primary);width:100%;font-size:13px}
+    .order-qr{display:flex;align-items:center;gap:16px;margin-top:18px;padding:14px;border:1px solid var(--border);border-radius:14px;background:var(--surface-2)}.order-qr-code{width:104px;height:104px;flex:0 0 auto;background:#fff;border-radius:10px;padding:6px}.order-qr-code svg{width:100%;height:100%;display:block}.order-qr-info{min-width:0}
+    .staff-scan{max-width:520px}.staff-scan .field{margin-bottom:12px}.staff-scan select{height:44px;border:1px solid var(--border);border-radius:10px;background:var(--surface-2);color:var(--text-primary);padding:0 12px;width:100%}
+    .cal-title{font-size:14px;font-weight:850;text-transform:capitalize;margin:6px 0 12px}.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.cal-h{text-align:center;font-size:11px;font-weight:850;color:var(--text-tertiary);padding-bottom:4px}.cal-cell{position:relative;min-height:52px;border:1px solid var(--border);border-radius:10px;background:var(--surface-2);padding:6px}.cal-cell.empty{border:0;background:transparent}.cal-cell.wknd{background:transparent;border-style:dashed}.cal-cell.mine{background:var(--surface-selected);border-color:rgba(10,132,255,.4)}.cal-d{font-size:12px;font-weight:750;color:var(--text-secondary)}.cal-dot{position:absolute;right:6px;bottom:6px;min-width:18px;height:18px;border-radius:9px;background:var(--warning);color:#fff;font-size:11px;font-weight:850;display:grid;place-items:center;padding:0 4px}.cal-dot.mineDot{background:var(--accent)}.cal-legend{display:flex;gap:18px;margin-top:12px;font-size:12px;color:var(--text-secondary)}.cal-legend span{display:flex;align-items:center;gap:6px}.cal-lg{width:12px;height:12px;border-radius:4px;display:inline-block}.cal-lg.mine{background:var(--accent)}.cal-lg.team{background:var(--warning)}
+    @media(max-width:860px){.cal-cell{min-height:42px}}
+    #print-area{display:none}
+    @media print{body>*{display:none!important}#print-area{display:block!important;position:static}.fiche{padding:8mm;color:#000;font-family:var(--font)}.fiche-head{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #111;padding-bottom:10px;margin-bottom:16px}.fiche-brand{font-size:14px;font-weight:850;letter-spacing:-.02em}.fiche h1{font-size:22px;margin-top:2px}.fiche-code{font-size:20px;font-weight:850;font-family:monospace}.fiche-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}.fiche .fk{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#555}.fiche .fv{font-size:15px;font-weight:750;margin-top:2px}.fiche-qr{display:flex;flex-direction:column;align-items:center;gap:8px;margin:10px 0 18px}.fiche-qr svg{width:52mm;height:52mm}.fiche-qr-label{text-align:center;font-family:monospace;font-weight:850;font-size:16px}.fiche-qr-label span{font-family:var(--font);font-weight:600;font-size:11px;color:#555}.fiche-foot{border-top:1px solid #ccc;padding-top:10px;font-size:11px;color:#666}}.donut-seg{cursor:pointer;transition:stroke-width .12s,opacity .12s}.donut-seg.sel{stroke-width:6.5}.donut-seg.dim{opacity:.32}.legend-row{cursor:pointer;border-radius:8px;padding:3px 6px;margin:0 -6px;transition:background .12s,opacity .12s}.legend-row.sel{background:var(--surface-hover)}.legend-row.dim{opacity:.42}
     .side-layer{visibility:hidden;opacity:0;pointer-events:none;transition:opacity .22s ease,visibility .22s}.side-layer.open{visibility:visible;opacity:1;pointer-events:auto}.side-panel{transform:translateX(102%);transition:transform .28s cubic-bezier(.22,.61,.36,1)}.side-layer.open .side-panel{transform:translateX(0)}
     .orders-table th[data-sort]{cursor:pointer;user-select:none;white-space:nowrap}.orders-table th[data-sort]:hover{color:var(--accent)}.orders-table th .sort-ar{font-size:10px;opacity:.45;margin-left:3px}.orders-table th.sort-active{color:var(--accent)}.orders-table th.sort-active .sort-ar{opacity:1}
 
@@ -92,6 +98,2307 @@
 <div class="quick-layer" id="quick-layer"><article class="quick-card" role="dialog" aria-modal="true" aria-labelledby="quick-title"><div id="quick-body"></div></article></div>
 <div class="toast" id="toast"></div>
 
+<script>
+/* QR Code Generator — Kazuhiko Arase, MIT (inline pour POC) */
+//---------------------------------------------------------------------
+//
+// QR Code Generator for JavaScript
+//
+// Copyright (c) 2009 Kazuhiko Arase
+//
+// URL: http://www.d-project.com/
+//
+// Licensed under the MIT license:
+//  http://www.opensource.org/licenses/mit-license.php
+//
+// The word 'QR Code' is registered trademark of
+// DENSO WAVE INCORPORATED
+//  http://www.denso-wave.com/qrcode/faqpatent-e.html
+//
+//---------------------------------------------------------------------
+
+var qrcode = function() {
+
+  //---------------------------------------------------------------------
+  // qrcode
+  //---------------------------------------------------------------------
+
+  /**
+   * qrcode
+   * @param typeNumber 1 to 40
+   * @param errorCorrectionLevel 'L','M','Q','H'
+   */
+  var qrcode = function(typeNumber, errorCorrectionLevel) {
+
+    var PAD0 = 0xEC;
+    var PAD1 = 0x11;
+
+    var _typeNumber = typeNumber;
+    var _errorCorrectionLevel = QRErrorCorrectionLevel[errorCorrectionLevel];
+    var _modules = null;
+    var _moduleCount = 0;
+    var _dataCache = null;
+    var _dataList = [];
+
+    var _this = {};
+
+    var makeImpl = function(test, maskPattern) {
+
+      _moduleCount = _typeNumber * 4 + 17;
+      _modules = function(moduleCount) {
+        var modules = new Array(moduleCount);
+        for (var row = 0; row < moduleCount; row += 1) {
+          modules[row] = new Array(moduleCount);
+          for (var col = 0; col < moduleCount; col += 1) {
+            modules[row][col] = null;
+          }
+        }
+        return modules;
+      }(_moduleCount);
+
+      setupPositionProbePattern(0, 0);
+      setupPositionProbePattern(_moduleCount - 7, 0);
+      setupPositionProbePattern(0, _moduleCount - 7);
+      setupPositionAdjustPattern();
+      setupTimingPattern();
+      setupTypeInfo(test, maskPattern);
+
+      if (_typeNumber >= 7) {
+        setupTypeNumber(test);
+      }
+
+      if (_dataCache == null) {
+        _dataCache = createData(_typeNumber, _errorCorrectionLevel, _dataList);
+      }
+
+      mapData(_dataCache, maskPattern);
+    };
+
+    var setupPositionProbePattern = function(row, col) {
+
+      for (var r = -1; r <= 7; r += 1) {
+
+        if (row + r <= -1 || _moduleCount <= row + r) continue;
+
+        for (var c = -1; c <= 7; c += 1) {
+
+          if (col + c <= -1 || _moduleCount <= col + c) continue;
+
+          if ( (0 <= r && r <= 6 && (c == 0 || c == 6) )
+              || (0 <= c && c <= 6 && (r == 0 || r == 6) )
+              || (2 <= r && r <= 4 && 2 <= c && c <= 4) ) {
+            _modules[row + r][col + c] = true;
+          } else {
+            _modules[row + r][col + c] = false;
+          }
+        }
+      }
+    };
+
+    var getBestMaskPattern = function() {
+
+      var minLostPoint = 0;
+      var pattern = 0;
+
+      for (var i = 0; i < 8; i += 1) {
+
+        makeImpl(true, i);
+
+        var lostPoint = QRUtil.getLostPoint(_this);
+
+        if (i == 0 || minLostPoint > lostPoint) {
+          minLostPoint = lostPoint;
+          pattern = i;
+        }
+      }
+
+      return pattern;
+    };
+
+    var setupTimingPattern = function() {
+
+      for (var r = 8; r < _moduleCount - 8; r += 1) {
+        if (_modules[r][6] != null) {
+          continue;
+        }
+        _modules[r][6] = (r % 2 == 0);
+      }
+
+      for (var c = 8; c < _moduleCount - 8; c += 1) {
+        if (_modules[6][c] != null) {
+          continue;
+        }
+        _modules[6][c] = (c % 2 == 0);
+      }
+    };
+
+    var setupPositionAdjustPattern = function() {
+
+      var pos = QRUtil.getPatternPosition(_typeNumber);
+
+      for (var i = 0; i < pos.length; i += 1) {
+
+        for (var j = 0; j < pos.length; j += 1) {
+
+          var row = pos[i];
+          var col = pos[j];
+
+          if (_modules[row][col] != null) {
+            continue;
+          }
+
+          for (var r = -2; r <= 2; r += 1) {
+
+            for (var c = -2; c <= 2; c += 1) {
+
+              if (r == -2 || r == 2 || c == -2 || c == 2
+                  || (r == 0 && c == 0) ) {
+                _modules[row + r][col + c] = true;
+              } else {
+                _modules[row + r][col + c] = false;
+              }
+            }
+          }
+        }
+      }
+    };
+
+    var setupTypeNumber = function(test) {
+
+      var bits = QRUtil.getBCHTypeNumber(_typeNumber);
+
+      for (var i = 0; i < 18; i += 1) {
+        var mod = (!test && ( (bits >> i) & 1) == 1);
+        _modules[Math.floor(i / 3)][i % 3 + _moduleCount - 8 - 3] = mod;
+      }
+
+      for (var i = 0; i < 18; i += 1) {
+        var mod = (!test && ( (bits >> i) & 1) == 1);
+        _modules[i % 3 + _moduleCount - 8 - 3][Math.floor(i / 3)] = mod;
+      }
+    };
+
+    var setupTypeInfo = function(test, maskPattern) {
+
+      var data = (_errorCorrectionLevel << 3) | maskPattern;
+      var bits = QRUtil.getBCHTypeInfo(data);
+
+      // vertical
+      for (var i = 0; i < 15; i += 1) {
+
+        var mod = (!test && ( (bits >> i) & 1) == 1);
+
+        if (i < 6) {
+          _modules[i][8] = mod;
+        } else if (i < 8) {
+          _modules[i + 1][8] = mod;
+        } else {
+          _modules[_moduleCount - 15 + i][8] = mod;
+        }
+      }
+
+      // horizontal
+      for (var i = 0; i < 15; i += 1) {
+
+        var mod = (!test && ( (bits >> i) & 1) == 1);
+
+        if (i < 8) {
+          _modules[8][_moduleCount - i - 1] = mod;
+        } else if (i < 9) {
+          _modules[8][15 - i - 1 + 1] = mod;
+        } else {
+          _modules[8][15 - i - 1] = mod;
+        }
+      }
+
+      // fixed module
+      _modules[_moduleCount - 8][8] = (!test);
+    };
+
+    var mapData = function(data, maskPattern) {
+
+      var inc = -1;
+      var row = _moduleCount - 1;
+      var bitIndex = 7;
+      var byteIndex = 0;
+      var maskFunc = QRUtil.getMaskFunction(maskPattern);
+
+      for (var col = _moduleCount - 1; col > 0; col -= 2) {
+
+        if (col == 6) col -= 1;
+
+        while (true) {
+
+          for (var c = 0; c < 2; c += 1) {
+
+            if (_modules[row][col - c] == null) {
+
+              var dark = false;
+
+              if (byteIndex < data.length) {
+                dark = ( ( (data[byteIndex] >>> bitIndex) & 1) == 1);
+              }
+
+              var mask = maskFunc(row, col - c);
+
+              if (mask) {
+                dark = !dark;
+              }
+
+              _modules[row][col - c] = dark;
+              bitIndex -= 1;
+
+              if (bitIndex == -1) {
+                byteIndex += 1;
+                bitIndex = 7;
+              }
+            }
+          }
+
+          row += inc;
+
+          if (row < 0 || _moduleCount <= row) {
+            row -= inc;
+            inc = -inc;
+            break;
+          }
+        }
+      }
+    };
+
+    var createBytes = function(buffer, rsBlocks) {
+
+      var offset = 0;
+
+      var maxDcCount = 0;
+      var maxEcCount = 0;
+
+      var dcdata = new Array(rsBlocks.length);
+      var ecdata = new Array(rsBlocks.length);
+
+      for (var r = 0; r < rsBlocks.length; r += 1) {
+
+        var dcCount = rsBlocks[r].dataCount;
+        var ecCount = rsBlocks[r].totalCount - dcCount;
+
+        maxDcCount = Math.max(maxDcCount, dcCount);
+        maxEcCount = Math.max(maxEcCount, ecCount);
+
+        dcdata[r] = new Array(dcCount);
+
+        for (var i = 0; i < dcdata[r].length; i += 1) {
+          dcdata[r][i] = 0xff & buffer.getBuffer()[i + offset];
+        }
+        offset += dcCount;
+
+        var rsPoly = QRUtil.getErrorCorrectPolynomial(ecCount);
+        var rawPoly = qrPolynomial(dcdata[r], rsPoly.getLength() - 1);
+
+        var modPoly = rawPoly.mod(rsPoly);
+        ecdata[r] = new Array(rsPoly.getLength() - 1);
+        for (var i = 0; i < ecdata[r].length; i += 1) {
+          var modIndex = i + modPoly.getLength() - ecdata[r].length;
+          ecdata[r][i] = (modIndex >= 0)? modPoly.getAt(modIndex) : 0;
+        }
+      }
+
+      var totalCodeCount = 0;
+      for (var i = 0; i < rsBlocks.length; i += 1) {
+        totalCodeCount += rsBlocks[i].totalCount;
+      }
+
+      var data = new Array(totalCodeCount);
+      var index = 0;
+
+      for (var i = 0; i < maxDcCount; i += 1) {
+        for (var r = 0; r < rsBlocks.length; r += 1) {
+          if (i < dcdata[r].length) {
+            data[index] = dcdata[r][i];
+            index += 1;
+          }
+        }
+      }
+
+      for (var i = 0; i < maxEcCount; i += 1) {
+        for (var r = 0; r < rsBlocks.length; r += 1) {
+          if (i < ecdata[r].length) {
+            data[index] = ecdata[r][i];
+            index += 1;
+          }
+        }
+      }
+
+      return data;
+    };
+
+    var createData = function(typeNumber, errorCorrectionLevel, dataList) {
+
+      var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, errorCorrectionLevel);
+
+      var buffer = qrBitBuffer();
+
+      for (var i = 0; i < dataList.length; i += 1) {
+        var data = dataList[i];
+        buffer.put(data.getMode(), 4);
+        buffer.put(data.getLength(), QRUtil.getLengthInBits(data.getMode(), typeNumber) );
+        data.write(buffer);
+      }
+
+      // calc num max data.
+      var totalDataCount = 0;
+      for (var i = 0; i < rsBlocks.length; i += 1) {
+        totalDataCount += rsBlocks[i].dataCount;
+      }
+
+      if (buffer.getLengthInBits() > totalDataCount * 8) {
+        throw 'code length overflow. ('
+          + buffer.getLengthInBits()
+          + '>'
+          + totalDataCount * 8
+          + ')';
+      }
+
+      // end code
+      if (buffer.getLengthInBits() + 4 <= totalDataCount * 8) {
+        buffer.put(0, 4);
+      }
+
+      // padding
+      while (buffer.getLengthInBits() % 8 != 0) {
+        buffer.putBit(false);
+      }
+
+      // padding
+      while (true) {
+
+        if (buffer.getLengthInBits() >= totalDataCount * 8) {
+          break;
+        }
+        buffer.put(PAD0, 8);
+
+        if (buffer.getLengthInBits() >= totalDataCount * 8) {
+          break;
+        }
+        buffer.put(PAD1, 8);
+      }
+
+      return createBytes(buffer, rsBlocks);
+    };
+
+    _this.addData = function(data, mode) {
+
+      mode = mode || 'Byte';
+
+      var newData = null;
+
+      switch(mode) {
+      case 'Numeric' :
+        newData = qrNumber(data);
+        break;
+      case 'Alphanumeric' :
+        newData = qrAlphaNum(data);
+        break;
+      case 'Byte' :
+        newData = qr8BitByte(data);
+        break;
+      case 'Kanji' :
+        newData = qrKanji(data);
+        break;
+      default :
+        throw 'mode:' + mode;
+      }
+
+      _dataList.push(newData);
+      _dataCache = null;
+    };
+
+    _this.isDark = function(row, col) {
+      if (row < 0 || _moduleCount <= row || col < 0 || _moduleCount <= col) {
+        throw row + ',' + col;
+      }
+      return _modules[row][col];
+    };
+
+    _this.getModuleCount = function() {
+      return _moduleCount;
+    };
+
+    _this.make = function() {
+      if (_typeNumber < 1) {
+        var typeNumber = 1;
+
+        for (; typeNumber < 40; typeNumber++) {
+          var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, _errorCorrectionLevel);
+          var buffer = qrBitBuffer();
+
+          for (var i = 0; i < _dataList.length; i++) {
+            var data = _dataList[i];
+            buffer.put(data.getMode(), 4);
+            buffer.put(data.getLength(), QRUtil.getLengthInBits(data.getMode(), typeNumber) );
+            data.write(buffer);
+          }
+
+          var totalDataCount = 0;
+          for (var i = 0; i < rsBlocks.length; i++) {
+            totalDataCount += rsBlocks[i].dataCount;
+          }
+
+          if (buffer.getLengthInBits() <= totalDataCount * 8) {
+            break;
+          }
+        }
+
+        _typeNumber = typeNumber;
+      }
+
+      makeImpl(false, getBestMaskPattern() );
+    };
+
+    _this.createTableTag = function(cellSize, margin) {
+
+      cellSize = cellSize || 2;
+      margin = (typeof margin == 'undefined')? cellSize * 4 : margin;
+
+      var qrHtml = '';
+
+      qrHtml += '<table style="';
+      qrHtml += ' border-width: 0px; border-style: none;';
+      qrHtml += ' border-collapse: collapse;';
+      qrHtml += ' padding: 0px; margin: ' + margin + 'px;';
+      qrHtml += '">';
+      qrHtml += '<tbody>';
+
+      for (var r = 0; r < _this.getModuleCount(); r += 1) {
+
+        qrHtml += '<tr>';
+
+        for (var c = 0; c < _this.getModuleCount(); c += 1) {
+          qrHtml += '<td style="';
+          qrHtml += ' border-width: 0px; border-style: none;';
+          qrHtml += ' border-collapse: collapse;';
+          qrHtml += ' padding: 0px; margin: 0px;';
+          qrHtml += ' width: ' + cellSize + 'px;';
+          qrHtml += ' height: ' + cellSize + 'px;';
+          qrHtml += ' background-color: ';
+          qrHtml += _this.isDark(r, c)? '#000000' : '#ffffff';
+          qrHtml += ';';
+          qrHtml += '"/>';
+        }
+
+        qrHtml += '</tr>';
+      }
+
+      qrHtml += '</tbody>';
+      qrHtml += '</table>';
+
+      return qrHtml;
+    };
+
+    _this.createSvgTag = function(cellSize, margin, alt, title) {
+
+      var opts = {};
+      if (typeof arguments[0] == 'object') {
+        // Called by options.
+        opts = arguments[0];
+        // overwrite cellSize and margin.
+        cellSize = opts.cellSize;
+        margin = opts.margin;
+        alt = opts.alt;
+        title = opts.title;
+      }
+
+      cellSize = cellSize || 2;
+      margin = (typeof margin == 'undefined')? cellSize * 4 : margin;
+
+      // Compose alt property surrogate
+      alt = (typeof alt === 'string') ? {text: alt} : alt || {};
+      alt.text = alt.text || null;
+      alt.id = (alt.text) ? alt.id || 'qrcode-description' : null;
+
+      // Compose title property surrogate
+      title = (typeof title === 'string') ? {text: title} : title || {};
+      title.text = title.text || null;
+      title.id = (title.text) ? title.id || 'qrcode-title' : null;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+      var c, mc, r, mr, qrSvg='', rect;
+
+      rect = 'l' + cellSize + ',0 0,' + cellSize +
+        ' -' + cellSize + ',0 0,-' + cellSize + 'z ';
+
+      qrSvg += '<svg version="1.1" xmlns="http://www.w3.org/2000/svg"';
+      qrSvg += !opts.scalable ? ' width="' + size + 'px" height="' + size + 'px"' : '';
+      qrSvg += ' viewBox="0 0 ' + size + ' ' + size + '" ';
+      qrSvg += ' preserveAspectRatio="xMinYMin meet"';
+      qrSvg += (title.text || alt.text) ? ' role="img" aria-labelledby="' +
+          escapeXml([title.id, alt.id].join(' ').trim() ) + '"' : '';
+      qrSvg += '>';
+      qrSvg += (title.text) ? '<title id="' + escapeXml(title.id) + '">' +
+          escapeXml(title.text) + '</title>' : '';
+      qrSvg += (alt.text) ? '<description id="' + escapeXml(alt.id) + '">' +
+          escapeXml(alt.text) + '</description>' : '';
+      qrSvg += '<rect width="100%" height="100%" fill="white" cx="0" cy="0"/>';
+      qrSvg += '<path d="';
+
+      for (r = 0; r < _this.getModuleCount(); r += 1) {
+        mr = r * cellSize + margin;
+        for (c = 0; c < _this.getModuleCount(); c += 1) {
+          if (_this.isDark(r, c) ) {
+            mc = c*cellSize+margin;
+            qrSvg += 'M' + mc + ',' + mr + rect;
+          }
+        }
+      }
+
+      qrSvg += '" stroke="transparent" fill="black"/>';
+      qrSvg += '</svg>';
+
+      return qrSvg;
+    };
+
+    _this.createDataURL = function(cellSize, margin) {
+
+      cellSize = cellSize || 2;
+      margin = (typeof margin == 'undefined')? cellSize * 4 : margin;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+      var min = margin;
+      var max = size - margin;
+
+      return createDataURL(size, size, function(x, y) {
+        if (min <= x && x < max && min <= y && y < max) {
+          var c = Math.floor( (x - min) / cellSize);
+          var r = Math.floor( (y - min) / cellSize);
+          return _this.isDark(r, c)? 0 : 1;
+        } else {
+          return 1;
+        }
+      } );
+    };
+
+    _this.createImgTag = function(cellSize, margin, alt) {
+
+      cellSize = cellSize || 2;
+      margin = (typeof margin == 'undefined')? cellSize * 4 : margin;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+
+      var img = '';
+      img += '<img';
+      img += '\u0020src="';
+      img += _this.createDataURL(cellSize, margin);
+      img += '"';
+      img += '\u0020width="';
+      img += size;
+      img += '"';
+      img += '\u0020height="';
+      img += size;
+      img += '"';
+      if (alt) {
+        img += '\u0020alt="';
+        img += escapeXml(alt);
+        img += '"';
+      }
+      img += '/>';
+
+      return img;
+    };
+
+    var escapeXml = function(s) {
+      var escaped = '';
+      for (var i = 0; i < s.length; i += 1) {
+        var c = s.charAt(i);
+        switch(c) {
+        case '<': escaped += '&lt;'; break;
+        case '>': escaped += '&gt;'; break;
+        case '&': escaped += '&amp;'; break;
+        case '"': escaped += '&quot;'; break;
+        default : escaped += c; break;
+        }
+      }
+      return escaped;
+    };
+
+    var _createHalfASCII = function(margin) {
+      var cellSize = 1;
+      margin = (typeof margin == 'undefined')? cellSize * 2 : margin;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+      var min = margin;
+      var max = size - margin;
+
+      var y, x, r1, r2, p;
+
+      var blocks = {
+        '██': '█',
+        '█ ': '▀',
+        ' █': '▄',
+        '  ': ' '
+      };
+
+      var blocksLastLineNoMargin = {
+        '██': '▀',
+        '█ ': '▀',
+        ' █': ' ',
+        '  ': ' '
+      };
+
+      var ascii = '';
+      for (y = 0; y < size; y += 2) {
+        r1 = Math.floor((y - min) / cellSize);
+        r2 = Math.floor((y + 1 - min) / cellSize);
+        for (x = 0; x < size; x += 1) {
+          p = '█';
+
+          if (min <= x && x < max && min <= y && y < max && _this.isDark(r1, Math.floor((x - min) / cellSize))) {
+            p = ' ';
+          }
+
+          if (min <= x && x < max && min <= y+1 && y+1 < max && _this.isDark(r2, Math.floor((x - min) / cellSize))) {
+            p += ' ';
+          }
+          else {
+            p += '█';
+          }
+
+          // Output 2 characters per pixel, to create full square. 1 character per pixels gives only half width of square.
+          ascii += (margin < 1 && y+1 >= max) ? blocksLastLineNoMargin[p] : blocks[p];
+        }
+
+        ascii += '\n';
+      }
+
+      if (size % 2 && margin > 0) {
+        return ascii.substring(0, ascii.length - size - 1) + Array(size+1).join('▀');
+      }
+
+      return ascii.substring(0, ascii.length-1);
+    };
+
+    _this.createASCII = function(cellSize, margin) {
+      cellSize = cellSize || 1;
+
+      if (cellSize < 2) {
+        return _createHalfASCII(margin);
+      }
+
+      cellSize -= 1;
+      margin = (typeof margin == 'undefined')? cellSize * 2 : margin;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+      var min = margin;
+      var max = size - margin;
+
+      var y, x, r, p;
+
+      var white = Array(cellSize+1).join('██');
+      var black = Array(cellSize+1).join('  ');
+
+      var ascii = '';
+      var line = '';
+      for (y = 0; y < size; y += 1) {
+        r = Math.floor( (y - min) / cellSize);
+        line = '';
+        for (x = 0; x < size; x += 1) {
+          p = 1;
+
+          if (min <= x && x < max && min <= y && y < max && _this.isDark(r, Math.floor((x - min) / cellSize))) {
+            p = 0;
+          }
+
+          // Output 2 characters per pixel, to create full square. 1 character per pixels gives only half width of square.
+          line += p ? white : black;
+        }
+
+        for (r = 0; r < cellSize; r += 1) {
+          ascii += line + '\n';
+        }
+      }
+
+      return ascii.substring(0, ascii.length-1);
+    };
+
+    _this.renderTo2dContext = function(context, cellSize) {
+      cellSize = cellSize || 2;
+      var length = _this.getModuleCount();
+      for (var row = 0; row < length; row++) {
+        for (var col = 0; col < length; col++) {
+          context.fillStyle = _this.isDark(row, col) ? 'black' : 'white';
+          context.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+        }
+      }
+    }
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qrcode.stringToBytes
+  //---------------------------------------------------------------------
+
+  qrcode.stringToBytesFuncs = {
+    'default' : function(s) {
+      var bytes = [];
+      for (var i = 0; i < s.length; i += 1) {
+        var c = s.charCodeAt(i);
+        bytes.push(c & 0xff);
+      }
+      return bytes;
+    }
+  };
+
+  qrcode.stringToBytes = qrcode.stringToBytesFuncs['default'];
+
+  //---------------------------------------------------------------------
+  // qrcode.createStringToBytes
+  //---------------------------------------------------------------------
+
+  /**
+   * @param unicodeData base64 string of byte array.
+   * [16bit Unicode],[16bit Bytes], ...
+   * @param numChars
+   */
+  qrcode.createStringToBytes = function(unicodeData, numChars) {
+
+    // create conversion map.
+
+    var unicodeMap = function() {
+
+      var bin = base64DecodeInputStream(unicodeData);
+      var read = function() {
+        var b = bin.read();
+        if (b == -1) throw 'eof';
+        return b;
+      };
+
+      var count = 0;
+      var unicodeMap = {};
+      while (true) {
+        var b0 = bin.read();
+        if (b0 == -1) break;
+        var b1 = read();
+        var b2 = read();
+        var b3 = read();
+        var k = String.fromCharCode( (b0 << 8) | b1);
+        var v = (b2 << 8) | b3;
+        unicodeMap[k] = v;
+        count += 1;
+      }
+      if (count != numChars) {
+        throw count + ' != ' + numChars;
+      }
+
+      return unicodeMap;
+    }();
+
+    var unknownChar = '?'.charCodeAt(0);
+
+    return function(s) {
+      var bytes = [];
+      for (var i = 0; i < s.length; i += 1) {
+        var c = s.charCodeAt(i);
+        if (c < 128) {
+          bytes.push(c);
+        } else {
+          var b = unicodeMap[s.charAt(i)];
+          if (typeof b == 'number') {
+            if ( (b & 0xff) == b) {
+              // 1byte
+              bytes.push(b);
+            } else {
+              // 2bytes
+              bytes.push(b >>> 8);
+              bytes.push(b & 0xff);
+            }
+          } else {
+            bytes.push(unknownChar);
+          }
+        }
+      }
+      return bytes;
+    };
+  };
+
+  //---------------------------------------------------------------------
+  // QRMode
+  //---------------------------------------------------------------------
+
+  var QRMode = {
+    MODE_NUMBER :    1 << 0,
+    MODE_ALPHA_NUM : 1 << 1,
+    MODE_8BIT_BYTE : 1 << 2,
+    MODE_KANJI :     1 << 3
+  };
+
+  //---------------------------------------------------------------------
+  // QRErrorCorrectionLevel
+  //---------------------------------------------------------------------
+
+  var QRErrorCorrectionLevel = {
+    L : 1,
+    M : 0,
+    Q : 3,
+    H : 2
+  };
+
+  //---------------------------------------------------------------------
+  // QRMaskPattern
+  //---------------------------------------------------------------------
+
+  var QRMaskPattern = {
+    PATTERN000 : 0,
+    PATTERN001 : 1,
+    PATTERN010 : 2,
+    PATTERN011 : 3,
+    PATTERN100 : 4,
+    PATTERN101 : 5,
+    PATTERN110 : 6,
+    PATTERN111 : 7
+  };
+
+  //---------------------------------------------------------------------
+  // QRUtil
+  //---------------------------------------------------------------------
+
+  var QRUtil = function() {
+
+    var PATTERN_POSITION_TABLE = [
+      [],
+      [6, 18],
+      [6, 22],
+      [6, 26],
+      [6, 30],
+      [6, 34],
+      [6, 22, 38],
+      [6, 24, 42],
+      [6, 26, 46],
+      [6, 28, 50],
+      [6, 30, 54],
+      [6, 32, 58],
+      [6, 34, 62],
+      [6, 26, 46, 66],
+      [6, 26, 48, 70],
+      [6, 26, 50, 74],
+      [6, 30, 54, 78],
+      [6, 30, 56, 82],
+      [6, 30, 58, 86],
+      [6, 34, 62, 90],
+      [6, 28, 50, 72, 94],
+      [6, 26, 50, 74, 98],
+      [6, 30, 54, 78, 102],
+      [6, 28, 54, 80, 106],
+      [6, 32, 58, 84, 110],
+      [6, 30, 58, 86, 114],
+      [6, 34, 62, 90, 118],
+      [6, 26, 50, 74, 98, 122],
+      [6, 30, 54, 78, 102, 126],
+      [6, 26, 52, 78, 104, 130],
+      [6, 30, 56, 82, 108, 134],
+      [6, 34, 60, 86, 112, 138],
+      [6, 30, 58, 86, 114, 142],
+      [6, 34, 62, 90, 118, 146],
+      [6, 30, 54, 78, 102, 126, 150],
+      [6, 24, 50, 76, 102, 128, 154],
+      [6, 28, 54, 80, 106, 132, 158],
+      [6, 32, 58, 84, 110, 136, 162],
+      [6, 26, 54, 82, 110, 138, 166],
+      [6, 30, 58, 86, 114, 142, 170]
+    ];
+    var G15 = (1 << 10) | (1 << 8) | (1 << 5) | (1 << 4) | (1 << 2) | (1 << 1) | (1 << 0);
+    var G18 = (1 << 12) | (1 << 11) | (1 << 10) | (1 << 9) | (1 << 8) | (1 << 5) | (1 << 2) | (1 << 0);
+    var G15_MASK = (1 << 14) | (1 << 12) | (1 << 10) | (1 << 4) | (1 << 1);
+
+    var _this = {};
+
+    var getBCHDigit = function(data) {
+      var digit = 0;
+      while (data != 0) {
+        digit += 1;
+        data >>>= 1;
+      }
+      return digit;
+    };
+
+    _this.getBCHTypeInfo = function(data) {
+      var d = data << 10;
+      while (getBCHDigit(d) - getBCHDigit(G15) >= 0) {
+        d ^= (G15 << (getBCHDigit(d) - getBCHDigit(G15) ) );
+      }
+      return ( (data << 10) | d) ^ G15_MASK;
+    };
+
+    _this.getBCHTypeNumber = function(data) {
+      var d = data << 12;
+      while (getBCHDigit(d) - getBCHDigit(G18) >= 0) {
+        d ^= (G18 << (getBCHDigit(d) - getBCHDigit(G18) ) );
+      }
+      return (data << 12) | d;
+    };
+
+    _this.getPatternPosition = function(typeNumber) {
+      return PATTERN_POSITION_TABLE[typeNumber - 1];
+    };
+
+    _this.getMaskFunction = function(maskPattern) {
+
+      switch (maskPattern) {
+
+      case QRMaskPattern.PATTERN000 :
+        return function(i, j) { return (i + j) % 2 == 0; };
+      case QRMaskPattern.PATTERN001 :
+        return function(i, j) { return i % 2 == 0; };
+      case QRMaskPattern.PATTERN010 :
+        return function(i, j) { return j % 3 == 0; };
+      case QRMaskPattern.PATTERN011 :
+        return function(i, j) { return (i + j) % 3 == 0; };
+      case QRMaskPattern.PATTERN100 :
+        return function(i, j) { return (Math.floor(i / 2) + Math.floor(j / 3) ) % 2 == 0; };
+      case QRMaskPattern.PATTERN101 :
+        return function(i, j) { return (i * j) % 2 + (i * j) % 3 == 0; };
+      case QRMaskPattern.PATTERN110 :
+        return function(i, j) { return ( (i * j) % 2 + (i * j) % 3) % 2 == 0; };
+      case QRMaskPattern.PATTERN111 :
+        return function(i, j) { return ( (i * j) % 3 + (i + j) % 2) % 2 == 0; };
+
+      default :
+        throw 'bad maskPattern:' + maskPattern;
+      }
+    };
+
+    _this.getErrorCorrectPolynomial = function(errorCorrectLength) {
+      var a = qrPolynomial([1], 0);
+      for (var i = 0; i < errorCorrectLength; i += 1) {
+        a = a.multiply(qrPolynomial([1, QRMath.gexp(i)], 0) );
+      }
+      return a;
+    };
+
+    _this.getLengthInBits = function(mode, type) {
+
+      if (1 <= type && type < 10) {
+
+        // 1 - 9
+
+        switch(mode) {
+        case QRMode.MODE_NUMBER    : return 10;
+        case QRMode.MODE_ALPHA_NUM : return 9;
+        case QRMode.MODE_8BIT_BYTE : return 8;
+        case QRMode.MODE_KANJI     : return 8;
+        default :
+          throw 'mode:' + mode;
+        }
+
+      } else if (type < 27) {
+
+        // 10 - 26
+
+        switch(mode) {
+        case QRMode.MODE_NUMBER    : return 12;
+        case QRMode.MODE_ALPHA_NUM : return 11;
+        case QRMode.MODE_8BIT_BYTE : return 16;
+        case QRMode.MODE_KANJI     : return 10;
+        default :
+          throw 'mode:' + mode;
+        }
+
+      } else if (type < 41) {
+
+        // 27 - 40
+
+        switch(mode) {
+        case QRMode.MODE_NUMBER    : return 14;
+        case QRMode.MODE_ALPHA_NUM : return 13;
+        case QRMode.MODE_8BIT_BYTE : return 16;
+        case QRMode.MODE_KANJI     : return 12;
+        default :
+          throw 'mode:' + mode;
+        }
+
+      } else {
+        throw 'type:' + type;
+      }
+    };
+
+    _this.getLostPoint = function(qrcode) {
+
+      var moduleCount = qrcode.getModuleCount();
+
+      var lostPoint = 0;
+
+      // LEVEL1
+
+      for (var row = 0; row < moduleCount; row += 1) {
+        for (var col = 0; col < moduleCount; col += 1) {
+
+          var sameCount = 0;
+          var dark = qrcode.isDark(row, col);
+
+          for (var r = -1; r <= 1; r += 1) {
+
+            if (row + r < 0 || moduleCount <= row + r) {
+              continue;
+            }
+
+            for (var c = -1; c <= 1; c += 1) {
+
+              if (col + c < 0 || moduleCount <= col + c) {
+                continue;
+              }
+
+              if (r == 0 && c == 0) {
+                continue;
+              }
+
+              if (dark == qrcode.isDark(row + r, col + c) ) {
+                sameCount += 1;
+              }
+            }
+          }
+
+          if (sameCount > 5) {
+            lostPoint += (3 + sameCount - 5);
+          }
+        }
+      };
+
+      // LEVEL2
+
+      for (var row = 0; row < moduleCount - 1; row += 1) {
+        for (var col = 0; col < moduleCount - 1; col += 1) {
+          var count = 0;
+          if (qrcode.isDark(row, col) ) count += 1;
+          if (qrcode.isDark(row + 1, col) ) count += 1;
+          if (qrcode.isDark(row, col + 1) ) count += 1;
+          if (qrcode.isDark(row + 1, col + 1) ) count += 1;
+          if (count == 0 || count == 4) {
+            lostPoint += 3;
+          }
+        }
+      }
+
+      // LEVEL3
+
+      for (var row = 0; row < moduleCount; row += 1) {
+        for (var col = 0; col < moduleCount - 6; col += 1) {
+          if (qrcode.isDark(row, col)
+              && !qrcode.isDark(row, col + 1)
+              &&  qrcode.isDark(row, col + 2)
+              &&  qrcode.isDark(row, col + 3)
+              &&  qrcode.isDark(row, col + 4)
+              && !qrcode.isDark(row, col + 5)
+              &&  qrcode.isDark(row, col + 6) ) {
+            lostPoint += 40;
+          }
+        }
+      }
+
+      for (var col = 0; col < moduleCount; col += 1) {
+        for (var row = 0; row < moduleCount - 6; row += 1) {
+          if (qrcode.isDark(row, col)
+              && !qrcode.isDark(row + 1, col)
+              &&  qrcode.isDark(row + 2, col)
+              &&  qrcode.isDark(row + 3, col)
+              &&  qrcode.isDark(row + 4, col)
+              && !qrcode.isDark(row + 5, col)
+              &&  qrcode.isDark(row + 6, col) ) {
+            lostPoint += 40;
+          }
+        }
+      }
+
+      // LEVEL4
+
+      var darkCount = 0;
+
+      for (var col = 0; col < moduleCount; col += 1) {
+        for (var row = 0; row < moduleCount; row += 1) {
+          if (qrcode.isDark(row, col) ) {
+            darkCount += 1;
+          }
+        }
+      }
+
+      var ratio = Math.abs(100 * darkCount / moduleCount / moduleCount - 50) / 5;
+      lostPoint += ratio * 10;
+
+      return lostPoint;
+    };
+
+    return _this;
+  }();
+
+  //---------------------------------------------------------------------
+  // QRMath
+  //---------------------------------------------------------------------
+
+  var QRMath = function() {
+
+    var EXP_TABLE = new Array(256);
+    var LOG_TABLE = new Array(256);
+
+    // initialize tables
+    for (var i = 0; i < 8; i += 1) {
+      EXP_TABLE[i] = 1 << i;
+    }
+    for (var i = 8; i < 256; i += 1) {
+      EXP_TABLE[i] = EXP_TABLE[i - 4]
+        ^ EXP_TABLE[i - 5]
+        ^ EXP_TABLE[i - 6]
+        ^ EXP_TABLE[i - 8];
+    }
+    for (var i = 0; i < 255; i += 1) {
+      LOG_TABLE[EXP_TABLE[i] ] = i;
+    }
+
+    var _this = {};
+
+    _this.glog = function(n) {
+
+      if (n < 1) {
+        throw 'glog(' + n + ')';
+      }
+
+      return LOG_TABLE[n];
+    };
+
+    _this.gexp = function(n) {
+
+      while (n < 0) {
+        n += 255;
+      }
+
+      while (n >= 256) {
+        n -= 255;
+      }
+
+      return EXP_TABLE[n];
+    };
+
+    return _this;
+  }();
+
+  //---------------------------------------------------------------------
+  // qrPolynomial
+  //---------------------------------------------------------------------
+
+  function qrPolynomial(num, shift) {
+
+    if (typeof num.length == 'undefined') {
+      throw num.length + '/' + shift;
+    }
+
+    var _num = function() {
+      var offset = 0;
+      while (offset < num.length && num[offset] == 0) {
+        offset += 1;
+      }
+      var _num = new Array(num.length - offset + shift);
+      for (var i = 0; i < num.length - offset; i += 1) {
+        _num[i] = num[i + offset];
+      }
+      return _num;
+    }();
+
+    var _this = {};
+
+    _this.getAt = function(index) {
+      return _num[index];
+    };
+
+    _this.getLength = function() {
+      return _num.length;
+    };
+
+    _this.multiply = function(e) {
+
+      var num = new Array(_this.getLength() + e.getLength() - 1);
+
+      for (var i = 0; i < _this.getLength(); i += 1) {
+        for (var j = 0; j < e.getLength(); j += 1) {
+          num[i + j] ^= QRMath.gexp(QRMath.glog(_this.getAt(i) ) + QRMath.glog(e.getAt(j) ) );
+        }
+      }
+
+      return qrPolynomial(num, 0);
+    };
+
+    _this.mod = function(e) {
+
+      if (_this.getLength() - e.getLength() < 0) {
+        return _this;
+      }
+
+      var ratio = QRMath.glog(_this.getAt(0) ) - QRMath.glog(e.getAt(0) );
+
+      var num = new Array(_this.getLength() );
+      for (var i = 0; i < _this.getLength(); i += 1) {
+        num[i] = _this.getAt(i);
+      }
+
+      for (var i = 0; i < e.getLength(); i += 1) {
+        num[i] ^= QRMath.gexp(QRMath.glog(e.getAt(i) ) + ratio);
+      }
+
+      // recursive call
+      return qrPolynomial(num, 0).mod(e);
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // QRRSBlock
+  //---------------------------------------------------------------------
+
+  var QRRSBlock = function() {
+
+    var RS_BLOCK_TABLE = [
+
+      // L
+      // M
+      // Q
+      // H
+
+      // 1
+      [1, 26, 19],
+      [1, 26, 16],
+      [1, 26, 13],
+      [1, 26, 9],
+
+      // 2
+      [1, 44, 34],
+      [1, 44, 28],
+      [1, 44, 22],
+      [1, 44, 16],
+
+      // 3
+      [1, 70, 55],
+      [1, 70, 44],
+      [2, 35, 17],
+      [2, 35, 13],
+
+      // 4
+      [1, 100, 80],
+      [2, 50, 32],
+      [2, 50, 24],
+      [4, 25, 9],
+
+      // 5
+      [1, 134, 108],
+      [2, 67, 43],
+      [2, 33, 15, 2, 34, 16],
+      [2, 33, 11, 2, 34, 12],
+
+      // 6
+      [2, 86, 68],
+      [4, 43, 27],
+      [4, 43, 19],
+      [4, 43, 15],
+
+      // 7
+      [2, 98, 78],
+      [4, 49, 31],
+      [2, 32, 14, 4, 33, 15],
+      [4, 39, 13, 1, 40, 14],
+
+      // 8
+      [2, 121, 97],
+      [2, 60, 38, 2, 61, 39],
+      [4, 40, 18, 2, 41, 19],
+      [4, 40, 14, 2, 41, 15],
+
+      // 9
+      [2, 146, 116],
+      [3, 58, 36, 2, 59, 37],
+      [4, 36, 16, 4, 37, 17],
+      [4, 36, 12, 4, 37, 13],
+
+      // 10
+      [2, 86, 68, 2, 87, 69],
+      [4, 69, 43, 1, 70, 44],
+      [6, 43, 19, 2, 44, 20],
+      [6, 43, 15, 2, 44, 16],
+
+      // 11
+      [4, 101, 81],
+      [1, 80, 50, 4, 81, 51],
+      [4, 50, 22, 4, 51, 23],
+      [3, 36, 12, 8, 37, 13],
+
+      // 12
+      [2, 116, 92, 2, 117, 93],
+      [6, 58, 36, 2, 59, 37],
+      [4, 46, 20, 6, 47, 21],
+      [7, 42, 14, 4, 43, 15],
+
+      // 13
+      [4, 133, 107],
+      [8, 59, 37, 1, 60, 38],
+      [8, 44, 20, 4, 45, 21],
+      [12, 33, 11, 4, 34, 12],
+
+      // 14
+      [3, 145, 115, 1, 146, 116],
+      [4, 64, 40, 5, 65, 41],
+      [11, 36, 16, 5, 37, 17],
+      [11, 36, 12, 5, 37, 13],
+
+      // 15
+      [5, 109, 87, 1, 110, 88],
+      [5, 65, 41, 5, 66, 42],
+      [5, 54, 24, 7, 55, 25],
+      [11, 36, 12, 7, 37, 13],
+
+      // 16
+      [5, 122, 98, 1, 123, 99],
+      [7, 73, 45, 3, 74, 46],
+      [15, 43, 19, 2, 44, 20],
+      [3, 45, 15, 13, 46, 16],
+
+      // 17
+      [1, 135, 107, 5, 136, 108],
+      [10, 74, 46, 1, 75, 47],
+      [1, 50, 22, 15, 51, 23],
+      [2, 42, 14, 17, 43, 15],
+
+      // 18
+      [5, 150, 120, 1, 151, 121],
+      [9, 69, 43, 4, 70, 44],
+      [17, 50, 22, 1, 51, 23],
+      [2, 42, 14, 19, 43, 15],
+
+      // 19
+      [3, 141, 113, 4, 142, 114],
+      [3, 70, 44, 11, 71, 45],
+      [17, 47, 21, 4, 48, 22],
+      [9, 39, 13, 16, 40, 14],
+
+      // 20
+      [3, 135, 107, 5, 136, 108],
+      [3, 67, 41, 13, 68, 42],
+      [15, 54, 24, 5, 55, 25],
+      [15, 43, 15, 10, 44, 16],
+
+      // 21
+      [4, 144, 116, 4, 145, 117],
+      [17, 68, 42],
+      [17, 50, 22, 6, 51, 23],
+      [19, 46, 16, 6, 47, 17],
+
+      // 22
+      [2, 139, 111, 7, 140, 112],
+      [17, 74, 46],
+      [7, 54, 24, 16, 55, 25],
+      [34, 37, 13],
+
+      // 23
+      [4, 151, 121, 5, 152, 122],
+      [4, 75, 47, 14, 76, 48],
+      [11, 54, 24, 14, 55, 25],
+      [16, 45, 15, 14, 46, 16],
+
+      // 24
+      [6, 147, 117, 4, 148, 118],
+      [6, 73, 45, 14, 74, 46],
+      [11, 54, 24, 16, 55, 25],
+      [30, 46, 16, 2, 47, 17],
+
+      // 25
+      [8, 132, 106, 4, 133, 107],
+      [8, 75, 47, 13, 76, 48],
+      [7, 54, 24, 22, 55, 25],
+      [22, 45, 15, 13, 46, 16],
+
+      // 26
+      [10, 142, 114, 2, 143, 115],
+      [19, 74, 46, 4, 75, 47],
+      [28, 50, 22, 6, 51, 23],
+      [33, 46, 16, 4, 47, 17],
+
+      // 27
+      [8, 152, 122, 4, 153, 123],
+      [22, 73, 45, 3, 74, 46],
+      [8, 53, 23, 26, 54, 24],
+      [12, 45, 15, 28, 46, 16],
+
+      // 28
+      [3, 147, 117, 10, 148, 118],
+      [3, 73, 45, 23, 74, 46],
+      [4, 54, 24, 31, 55, 25],
+      [11, 45, 15, 31, 46, 16],
+
+      // 29
+      [7, 146, 116, 7, 147, 117],
+      [21, 73, 45, 7, 74, 46],
+      [1, 53, 23, 37, 54, 24],
+      [19, 45, 15, 26, 46, 16],
+
+      // 30
+      [5, 145, 115, 10, 146, 116],
+      [19, 75, 47, 10, 76, 48],
+      [15, 54, 24, 25, 55, 25],
+      [23, 45, 15, 25, 46, 16],
+
+      // 31
+      [13, 145, 115, 3, 146, 116],
+      [2, 74, 46, 29, 75, 47],
+      [42, 54, 24, 1, 55, 25],
+      [23, 45, 15, 28, 46, 16],
+
+      // 32
+      [17, 145, 115],
+      [10, 74, 46, 23, 75, 47],
+      [10, 54, 24, 35, 55, 25],
+      [19, 45, 15, 35, 46, 16],
+
+      // 33
+      [17, 145, 115, 1, 146, 116],
+      [14, 74, 46, 21, 75, 47],
+      [29, 54, 24, 19, 55, 25],
+      [11, 45, 15, 46, 46, 16],
+
+      // 34
+      [13, 145, 115, 6, 146, 116],
+      [14, 74, 46, 23, 75, 47],
+      [44, 54, 24, 7, 55, 25],
+      [59, 46, 16, 1, 47, 17],
+
+      // 35
+      [12, 151, 121, 7, 152, 122],
+      [12, 75, 47, 26, 76, 48],
+      [39, 54, 24, 14, 55, 25],
+      [22, 45, 15, 41, 46, 16],
+
+      // 36
+      [6, 151, 121, 14, 152, 122],
+      [6, 75, 47, 34, 76, 48],
+      [46, 54, 24, 10, 55, 25],
+      [2, 45, 15, 64, 46, 16],
+
+      // 37
+      [17, 152, 122, 4, 153, 123],
+      [29, 74, 46, 14, 75, 47],
+      [49, 54, 24, 10, 55, 25],
+      [24, 45, 15, 46, 46, 16],
+
+      // 38
+      [4, 152, 122, 18, 153, 123],
+      [13, 74, 46, 32, 75, 47],
+      [48, 54, 24, 14, 55, 25],
+      [42, 45, 15, 32, 46, 16],
+
+      // 39
+      [20, 147, 117, 4, 148, 118],
+      [40, 75, 47, 7, 76, 48],
+      [43, 54, 24, 22, 55, 25],
+      [10, 45, 15, 67, 46, 16],
+
+      // 40
+      [19, 148, 118, 6, 149, 119],
+      [18, 75, 47, 31, 76, 48],
+      [34, 54, 24, 34, 55, 25],
+      [20, 45, 15, 61, 46, 16]
+    ];
+
+    var qrRSBlock = function(totalCount, dataCount) {
+      var _this = {};
+      _this.totalCount = totalCount;
+      _this.dataCount = dataCount;
+      return _this;
+    };
+
+    var _this = {};
+
+    var getRsBlockTable = function(typeNumber, errorCorrectionLevel) {
+
+      switch(errorCorrectionLevel) {
+      case QRErrorCorrectionLevel.L :
+        return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 0];
+      case QRErrorCorrectionLevel.M :
+        return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 1];
+      case QRErrorCorrectionLevel.Q :
+        return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 2];
+      case QRErrorCorrectionLevel.H :
+        return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 3];
+      default :
+        return undefined;
+      }
+    };
+
+    _this.getRSBlocks = function(typeNumber, errorCorrectionLevel) {
+
+      var rsBlock = getRsBlockTable(typeNumber, errorCorrectionLevel);
+
+      if (typeof rsBlock == 'undefined') {
+        throw 'bad rs block @ typeNumber:' + typeNumber +
+            '/errorCorrectionLevel:' + errorCorrectionLevel;
+      }
+
+      var length = rsBlock.length / 3;
+
+      var list = [];
+
+      for (var i = 0; i < length; i += 1) {
+
+        var count = rsBlock[i * 3 + 0];
+        var totalCount = rsBlock[i * 3 + 1];
+        var dataCount = rsBlock[i * 3 + 2];
+
+        for (var j = 0; j < count; j += 1) {
+          list.push(qrRSBlock(totalCount, dataCount) );
+        }
+      }
+
+      return list;
+    };
+
+    return _this;
+  }();
+
+  //---------------------------------------------------------------------
+  // qrBitBuffer
+  //---------------------------------------------------------------------
+
+  var qrBitBuffer = function() {
+
+    var _buffer = [];
+    var _length = 0;
+
+    var _this = {};
+
+    _this.getBuffer = function() {
+      return _buffer;
+    };
+
+    _this.getAt = function(index) {
+      var bufIndex = Math.floor(index / 8);
+      return ( (_buffer[bufIndex] >>> (7 - index % 8) ) & 1) == 1;
+    };
+
+    _this.put = function(num, length) {
+      for (var i = 0; i < length; i += 1) {
+        _this.putBit( ( (num >>> (length - i - 1) ) & 1) == 1);
+      }
+    };
+
+    _this.getLengthInBits = function() {
+      return _length;
+    };
+
+    _this.putBit = function(bit) {
+
+      var bufIndex = Math.floor(_length / 8);
+      if (_buffer.length <= bufIndex) {
+        _buffer.push(0);
+      }
+
+      if (bit) {
+        _buffer[bufIndex] |= (0x80 >>> (_length % 8) );
+      }
+
+      _length += 1;
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qrNumber
+  //---------------------------------------------------------------------
+
+  var qrNumber = function(data) {
+
+    var _mode = QRMode.MODE_NUMBER;
+    var _data = data;
+
+    var _this = {};
+
+    _this.getMode = function() {
+      return _mode;
+    };
+
+    _this.getLength = function(buffer) {
+      return _data.length;
+    };
+
+    _this.write = function(buffer) {
+
+      var data = _data;
+
+      var i = 0;
+
+      while (i + 2 < data.length) {
+        buffer.put(strToNum(data.substring(i, i + 3) ), 10);
+        i += 3;
+      }
+
+      if (i < data.length) {
+        if (data.length - i == 1) {
+          buffer.put(strToNum(data.substring(i, i + 1) ), 4);
+        } else if (data.length - i == 2) {
+          buffer.put(strToNum(data.substring(i, i + 2) ), 7);
+        }
+      }
+    };
+
+    var strToNum = function(s) {
+      var num = 0;
+      for (var i = 0; i < s.length; i += 1) {
+        num = num * 10 + chatToNum(s.charAt(i) );
+      }
+      return num;
+    };
+
+    var chatToNum = function(c) {
+      if ('0' <= c && c <= '9') {
+        return c.charCodeAt(0) - '0'.charCodeAt(0);
+      }
+      throw 'illegal char :' + c;
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qrAlphaNum
+  //---------------------------------------------------------------------
+
+  var qrAlphaNum = function(data) {
+
+    var _mode = QRMode.MODE_ALPHA_NUM;
+    var _data = data;
+
+    var _this = {};
+
+    _this.getMode = function() {
+      return _mode;
+    };
+
+    _this.getLength = function(buffer) {
+      return _data.length;
+    };
+
+    _this.write = function(buffer) {
+
+      var s = _data;
+
+      var i = 0;
+
+      while (i + 1 < s.length) {
+        buffer.put(
+          getCode(s.charAt(i) ) * 45 +
+          getCode(s.charAt(i + 1) ), 11);
+        i += 2;
+      }
+
+      if (i < s.length) {
+        buffer.put(getCode(s.charAt(i) ), 6);
+      }
+    };
+
+    var getCode = function(c) {
+
+      if ('0' <= c && c <= '9') {
+        return c.charCodeAt(0) - '0'.charCodeAt(0);
+      } else if ('A' <= c && c <= 'Z') {
+        return c.charCodeAt(0) - 'A'.charCodeAt(0) + 10;
+      } else {
+        switch (c) {
+        case ' ' : return 36;
+        case '$' : return 37;
+        case '%' : return 38;
+        case '*' : return 39;
+        case '+' : return 40;
+        case '-' : return 41;
+        case '.' : return 42;
+        case '/' : return 43;
+        case ':' : return 44;
+        default :
+          throw 'illegal char :' + c;
+        }
+      }
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qr8BitByte
+  //---------------------------------------------------------------------
+
+  var qr8BitByte = function(data) {
+
+    var _mode = QRMode.MODE_8BIT_BYTE;
+    var _data = data;
+    var _bytes = qrcode.stringToBytes(data);
+
+    var _this = {};
+
+    _this.getMode = function() {
+      return _mode;
+    };
+
+    _this.getLength = function(buffer) {
+      return _bytes.length;
+    };
+
+    _this.write = function(buffer) {
+      for (var i = 0; i < _bytes.length; i += 1) {
+        buffer.put(_bytes[i], 8);
+      }
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qrKanji
+  //---------------------------------------------------------------------
+
+  var qrKanji = function(data) {
+
+    var _mode = QRMode.MODE_KANJI;
+    var _data = data;
+
+    var stringToBytes = qrcode.stringToBytesFuncs['SJIS'];
+    if (!stringToBytes) {
+      throw 'sjis not supported.';
+    }
+    !function(c, code) {
+      // self test for sjis support.
+      var test = stringToBytes(c);
+      if (test.length != 2 || ( (test[0] << 8) | test[1]) != code) {
+        throw 'sjis not supported.';
+      }
+    }('\u53cb', 0x9746);
+
+    var _bytes = stringToBytes(data);
+
+    var _this = {};
+
+    _this.getMode = function() {
+      return _mode;
+    };
+
+    _this.getLength = function(buffer) {
+      return ~~(_bytes.length / 2);
+    };
+
+    _this.write = function(buffer) {
+
+      var data = _bytes;
+
+      var i = 0;
+
+      while (i + 1 < data.length) {
+
+        var c = ( (0xff & data[i]) << 8) | (0xff & data[i + 1]);
+
+        if (0x8140 <= c && c <= 0x9FFC) {
+          c -= 0x8140;
+        } else if (0xE040 <= c && c <= 0xEBBF) {
+          c -= 0xC140;
+        } else {
+          throw 'illegal char at ' + (i + 1) + '/' + c;
+        }
+
+        c = ( (c >>> 8) & 0xff) * 0xC0 + (c & 0xff);
+
+        buffer.put(c, 13);
+
+        i += 2;
+      }
+
+      if (i < data.length) {
+        throw 'illegal char at ' + (i + 1);
+      }
+    };
+
+    return _this;
+  };
+
+  //=====================================================================
+  // GIF Support etc.
+  //
+
+  //---------------------------------------------------------------------
+  // byteArrayOutputStream
+  //---------------------------------------------------------------------
+
+  var byteArrayOutputStream = function() {
+
+    var _bytes = [];
+
+    var _this = {};
+
+    _this.writeByte = function(b) {
+      _bytes.push(b & 0xff);
+    };
+
+    _this.writeShort = function(i) {
+      _this.writeByte(i);
+      _this.writeByte(i >>> 8);
+    };
+
+    _this.writeBytes = function(b, off, len) {
+      off = off || 0;
+      len = len || b.length;
+      for (var i = 0; i < len; i += 1) {
+        _this.writeByte(b[i + off]);
+      }
+    };
+
+    _this.writeString = function(s) {
+      for (var i = 0; i < s.length; i += 1) {
+        _this.writeByte(s.charCodeAt(i) );
+      }
+    };
+
+    _this.toByteArray = function() {
+      return _bytes;
+    };
+
+    _this.toString = function() {
+      var s = '';
+      s += '[';
+      for (var i = 0; i < _bytes.length; i += 1) {
+        if (i > 0) {
+          s += ',';
+        }
+        s += _bytes[i];
+      }
+      s += ']';
+      return s;
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // base64EncodeOutputStream
+  //---------------------------------------------------------------------
+
+  var base64EncodeOutputStream = function() {
+
+    var _buffer = 0;
+    var _buflen = 0;
+    var _length = 0;
+    var _base64 = '';
+
+    var _this = {};
+
+    var writeEncoded = function(b) {
+      _base64 += String.fromCharCode(encode(b & 0x3f) );
+    };
+
+    var encode = function(n) {
+      if (n < 0) {
+        // error.
+      } else if (n < 26) {
+        return 0x41 + n;
+      } else if (n < 52) {
+        return 0x61 + (n - 26);
+      } else if (n < 62) {
+        return 0x30 + (n - 52);
+      } else if (n == 62) {
+        return 0x2b;
+      } else if (n == 63) {
+        return 0x2f;
+      }
+      throw 'n:' + n;
+    };
+
+    _this.writeByte = function(n) {
+
+      _buffer = (_buffer << 8) | (n & 0xff);
+      _buflen += 8;
+      _length += 1;
+
+      while (_buflen >= 6) {
+        writeEncoded(_buffer >>> (_buflen - 6) );
+        _buflen -= 6;
+      }
+    };
+
+    _this.flush = function() {
+
+      if (_buflen > 0) {
+        writeEncoded(_buffer << (6 - _buflen) );
+        _buffer = 0;
+        _buflen = 0;
+      }
+
+      if (_length % 3 != 0) {
+        // padding
+        var padlen = 3 - _length % 3;
+        for (var i = 0; i < padlen; i += 1) {
+          _base64 += '=';
+        }
+      }
+    };
+
+    _this.toString = function() {
+      return _base64;
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // base64DecodeInputStream
+  //---------------------------------------------------------------------
+
+  var base64DecodeInputStream = function(str) {
+
+    var _str = str;
+    var _pos = 0;
+    var _buffer = 0;
+    var _buflen = 0;
+
+    var _this = {};
+
+    _this.read = function() {
+
+      while (_buflen < 8) {
+
+        if (_pos >= _str.length) {
+          if (_buflen == 0) {
+            return -1;
+          }
+          throw 'unexpected end of file./' + _buflen;
+        }
+
+        var c = _str.charAt(_pos);
+        _pos += 1;
+
+        if (c == '=') {
+          _buflen = 0;
+          return -1;
+        } else if (c.match(/^\s$/) ) {
+          // ignore if whitespace.
+          continue;
+        }
+
+        _buffer = (_buffer << 6) | decode(c.charCodeAt(0) );
+        _buflen += 6;
+      }
+
+      var n = (_buffer >>> (_buflen - 8) ) & 0xff;
+      _buflen -= 8;
+      return n;
+    };
+
+    var decode = function(c) {
+      if (0x41 <= c && c <= 0x5a) {
+        return c - 0x41;
+      } else if (0x61 <= c && c <= 0x7a) {
+        return c - 0x61 + 26;
+      } else if (0x30 <= c && c <= 0x39) {
+        return c - 0x30 + 52;
+      } else if (c == 0x2b) {
+        return 62;
+      } else if (c == 0x2f) {
+        return 63;
+      } else {
+        throw 'c:' + c;
+      }
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // gifImage (B/W)
+  //---------------------------------------------------------------------
+
+  var gifImage = function(width, height) {
+
+    var _width = width;
+    var _height = height;
+    var _data = new Array(width * height);
+
+    var _this = {};
+
+    _this.setPixel = function(x, y, pixel) {
+      _data[y * _width + x] = pixel;
+    };
+
+    _this.write = function(out) {
+
+      //---------------------------------
+      // GIF Signature
+
+      out.writeString('GIF87a');
+
+      //---------------------------------
+      // Screen Descriptor
+
+      out.writeShort(_width);
+      out.writeShort(_height);
+
+      out.writeByte(0x80); // 2bit
+      out.writeByte(0);
+      out.writeByte(0);
+
+      //---------------------------------
+      // Global Color Map
+
+      // black
+      out.writeByte(0x00);
+      out.writeByte(0x00);
+      out.writeByte(0x00);
+
+      // white
+      out.writeByte(0xff);
+      out.writeByte(0xff);
+      out.writeByte(0xff);
+
+      //---------------------------------
+      // Image Descriptor
+
+      out.writeString(',');
+      out.writeShort(0);
+      out.writeShort(0);
+      out.writeShort(_width);
+      out.writeShort(_height);
+      out.writeByte(0);
+
+      //---------------------------------
+      // Local Color Map
+
+      //---------------------------------
+      // Raster Data
+
+      var lzwMinCodeSize = 2;
+      var raster = getLZWRaster(lzwMinCodeSize);
+
+      out.writeByte(lzwMinCodeSize);
+
+      var offset = 0;
+
+      while (raster.length - offset > 255) {
+        out.writeByte(255);
+        out.writeBytes(raster, offset, 255);
+        offset += 255;
+      }
+
+      out.writeByte(raster.length - offset);
+      out.writeBytes(raster, offset, raster.length - offset);
+      out.writeByte(0x00);
+
+      //---------------------------------
+      // GIF Terminator
+      out.writeString(';');
+    };
+
+    var bitOutputStream = function(out) {
+
+      var _out = out;
+      var _bitLength = 0;
+      var _bitBuffer = 0;
+
+      var _this = {};
+
+      _this.write = function(data, length) {
+
+        if ( (data >>> length) != 0) {
+          throw 'length over';
+        }
+
+        while (_bitLength + length >= 8) {
+          _out.writeByte(0xff & ( (data << _bitLength) | _bitBuffer) );
+          length -= (8 - _bitLength);
+          data >>>= (8 - _bitLength);
+          _bitBuffer = 0;
+          _bitLength = 0;
+        }
+
+        _bitBuffer = (data << _bitLength) | _bitBuffer;
+        _bitLength = _bitLength + length;
+      };
+
+      _this.flush = function() {
+        if (_bitLength > 0) {
+          _out.writeByte(_bitBuffer);
+        }
+      };
+
+      return _this;
+    };
+
+    var getLZWRaster = function(lzwMinCodeSize) {
+
+      var clearCode = 1 << lzwMinCodeSize;
+      var endCode = (1 << lzwMinCodeSize) + 1;
+      var bitLength = lzwMinCodeSize + 1;
+
+      // Setup LZWTable
+      var table = lzwTable();
+
+      for (var i = 0; i < clearCode; i += 1) {
+        table.add(String.fromCharCode(i) );
+      }
+      table.add(String.fromCharCode(clearCode) );
+      table.add(String.fromCharCode(endCode) );
+
+      var byteOut = byteArrayOutputStream();
+      var bitOut = bitOutputStream(byteOut);
+
+      // clear code
+      bitOut.write(clearCode, bitLength);
+
+      var dataIndex = 0;
+
+      var s = String.fromCharCode(_data[dataIndex]);
+      dataIndex += 1;
+
+      while (dataIndex < _data.length) {
+
+        var c = String.fromCharCode(_data[dataIndex]);
+        dataIndex += 1;
+
+        if (table.contains(s + c) ) {
+
+          s = s + c;
+
+        } else {
+
+          bitOut.write(table.indexOf(s), bitLength);
+
+          if (table.size() < 0xfff) {
+
+            if (table.size() == (1 << bitLength) ) {
+              bitLength += 1;
+            }
+
+            table.add(s + c);
+          }
+
+          s = c;
+        }
+      }
+
+      bitOut.write(table.indexOf(s), bitLength);
+
+      // end code
+      bitOut.write(endCode, bitLength);
+
+      bitOut.flush();
+
+      return byteOut.toByteArray();
+    };
+
+    var lzwTable = function() {
+
+      var _map = {};
+      var _size = 0;
+
+      var _this = {};
+
+      _this.add = function(key) {
+        if (_this.contains(key) ) {
+          throw 'dup key:' + key;
+        }
+        _map[key] = _size;
+        _size += 1;
+      };
+
+      _this.size = function() {
+        return _size;
+      };
+
+      _this.indexOf = function(key) {
+        return _map[key];
+      };
+
+      _this.contains = function(key) {
+        return typeof _map[key] != 'undefined';
+      };
+
+      return _this;
+    };
+
+    return _this;
+  };
+
+  var createDataURL = function(width, height, getPixel) {
+    var gif = gifImage(width, height);
+    for (var y = 0; y < height; y += 1) {
+      for (var x = 0; x < width; x += 1) {
+        gif.setPixel(x, y, getPixel(x, y) );
+      }
+    }
+
+    var b = byteArrayOutputStream();
+    gif.write(b);
+
+    var base64 = base64EncodeOutputStream();
+    var bytes = b.toByteArray();
+    for (var i = 0; i < bytes.length; i += 1) {
+      base64.writeByte(bytes[i]);
+    }
+    base64.flush();
+
+    return 'data:image/gif;base64,' + base64;
+  };
+
+  //---------------------------------------------------------------------
+  // returns qrcode function.
+
+  return qrcode;
+}();
+
+// multibyte support
+!function() {
+
+  qrcode.stringToBytesFuncs['UTF-8'] = function(s) {
+    // http://stackoverflow.com/questions/18729405/how-to-convert-utf8-string-to-byte-array
+    function toUTF8Array(str) {
+      var utf8 = [];
+      for (var i=0; i < str.length; i++) {
+        var charcode = str.charCodeAt(i);
+        if (charcode < 0x80) utf8.push(charcode);
+        else if (charcode < 0x800) {
+          utf8.push(0xc0 | (charcode >> 6),
+              0x80 | (charcode & 0x3f));
+        }
+        else if (charcode < 0xd800 || charcode >= 0xe000) {
+          utf8.push(0xe0 | (charcode >> 12),
+              0x80 | ((charcode>>6) & 0x3f),
+              0x80 | (charcode & 0x3f));
+        }
+        // surrogate pair
+        else {
+          i++;
+          // UTF-16 encodes 0x10000-0x10FFFF by
+          // subtracting 0x10000 and splitting the
+          // 20 bits of 0x0-0xFFFFF into two halves
+          charcode = 0x10000 + (((charcode & 0x3ff)<<10)
+            | (str.charCodeAt(i) & 0x3ff));
+          utf8.push(0xf0 | (charcode >>18),
+              0x80 | ((charcode>>12) & 0x3f),
+              0x80 | ((charcode>>6) & 0x3f),
+              0x80 | (charcode & 0x3f));
+        }
+      }
+      return utf8;
+    }
+    return toUTF8Array(s);
+  };
+
+}();
+
+(function (factory) {
+  if (typeof define === 'function' && define.amd) {
+      define([], factory);
+  } else if (typeof exports === 'object') {
+      module.exports = factory();
+  }
+}(function () {
+    return qrcode;
+}));
+
+</script>
 <script>
 const STORAGE_KEY='dentalflow-next-mockup-state-v3';
 const STAGES=['Réception','Design CAD','Usinage','Céramique','Contrôle qualité','Prêtes'];
@@ -192,7 +2499,7 @@ function normalizeMessages(messages){const normalized={};Object.entries(messages
 function unreadIncomingCount(orderId){return (state.messages[orderId]||[]).filter(m=>m.from==='cabinet'&&!m.readAt).length}
 function totalUnreadIncoming(){return Object.keys(state.messages||{}).reduce((sum,id)=>sum+unreadIncomingCount(id),0)}
 function markThreadRead(orderId){let changed=false;(state.messages[orderId]||[]).forEach(m=>{if(m.from==='cabinet'&&!m.readAt){m.readAt=new Date().toISOString();m.unread=false;changed=true}});if(changed)save();return changed}
-let state={view:'home',filter:'all',search:'',searchOpen:false,sortKey:null,sortDir:'asc',dentistCabinet:null,dentistView:'orders',dentistThread:null,dentistDeliv:0,dentistDetail:null,auditSearch:'',quickOrderId:null,drawer:null,drawerTab:'overview',sidePanel:null,sidePanelOrderId:null,sidePanelUserId:null,selectedThreadId:null,messagesListOnly:true,productionChartMode:'entries',reportPeriod:'30d',sidebarCollapsed:false,navOrder:null,theme:'system',orders:[],stock:[],users:[],absences:[],scanEvents:[],historyEvents:[],messages:{},documents:{},scanStation:'Réception',scanTechnician:'Marc'};
+let state={view:'home',filter:'all',search:'',searchOpen:false,sortKey:null,sortDir:'asc',dentistCabinet:null,dentistView:'orders',dentistThread:null,dentistDeliv:0,dentistDetail:null,auditSearch:'',leaveRequests:[],staffUser:null,staffView:'scan',staffScanStation:'Réception',staffMonth:0,quickOrderId:null,drawer:null,drawerTab:'overview',sidePanel:null,sidePanelOrderId:null,sidePanelUserId:null,selectedThreadId:null,messagesListOnly:true,productionChartMode:'entries',reportPeriod:'30d',sidebarCollapsed:false,navOrder:null,theme:'system',orders:[],stock:[],users:[],absences:[],scanEvents:[],historyEvents:[],messages:{},documents:{},scanStation:'Réception',scanTechnician:'Marc'};
 function clone(x){return JSON.parse(JSON.stringify(x))}
 function minutesAgo(m){return new Date(baseNow.getTime()-m*60000).toISOString()}
 function isoDay(n){const d=new Date(baseNow);d.setDate(d.getDate()+n);d.setHours(0,0,0,0);return d.toISOString().slice(0,10)}
@@ -203,7 +2510,7 @@ function buildPatientRef(cabinet,nom,prenom){return `${refPart(cabinet)}-${refPa
 function uniqueOrderCode(cabinet,nom,prenom){const base=buildPatientRef(cabinet,nom,prenom);let code=base,i=2;while(state.orders.some(o=>o.id===code)){code=base+'-'+i;i++}return code}
 function patientDisplay(o){const n=`${o.patientFirst||''} ${o.patientLast||''}`.trim();return n||o.patientRef||o.id}
 function isScanMode(){return new URLSearchParams(location.search).get('mode')==='scan'}
-function seed(){state.orders=clone(demoOrders);state.stock=clone(demoStock);state.users=clone(demoUsers);state.absences=[{id:'A1',userId:'U4',from:isoDay(6),to:isoDay(10),reason:'Congés'},{id:'A2',userId:'U8',from:isoDay(13),to:isoDay(15),reason:'Formation'},{id:'A3',userId:'U6',from:isoDay(24),to:isoDay(28),reason:'Congés'}];state.scanEvents=[];state.historyEvents=[];const scanSeeds={
+function seed(){state.orders=clone(demoOrders);state.stock=clone(demoStock);state.users=clone(demoUsers);state.absences=[{id:'A1',userId:'U4',from:isoDay(6),to:isoDay(10),reason:'Congés'},{id:'A2',userId:'U8',from:isoDay(13),to:isoDay(15),reason:'Formation'},{id:'A3',userId:'U6',from:isoDay(24),to:isoDay(28),reason:'Congés'}];state.leaveRequests=[{id:'L1',userId:'U7',from:isoDay(12),to:isoDay(14),reason:'Congés',status:'pending'},{id:'L2',userId:'U11',from:isoDay(33),to:isoDay(37),reason:'Congés',status:'pending'},{id:'L3',userId:'U4',from:isoDay(6),to:isoDay(10),reason:'Congés',status:'approved'}];state.scanEvents=[];state.historyEvents=[];const scanSeeds={
   'CMD-0143':['Usinage','Marc',0],
   'CMD-0144':['Céramique','Nora',93],
   'CMD-0146':['Prêtes','Système',112],
@@ -223,8 +2530,8 @@ function seed(){state.orders=clone(demoOrders);state.stock=clone(demoStock);stat
   'CMD-0200':['Prêtes','Système',40],
   'CMD-0201':['Réception','Antoine',10]
 };state.orders.forEach(o=>{const scan=scanSeeds[o.id];if(scan){state.scanEvents.push({orderId:o.id,station:scan[0],tech:scan[1],at:minutesAgo(scan[2]),event:'Scan'})} if(o.status==='blocked')state.historyEvents.push({orderId:o.id,type:'Blocage',at:minutesAgo(74),detail:'Validation teinte attendue'})});const dFirst=['Alice','Julien','Camille','Louis','Emma','Hugo','Léa','Nathan','Chloé','Lucas','Manon','Théo','Sarah','Paul','Inès','Yanis','Jade','Adam','Zoé','Noah'];const dLast=['Durand','Petit','Robert','Richard','Moreau','Simon','Laurent','Michel','Garcia','David','Bertrand','Roux','Vincent','Fournier','Girard','Bonnet','Dupont','Lambert','Fontaine','Rousseau'];state.orders.forEach((o,i)=>{if(!o.patientFirst){o.patientFirst=dFirst[i%dFirst.length];o.patientLast=dLast[i%dLast.length]}});state.messages=normalizeMessages(clone(seedMessages));state.documents={'CMD-0143':['Bon de commande.pdf','Photo teinte A3.jpg'],'CMD-0144':['Fiche préparation.pdf']};state.theme='system';save()}
-function load(){try{const raw=localStorage.getItem(STORAGE_KEY);if(raw){const s=JSON.parse(raw);state={...state,orders:s.orders||[],scanEvents:(s.scanEvents||[]).filter(e=>e.event==='Scan'),historyEvents:s.historyEvents||[],messages:normalizeMessages(s.messages||{}),documents:s.documents||{},stock:(s.stock&&s.stock.length)?s.stock:clone(demoStock),users:(s.users&&s.users.length)?s.users:clone(demoUsers),absences:s.absences||[],navOrder:s.navOrder||null,sidebarCollapsed:!!s.sidebarCollapsed,theme:s.theme||'system',scanStation:s.scanStation||'Réception',scanTechnician:s.scanTechnician||'Marc'};if(state.orders.length)return}}catch(e){} seed()}
-function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify({orders:state.orders,scanEvents:state.scanEvents,historyEvents:state.historyEvents,messages:state.messages,documents:state.documents,stock:state.stock,users:state.users,absences:state.absences,navOrder:state.navOrder,sidebarCollapsed:!!state.sidebarCollapsed,theme:state.theme||'system',scanStation:state.scanStation,scanTechnician:state.scanTechnician}))}
+function load(){try{const raw=localStorage.getItem(STORAGE_KEY);if(raw){const s=JSON.parse(raw);state={...state,orders:s.orders||[],scanEvents:(s.scanEvents||[]).filter(e=>e.event==='Scan'),historyEvents:s.historyEvents||[],messages:normalizeMessages(s.messages||{}),documents:s.documents||{},stock:(s.stock&&s.stock.length)?s.stock:clone(demoStock),users:(s.users&&s.users.length)?s.users:clone(demoUsers),absences:s.absences||[],leaveRequests:s.leaveRequests||[],navOrder:s.navOrder||null,sidebarCollapsed:!!s.sidebarCollapsed,theme:s.theme||'system',scanStation:s.scanStation||'Réception',scanTechnician:s.scanTechnician||'Marc'};if(state.orders.length)return}}catch(e){} seed()}
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify({orders:state.orders,scanEvents:state.scanEvents,historyEvents:state.historyEvents,messages:state.messages,documents:state.documents,stock:state.stock,users:state.users,absences:state.absences,leaveRequests:state.leaveRequests,navOrder:state.navOrder,sidebarCollapsed:!!state.sidebarCollapsed,theme:state.theme||'system',scanStation:state.scanStation,scanTechnician:state.scanTechnician}))}
 function $(sel,root=document){return root.querySelector(sel)} function $all(sel,root=document){return [...root.querySelectorAll(sel)]}
 function stageIndex(st){return Math.max(0,STAGES.indexOf(st))}
 function effectiveStation(o){const loc=getCurrentStation(o.id);return loc.confirmed?loc.station:(o.station||'Réception')}
@@ -296,7 +2603,7 @@ function renderProduction(){setPageMeta('Production','Répartition des commandes
 function openSidePanel(kind,orderId=null){if(state.quickOrderId){state.quickOrderId=null;$('#quick-layer').classList.remove('open');$('#quick-body').innerHTML=''}state.sidePanel=kind;state.sidePanelOrderId=orderId||null;renderSidePanel();$('#side-layer').classList.add('open');updateNav()}
 function closeSidePanel(){state.sidePanel=null;state.sidePanelOrderId=null;$('#side-layer').classList.remove('open');updateNav()}
 function renderSidePanel(){if(!state.sidePanel)return; if(state.sidePanel==='alerts')return renderAlertsPanel(); if(state.sidePanel==='messages')return renderMessagesPanel(); if(state.sidePanel==='newOrder')return renderNewOrderPanel(); if(state.sidePanel==='stockForm')return renderStockFormPanel(); if(state.sidePanel==='userForm')return renderUserFormPanel(); if(state.sidePanel==='absenceForm')return renderAbsenceFormPanel(); if(state.sidePanel==='order')return renderOrderPanel(); if(state.sidePanel==='trace')return renderTracePanel()}
-function renderOrderPanel(){const o=state.orders.find(x=>x.id===state.sidePanelOrderId);if(!o){$('#side-panel-head').innerHTML=`<div class="side-panel-title"><div><h2>Commande</h2></div><button class="close" id="side-close">×</button></div>`;$('#side-panel-body').innerHTML='<div class="empty">Commande introuvable</div>';$('#side-layer').classList.add('open');return}const [label,color]=statusInfo(o.status);const scan=lastScan(o);const msgCount=unreadIncomingCount(o.id);$('#side-panel-head').innerHTML=`<div class="side-panel-title"><div><h2>${h(o.id)} <span class="pill ${color}">${label}</span></h2><div class="side-panel-sub">${h(o.type)} · ${h(o.cabinet)}</div></div><button class="close" id="side-close" aria-label="Fermer">×</button></div>`;$('#side-panel-body').innerHTML=`<section class="detail-grid"><div class="mini-card"><div class="mini-label">Référence patient</div><div class="mini-value">${h(o.patientRef)}</div></div><div class="mini-card"><div class="mini-label">Échéance</div><div class="mini-value">${h(o.due)}</div><div class="mini-sub ${o.status==='late'?'danger':''}">${o.status==='late'?'+32 min':'Dans les temps'}</div></div><div class="mini-card"><div class="mini-label">Localisation</div><div class="mini-value">${locationText(o)}</div><div class="mini-sub">${scan?'Confirmée par scan':'Non confirmée'}</div></div><div class="mini-card"><div class="mini-label">Technicien</div><div class="mini-value">${technicianText(o)}</div></div><div class="mini-card"><div class="mini-label">Dernier scan</div><div class="mini-value">${scan?fmtTime(scan.at):'Aucun'}</div><div class="mini-sub">${scan?h(scan.station):'—'}</div></div><div class="mini-card"><div class="mini-label">Poste</div><div class="mini-value">${h(effectiveStation(o))}</div></div></section><div class="drawer-actions" style="margin-top:20px"><button class="secondary" data-panel="trace" data-trace-order="${h(o.id)}">Traçabilité</button><button class="big-primary" data-panel="messages" data-focus-thread="${h(o.id)}">Messagerie (${msgCount})</button></div>`;$('#side-layer').classList.add('open')}
+function renderOrderPanel(){const o=state.orders.find(x=>x.id===state.sidePanelOrderId);if(!o){$('#side-panel-head').innerHTML=`<div class="side-panel-title"><div><h2>Commande</h2></div><button class="close" id="side-close">×</button></div>`;$('#side-panel-body').innerHTML='<div class="empty">Commande introuvable</div>';$('#side-layer').classList.add('open');return}const [label,color]=statusInfo(o.status);const scan=lastScan(o);const msgCount=unreadIncomingCount(o.id);$('#side-panel-head').innerHTML=`<div class="side-panel-title"><div><h2>${h(o.id)} <span class="pill ${color}">${label}</span></h2><div class="side-panel-sub">${h(o.type)} · ${h(o.cabinet)}</div></div><button class="close" id="side-close" aria-label="Fermer">×</button></div>`;$('#side-panel-body').innerHTML=`<section class="detail-grid"><div class="mini-card"><div class="mini-label">Référence patient</div><div class="mini-value">${h(o.patientRef)}</div></div><div class="mini-card"><div class="mini-label">Échéance</div><div class="mini-value">${h(o.due)}</div><div class="mini-sub ${o.status==='late'?'danger':''}">${o.status==='late'?'+32 min':'Dans les temps'}</div></div><div class="mini-card"><div class="mini-label">Localisation</div><div class="mini-value">${locationText(o)}</div><div class="mini-sub">${scan?'Confirmée par scan':'Non confirmée'}</div></div><div class="mini-card"><div class="mini-label">Technicien</div><div class="mini-value">${technicianText(o)}</div></div><div class="mini-card"><div class="mini-label">Dernier scan</div><div class="mini-value">${scan?fmtTime(scan.at):'Aucun'}</div><div class="mini-sub">${scan?h(scan.station):'—'}</div></div><div class="mini-card"><div class="mini-label">Poste</div><div class="mini-value">${h(effectiveStation(o))}</div></div></section><div class="order-qr"><div class="order-qr-code">${qrSvg(o.id)}</div><div class="order-qr-info"><div class="mini-label">QR de production</div><div class="mini-sub">À scanner par les techniciens dans DentalFlow Scan.</div><button class="ghost" data-print-fiche="${h(o.id)}" style="margin-top:8px">Imprimer la fiche</button></div></div><div class="drawer-actions" style="margin-top:16px"><button class="secondary" data-panel="trace" data-trace-order="${h(o.id)}">Traçabilité</button><button class="big-primary" data-panel="messages" data-focus-thread="${h(o.id)}">Messagerie (${msgCount})</button></div>`;$('#side-layer').classList.add('open')}
 function renderAlertsPanel(){const rows=alertItems();$('#side-panel-head').innerHTML=`<div class="side-panel-title"><div><h2>Alertes</h2><div class="side-panel-sub">Points nécessitant votre attention</div></div><button class="close" id="side-close" aria-label="Fermer">×</button></div>`;$('#side-panel-body').innerHTML=`<div class="alert-summary">${rows.length} point${rows.length>1?'s':''} à surveiller</div><div class="alert-list">${rows.map(a=>`<button class="alert-row ${a.color}" data-order="${h(a.id)}"><div class="alert-ico ${a.color}">${icon(a.color==='red'?'warn':a.color==='orange'?'warn':'info')}</div><div><div class="alert-title">${h(a.title)}</div><div class="alert-reason ${a.color}">${h(a.reason)}</div><div class="alert-meta">${h(a.detail)}<br>${h(a.order.type)} · ${h(a.order.cabinet)}<br>${a.location}</div></div><div class="chev">›</div></button>`).join('')}</div>`;$('#side-layer').classList.add('open')}
 function renderMessagesPanel(){const threads=state.orders.filter(o=>state.messages[o.id]?.length);const activeId=state.messagesListOnly?null:state.selectedThreadId;const active=activeId?state.orders.find(o=>o.id===activeId):null;$('#side-panel-head').innerHTML=`<div class="side-panel-title"><div><h2>Messages</h2><div class="side-panel-sub">Conversations avec les cabinets</div></div><button class="close" id="side-close" aria-label="Fermer">×</button></div>`;$('#side-panel-body').innerHTML=`<section class="side-message-layout"><article class="card thread-list">${threads.map(o=>{const unread=unreadIncomingCount(o.id);const last=(state.messages[o.id]||[]).slice(-1)[0]?.text||'';return `<button class="thread-item ${o.id===activeId?'active':''}" data-thread="${h(o.id)}"><div class="thread-top"><strong>${h(o.cabinet)}</strong>${unread?`<span class="thread-unread">${unread}</span>`:''}</div><div class="thread-order">${h(o.id)} · ${h(o.type)}</div><div class="thread-preview">${h(last)}</div></button>`}).join('')}</article><article class="card section thread-panel">${active?renderThread(active):'<div class="empty">Sélectionnez une conversation.</div>'}</article></section>`;$('#side-layer').classList.add('open');updateNotif();updateNav()}
 function renderNewOrderPanel(){$('#side-panel-head').innerHTML=`<div class="side-panel-title"><div><h2>Nouvelle commande</h2><div class="side-panel-sub">Action · création locale POC</div></div><button class="close" id="side-close">×</button></div>`;$('#side-panel-body').innerHTML=`<form class="side-form" id="order-form"><div class="field"><label>Cabinet</label><input name="cabinet" required placeholder="Dr Morvan" /></div><div class="form-grid"><div class="field"><label>Nom du patient</label><input name="patientLast" required placeholder="Dupont" /></div><div class="field"><label>Prénom du patient</label><input name="patientFirst" required placeholder="Jean" /></div></div><div class="field" style="margin-top:-4px"><span class="mini-sub">Référence générée : 3 lettres cabinet + 3 lettres nom + 3 lettres prénom</span></div><div class="field"><label>Type</label><input name="type" required placeholder="Bridge 3 éléments" /></div><div class="field"><label>Échéance</label><input name="due" required placeholder="Aujourd’hui 17:00" /></div><div class="field"><label>Priorité</label><select name="priority"><option>Normale</option><option>Haute</option><option>Urgente</option></select></div><div class="form-actions"><button type="button" class="secondary" id="cancel-order">Annuler</button><button class="big-primary" type="submit">Créer</button></div></form>`;$('#side-layer').classList.add('open');setTimeout(()=>$('#order-form input')?.focus(),0)}
@@ -308,7 +2615,7 @@ function closeSearchPopup(){state.searchOpen=false;const pop=$('#search-popover'
 function stockStatus(it){if(it.qty<=it.min)return['Critique','red'];if(it.qty<=it.min*2)return['Moyen','orange'];return['Bon','green']}
 function stockPct(it){return it.capacity?Math.round(it.qty/it.capacity*100):0}
 function stockSummary(){const s={units:0,refs:state.stock.length,critical:0,transit:0};state.stock.forEach(it=>{s.units+=it.qty;if(stockStatus(it)[1]==='red')s.critical++;if(it.incoming>0)s.transit++});return s}
-function renderStock(){setPageMeta('Stocks','Gestion des matières premières et consommables');const sum=stockSummary();const cards=state.stock.map(it=>{const[label,color]=stockStatus(it);const pct=stockPct(it);return `<article class="card stock-item"><div class="stock-item-head"><div><div class="stock-name">${h(it.name)}</div><div class="stock-ref">${h(it.id)}</div></div><span class="stock-badge ${color}">${pct}%</span></div><div class="stock-bar"><span style="width:${pct}%;background:var(--${color})"></span></div><div class="stock-foot"><span><b>${it.qty}</b> / ${it.capacity} ${h(it.unit)}${it.incoming>0?` · <span class="stock-transit">+${it.incoming} en transit</span>`:''}</span><span class="stock-state ${color}">${label}</span></div><div class="stock-adjust"><button class="stock-step" data-stock-adj data-id="${h(it.id)}" data-delta="-1" aria-label="Retirer une unité">−</button><button class="stock-step" data-stock-adj data-id="${h(it.id)}" data-delta="1" aria-label="Ajouter une unité">+</button><button class="stock-edit-btn" data-stock-edit data-id="${h(it.id)}">Ajuster</button></div></article>`}).join('');$('#view-root').innerHTML=`<section class="grid stock-kpis"><article class="card stock-kpi"><div class="stock-kpi-ico green">${icon('info')}</div><div><div class="stock-kpi-num">${sum.units}</div><div class="stock-kpi-label">Unités en stock · ${sum.refs} références</div></div></article><article class="card stock-kpi"><div class="stock-kpi-ico orange">${icon('warn')}</div><div><div class="stock-kpi-num">${sum.critical}</div><div class="stock-kpi-label">Stock critique</div></div></article><article class="card stock-kpi"><div class="stock-kpi-ico blue">${icon('scan')}</div><div><div class="stock-kpi-num">${sum.transit}</div><div class="stock-kpi-label">En transit</div></div></article></section><div class="stock-head"><h2 class="stock-head-title">Articles</h2><button class="primary stock-new" id="new-stock-btn"><span>＋</span><span>Nouvel article</span></button></div><section class="grid stock-grid">${cards}</section>`}
+function renderStock(){setPageMeta('Stocks','Gestion des matières premières et consommables');const sum=stockSummary();const cards=state.stock.map(it=>{const[label,color]=stockStatus(it);const pct=stockPct(it);return `<article class="card stock-item"><div class="stock-item-head"><div><div class="stock-name">${h(it.name)}</div><div class="stock-ref">${h(it.id)}</div></div><span class="stock-badge ${color}">${pct}%</span></div><div class="stock-bar"><span style="width:${pct}%;background:var(--${color})"></span></div><div class="stock-foot"><span><b>${it.qty}</b> / ${it.capacity} ${h(it.unit)}${it.incoming>0?` · <span class="stock-transit">+${it.incoming} en transit</span>`:''}</span><span class="stock-state ${color}">${label}</span></div><div class="stock-adjust"><button class="stock-step" data-stock-adj data-id="${h(it.id)}" data-delta="-1" aria-label="Retirer une unité">−</button><button class="stock-step" data-stock-adj data-id="${h(it.id)}" data-delta="1" aria-label="Ajouter une unité">+</button><button class="stock-edit-btn" data-stock-edit data-id="${h(it.id)}">Ajuster</button></div></article>`}).join('');$('#view-root').innerHTML=`<section class="grid stock-kpis"><article class="card stock-kpi"><div class="stock-kpi-ico green">${icon('cube')}</div><div><div class="stock-kpi-num">${sum.units}</div><div class="stock-kpi-label">Unités en stock · ${sum.refs} références</div></div></article><article class="card stock-kpi"><div class="stock-kpi-ico orange">${icon('warn')}</div><div><div class="stock-kpi-num">${sum.critical}</div><div class="stock-kpi-label">Stock critique</div></div></article><article class="card stock-kpi"><div class="stock-kpi-ico blue">${icon('truck')}</div><div><div class="stock-kpi-num">${sum.transit}</div><div class="stock-kpi-label">En transit</div></div></article></section><div class="stock-head"><h2 class="stock-head-title">Articles</h2><button class="primary stock-new" id="new-stock-btn"><span>＋</span><span>Nouvel article</span></button></div><section class="grid stock-grid">${cards}</section>`}
 function logAudit(refId,type,detail){state.historyEvents.push({orderId:refId,type,at:new Date().toISOString(),detail})}
 function adjustStock(id,delta){const it=state.stock.find(x=>x.id===id);if(!it)return;const before=it.qty;it.qty=Math.max(0,Math.min(it.capacity,it.qty+delta));if(it.qty===before)return;logAudit(it.id,'Stock',`Ajustement stock : ${delta>0?'+':''}${it.qty-before} ${it.unit} (→ ${it.qty}/${it.capacity})`);save();render()}
 function renderStockFormPanel(){const editing=state.sidePanelOrderId;const it=editing?state.stock.find(x=>x.id===editing):null;$('#side-panel-head').innerHTML=`<div class="side-panel-title"><div><h2>${it?'Ajuster l’article':'Nouvel article'}</h2><div class="side-panel-sub">${it?h(it.id):'Création · stock local POC'}</div></div><button class="close" id="side-close">×</button></div>`;$('#side-panel-body').innerHTML=`<form class="side-form" id="stock-form">${it?`<input type="hidden" name="ref" value="${h(it.id)}">`:''}<div class="field"><label>Nom de l’article</label><input name="name" required value="${it?h(it.name):''}" placeholder="Zircone HT" ${it?'readonly':''}/></div>${it?'':'<div class="field"><label>Référence</label><input name="ref" required placeholder="ZIR-HT-010" /></div>'}<div class="field"><label>Unité</label><input name="unit" required value="${it?h(it.unit):''}" placeholder="disques, flacons…" /></div><div class="form-grid"><div class="field"><label>Quantité en stock</label><input name="qty" type="number" min="0" required value="${it?it.qty:0}" /></div><div class="field"><label>Capacité max</label><input name="capacity" type="number" min="1" required value="${it?it.capacity:50}" /></div><div class="field"><label>Seuil critique</label><input name="min" type="number" min="0" required value="${it?it.min:10}" /></div><div class="field"><label>En transit</label><input name="incoming" type="number" min="0" value="${it?it.incoming:0}" /></div></div><div class="form-actions"><button type="button" class="secondary" id="cancel-order">Annuler</button><button class="big-primary" type="submit">${it?'Enregistrer':'Créer l’article'}</button></div></form>`;$('#side-layer').classList.add('open');setTimeout(()=>$('#stock-form input:not([readonly])')?.focus(),0)}
@@ -329,7 +2636,7 @@ function userInitials(name){return String(name||'').trim().split(/\s+/).map(w=>w
 function renderUsers(){setPageMeta('Utilisateurs','Équipe laboratoire et responsabilités'); $('#view-root').innerHTML=`<section class="card section"><div class="section-head"><h2>Utilisateurs</h2><button class="primary" id="new-user-btn" style="height:40px;padding:0 16px"><span>＋</span><span>Nouvel utilisateur</span></button></div><div class="users-list">${state.users.map(u=>`<div class="lab-user-row"><div class="lab-user-avatar">${h(userInitials(u.name))}</div><div><div class="lab-user-name">${h(u.name)}</div><div class="lab-user-role">${h(u.role)}</div></div><div class="lab-user-actions"><span class="lab-user-scope">${h(u.scope||'')}</span><button class="stock-edit-btn" data-user-edit="${h(u.id)}">Modifier</button></div></div>`).join('')}</div></section>`}
 function renderUserFormPanel(){const editing=state.sidePanelUserId;const u=editing?state.users.find(x=>x.id===editing):null;const roles=['Responsable labo','Technicien','Technicienne','Prothésiste','Assistant(e)','Administrateur'];$('#side-panel-head').innerHTML=`<div class="side-panel-title"><div><h2>${u?'Modifier l’utilisateur':'Nouvel utilisateur'}</h2><div class="side-panel-sub">${u?h(u.name):'Équipe laboratoire · POC local'}</div></div><button class="close" id="side-close">×</button></div>`;$('#side-panel-body').innerHTML=`<form class="side-form" id="user-form">${u?`<input type="hidden" name="uid" value="${h(u.id)}">`:''}<div class="field"><label>Nom</label><input name="uname" required value="${u?h(u.name):''}" placeholder="Prénom Nom" /></div><div class="field"><label>Rôle</label><select name="urole">${roles.map(r=>`<option${u&&u.role===r?' selected':''}>${r}</option>`).join('')}</select></div><div class="form-grid"><div class="field"><label>Poste / périmètre</label><input name="uscope" value="${u?h(u.scope||''):''}" placeholder="Usinage, Céramique…" /></div><div class="field"><label>Capacité (cmd/sem.)</label><input name="ucap" type="number" min="0" value="${u?(+u.capacity||0):8}" /></div></div><div class="form-actions"><button type="button" class="secondary" id="cancel-order">Annuler</button><button class="big-primary" type="submit">${u?'Enregistrer':'Ajouter'}</button></div></form>`;$('#side-layer').classList.add('open');setTimeout(()=>$('#user-form input')?.focus(),0)}
 function submitUserForm(data){const name=String(data.uname||'').trim();if(!name){showToast('Nom requis');return}const role=data.urole||'Technicien';const scope=String(data.uscope||'').trim();const capacity=Math.max(0,parseInt(data.ucap,10)||0);const uid=data.uid;const existing=uid?state.users.find(x=>x.id===uid):null;if(existing){existing.name=name;existing.role=role;existing.scope=scope;existing.capacity=capacity;logAudit(existing.id,'Utilisateur',`Utilisateur modifié : ${name}`);showToast(`${name} mis à jour`)}else{const id='U'+Date.now().toString(36);state.users.push({id,name,role,scope,capacity});logAudit(id,'Utilisateur',`Utilisateur ajouté : ${name} (${role})`);showToast(`${name} ajouté`)}save();closeSidePanel();state.view='users';render()}
-function renderSettings(){setPageMeta('Paramètres','Réglages démo du POC local'); $('#view-root').innerHTML=`<section class="card section"><div class="section-head"><h2>Paramètres</h2></div><div class="detail-grid"><div class="mini-card"><div class="mini-label">Mode</div><div class="mini-value">POC local</div><div class="mini-sub">Aucun backend</div></div><div class="mini-card"><div class="mini-label">Persistance</div><div class="mini-value">localStorage</div><div class="mini-sub">Données de démonstration</div></div><div class="mini-card"><div class="mini-label">Thème</div><div class="mini-value">${state.theme==='dark'?'Sombre':state.theme==='light'?'Clair':'Système'}</div><div class="mini-sub">Clair, sombre ou préférence système</div></div></div><div style="height:18px"></div><div class="mini-card"><div class="mini-label">Apparence</div><div class="theme-options"><button class="theme-choice ${state.theme==='light'?'active':''}" data-theme="light">Clair</button><button class="theme-choice ${state.theme==='dark'?'active':''}" data-theme="dark">Sombre</button><button class="theme-choice ${state.theme==='system'?'active':''}" data-theme="system">Système</button></div></div><div style="height:18px"></div><div class="mini-card"><div class="mini-label">Espace cabinet (démo)</div><div class="mini-sub" style="margin-bottom:12px">Simuler la connexion d’un cabinet dentaire : passer une commande avec dates de livraison proposées et échanger avec le laboratoire.</div><button class="ghost" id="open-dentist">Ouvrir l’espace cabinet →</button></div><div class="drawer-actions"><button class="secondary" id="reset-demo">Réinitialiser les données démo</button><button class="big-primary" data-view="home">Retour accueil</button></div></section>`}
+function renderSettings(){setPageMeta('Paramètres','Réglages démo du POC local'); $('#view-root').innerHTML=`<section class="card section"><div class="section-head"><h2>Paramètres</h2></div><div class="detail-grid"><div class="mini-card"><div class="mini-label">Mode</div><div class="mini-value">POC local</div><div class="mini-sub">Aucun backend</div></div><div class="mini-card"><div class="mini-label">Persistance</div><div class="mini-value">localStorage</div><div class="mini-sub">Données de démonstration</div></div><div class="mini-card"><div class="mini-label">Thème</div><div class="mini-value">${state.theme==='dark'?'Sombre':state.theme==='light'?'Clair':'Système'}</div><div class="mini-sub">Clair, sombre ou préférence système</div></div></div><div style="height:18px"></div><div class="mini-card"><div class="mini-label">Apparence</div><div class="theme-options"><button class="theme-choice ${state.theme==='light'?'active':''}" data-theme="light">Clair</button><button class="theme-choice ${state.theme==='dark'?'active':''}" data-theme="dark">Sombre</button><button class="theme-choice ${state.theme==='system'?'active':''}" data-theme="system">Système</button></div></div><div style="height:18px"></div><div class="mini-card"><div class="mini-label">Espace cabinet (démo)</div><div class="mini-sub" style="margin-bottom:12px">Simuler la connexion d’un cabinet dentaire : passer une commande avec dates de livraison proposées et échanger avec le laboratoire.</div><button class="ghost" id="open-dentist">Ouvrir l’espace cabinet →</button></div><div style="height:12px"></div><div class="mini-card"><div class="mini-label">Espace collaborateur (démo)</div><div class="mini-sub" style="margin-bottom:12px">Poste technicien : scan de production (QR) et gestion des congés payés (demande, validation manager, calendrier, compteur).</div><button class="ghost" id="open-staff">Ouvrir l’espace collaborateur →</button></div><div class="drawer-actions"><button class="secondary" id="reset-demo">Réinitialiser les données démo</button><button class="big-primary" data-view="home">Retour accueil</button></div></section>`}
 function renderThread(o){return `<div class="section-head"><h2>${h(o.id)} · ${h(o.cabinet)}</h2><button class="ghost" data-order="${h(o.id)}">Voir commande</button></div><div id="thread-messages">${(state.messages[o.id]||[]).map(m=>`<div class="bubble ${m.from}"><b>${m.from==='lab'?'Laboratoire':'Cabinet'}</b><br>${h(m.text)}<div style="opacity:.7;font-size:11px;margin-top:4px">${h(m.at)}${m.from==='cabinet'&&!m.readAt?' · non lu':''}</div></div>`).join('')}</div><form class="composer" data-compose="${h(o.id)}"><input placeholder="Écrire un message au cabinet…" required /><button>Envoyer</button></form>`}
 function closeQuickView(){state.quickOrderId=null;$('#quick-layer').classList.remove('open');$('#quick-body').innerHTML=''}
 function _renderQuickView(id){const o=state.orders.find(x=>x.id===id);if(!o)return;const [label,color]=statusInfo(o.status);const scan=lastScan(o);const msgCount=unreadIncomingCount(o.id);$('#quick-body').innerHTML=`<div class="quick-head"><div><h2 id="quick-title">${h(o.id)} <span class="pill ${color}">${label}</span></h2><div class="quick-sub">${h(o.type)}</div></div><button class="quick-close" id="quick-close" aria-label="Fermer">×</button></div><section class="quick-grid"><div class="mini-card"><div class="mini-label">Cabinet</div><div class="mini-value">${h(o.cabinet)}</div></div><div class="mini-card"><div class="mini-label">Référence patient</div><div class="mini-value">${h(o.patientRef)}</div></div><div class="mini-card"><div class="mini-label">Localisation</div><div class="mini-value">${locationText(o)}</div><div class="mini-sub">${scan?'Dernier scan confirmé':'Aucun scan enregistré'}</div></div><div class="mini-card"><div class="mini-label">Technicien</div><div class="mini-value">${technicianText(o)}</div><div class="mini-sub">${scan?`Scan ${fmtTime(scan.at)}`:'Aucun scan'}</div></div><div class="mini-card"><div class="mini-label">Échéance</div><div class="mini-value">${h(o.due)}</div><div class="mini-sub ${o.status==='late'?'danger':''}">${o.status==='late'?'+32 min':'Dans les temps'}</div></div><div class="mini-card"><div class="mini-label">Dernier scan</div><div class="mini-value">${scan?fmtTime(scan.at):'Aucun scan enregistré'}</div><div class="mini-sub">${scan?h(scan.station):'Localisation non confirmée'}</div></div></section><section class="trace-summary"><h3>Traçabilité des scans</h3>${scan?`<div class="mini-card"><div class="mini-label">Dernier scan confirmé</div><div class="mini-value">${h(scan.station)}</div><div class="mini-sub">${h(scan.tech)} · ${fmtTime(scan.at)} · ${h(scan.event)}</div></div>`:'<div class="empty">Aucun scan enregistré</div>'}<div class="mini-sub" style="margin-top:12px">Résumé read-only. L’historique détaillé s’ouvre dans la side-window Traçabilité.</div></section><div class="quick-actions"><button class="big-primary" data-panel="messages" data-focus-thread="${h(o.id)}">Messages (${msgCount})</button><button class="secondary" data-panel="trace" data-trace-order="${h(o.id)}">Traçabilité</button><button class="secondary" id="more-options">••• Plus</button></div>`;$('#quick-layer').classList.add('open');setTimeout(()=>$('#quick-close')?.focus(),0)}
@@ -341,6 +2648,8 @@ function renderTrace(o){const scans=state.scanEvents.filter(e=>e.orderId===o.id&
 function renderDrawerMessages(o){return '<div class="empty">Messages disponibles dans la side-window unique.</div>'}
 function renderDocs(o){return '<div class="empty">Documents hors scope V3.</div>'}
 function showToast(msg){const t=$('#toast');if(!t)return;t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800)}
+function qrSvg(text){try{const qr=qrcode(0,'M');qr.addData(String(text||''));qr.make();return qr.createSvgTag({cellSize:5,margin:2,scalable:true})}catch(e){return '<div class="muted">QR indisponible</div>'}}
+function printFiche(id){const o=state.orders.find(x=>x.id===id);if(!o)return;const [label]=statusInfo(o.status);let area=document.getElementById('print-area');if(!area){area=document.createElement('div');area.id='print-area';document.body.appendChild(area)}area.innerHTML=`<div class="fiche"><div class="fiche-head"><div><div class="fiche-brand">DentalFlow</div><h1>Fiche commande</h1></div><div class="fiche-code">${h(o.id)}</div></div><div class="fiche-grid"><div><div class="fk">Cabinet</div><div class="fv">${h(o.cabinet)}</div></div><div><div class="fk">Type</div><div class="fv">${h(o.type)}</div></div><div><div class="fk">Statut</div><div class="fv">${h(label)}</div></div><div><div class="fk">Livraison</div><div class="fv">${h(o.due)}</div></div></div><div class="fiche-qr">${qrSvg(o.id)}<div class="fiche-qr-label">${h(o.id)}<br><span>Scanner en production</span></div></div><div class="fiche-foot">Émis le ${new Date().toLocaleDateString('fr-FR')} · Réf. patient confidentielle (espace cabinet)</div></div>`;window.print()}
 function performScan(id){showToast('Le scan se fait dans DentalFlow Scan')}
 function addMessage(id,text){if(!state.messages[id])state.messages[id]=[];state.messages[id].push({from:'lab',text,at:new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}),readAt:new Date().toISOString(),unread:false});save();if(state.sidePanel==='messages')renderMessagesPanel();else render()}
 function createOrder(data){const code=uniqueOrderCode(data.cabinet,data.patientLast,data.patientFirst); const o={id:code,patientRef:code,patientFirst:data.patientFirst||'',patientLast:data.patientLast||'',type:data.type,cabinet:data.cabinet,status:'progress',station:'Réception',due:data.due,tech:'',priority:data.priority||'Normale',timeAtPost:0,avgTime:45,noInitialScan:true}; state.orders.unshift(o); state.historyEvents.push({orderId:o.id,type:'Création',at:new Date().toISOString(),detail:'Commande créée'}); state.messages[o.id]=[]; save(); state.view='orders'; closeSidePanel(); showToast(`${o.id} créée`); render(); openQuickView(o.id)}
@@ -353,12 +2662,12 @@ function addBusinessDays(date,days){const d=new Date(date);let a=0;while(a<days)
 function fmtDateShort(d){return d.toLocaleDateString('fr-FR',{weekday:'short',day:'2-digit',month:'short'})}
 function proposedDeliveries(type){const lead=fabricationLeadDays(type);const buffer=labLoadBufferDays();const base=addBusinessDays(baseNow,lead+buffer);return [{date:new Date(base),tag:'Au plus tôt'},{date:addBusinessDays(base,2),tag:'Confort +2 j'},{date:addBusinessDays(base,5),tag:'Flexible +5 j'}]}
 function dentistOrdersHTML(orders){if(!orders.length)return '<section class="card section"><div class="empty">Aucune commande pour ce cabinet. Créez-en une via « Nouvelle commande ».</div></section>';return `<section class="card section"><div class="section-head"><h2>Mes commandes</h2><span class="muted">Cliquez une commande pour le détail</span></div><div class="watch-list">${orders.map(o=>{const [label,color]=statusInfo(o.status);const scan=lastScan(o);return `<div class="watch-item" data-ddetail="${h(o.id)}" style="cursor:pointer;grid-template-columns:48px 1fr auto"><div class="alert-ico blue">${icon('info')}</div><div class="watch-main"><b>${h(o.id)}</b><span class="pill ${color}">${label}</span><div class="watch-sub">${h(o.type)} · ${h(patientDisplay(o))}</div><div class="watch-meta">${scan?`En production · ${h(scan.station)}`:'Réceptionnée par le laboratoire'} · Livraison ${h(o.due)}</div></div><div class="chev">›</div></div>`}).join('')}</div></section>`}
-function dentistDetailHTML(o){const [label,color]=statusInfo(o.status);const scans=state.scanEvents.filter(e=>e.orderId===o.id&&e.event==='Scan').reverse();const loc=getCurrentStation(o.id);return `<div class="pdetail-layer" id="pdetail"><div class="pdetail-card"><div class="quick-head"><div><h2>${h(o.id)} <span class="pill ${color}">${label}</span></h2><div class="quick-sub">${h(o.type)} · ${h(patientDisplay(o))}</div></div><button class="quick-close" data-ddetail-close aria-label="Fermer">×</button></div><section class="quick-grid"><div class="mini-card"><div class="mini-label">Patient</div><div class="mini-value">${h(patientDisplay(o))}</div><div class="mini-sub">Réf. ${h(o.patientRef)}</div></div><div class="mini-card"><div class="mini-label">Livraison prévue</div><div class="mini-value">${h(o.due)}</div></div><div class="mini-card"><div class="mini-label">Statut</div><div class="mini-value">${label}</div></div><div class="mini-card"><div class="mini-label">Localisation</div><div class="mini-value">${o.status==='ready'?'Prête à expédier':(loc.confirmed?h(loc.station):'En préparation')}</div></div></section><div class="trace-summary"><h3>Suivi de fabrication</h3>${scans.length?`<div class="timeline">${scans.map(e=>`<div class="timeline-item"><b>${h(e.station)}</b><div class="muted">${h(fmtTime(e.at))} · ${h(e.tech)}</div></div>`).join('')}</div>`:'<div class="empty">En attente de prise en charge par le laboratoire</div>'}</div><div class="quick-actions" style="grid-template-columns:1fr"><button class="big-primary" data-dthread="${h(o.id)}">Écrire au laboratoire</button></div></div></div>`}
+function dentistDetailHTML(o){const [label,color]=statusInfo(o.status);const scans=state.scanEvents.filter(e=>e.orderId===o.id&&e.event==='Scan').reverse();const loc=getCurrentStation(o.id);return `<div class="pdetail-layer" id="pdetail"><div class="pdetail-card"><div class="quick-head"><div><h2>${h(o.id)} <span class="pill ${color}">${label}</span></h2><div class="quick-sub">${h(o.type)} · ${h(patientDisplay(o))}</div></div><button class="quick-close" data-ddetail-close aria-label="Fermer">×</button></div><section class="quick-grid"><div class="mini-card"><div class="mini-label">Patient</div><div class="mini-value">${h(patientDisplay(o))}</div><div class="mini-sub">Réf. ${h(o.patientRef)}</div></div><div class="mini-card"><div class="mini-label">Livraison prévue</div><div class="mini-value">${h(o.due)}</div></div><div class="mini-card"><div class="mini-label">Statut</div><div class="mini-value">${label}</div></div><div class="mini-card"><div class="mini-label">Localisation</div><div class="mini-value">${o.status==='ready'?'Prête à expédier':(loc.confirmed?h(loc.station):'En préparation')}</div></div></section><div class="trace-summary"><h3>Suivi de fabrication</h3>${scans.length?`<div class="timeline">${scans.map(e=>`<div class="timeline-item"><b>${h(e.station)}</b><div class="muted">${h(fmtTime(e.at))} · ${h(e.tech)}</div></div>`).join('')}</div>`:'<div class="empty">En attente de prise en charge par le laboratoire</div>'}</div><div class="order-qr"><div class="order-qr-code">${qrSvg(o.id)}</div><div class="order-qr-info"><div class="mini-label">QR commande ${h(o.id)}</div><div class="mini-sub">À joindre au dossier physique envoyé au laboratoire.</div><button class="ghost" data-print-fiche="${h(o.id)}" style="margin-top:8px">Imprimer la fiche</button></div></div><div class="quick-actions" style="grid-template-columns:1fr;margin-top:14px"><button class="big-primary" data-dthread="${h(o.id)}">Écrire au laboratoire</button></div></div></div>`}
 function dentistNewHTML(){const types=Object.keys(fabricationDays).filter(t=>t!=='default');const type=(state.dentistNewType&&types.includes(state.dentistNewType))?state.dentistNewType:types[0];const deliveries=proposedDeliveries(type);const sel=Math.min(state.dentistDeliv||0,deliveries.length-1);return `<section class="card section"><div class="section-head"><h2>Nouvelle commande</h2></div><form id="dentist-order-form" class="side-form" style="max-width:660px"><div class="field"><label>Type de prothèse</label><select name="type" id="dentist-type">${types.map(t=>`<option${t===type?' selected':''}>${h(t)}</option>`).join('')}</select></div><div class="form-grid"><div class="field"><label>Nom du patient</label><input name="patientLast" placeholder="Dupont" /></div><div class="field"><label>Prénom du patient</label><input name="patientFirst" placeholder="Jean" /></div></div><div class="field"><label>Teinte / indications</label><input name="notes" placeholder="Teinte A3, contact mésial…" /></div><div class="deliv-title">Dates de livraison proposées</div><div class="deliv-hint">Calculées selon le délai de fabrication (<b>${fabricationLeadDays(type)} j ouvrés</b>) et la charge actuelle du laboratoire (<b>+${labLoadBufferDays()} j</b>).</div><div class="deliv-opts">${deliveries.map((d,i)=>`<label class="deliv-opt ${i===sel?'active':''}"><input type="radio" name="deliv" value="${i}" ${i===sel?'checked':''} hidden><div class="deliv-tag">${h(d.tag)}</div><div class="deliv-date">${h(fmtDateShort(d.date))}</div></label>`).join('')}</div><div class="form-actions"><button class="big-primary" type="submit">Envoyer la commande au laboratoire</button></div></form></section>`}
 function dentistThreadHTML(o){return `<div class="section-head"><h2>${h(o.id)} · ${h(o.type)}</h2></div><div id="thread-messages">${(state.messages[o.id]||[]).map(m=>`<div class="bubble ${m.from==='cabinet'?'lab':'cabinet'}"><b>${m.from==='cabinet'?'Vous':'Laboratoire'}</b><br>${h(m.text)}<div style="opacity:.7;font-size:11px;margin-top:4px">${h(m.at)}</div></div>`).join('')}</div><form class="composer" id="dentist-compose" data-order="${h(o.id)}"><input placeholder="Écrire au laboratoire…" required /><button>Envoyer</button></form>`}
 function dentistMessagesHTML(orders){const threads=orders.filter(o=>state.messages[o.id]&&state.messages[o.id].length);const active=state.dentistThread&&orders.find(o=>o.id===state.dentistThread);return `<section class="side-message-layout"><article class="card thread-list">${threads.length?threads.map(o=>{const last=(state.messages[o.id]||[]).slice(-1)[0]?.text||'';return `<button class="thread-item ${o.id===state.dentistThread?'active':''}" data-dthread="${h(o.id)}"><div class="thread-top"><strong>${h(o.id)}</strong></div><div class="thread-order">${h(o.type)}</div><div class="thread-preview">${h(last)}</div></button>`}).join(''):'<div class="empty">Aucune conversation.</div>'}</article><article class="card section thread-panel">${active?dentistThreadHTML(active):'<div class="empty">Sélectionnez une commande.</div>'}</article></section>`}
 function renderDentistMode(){const cabinets=[...new Set(state.orders.map(o=>o.cabinet))].filter(Boolean).sort();if(!cabinets.length)cabinets.push('Cabinet démo');if(!state.dentistCabinet||!cabinets.includes(state.dentistCabinet))state.dentistCabinet=cabinets[0];const cab=state.dentistCabinet;const tab=state.dentistView||'orders';const myOrders=state.orders.filter(o=>o.cabinet===cab);const content=tab==='orders'?dentistOrdersHTML(myOrders):tab==='new'?dentistNewHTML():dentistMessagesHTML(myOrders);document.body.innerHTML=`<div class="portal" id="portal"><header class="portal-header"><div class="portal-brand"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M7.8 3.4c1 0 1.9.5 2.7.9.6.3 1 .5 1.5.5s.9-.2 1.5-.5c.8-.4 1.7-.9 2.7-.9 2.3 0 3.9 1.9 3.9 4.6 0 1.5-.6 3.2-1.4 4.8-.6 1.3-1 2.7-1.3 4.1-.4 1.9-.9 3.4-2.2 3.4-.9 0-1.3-.9-1.8-2.6-.4-1.4-.8-2.3-1.5-2.3s-1.1.9-1.5 2.3c-.5 1.7-.9 2.6-1.8 2.6-1.3 0-1.8-1.5-2.2-3.4-.3-1.4-.7-2.8-1.3-4.1C4.5 11.2 4 9.5 4 8c0-2.7 1.5-4.6 3.8-4.6Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>DentalFlow · Espace cabinet</span></div><div class="portal-cabsel"><label>Cabinet</label><select id="portal-cab">${cabinets.map(c=>`<option${c===cab?' selected':''}>${h(c)}</option>`).join('')}</select></div><button class="ghost" id="portal-back">Retour laboratoire</button></header><div class="portal-body"><div class="portal-tabs"><button class="ptab ${tab==='orders'?'active':''}" data-dtab="orders">Mes commandes</button><button class="ptab ${tab==='new'?'active':''}" data-dtab="new">Nouvelle commande</button><button class="ptab ${tab==='messages'?'active':''}" data-dtab="messages">Messagerie</button></div>${content}</div>${state.dentistDetail&&myOrders.find(o=>o.id===state.dentistDetail)?dentistDetailHTML(myOrders.find(o=>o.id===state.dentistDetail)):''}<div class="toast" id="toast"></div></div>`;attachDentistHandlers()}
-function attachDentistHandlers(){const root=document.getElementById('portal');if(!root)return;root.addEventListener('click',e=>{const tab=e.target.closest('[data-dtab]');if(tab){state.dentistView=tab.dataset.dtab;state.dentistDetail=null;renderDentistMode();return}const thr=e.target.closest('[data-dthread]');if(thr){state.dentistThread=thr.dataset.dthread;state.dentistView='messages';state.dentistDetail=null;renderDentistMode();return}if(e.target.closest('[data-ddetail-close]')||e.target.id==='pdetail'){state.dentistDetail=null;renderDentistMode();return}const det=e.target.closest('[data-ddetail]');if(det){state.dentistDetail=det.dataset.ddetail;renderDentistMode();return}if(e.target.closest('#portal-back')){location.href=location.pathname;return}const opt=e.target.closest('.deliv-opt');if(opt){const inp=opt.querySelector('input');if(inp){state.dentistDeliv=+inp.value;renderDentistMode()}return}});root.addEventListener('change',e=>{if(e.target.id==='portal-cab'){state.dentistCabinet=e.target.value;state.dentistThread=null;renderDentistMode()}if(e.target.id==='dentist-type'){state.dentistNewType=e.target.value;state.dentistDeliv=0;renderDentistMode()}});root.addEventListener('submit',e=>{if(e.target.id==='dentist-order-form'){e.preventDefault();createDentistOrder(Object.fromEntries(new FormData(e.target).entries()));return}if(e.target.id==='dentist-compose'){e.preventDefault();const inp=e.target.querySelector('input');addCabinetMessage(e.target.dataset.order,inp.value.trim());inp.value=''}})}
+function attachDentistHandlers(){const root=document.getElementById('portal');if(!root)return;root.addEventListener('click',e=>{const tab=e.target.closest('[data-dtab]');if(tab){state.dentistView=tab.dataset.dtab;state.dentistDetail=null;renderDentistMode();return}const thr=e.target.closest('[data-dthread]');if(thr){state.dentistThread=thr.dataset.dthread;state.dentistView='messages';state.dentistDetail=null;renderDentistMode();return}if(e.target.closest('[data-ddetail-close]')||e.target.id==='pdetail'){state.dentistDetail=null;renderDentistMode();return}const pf=e.target.closest('[data-print-fiche]');if(pf){printFiche(pf.dataset.printFiche);return}const det=e.target.closest('[data-ddetail]');if(det){state.dentistDetail=det.dataset.ddetail;renderDentistMode();return}if(e.target.closest('#portal-back')){location.href=location.pathname;return}const opt=e.target.closest('.deliv-opt');if(opt){const inp=opt.querySelector('input');if(inp){state.dentistDeliv=+inp.value;renderDentistMode()}return}});root.addEventListener('change',e=>{if(e.target.id==='portal-cab'){state.dentistCabinet=e.target.value;state.dentistThread=null;renderDentistMode()}if(e.target.id==='dentist-type'){state.dentistNewType=e.target.value;state.dentistDeliv=0;renderDentistMode()}});root.addEventListener('submit',e=>{if(e.target.id==='dentist-order-form'){e.preventDefault();createDentistOrder(Object.fromEntries(new FormData(e.target).entries()));return}if(e.target.id==='dentist-compose'){e.preventDefault();const inp=e.target.querySelector('input');addCabinetMessage(e.target.dataset.order,inp.value.trim());inp.value=''}})}
 function createDentistOrder(data){const cab=state.dentistCabinet;const type=data.type||Object.keys(fabricationDays)[0];const id=uniqueOrderCode(cab,data.patientLast,data.patientFirst);const deliveries=proposedDeliveries(type);const chosen=deliveries[Math.min(+data.deliv||0,deliveries.length-1)];const due=fmtDateShort(chosen.date);const o={id,patientRef:id,patientFirst:data.patientFirst||'',patientLast:data.patientLast||'',type,cabinet:cab,status:'progress',station:'Réception',due,tech:'',priority:'Normale',timeAtPost:0,avgTime:45,noInitialScan:true,createdByCabinet:true};state.orders.unshift(o);const now=new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});state.messages[id]=[{from:'cabinet',text:`Nouvelle commande ${type} — livraison souhaitée ${due}.${data.notes?' Indications : '+data.notes:''}`,at:now,readAt:null,unread:true}];logAudit(id,'Création',`Commande créée via l'espace cabinet (${cab})`);save();state.dentistView='orders';state.dentistThread=id;renderDentistMode();showToast(`${id} envoyée au laboratoire`)}
 function addCabinetMessage(id,text){if(!text)return;if(!state.messages[id])state.messages[id]=[];const now=new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});state.messages[id].push({from:'cabinet',text,at:now,readAt:null,unread:true});save();renderDentistMode()}
 /* ===== Plan de charge (GTA) ===== */
@@ -368,10 +2677,26 @@ function grossWeeklyCapacity(){return state.users.reduce((a,u)=>a+(+u.capacity||
 function capacityLostInWeek(week){let lost=0;state.absences.forEach(ab=>{const u=state.users.find(x=>x.id===ab.userId);if(!u)return;let d=new Date(Math.max(new Date(ab.from).getTime(),week.start.getTime()));const end=new Date(Math.min(new Date(ab.to).getTime(),week.end.getTime()));while(d.getTime()<=end.getTime()){const wd=d.getDay();if(wd!==0&&wd!==6)lost+=(+u.capacity||0)/5;d.setDate(d.getDate()+1)}});return lost}
 function netWeekCapacity(week){return Math.max(0,Math.round(grossWeeklyCapacity()-capacityLostInWeek(week)))}
 function weekForecast(i){return demoWeeklyForecast[i]!=null?demoWeeklyForecast[i]:34}
-function renderPlanning(){setPageMeta('Plan de charge','Capacité de l’équipe et projection à long terme');const weeks=planningWeeks(8);const gross=grossWeeklyCapacity();const upcoming=state.absences.filter(a=>new Date(a.to)>=baseNow).sort((x,y)=>new Date(x.from)-new Date(y.from));const nextAbs=upcoming[0];const nextU=nextAbs&&state.users.find(u=>u.id===nextAbs.userId);const absSub=nextAbs?`Prochaine : ${fmtDateShort(new Date(nextAbs.from))}${nextU?' · '+nextU.name.split(' ')[0]:''}`:'Aucune dans les 30 prochains jours';const rows=weeks.map(w=>{const cap=netWeekCapacity(w);const load=weekForecast(w.i);const bal=cap-load;const pct=Math.min(100,Math.round(load/Math.max(cap,1)*100));const cls=bal>=0?'green':bal>=-6?'orange':'red';return `<tr><td><b>S${w.i+1}</b><div class="muted" style="font-size:12px">${h(fmtDateShort(w.start))} → ${h(fmtDateShort(w.end))}</div></td><td><b>${cap}</b></td><td>${load}</td><td><div class="load-bar"><span class="load-fill ${cls}" style="width:${pct}%"></span></div></td><td><span class="pill ${cls}">${bal>=0?'+':''}${bal}</span></td></tr>`}).join('');const usersRows=state.users.map(u=>`<div class="lab-user-row"><div class="lab-user-avatar">${h(userInitials(u.name))}</div><div><div class="lab-user-name">${h(u.name)}</div><div class="lab-user-role">${h(u.role)}</div></div><div class="lab-user-actions"><span class="lab-user-scope">${(+u.capacity||0)} cmd/sem.</span></div></div>`).join('');const absRows=state.absences.slice().sort((a,b)=>new Date(a.from)-new Date(b.from)).map(a=>{const u=state.users.find(x=>x.id===a.userId);return `<div class="lab-user-row"><div class="lab-user-avatar">${h(userInitials(u?u.name:'?'))}</div><div><div class="lab-user-name">${h(u?u.name:'—')}</div><div class="lab-user-role">${h(fmtDateShort(new Date(a.from)))} → ${h(fmtDateShort(new Date(a.to)))} · ${h(a.reason||'')}</div></div><div class="lab-user-actions"><button class="stock-edit-btn" data-absence-del="${h(a.id)}">Supprimer</button></div></div>`}).join('')||'<div class="empty">Aucune absence planifiée.</div>';$('#view-root').innerHTML=`<section class="grid stock-kpis"><article class="card stock-kpi" data-view="users" style="cursor:pointer"><div class="stock-kpi-ico blue">${icon('cube')}</div><div><div class="stock-kpi-num">${gross}</div><div class="stock-kpi-label">Capacité hebdo (cmd/sem.)</div><div class="mini-sub" style="margin-top:4px">Somme des capacités · cliquer pour ajuster</div></div></article><article class="card stock-kpi"><div class="stock-kpi-ico green">${icon('users')}</div><div><div class="stock-kpi-num">${state.users.length}</div><div class="stock-kpi-label">Effectif</div><div class="mini-sub" style="margin-top:4px">Collaborateurs actifs</div></div></article><article class="card stock-kpi"><div class="stock-kpi-ico orange">${icon('calendar')}</div><div><div class="stock-kpi-num">${upcoming.length}</div><div class="stock-kpi-label">Absences à venir</div><div class="mini-sub" style="margin-top:4px">${h(absSub)}</div></div></article></section><section class="card section" style="margin-bottom:14px"><div class="section-head"><h2>Projection sur 8 semaines</h2><span class="muted">Charge prévue vs capacité nette</span></div><div class="table-wrap"><table class="orders-table"><thead><tr><th>Semaine</th><th>Capacité</th><th>Charge prévue</th><th>Occupation</th><th>Solde</th></tr></thead><tbody>${rows}</tbody></table></div></section><section class="grid two-col"><article class="card section"><div class="section-head"><h2>Équipe &amp; capacités</h2></div><div class="users-list">${usersRows}</div></article><article class="card section"><div class="section-head"><h2>Absences (GTA)</h2><button class="primary" id="new-absence-btn" style="height:36px;padding:0 14px">＋ Absence</button></div><div class="users-list">${absRows}</div></article></section>`}
+function renderPlanning(){setPageMeta('Plan de charge','Capacité de l’équipe et projection à long terme');const weeks=planningWeeks(8);const gross=grossWeeklyCapacity();const upcoming=state.absences.filter(a=>new Date(a.to)>=baseNow).sort((x,y)=>new Date(x.from)-new Date(y.from));const nextAbs=upcoming[0];const nextU=nextAbs&&state.users.find(u=>u.id===nextAbs.userId);const absSub=nextAbs?`Prochaine : ${fmtDateShort(new Date(nextAbs.from))}${nextU?' · '+nextU.name.split(' ')[0]:''}`:'Aucune dans les 30 prochains jours';const rows=weeks.map(w=>{const cap=netWeekCapacity(w);const load=weekForecast(w.i);const bal=cap-load;const pct=Math.min(100,Math.round(load/Math.max(cap,1)*100));const cls=bal>=0?'green':bal>=-6?'orange':'red';return `<tr><td><b>S${w.i+1}</b><div class="muted" style="font-size:12px">${h(fmtDateShort(w.start))} → ${h(fmtDateShort(w.end))}</div></td><td><b>${cap}</b></td><td>${load}</td><td><div class="load-bar"><span class="load-fill ${cls}" style="width:${pct}%"></span></div></td><td><span class="pill ${cls}">${bal>=0?'+':''}${bal}</span></td></tr>`}).join('');const usersRows=state.users.map(u=>`<div class="lab-user-row"><div class="lab-user-avatar">${h(userInitials(u.name))}</div><div><div class="lab-user-name">${h(u.name)}</div><div class="lab-user-role">${h(u.role)}</div></div><div class="lab-user-actions"><span class="lab-user-scope">${(+u.capacity||0)} cmd/sem.</span></div></div>`).join('');const absRows=state.absences.slice().sort((a,b)=>new Date(a.from)-new Date(b.from)).map(a=>{const u=state.users.find(x=>x.id===a.userId);return `<div class="lab-user-row"><div class="lab-user-avatar">${h(userInitials(u?u.name:'?'))}</div><div><div class="lab-user-name">${h(u?u.name:'—')}</div><div class="lab-user-role">${h(fmtDateShort(new Date(a.from)))} → ${h(fmtDateShort(new Date(a.to)))} · ${h(a.reason||'')}</div></div><div class="lab-user-actions"><button class="stock-edit-btn" data-absence-del="${h(a.id)}">Supprimer</button></div></div>`}).join('')||'<div class="empty">Aucune absence planifiée.</div>';$('#view-root').innerHTML=`<section class="grid stock-kpis"><article class="card stock-kpi" data-view="users" style="cursor:pointer"><div class="stock-kpi-ico blue">${icon('cube')}</div><div><div class="stock-kpi-num">${gross}</div><div class="stock-kpi-label">Capacité hebdo (cmd/sem.)</div><div class="mini-sub" style="margin-top:4px">Somme des capacités · cliquer pour ajuster</div></div></article><article class="card stock-kpi"><div class="stock-kpi-ico green">${icon('users')}</div><div><div class="stock-kpi-num">${state.users.length}</div><div class="stock-kpi-label">Effectif</div><div class="mini-sub" style="margin-top:4px">Collaborateurs actifs</div></div></article><article class="card stock-kpi"><div class="stock-kpi-ico orange">${icon('calendar')}</div><div><div class="stock-kpi-num">${upcoming.length}</div><div class="stock-kpi-label">Absences à venir</div><div class="mini-sub" style="margin-top:4px">${h(absSub)}</div></div></article></section><section class="card section" style="margin-bottom:14px"><div class="section-head"><h2>Projection sur 8 semaines</h2><span class="muted">Charge prévue vs capacité nette</span></div><div class="table-wrap"><table class="orders-table"><thead><tr><th>Semaine</th><th>Capacité</th><th>Charge prévue</th><th>Occupation</th><th>Solde</th></tr></thead><tbody>${rows}</tbody></table></div></section><section class="grid two-col"><article class="card section"><div class="section-head"><h2>Équipe &amp; capacités</h2></div><div class="users-list">${usersRows}</div></article><article class="card section"><div class="section-head"><h2>Absences (GTA)</h2><button class="primary" id="new-absence-btn" style="height:36px;padding:0 14px">＋ Absence</button></div><div class="users-list">${absRows}</div></article></section>${(state.leaveRequests||[]).filter(r=>r.status==='pending').length?`<section class="card section" style="margin-top:14px"><div class="section-head"><h2>Demandes de congés à valider</h2><span class="pill orange">${state.leaveRequests.filter(r=>r.status==='pending').length} en attente</span></div><div class="users-list">${state.leaveRequests.filter(r=>r.status==='pending').map(r=>{const u=state.users.find(x=>x.id===r.userId);return `<div class="lab-user-row"><div class="lab-user-avatar">${h(userInitials(u?u.name:'?'))}</div><div><div class="lab-user-name">${h(u?u.name:'—')}</div><div class="lab-user-role">${h(fmtDateShort(new Date(r.from)))} → ${h(fmtDateShort(new Date(r.to)))} · ${bizDays(r.from,r.to)} j · ${h(r.reason||'')}</div></div><div class="lab-user-actions"><button class="stock-edit-btn" data-leave-approve="${h(r.id)}" style="color:var(--green);border-color:rgba(32,185,112,.4)">Approuver</button><button class="stock-edit-btn" data-leave-refuse="${h(r.id)}" style="color:var(--red);border-color:rgba(255,59,48,.4)">Refuser</button></div></div>`}).join('')}</div></section>`:''}`}
 function renderAbsenceFormPanel(){$('#side-panel-head').innerHTML=`<div class="side-panel-title"><div><h2>Nouvelle absence</h2><div class="side-panel-sub">GTA · plan de charge</div></div><button class="close" id="side-close">×</button></div>`;$('#side-panel-body').innerHTML=`<form class="side-form" id="absence-form"><div class="field"><label>Membre de l’équipe</label><select name="userId">${state.users.map(u=>`<option value="${h(u.id)}">${h(u.name)}</option>`).join('')}</select></div><div class="form-grid"><div class="field"><label>Du</label><input type="date" name="from" required value="${isoDay(7)}"></div><div class="field"><label>Au</label><input type="date" name="to" required value="${isoDay(9)}"></div></div><div class="field"><label>Motif</label><select name="reason"><option>Congés</option><option>Formation</option><option>Maladie</option><option>RTT</option><option>Autre</option></select></div><div class="form-actions"><button type="button" class="secondary" id="cancel-order">Annuler</button><button class="big-primary" type="submit">Ajouter</button></div></form>`;$('#side-layer').classList.add('open')}
 function submitAbsenceForm(data){if(!data.userId||!data.from||!data.to){showToast('Champs requis');return}if(new Date(data.to)<new Date(data.from)){showToast('Dates invalides');return}const id='A'+Date.now().toString(36);state.absences.push({id,userId:data.userId,from:data.from,to:data.to,reason:data.reason||'Absence'});const u=state.users.find(x=>x.id===data.userId);logAudit(id,'Utilisateur',`Absence ${data.reason||''} : ${u?u.name:''} (${data.from} → ${data.to})`);save();closeSidePanel();state.view='planning';render();showToast('Absence ajoutée')}
 function deleteAbsence(id){state.absences=state.absences.filter(a=>a.id!==id);save();render();showToast('Absence supprimée')}
+/* ===== Espace collaborateur (scan + congés) ===== */
+function isStaffMode(){return new URLSearchParams(location.search).get('mode')==='staff'}
+const ANNUAL_LEAVE=25;
+function bizDays(fromStr,toStr){let d=new Date(fromStr);const end=new Date(toStr);if(isNaN(d)||isNaN(end)||end<d)return 0;let n=0;while(d<=end){const w=d.getDay();if(w!==0&&w!==6)n++;d.setDate(d.getDate()+1)}return n}
+function leaveTaken(uid){return state.absences.filter(a=>a.userId===uid&&(a.reason||'').toLowerCase().indexOf('formation')<0).reduce((s,a)=>s+bizDays(a.from,a.to),0)}
+function leavePending(uid){return (state.leaveRequests||[]).filter(r=>r.userId===uid&&r.status==='pending').reduce((s,r)=>s+bizDays(r.from,r.to),0)}
+function submitLeaveRequest(uid,from,to,reason){if(!uid||!from||!to)return showToast('Champs requis');if(new Date(to)<new Date(from))return showToast('Dates invalides');const id='L'+Date.now().toString(36);state.leaveRequests.push({id,userId:uid,from,to,reason:reason||'Congés',status:'pending'});const u=state.users.find(x=>x.id===uid);logAudit(uid,'Utilisateur',`Demande de congés : ${u?u.name:''} (${from} → ${to})`);save()}
+function approveLeave(id){const r=(state.leaveRequests||[]).find(x=>x.id===id);if(!r||r.status==='approved')return;r.status='approved';if(!state.absences.some(a=>a.id==='AB-'+id))state.absences.push({id:'AB-'+id,userId:r.userId,from:r.from,to:r.to,reason:r.reason||'Congés'});const u=state.users.find(x=>x.id===r.userId);logAudit(r.userId,'Utilisateur',`Congés approuvés : ${u?u.name:''} (${r.from} → ${r.to})`);save();render();showToast('Congés approuvés')}
+function refuseLeave(id){const r=(state.leaveRequests||[]).find(x=>x.id===id);if(!r)return;r.status='refused';save();render();showToast('Demande refusée')}
+const TOOTH_SVG='<svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M7.8 3.4c1 0 1.9.5 2.7.9.6.3 1 .5 1.5.5s.9-.2 1.5-.5c.8-.4 1.7-.9 2.7-.9 2.3 0 3.9 1.9 3.9 4.6 0 1.5-.6 3.2-1.4 4.8-.6 1.3-1 2.7-1.3 4.1-.4 1.9-.9 3.4-2.2 3.4-.9 0-1.3-.9-1.8-2.6-.4-1.4-.8-2.3-1.5-2.3s-1.1.9-1.5 2.3c-.5 1.7-.9 2.6-1.8 2.6-1.3 0-1.8-1.5-2.2-3.4-.3-1.4-.7-2.8-1.3-4.1C4.5 11.2 4 9.5 4 8c0-2.7 1.5-4.6 3.8-4.6Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>';
+function staffScanHTML(me){const st=state.staffScanStation||'Réception';const recent=[...state.scanEvents].filter(e=>e.event==='Scan').reverse().slice(0,6);return `<section class="card section"><div class="section-head"><h2>Scanner une commande</h2><span class="muted">Connecté : ${h(me.name)}</span></div><div class="staff-scan"><div class="field" style="max-width:280px"><label>Poste de travail</label><select id="staff-station">${STAGES.map(s=>`<option${s===st?' selected':''}>${h(s)}</option>`).join('')}</select></div><form id="staff-scan-form"><div class="scan-input-row"><input class="scan-cmd-input" id="staff-scan-input" name="orderId" placeholder="Scanner le QR ou saisir : DRM-DUP-JEA" autocomplete="off" spellcheck="false" /><button class="scan-submit-btn" type="submit">Scanner</button></div><div id="staff-scan-feedback" class="scan-feedback"></div></form></div></section><section class="card section"><div class="section-head"><h2>Derniers scans</h2></div>${recent.length?`<div class="flow-list">${recent.map(e=>`<div class="flow-row" style="cursor:default;grid-template-columns:14px 1fr auto"><span class="dot-flow" style="background:var(--blue)"></span><b>${h(e.orderId)}</b><span class="muted">${h(e.station)} · ${h(e.tech)} · ${h(fmtTime(e.at))}</span></div>`).join('')}</div>`:'<div class="empty">Aucun scan enregistré.</div>'}</section>`}
+function handleStaffScanSubmit(e){e.preventDefault();const inp=document.getElementById('staff-scan-input');const orderId=String(inp.value||'').trim().toUpperCase();const station=(document.getElementById('staff-station')||{}).value||state.staffScanStation||'Réception';state.staffScanStation=station;const me=state.users.find(u=>u.id===state.staffUser)||{name:'Technicien'};const o=state.orders.find(x=>String(x.id).toUpperCase()===orderId);const fb=document.getElementById('staff-scan-feedback');if(!o){if(fb){fb.className='scan-feedback err';fb.textContent='Commande '+(orderId||'—')+' introuvable'}return}state.scanEvents.push({orderId:o.id,station,tech:me.name.split(' ')[0],at:new Date().toISOString(),event:'Scan'});logAudit(o.id,'Scan',`Scan ${station} — ${me.name}`);save();renderStaffMode();showToast(o.id+' scannée · '+station)}
+function staffCalendarHTML(me){const base=new Date(baseNow);base.setDate(1);base.setMonth(base.getMonth()+(state.staffMonth||0));const year=base.getFullYear(),month=base.getMonth();const title=base.toLocaleDateString('fr-FR',{month:'long',year:'numeric'});const firstW=(new Date(year,month,1).getDay()+6)%7;const dcount=new Date(year,month+1,0).getDate();const approved=state.absences;const pad=n=>String(n).padStart(2,'0');const cells=[];for(let i=0;i<firstW;i++)cells.push('<div class="cal-cell empty"></div>');for(let d=1;d<=dcount;d++){const iso=`${year}-${pad(month+1)}-${pad(d)}`;const wd=new Date(year,month,d).getDay();const wknd=wd===0||wd===6;const offs=approved.filter(a=>iso>=a.from&&iso<=a.to);const mine=offs.some(a=>a.userId===me.id);const names=offs.map(a=>{const u=state.users.find(x=>x.id===a.userId);return u?u.name.split(' ')[0]:''}).filter(Boolean).join(', ');cells.push(`<div class="cal-cell${wknd?' wknd':''}${mine?' mine':''}" title="${h(names)}"><span class="cal-d">${d}</span>${offs.length?`<span class="cal-dot${mine?' mineDot':''}">${offs.length}</span>`:''}</div>`)}return `<div class="cal-title">${h(title)}</div><div class="cal-grid"><div class="cal-h">L</div><div class="cal-h">M</div><div class="cal-h">M</div><div class="cal-h">J</div><div class="cal-h">V</div><div class="cal-h">S</div><div class="cal-h">D</div>${cells.join('')}</div><div class="cal-legend"><span><i class="cal-lg mine"></i>Mes congés</span><span><i class="cal-lg team"></i>Équipe absente</span></div>`}
+function staffLeaveHTML(me){const taken=leaveTaken(me.id),pending=leavePending(me.id),remaining=ANNUAL_LEAVE-taken;const myReqs=(state.leaveRequests||[]).filter(r=>r.userId===me.id).sort((a,b)=>new Date(b.from)-new Date(a.from));return `<section class="grid stock-kpis"><article class="card stock-kpi"><div class="stock-kpi-ico blue">${icon('calendar')}</div><div><div class="stock-kpi-num">${ANNUAL_LEAVE}</div><div class="stock-kpi-label">Jours acquis / an</div></div></article><article class="card stock-kpi"><div class="stock-kpi-ico orange">${icon('check')}</div><div><div class="stock-kpi-num">${taken}</div><div class="stock-kpi-label">Jours pris (approuvés)</div></div></article><article class="card stock-kpi"><div class="stock-kpi-ico green">${icon('info')}</div><div><div class="stock-kpi-num">${remaining}</div><div class="stock-kpi-label">Solde restant</div><div class="mini-sub" style="margin-top:4px">${pending?pending+' j en attente de validation':'Aucune demande en attente'}</div></div></article></section><section class="grid two-col"><article class="card section"><div class="section-head"><h2>Nouvelle demande</h2></div><form class="side-form" id="leave-form"><div class="form-grid"><div class="field"><label>Du</label><input type="date" name="from" required value="${isoDay(10)}"></div><div class="field"><label>Au</label><input type="date" name="to" required value="${isoDay(12)}"></div></div><div class="field"><label>Motif</label><select name="reason"><option>Congés</option><option>RTT</option><option>Congé sans solde</option><option>Événement familial</option></select></div><div class="form-actions"><button class="big-primary" type="submit">Envoyer au manager</button></div></form><div class="mini-sub" style="margin-top:10px">La demande est soumise à validation du responsable.</div></article><article class="card section"><div class="section-head"><h2>Mes demandes</h2></div><div class="users-list">${myReqs.length?myReqs.map(r=>{const cls=r.status==='approved'?'green':r.status==='refused'?'red':'orange';const lbl=r.status==='approved'?'Approuvée':r.status==='refused'?'Refusée':'En attente';return `<div class="lab-user-row"><div class="lab-user-avatar">${h(userInitials(me.name))}</div><div><div class="lab-user-name">${h(fmtDateShort(new Date(r.from)))} → ${h(fmtDateShort(new Date(r.to)))}</div><div class="lab-user-role">${bizDays(r.from,r.to)} j · ${h(r.reason||'')}</div></div><div class="lab-user-actions"><span class="pill ${cls}">${lbl}</span></div></div>`}).join(''):'<div class="empty">Aucune demande.</div>'}</div></article></section><section class="card section"><div class="section-head"><h2>Calendrier des congés — équipe</h2><div class="page-actions"><button class="ghost" data-staff-month="-1">‹ Mois préc.</button><button class="ghost" data-staff-month="1">Mois suiv. ›</button></div></div>${staffCalendarHTML(me)}</section>`}
+function renderStaffMode(){const users=state.users;if(!users.length){document.body.innerHTML='<div class="portal" id="staff-portal"><div class="empty" style="padding:60px">Aucun collaborateur.</div></div>';return}if(!state.staffUser||!users.some(u=>u.id===state.staffUser))state.staffUser=users[0].id;const me=users.find(u=>u.id===state.staffUser);const tab=state.staffView||'scan';const content=tab==='scan'?staffScanHTML(me):staffLeaveHTML(me);document.body.innerHTML=`<div class="portal" id="staff-portal"><header class="portal-header"><div class="portal-brand">${TOOTH_SVG}<span>DentalFlow · Espace collaborateur</span></div><div class="portal-cabsel"><label>Collaborateur</label><select id="staff-user">${users.map(u=>`<option value="${h(u.id)}"${u.id===state.staffUser?' selected':''}>${h(u.name)}</option>`).join('')}</select></div><button class="ghost" id="staff-back">Retour laboratoire</button></header><div class="portal-body"><div class="portal-tabs"><button class="ptab ${tab==='scan'?'active':''}" data-stab="scan">Scan production</button><button class="ptab ${tab==='leave'?'active':''}" data-stab="leave">Mes congés</button></div>${content}</div><div class="toast" id="toast"></div></div>`;attachStaffHandlers()}
+function attachStaffHandlers(){const root=document.getElementById('staff-portal');if(!root)return;root.addEventListener('click',e=>{const tab=e.target.closest('[data-stab]');if(tab){state.staffView=tab.dataset.stab;renderStaffMode();return}if(e.target.closest('#staff-back')){location.href=location.pathname;return}const mo=e.target.closest('[data-staff-month]');if(mo){state.staffMonth=(state.staffMonth||0)+parseInt(mo.dataset.staffMonth,10);renderStaffMode();return}});root.addEventListener('change',e=>{if(e.target.id==='staff-user'){state.staffUser=e.target.value;renderStaffMode()}if(e.target.id==='staff-station'){state.staffScanStation=e.target.value}});root.addEventListener('submit',e=>{if(e.target.id==='staff-scan-form'){handleStaffScanSubmit(e);return}if(e.target.id==='leave-form'){e.preventDefault();const fd=Object.fromEntries(new FormData(e.target).entries());submitLeaveRequest(state.staffUser,fd.from,fd.to,fd.reason);renderStaffMode();showToast('Demande envoyée au manager')}});const inp=document.getElementById('staff-scan-input');if(inp)inp.focus()}
 function renderScanMode(){const st=state.scanStation||'Réception';const tc=state.scanTechnician||'Marc';const recent=[...state.scanEvents].filter(e=>e.event==='Scan').reverse().slice(0,3);document.body.innerHTML=`<div class="scan-app"><header class="scan-header"><div class="scan-brand"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M216,88a87.87,87.87,0,0,0-8.4-37.37C196.07,27.69,173.27,16,148,16a87.47,87.47,0,0,0-20,2.32A87.47,87.47,0,0,0,108,16C82.73,16,59.93,27.69,48.4,50.63A87.87,87.87,0,0,0,40,88c0,66.33,54.28,144.9,56.59,148.07a16,16,0,0,0,26.09.42L128,229.69l5.32,6.8a16,16,0,0,0,26.09-.42C161.72,232.9,216,154.33,216,88Z"/></svg>DentalFlow Scan</div><div class="scan-session-bar"><span class="scan-session-name">${h(tc)} · ${h(st)}</span><button class="link" id="change-session-btn">Changer de poste</button></div></header><div class="scan-body"><div class="scan-session-config" id="session-config"><div class="field"><label>Poste</label><select id="session-station-sel">${STAGES.map(s=>`<option${state.scanStation===s?' selected':''}>${h(s)}</option>`).join('')}</select></div><div class="field"><label>Technicien</label><input id="session-tech-inp" value="${h(tc)}" placeholder="Prénom" /></div><div class="scan-session-actions"><button class="scan-session-cancel-btn" id="cancel-session-btn">Annuler</button><button class="scan-session-apply" id="apply-session-btn">Enregistrer</button></div></div><div class="scan-zone"><div class="scan-zone-title">Scannez une commande</div><div class="scan-zone-hint">Scannez une commande pour enregistrer sa localisation.</div><form id="scan-form"><div class="scan-input-row"><input class="scan-cmd-input" id="scan-cmd-input" name="orderId" placeholder="CMD-0190" autocomplete="off" spellcheck="false" /><button class="scan-submit-btn" type="submit">Scanner</button></div><div id="scan-feedback"></div></form></div><div class="scan-recent" id="scan-recent">${recent.length?'<div class="scan-recent-title">Derniers scans</div>'+recent.map(e=>'<div class="scan-recent-item"><div><div class="scan-recent-cmd">'+h(e.orderId)+'</div><div class="scan-recent-detail">'+h(e.station)+' · '+h(e.tech)+'</div></div><div class="scan-recent-time">'+fmtTime(e.at)+'</div></div>').join(''):''}</div></div></div>`;document.getElementById('scan-form').addEventListener('submit',handleScanSubmit);document.getElementById('change-session-btn').addEventListener('click',()=>{document.getElementById('session-config').classList.toggle('open')});document.getElementById('cancel-session-btn').addEventListener('click',()=>{document.getElementById('session-config').classList.remove('open')});document.getElementById('apply-session-btn').addEventListener('click',()=>{const ns=document.getElementById('session-station-sel').value;const nt=(document.getElementById('session-tech-inp').value||'').trim()||'Marc';state.scanStation=ns;state.scanTechnician=nt;save();renderScanMode()});const inp=document.getElementById('scan-cmd-input');if(inp)inp.focus()}
 function handleScanSubmit(e){e.preventDefault();const fd=new FormData(e.target);const orderId=String(fd.get('orderId')||'').trim().toUpperCase();const station=state.scanStation||'Réception';const tech=state.scanTechnician||'Marc';const o=state.orders.find(x=>x.id.toUpperCase()===orderId);const fb=document.getElementById('scan-feedback');if(!o){fb.className='scan-feedback err';fb.textContent='Commande '+(orderId||'—')+' introuvable';return}state.scanEvents.push({orderId:o.id,station,tech,at:new Date().toISOString(),event:'Scan'});save();fb.className='scan-feedback ok';fb.textContent=o.id+' enregistrée — '+station+' · '+tech;e.target.orderId.value='';const re=document.getElementById('scan-recent');if(re){const rec=[...state.scanEvents].filter(ev=>ev.event==='Scan').reverse().slice(0,3);re.innerHTML=rec.length?'<div class="scan-recent-title">Derniers scans</div>'+rec.map(ev=>'<div class="scan-recent-item"><div><div class="scan-recent-cmd">'+h(ev.orderId)+'</div><div class="scan-recent-detail">'+h(ev.station)+' · '+h(ev.tech)+'</div></div><div class="scan-recent-time">'+fmtTime(ev.at)+'</div></div>').join(''):''}setTimeout(()=>{const fb2=document.getElementById('scan-feedback');if(fb2){fb2.className='scan-feedback';fb2.textContent=''}const inp=document.getElementById('scan-cmd-input');if(inp)inp.focus()},1500)}
 function handleAppClick(e){
@@ -421,10 +2746,15 @@ function handleAppClick(e){
   const userEdit=e.target.closest('[data-user-edit]');
   if(userEdit){state.sidePanelUserId=userEdit.dataset.userEdit;openSidePanel('userForm');return}
   if(e.target.closest('#new-user-btn')){state.sidePanelUserId=null;openSidePanel('userForm');return}
+  const printFicheBtn=e.target.closest('[data-print-fiche]');
+  if(printFicheBtn){printFiche(printFicheBtn.dataset.printFiche);return}
   if(e.target.closest('#new-absence-btn')){openSidePanel('absenceForm');return}
   const absDel=e.target.closest('[data-absence-del]');
   if(absDel){deleteAbsence(absDel.dataset.absenceDel);return}
   if(e.target.closest('#open-dentist')){location.href=location.pathname+'?mode=dentist';return}
+  if(e.target.closest('#open-staff')){location.href=location.pathname+'?mode=staff';return}
+  const leaveApp=e.target.closest('[data-leave-approve]');if(leaveApp){approveLeave(leaveApp.dataset.leaveApprove);return}
+  const leaveRef=e.target.closest('[data-leave-refuse]');if(leaveRef){refuseLeave(leaveRef.dataset.leaveRefuse);return}
   if(e.target.closest('#notif-btn')){openSidePanel('alerts');return}
   if(e.target.closest('#more-options')){showToast('Options démo: priorité, échéance, note interne');return}
   if(e.target.closest('#invite-user')){showToast('Invitation démo préparée');return}
@@ -433,7 +2763,7 @@ function handleAppClick(e){
 document.addEventListener('click',handleAppClick);
 document.addEventListener('submit',e=>{if(e.target.matches('[data-compose]')){e.preventDefault();const input=e.target.querySelector('input');addMessage(e.target.dataset.compose,input.value.trim());input.value=''} if(e.target.id==='order-form'){e.preventDefault();const fd=new FormData(e.target);createOrder(Object.fromEntries(fd.entries()));e.target.reset()} if(e.target.id==='stock-form'){e.preventDefault();const fd=new FormData(e.target);submitStockForm(Object.fromEntries(fd.entries()))} if(e.target.id==='user-form'){e.preventDefault();const fd=new FormData(e.target);submitUserForm(Object.fromEntries(fd.entries()))} if(e.target.id==='absence-form'){e.preventDefault();const fd=new FormData(e.target);submitAbsenceForm(Object.fromEntries(fd.entries()))}});
 $('#search').addEventListener('input',e=>{state.search=e.target.value;state.searchOpen=!!state.search.trim();render()});$('#search').addEventListener('focus',()=>{state.searchOpen=!!state.search.trim();renderSearchPopup()});document.addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();$('#search').focus();state.searchOpen=!!state.search.trim();renderSearchPopup()}if(e.key==='Escape'){if(state.searchOpen){closeSearchPopup();return}if(state.quickOrderId){closeQuickView();return}if(state.sidePanel){closeSidePanel();return}}});
-load();applyTheme();applySidebar();if(isScanMode())renderScanMode();else if(isDentistMode())renderDentistMode();else{renderNav();setupNavDnD();render()}
+load();applyTheme();applySidebar();if(isScanMode())renderScanMode();else if(isDentistMode())renderDentistMode();else if(isStaffMode())renderStaffMode();else{renderNav();setupNavDnD();render()}
 </script>
 </body>
 </html>

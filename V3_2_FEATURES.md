@@ -290,3 +290,32 @@ propriété homonyme de l'élément, donc `form.id` renvoyait le nœud input et 
 | Donut visible + lisible (light) | ✅ survol = catégorie + % |
 | Donut visible en dark | ✅ arcs affichés |
 | Erreurs console (light + dark) | ✅ Aucune |
+
+---
+
+## Améliorations (8ᵉ retour)
+
+1. **Icône Stocks** : la vignette « Unités en stock » utilise une icône de cube (et « En transit » un camion),
+   à la place du « i ».
+2. **QR Code de commande** : chaque commande possède un **QR Code scannable** (librairie QR MIT inline, sans
+   dépendance externe) encodant le numéro de commande. Il figure sur la **fiche commande** (côté laboratoire et
+   espace cabinet) et une **fiche imprimable** est générée (`Imprimer la fiche` → mise en page A4 dédiée avec
+   QR agrandi). Scannabilité vérifiée par décodage (jsQR : `DRM-DUP-JEA` encodé → décodé à l'identique).
+3. **Espace collaborateur** (`?mode=staff`, ou Paramètres → « Ouvrir l'espace collaborateur ») :
+   - **Scan production** : sélection du poste, saisie/scan du numéro de commande (le QR ci-dessus), retour visuel
+     et journal des derniers scans (alimente la traçabilité et l'audit).
+   - **Congés payés** : compteur (jours acquis / pris / solde restant, jours en attente), **demande de congés**
+     soumise à **validation du manager**, liste « Mes demandes » avec statut, et **calendrier d'équipe** mensuel
+     navigable (jours de congés perso et absences d'équipe).
+   - **Validation manager** : les demandes en attente apparaissent dans **Plan de charge → « Demandes de congés à
+     valider »** (Approuver / Refuser). Une demande approuvée devient une absence et **réduit la capacité** des
+     semaines concernées (lien avec la GTA).
+
+| Point | Vérification |
+|---|---|
+| Icône Stocks (cube/camion) | ✅ |
+| QR sur fiche + impression | ✅ svg présent, fiche A4 |
+| QR scannable (décodage jsQR) | ✅ match exact |
+| Espace collaborateur — scan | ✅ CMD scannée, journal maj |
+| Congés : demande → manager → capacité | ✅ 3→2 en attente après validation |
+| Erreurs console | ✅ Aucune |
