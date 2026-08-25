@@ -540,3 +540,22 @@ propriété homonyme de l'élément, donc `form.id` renvoyait le nœud input et 
 | Titres de colonnes lisibles (colonnes étroites) | ✅ 1–2 lignes, pas de coupure lettre par lettre |
 | Bouton pièce jointe visible (labo + dentiste) | ✅ icône SVG |
 | Erreurs console | ✅ Aucune |
+
+---
+
+## Correctif (transmission de fichiers · découvrabilité)
+
+Le bouton de pièce jointe existait déjà dans la conversation, mais celle-ci n'est atteignable qu'en ouvrant une
+commande — peu visible. Ajout d'un point d'entrée évident **là où le dentiste transmet naturellement des fichiers** :
+
+- **Espace cabinet → Nouvelle commande** : bouton **« Joindre des fichiers »** (empreintes, radios, photos…).
+  Les fichiers sélectionnés partent **avec la commande** (joints au premier message envoyé au laboratoire).
+- Rappel : la pièce jointe reste disponible dans **la conversation** (côté cabinet *et* côté laboratoire) via le
+  bouton trombone de la zone de saisie.
+
+| Point | Vérification |
+|---|---|
+| Nouvelle commande : bouton Joindre des fichiers | ✅ visible (icône + libellé) |
+| Fichiers transmis avec la commande | ✅ joints au 1er message |
+| Pièce jointe conversation labo + cabinet | ✅ bouton trombone présent |
+| Erreurs console | ✅ Aucune |
