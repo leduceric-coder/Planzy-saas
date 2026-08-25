@@ -442,3 +442,44 @@ propriété homonyme de l'élément, donc `form.id` renvoyait le nœud input et 
 | Rapports : 10 max + tri + filtres | ✅ page 1/4 (36), tri, filtre par type |
 | Utilisateurs : couleur d'avatar | ✅ 15 avatars colorés + sélecteur (15 teintes) |
 | Erreurs console | ✅ Aucune |
+
+---
+
+## Améliorations (13ᵉ retour) — Pagination, side-windows & lisibilité
+
+**Commandes**
+- Liste **paginée par 10** (navigation Précédent / Suivant, retour page 1 au changement de filtre, tri ou recherche).
+
+**Accueil**
+- Les **4 vignettes du haut** (En production, À livrer aujourd'hui, En retard, Bloquées) sont **cliquables** :
+  chacune ouvre une **side-window** listant les **commandes concernées** (statut, poste, dernier scan, échéance),
+  chaque ligne ouvrant le détail de la commande.
+
+**Production**
+- **Suppression du défilement horizontal** (plus de « chariot ») : toutes les colonnes **tiennent sur la page**
+  (colonnes fluides qui se répartissent la largeur, le bouton « ＋ Ajouter un poste » passe à la ligne).
+
+**Plan de charge**
+- Vignette **Effectif** cliquable → **pop-up** avec la **liste des collaborateurs présents** (et les absents du jour).
+- Vignette **Absences à venir** cliquable → **défilement** vers la section « Absences planifiées ».
+- **Vue calendrier** : **dimensions de la pop-up constantes** quel que soit le mois (grille fixe de 6 semaines).
+- **Simulateur What-If** : la **présentation initiale n'affiche plus le tableau** semaine par semaine ; un bouton
+  « 📅 Voir le calendrier du scénario » ouvre une **pop-up calendrier** montrant l'impact du scénario
+  (charge/capacité par jour + repérage des jours de **congé simulé**).
+
+**Utilisateurs**
+- **Adresse email** ajoutée à la fiche collaborateur (affichée dans la liste et éditable dans le formulaire),
+  présentée comme **identifiant de connexion**. Emails attribués aux 15 collaborateurs du POC.
+
+| Point | Vérification |
+|---|---|
+| Commandes paginées par 10 | ✅ page 1/2 de 19, navigation |
+| Accueil : vignette → side-window | ✅ « En production » → 14 commandes listées |
+| Production sans défilement horizontal | ✅ 6 colonnes, aucun scroll |
+| Effectif → pop-up des présents | ✅ 15 collaborateurs (+ absents du jour) |
+| Absences → défilement vers la section | ✅ #abs-planifiees |
+| Calendrier : dimensions constantes | ✅ 42 cellules sur tous les mois |
+| What-If : pas de tableau au lancement | ✅ bouton calendrier du scénario |
+| What-If : calendrier de scénario | ✅ congés simulés repérés |
+| Utilisateurs : email = identifiant | ✅ 15 emails + champ formulaire |
+| Erreurs console | ✅ Aucune |
