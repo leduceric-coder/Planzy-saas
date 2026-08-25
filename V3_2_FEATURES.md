@@ -319,3 +319,23 @@ propriété homonyme de l'élément, donc `form.id` renvoyait le nœud input et 
 | Espace collaborateur — scan | ✅ CMD scannée, journal maj |
 | Congés : demande → manager → capacité | ✅ 3→2 en attente après validation |
 | Erreurs console | ✅ Aucune |
+
+---
+
+## Améliorations (9ᵉ retour)
+
+1. **Icône « Solde restant »** (espace collaborateur) : pictogramme « soleil / congés » à la place du « i ».
+2. **Simulateur What‑If (Plan de charge)** : outil pour évaluer l'impact de congés sur le plan de charge **avant
+   décision**. Le manager peut cocher des **demandes en attente** et/ou ajouter des **congés hypothétiques**
+   (collaborateur + dates) ; le simulateur recalcule, sur 8 semaines, la **capacité simulée** vs la capacité
+   actuelle (avec le delta), le **solde simulé** coloré, le **nombre de semaines qui passeraient en
+   sous‑capacité** et la **capacité totale perdue** (cmd). Il permet aussi d'**approuver directement la sélection**
+   (les congés deviennent alors des absences réelles qui réduisent la capacité).
+
+| Point | Vérification |
+|---|---|
+| Icône Solde restant (soleil) | ✅ |
+| What‑If : inclure une demande recalcule la capacité | ✅ S3 264 → 252 (−12) |
+| What‑If : congé hypothétique + suppression | ✅ |
+| What‑If : approuver la sélection / réinitialiser | ✅ |
+| Erreurs console | ✅ Aucune |
