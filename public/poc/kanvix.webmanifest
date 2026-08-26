@@ -1,0 +1,28 @@
+{
+  "name": "Kanvix — Piloter simplement",
+  "short_name": "Kanvix",
+  "description": "Piloter simplement vos chantiers : décisions, surveillance et suivi terrain en temps réel.",
+  "lang": "fr",
+  "dir": "ltr",
+  "start_url": "kanvix-next-gen.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#eceff5",
+  "theme_color": "#1769ff",
+  "categories": ["business", "productivity"],
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20512%20512'%3E%3Crect%20width='512'%20height='512'%20rx='112'%20fill='%231769ff'/%3E%3Cpath%20d='M170%20128h64v96l92-96h80l-118%20122%20122%20134h-82l-94-104v104h-64z'%20fill='%23fff'/%3E%3C/svg%3E",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20512%20512'%3E%3Crect%20width='512'%20height='512'%20fill='%231769ff'/%3E%3Cpath%20d='M188%20170h52v76l74-76h64l-96%2098%2098%20108h-66l-74-84v84h-52z'%20fill='%23fff'/%3E%3C/svg%3E",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

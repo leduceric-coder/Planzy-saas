@@ -2,9 +2,32 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
     <link rel="icon" href="data:" />
     <title>Kanvix — Piloter simplement</title>
+    <!-- PWA : installable en plein écran, s'ancre sur l'horloge de l'appareil -->
+    <link rel="manifest" href="kanvix.webmanifest" />
+    <meta name="application-name" content="Kanvix" />
+    <meta name="apple-mobile-web-app-title" content="Kanvix" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta
+      name="theme-color"
+      content="#ffffff"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#0a0d14"
+      media="(prefers-color-scheme: dark)"
+    />
     <style id="kanvix-css">
       /* ============================================================
          KANVIX — Design System (POC nouvelle génération)
@@ -5968,7 +5991,7 @@
     </div>
     <script id="kanvix-js">
       // CONSTANTS
-      const TODAY = "2026-08-13T00:00",
+      const SEED_TODAY = "2026-08-13", // date d'écriture des données de démo
         APP_VERSION = "8.3",
         STORE = "kanvix-product-8-3",
         DAY = 86400000,
@@ -5979,6 +6002,96 @@
           waiting: "En attente",
           late: "En retard",
         };
+      // TEMPS RÉEL — la démo s'ancre sur la date de l'appareil (pensé PWA).
+      // NOW_OVERRIDE permet de figer l'horloge (tests / démonstration pilotée).
+      // Optionnel : ?now=YYYY-MM-DDTHH:MM fige la date de démo (aperçu / recette).
+      let NOW_OVERRIDE = null;
+      try {
+        let q = new URLSearchParams(location.search).get("now");
+        if (q) NOW_OVERRIDE = q;
+      } catch {}
+      function nowDate() {
+        return NOW_OVERRIDE ? new Date(NOW_OVERRIDE) : new Date();
+      }
+      function todayKeyOf(d) {
+        d = d || nowDate();
+        return (
+          d.getFullYear() +
+          "-" +
+          String(d.getMonth() + 1).padStart(2, "0") +
+          "-" +
+          String(d.getDate()).padStart(2, "0")
+        );
+      }
+      // Recalculée à chaque changement d'horloge (setDemoClock).
+      let TODAY = todayKeyOf() + "T00:00";
+      // Décalage d'une chaîne de date "YYYY-MM-DD..." de N jours (heure préservée).
+      function shiftDateStr(s, days) {
+        if (typeof s !== "string") return s;
+        let m = s.match(/^(\d{4})-(\d{2})-(\d{2})(.*)$/);
+        if (!m) return s;
+        let d = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3]));
+        d.setUTCDate(d.getUTCDate() + days);
+        return (
+          d.getUTCFullYear() +
+          "-" +
+          String(d.getUTCMonth() + 1).padStart(2, "0") +
+          "-" +
+          String(d.getUTCDate()).padStart(2, "0") +
+          m[4]
+        );
+      }
+      function daysBetweenKeys(aKey, bKey) {
+        let a = new Date(String(aKey).slice(0, 10) + "T00:00Z"),
+          b = new Date(String(bKey).slice(0, 10) + "T00:00Z");
+        return Math.round((b - a) / DAY);
+      }
+      const DEMO_DATE_FIELDS = [
+        "start",
+        "end",
+        "baselineStart",
+        "baselineEnd",
+        "date",
+        "lastSeen",
+        "invitedAt",
+        "archivedAt",
+        "closedAt",
+        "currentEnd",
+        "startDate",
+      ];
+      function shiftItemDates(item, days) {
+        if (!item || typeof item !== "object") return;
+        DEMO_DATE_FIELDS.forEach((k) => {
+          if (typeof item[k] === "string") item[k] = shiftDateStr(item[k], days);
+        });
+      }
+      // Réaligne toutes les dates de démo sur "targetKey" (idempotent via seededFor).
+      // Ainsi, ouvrir la PWA un autre jour fait avancer le chantier avec le calendrier.
+      function alignDemoDates(state, targetKey) {
+        if (!state) return state;
+        let from = state.seededFor || SEED_TODAY,
+          delta = daysBetweenKeys(from, targetKey);
+        if (delta) {
+          [
+            "tasks",
+            "milestones",
+            "documents",
+            "photos",
+            "resources",
+            "issues",
+            "decisions",
+            "projects",
+            "messages",
+          ].forEach((k) => {
+            if (Array.isArray(state[k]))
+              state[k].forEach((it) => shiftItemDates(it, delta));
+          });
+          if (state.ui && typeof state.ui.periodAnchor === "string")
+            state.ui.periodAnchor = shiftDateStr(state.ui.periodAnchor, delta);
+        }
+        state.seededFor = targetKey;
+        return state;
+      }
       // DEMO DATA
       const SCHEMA_VERSION = 5;
       const INITIAL_STATE = {
@@ -6245,9 +6358,11 @@
             projectId: "villa",
             name: "Enduit façade",
             resourceId: "marc",
-            start: "2026-08-17T08:00",
-            end: "2026-08-19T16:00",
-            status: "todo",
+            start: "2026-08-20T08:00",
+            end: "2026-08-24T16:00",
+            baselineStart: "2026-08-17T08:00",
+            baselineEnd: "2026-08-19T16:00",
+            status: "late",
             deps: [],
           },
           {
@@ -6283,9 +6398,51 @@
             title: "Électricien non confirmé",
             comment: "Intervention prévue vendredi.",
           },
+          {
+            id: "k-access",
+            projectId: "keravel",
+            taskId: "k-lining",
+            status: "watching",
+            severity: "warning",
+            source: "field",
+            title: "Accès étage à dégager",
+            comment: "Gravats à évacuer avant le doublage (signalé sur le terrain).",
+          },
+          {
+            id: "k-elec-slot",
+            projectId: "keravel",
+            taskId: "k-electric",
+            status: "watching",
+            severity: "warning",
+            source: "resource",
+            title: "Créneau électricien à confirmer",
+            comment: "Le Gall doit confirmer sa présence cet après-midi.",
+          },
+          {
+            id: "v-weather",
+            projectId: "villa",
+            taskId: "v-facade",
+            status: "open",
+            severity: "warning",
+            source: "planning",
+            title: "Façade à replanifier (météo)",
+            comment: "Pluie annoncée : l’enduit glisse de trois jours.",
+          },
+          {
+            id: "h-supply",
+            projectId: "horizon",
+            taskId: "h-electric",
+            status: "open",
+            severity: "warning",
+            source: "resource",
+            title: "Confirmer l’appareillage",
+            comment: "Créneau de mise sous tension à trancher avec l’électricien.",
+          },
         ],
         decisions: [
           { id: "d-window", issueId: "windows-delay", status: "required" },
+          { id: "d-villa", issueId: "v-weather", status: "required" },
+          { id: "d-horizon", issueId: "h-supply", status: "required" },
         ],
         messages: [
           {
@@ -6459,7 +6616,8 @@
         if (!value || !value.settings || !Array.isArray(value.tasks))
           value = structuredClone(INITIAL_STATE);
         value.ui = value.ui || {};
-        value.ui.periodAnchor = value.ui.periodAnchor || TODAY;
+        // periodAnchor par défaut posé APRÈS le réalignement (voir plus bas),
+        // sinon il serait décalé une 2ᵉ fois par alignDemoDates.
         value.ui.planningNeedsCenter = true;
         value.ui.planningUserScrolled = false;
         value.ui.collapsedProjects = value.ui.collapsedProjects || [];
@@ -6521,6 +6679,10 @@
             if (m.taskId === undefined) m.taskId = null;
           });
         value.schemaVersion = SCHEMA_VERSION;
+        // TEMPS RÉEL : caler la démo sur la date du jour (device clock).
+        alignDemoDates(value, todayKeyOf());
+        // Ancre de période par défaut = aujourd'hui (après réalignement).
+        value.ui.periodAnchor = value.ui.periodAnchor || TODAY;
         return value;
       }
       function load() {
@@ -6952,7 +7114,16 @@
         endHour: 18,
       };
       function getDemoNow() {
-        return date(TODAY);
+        return nowDate();
+      }
+      // Fige/relâche l'horloge de démo puis réaligne les données (démo pilotée).
+      function setDemoClock(iso) {
+        NOW_OVERRIDE = iso || null;
+        TODAY = todayKeyOf() + "T00:00";
+        alignDemoDates(app, todayKeyOf());
+        if (app.ui) app.ui.periodAnchor = TODAY;
+        save();
+        render();
       }
       // Messagerie : heure réelle (le Planning garde sa date démo déterministe)
       function getMessageNow() {
@@ -7211,6 +7382,9 @@
               (i.status === "watching" ||
                 (i.source === "field" && i.status === "open")),
           )
+          // Les signaux terrain (démarrage, incident) remontent en tête :
+          // c'est ce que le conducteur doit surveiller en priorité.
+          .sort((a, b) => (b.source === "field") - (a.source === "field"))
           .slice(0, 3);
       }
       function getTodayDecisions() {
@@ -7784,7 +7958,7 @@
         let pilot = app.settings.level !== "essential",
           expert = app.settings.level !== "essential",
           chain = t ? [t, ...getCriticalImpacts(t.id)] : [];
-        return `<article class="decision-card" data-sev="${i.severity}"><span class="eyebrow danger">Action nécessaire</span><h3>${esc(i.title)}</h3><p class="card-project">${project(i.projectId).name}</p>${i.comment ? `<p class="card-why">${esc(i.comment)}</p>` : ""}<div class="decide-facts"><b>+${delay} jour${delay > 1 ? "s" : ""} calculé${delay > 1 ? "s" : ""}</b>${pilot && t ? `<span>${impacts} tâche${impacts > 1 ? "s" : ""} affectée${impacts > 1 ? "s" : ""} · ${resourceLabel(t.resourceId)}</span>` : ""}</div><div class="decide-actions"><button class="btn primary" onclick="openDecision('${i.id}')">Résoudre</button><button class="link" onclick="explainIssue('${i.id}')">Comprendre</button><button class="link" onclick="focusPlanningTask('${i.taskId}')">Voir dans le planning</button></div>${pilot && t?.baselineStart ? impactMini(t) : ""}${expert ? `<details class="technical-details"><summary>Détails techniques</summary><p><b>Cause racine :</b> ${esc(i.comment)}</p><p>${chain.map((x) => esc(x.name)).join(" → ")}</p></details>` : ""}</article>`;
+        return `<article class="decision-card" data-sev="${i.severity}"><span class="eyebrow danger">Action nécessaire</span><h3>${esc(i.title)}</h3><p class="card-project">${project(i.projectId).name}</p>${i.comment ? `<p class="card-why">${esc(i.comment)}</p>` : ""}<div class="decide-facts"><b>${delay > 0 ? `+${delay} jour${delay > 1 ? "s" : ""} calculé${delay > 1 ? "s" : ""}` : "Décision requise"}</b>${pilot && t ? `<span>${impacts} tâche${impacts > 1 ? "s" : ""} affectée${impacts > 1 ? "s" : ""} · ${resourceLabel(t.resourceId)}</span>` : ""}</div><div class="decide-actions"><button class="btn primary" onclick="openDecision('${i.id}')">Résoudre</button><button class="link" onclick="explainIssue('${i.id}')">Comprendre</button><button class="link" onclick="focusPlanningTask('${i.taskId}')">Voir dans le planning</button></div>${pilot && t?.baselineStart ? impactMini(t) : ""}${expert ? `<details class="technical-details"><summary>Détails techniques</summary><p><b>Cause racine :</b> ${esc(i.comment)}</p><p>${chain.map((x) => esc(x.name)).join(" → ")}</p></details>` : ""}</article>`;
       }
       function impactMini(t) {
         let points = [
@@ -12073,6 +12247,20 @@
         },
       );
       render();
+      // PWA — enregistrement du service worker uniquement en contexte sécurisé
+      // (https / localhost). Sans effet en file:// : le POC reste utilisable.
+      if (
+        "serviceWorker" in navigator &&
+        (location.protocol === "https:" || location.hostname === "localhost")
+      ) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("kanvix-sw.js")
+            .catch(() => {
+              /* hors-ligne indisponible : sans impact sur l'app */
+            });
+        });
+      }
     </script>
   </body>
 </html>
