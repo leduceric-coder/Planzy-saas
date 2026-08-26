@@ -49,8 +49,8 @@
         --danger: #e5484d;
         --danger-soft: #fff0f1;
         /* Shadows */
-        --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04),
-          0 2px 6px rgba(15, 23, 42, 0.04);
+        --shadow-xs: 0 1px 3px rgba(20, 32, 55, 0.07),
+          0 5px 14px rgba(20, 32, 55, 0.09);
         --shadow: 0 10px 26px rgba(20, 32, 55, 0.14),
           0 2px 6px rgba(20, 32, 55, 0.1), 0 0 1px rgba(20, 32, 55, 0.04);
         --shadow-hover: 0 18px 40px rgba(20, 32, 55, 0.18),
@@ -105,7 +105,8 @@
         --warning-soft: #35270f;
         --danger: #f2686d;
         --danger-soft: #391c1f;
-        --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.35);
+        --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.3),
+          0 6px 16px rgba(0, 0, 0, 0.34);
         --shadow: 0 0 1px rgba(255, 255, 255, 0.04),
           0 1px 0 rgba(255, 255, 255, 0.05), 0 16px 40px rgba(0, 0, 0, 0.36);
         --shadow-hover: 0 0 1px rgba(255, 255, 255, 0.05),
@@ -215,6 +216,71 @@
         height: 24px;
         flex: 0 0 24px;
         display: block;
+      }
+      /* Bouton replier / déplier le menu */
+      .sidebar-toggle {
+        margin-left: auto;
+        appearance: none;
+        border: 0;
+        background: transparent;
+        color: var(--sidebar-muted);
+        width: 26px;
+        height: 26px;
+        border-radius: 7px;
+        display: grid;
+        place-items: center;
+        padding: 0;
+        cursor: pointer;
+        transition: background 0.14s, color 0.14s;
+      }
+      .sidebar-toggle:hover {
+        background: var(--sidebar-hover);
+        color: var(--sidebar-text);
+      }
+      .sidebar-toggle svg {
+        width: 18px;
+        height: 18px;
+        flex: none;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        transition: transform 0.2s;
+      }
+      body.sidebar-collapsed .shell {
+        grid-template-columns: 68px minmax(0, 1fr);
+      }
+      body.sidebar-collapsed .sidebar {
+        padding: 22px 12px 16px;
+      }
+      body.sidebar-collapsed .brand {
+        flex-direction: column;
+        gap: 14px;
+        padding: 2px 0 20px;
+        justify-content: center;
+      }
+      body.sidebar-collapsed .brand > span,
+      body.sidebar-collapsed .nav button > span,
+      body.sidebar-collapsed .nav-messaging > span,
+      body.sidebar-collapsed .profile-copy {
+        display: none;
+      }
+      body.sidebar-collapsed .sidebar-toggle {
+        margin-left: 0;
+      }
+      body.sidebar-collapsed .sidebar-toggle svg {
+        transform: rotate(180deg);
+      }
+      body.sidebar-collapsed .nav button {
+        justify-content: center;
+        padding-inline: 0;
+      }
+      body.sidebar-collapsed .profile-trigger {
+        justify-content: center;
+      }
+      body.sidebar-collapsed .nav-messaging {
+        position: relative;
       }
       .nav {
         display: flex;
@@ -767,14 +833,98 @@
         grid-area: watch;
         margin-top: 2px;
       }
-      /* Aujourd'hui : deux colonnes À décider / À surveiller (timeline au-dessus) */
+      /* Aujourd'hui : deux colonnes À décider / À surveiller (timeline au-dessus),
+         vignettes d'action à l'intérieur, colonnes jusqu'en bas de page */
       .today-grid.two {
         grid-template-columns: 1fr 1fr;
         grid-template-areas: "decide watch";
         margin-top: 28px;
+        align-items: stretch;
+        min-height: calc(100vh - 290px);
+      }
+      .today-grid.two .zone {
+        display: flex;
+        flex-direction: column;
       }
       .today-grid.two .zone-watch {
         margin-top: 0;
+      }
+      .today-grid.two .zone-body {
+        flex: 1;
+        background: var(--surface-subtle);
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-lg);
+        box-shadow: none;
+        padding: 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .today-grid.two .decision-card,
+      .today-grid.two .watch-card {
+        background: var(--surface);
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow);
+        padding: 16px 18px;
+        margin: 0;
+      }
+      .today-grid.two .decision-card {
+        border-left: 3px solid var(--danger);
+      }
+      .today-grid.two .watch-card {
+        border-left: 3px solid var(--warning);
+      }
+      /* Icône d'en-tête de colonne (À décider / À surveiller) */
+      .zone-head-ico {
+        display: inline-flex;
+        width: 20px;
+        height: 20px;
+        flex: none;
+      }
+      .zone-head-ico svg {
+        width: 20px;
+        height: 20px;
+        fill: none;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .zone-head.decide .zone-head-ico svg {
+        stroke: var(--danger);
+      }
+      .zone-head.watch .zone-head-ico svg {
+        stroke: var(--warning);
+      }
+      /* Raison courte « pourquoi » dans les vignettes d'action */
+      .card-why {
+        margin: 6px 0 0;
+        color: var(--text-secondary);
+        font-size: 13.5px;
+        line-height: 1.4;
+      }
+      .card-project {
+        margin: 0;
+        color: var(--text-secondary);
+        font-size: 13px;
+      }
+      .eyebrow.warning {
+        color: var(--warning-ink);
+      }
+      .watch-card h3 {
+        font-size: 16px;
+        margin: 6px 0 0;
+      }
+      .watch-meta {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 12px 0;
+        color: var(--text-secondary);
+        font-size: 13px;
+      }
+      .watch-actions {
+        display: flex;
       }
       /* Pop-up journée : liste des interventions */
       .day-tasks {
@@ -1004,7 +1154,7 @@
         display: flex;
         align-items: center;
         gap: 6px;
-        font-size: 12px;
+        font-size: 14.5px;
         font-weight: 700;
         color: var(--text);
         text-transform: capitalize;
@@ -1023,13 +1173,13 @@
         text-transform: uppercase;
       }
       .wp-count {
-        font-size: 12px;
+        font-size: 13.5px;
         color: var(--text-secondary);
       }
       .wp-count b {
         color: var(--text);
-        font-size: 15px;
-        margin-right: 3px;
+        font-size: 21px;
+        margin-right: 4px;
       }
       .wp-signals {
         display: flex;
@@ -2998,7 +3148,7 @@
         overflow: auto;
         border: 1px solid var(--border-light);
         border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-xs);
+        box-shadow: var(--shadow);
         background: var(--surface);
         scrollbar-color: var(--border-strong) transparent;
         scrollbar-width: thin;
@@ -3140,6 +3290,7 @@
         box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
       }
       /* drag & drop only from Pilotage upward */
+      body[data-level="pilot"] .g-bar,
       body[data-level="pilot"] .g-bar,
       body[data-level="expert"] .g-bar {
         cursor: grab;
@@ -5666,6 +5817,16 @@
             />
           </svg>
           <span>KANVIX</span>
+          <button
+            class="sidebar-toggle"
+            id="sidebarToggle"
+            aria-label="Replier le menu"
+            onclick="toggleSidebar()"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M15 6l-6 6 6 6" />
+            </svg>
+          </button>
         </div>
         <nav class="nav" id="nav"></nav>
         <div class="profile" id="profileArea">
@@ -6272,6 +6433,8 @@
           value.settings.artisanResourceId || "thomas";
         value.settings.driverResourceId =
           value.settings.driverResourceId || "eric";
+        // Le mode Expert est fusionné dans Pilotage : plus que deux niveaux.
+        if (value.settings.level === "expert") value.settings.level = "pilot";
         if (value.settings.level === "essential") {
           value.settings.period = "week";
           value.settings.dependencies = false;
@@ -6479,6 +6642,8 @@
           send: '<path d="M4 12l16-7-7 16-2.5-6.5z"/>',
           more: '<path d="M5 12h.01M12 12h.01M19 12h.01"/>',
           lock: '<rect x="5" y="10.5" width="14" height="9" rx="2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/>',
+          alert: '<path d="M12 4.5 2.8 20h18.4z"/><path d="M12 10v4.2M12 17.3v.01"/>',
+          eye: '<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.7"/>',
           messages:
             '<path d="M4.5 6.5A2 2 0 0 1 6.5 4.5h11a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H9l-4.5 3.7z"/><path d="M8.5 9h7M8.5 12h4.5"/>',
         };
@@ -7436,7 +7601,7 @@
       // Bande « Cette semaine » — aperçu léger, niveau-conscient, sous le workflow.
       function weekPreview() {
         let level = app.settings.level,
-          expert = level === "expert",
+          expert = level !== "essential",
           pilot = level !== "essential",
           days = getResourceWeekDays(),
           todayKey = dayKey(TODAY),
@@ -7557,7 +7722,7 @@
         return (
           hero +
           weekPreview() +
-          `<div class="today-grid two"><section class="zone zone-decide"><h2 class="zone-head decide"><span class="zdot"></span>À décider<em>${decisions.length}</em></h2><div class="zone-body">${decisions.map(decisionCard).join("") || '<div class="zone-empty">✓ <b>Rien à décider</b><span>Tout est sous contrôle.</span></div>'}${decideMore}</div></section><section class="zone zone-watch"><h2 class="zone-head watch"><span class="zdot"></span>À surveiller<em>${warnings.length}</em></h2><div class="zone-body">${warnings.map(watchCard).join("") || '<div class="zone-empty">✓ <b>Rien à surveiller</b><span>Tout est confirmé.</span></div>'}${watchMore}</div></section></div>`
+          `<div class="today-grid two"><section class="zone zone-decide"><h2 class="zone-head decide"><span class="zone-head-ico">${icon("alert")}</span>À décider<em>${decisions.length}</em></h2><div class="zone-body">${decisions.map(decisionCard).join("") || '<div class="zone-empty">✓ <b>Rien à décider</b><span>Tout est sous contrôle.</span></div>'}${decideMore}</div></section><section class="zone zone-watch"><h2 class="zone-head watch"><span class="zone-head-ico">${icon("eye")}</span>À surveiller<em>${warnings.length}</em></h2><div class="zone-body">${warnings.map(watchCard).join("") || '<div class="zone-empty">✓ <b>Rien à surveiller</b><span>Tout est confirmé.</span></div>'}${watchMore}</div></section></div>`
         );
       }
       function workflowTaskRow(t) {
@@ -7569,9 +7734,9 @@
           impacts = t ? getCriticalImpacts(t.id).length : 0,
           delay = calculateProjectDelay(i.projectId);
         let pilot = app.settings.level !== "essential",
-          expert = app.settings.level === "expert",
+          expert = app.settings.level !== "essential",
           chain = t ? [t, ...getCriticalImpacts(t.id)] : [];
-        return `<article class="decision-card" data-sev="${i.severity}"><span class="eyebrow danger">Action nécessaire</span><h3>${esc(i.title)}</h3><p>${project(i.projectId).name}</p><div class="decide-facts"><b>+${delay} jour${delay > 1 ? "s" : ""} calculé${delay > 1 ? "s" : ""}</b>${pilot && t ? `<span>${impacts} tâche${impacts > 1 ? "s" : ""} affectée${impacts > 1 ? "s" : ""} · ${resourceLabel(t.resourceId)}</span>` : ""}</div><div class="decide-actions"><button class="btn primary" onclick="openDecision('${i.id}')">Résoudre</button><button class="link" onclick="explainIssue('${i.id}')">Comprendre</button><button class="link" onclick="focusPlanningTask('${i.taskId}')">Voir dans le planning</button></div>${pilot && t?.baselineStart ? impactMini(t) : ""}${expert ? `<details class="technical-details"><summary>Détails techniques</summary><p><b>Cause racine :</b> ${esc(i.comment)}</p><p>${chain.map((x) => esc(x.name)).join(" → ")}</p></details>` : ""}</article>`;
+        return `<article class="decision-card" data-sev="${i.severity}"><span class="eyebrow danger">Action nécessaire</span><h3>${esc(i.title)}</h3><p class="card-project">${project(i.projectId).name}</p>${i.comment ? `<p class="card-why">${esc(i.comment)}</p>` : ""}<div class="decide-facts"><b>+${delay} jour${delay > 1 ? "s" : ""} calculé${delay > 1 ? "s" : ""}</b>${pilot && t ? `<span>${impacts} tâche${impacts > 1 ? "s" : ""} affectée${impacts > 1 ? "s" : ""} · ${resourceLabel(t.resourceId)}</span>` : ""}</div><div class="decide-actions"><button class="btn primary" onclick="openDecision('${i.id}')">Résoudre</button><button class="link" onclick="explainIssue('${i.id}')">Comprendre</button><button class="link" onclick="focusPlanningTask('${i.taskId}')">Voir dans le planning</button></div>${pilot && t?.baselineStart ? impactMini(t) : ""}${expert ? `<details class="technical-details"><summary>Détails techniques</summary><p><b>Cause racine :</b> ${esc(i.comment)}</p><p>${chain.map((x) => esc(x.name)).join(" → ")}</p></details>` : ""}</article>`;
       }
       function impactMini(t) {
         let points = [
@@ -7591,7 +7756,7 @@
         let t = task(i.taskId),
           sent = i.relaunched;
         let pilot = app.settings.level !== "essential";
-        return `<article class="watch-row">${resourceAvatar(resource(t.resourceId), true)}<div><h3>${esc(i.title)}</h3><p>${project(i.projectId).name} · ${fmtDay(t.start)} · ${fmtTime(t.start)}</p>${pilot ? `<small>${esc(i.comment)}</small>` : ""}</div>${sent ? '<span class="success">✓ Relance envoyée</span>' : `<button class="btn" onclick="relaunchIssue('${i.id}')">Relancer</button>`}</article>`;
+        return `<article class="watch-card"><span class="eyebrow warning">À surveiller</span><h3>${esc(i.title)}</h3>${i.comment ? `<p class="card-why">${esc(i.comment)}</p>` : ""}<div class="watch-meta">${resourceAvatar(resource(t.resourceId), true)}<span>${project(i.projectId).name} · ${fmtDay(t.start)} · ${fmtTime(t.start)}</span></div><div class="watch-actions">${sent ? '<span class="success">✓ Relance envoyée</span>' : `<button class="btn" onclick="relaunchIssue('${i.id}')">Relancer</button>`}</div></article>`;
       }
       function relaunchIssue(id) {
         let i = issue(id);
@@ -8410,7 +8575,7 @@
       function projectTabs() {
         let a = ["Aujourd’hui", "À venir", "Documents", "Photos"];
         if (app.settings.level !== "essential") a.push("Planning", "Équipe");
-        if (app.settings.level === "expert") a.push("Historique");
+        if (app.settings.level !== "essential") a.push("Historique");
         return a;
       }
       function renderProject() {
@@ -8422,7 +8587,7 @@
               ? app.ui.projectInitialTab
               : tabs[0],
           pilot = app.settings.level !== "essential",
-          expert = app.settings.level === "expert";
+          expert = app.settings.level !== "essential";
         app.ui.projectInitialTab = null;
         // V4.8.3 — chantier actif prêt à clôturer (fin de chantier atteinte)
         let closure = sum.closure,
@@ -8733,7 +8898,7 @@
         let r = resource(id),
           tone = resourceStateTone(state),
           pilot = app.settings.level !== "essential",
-          expert = app.settings.level === "expert",
+          expert = app.settings.level !== "essential",
           isCompany = r.type === "company",
           ts = resourcePeriodTasks(id, days),
           main =
@@ -8944,7 +9109,7 @@
           readOnly = planningIsReadOnly(pid),
           // Drag/drop réservé aux niveaux avancés ET aux chantiers éditables
           canDrag = advanced && !readOnly,
-          expert = app.settings.level === "expert",
+          expert = app.settings.level !== "essential",
           active = impactChainActive(),
           sensitive = active ? impactChainSet() : null,
           sources = active ? impactChainSources() : null,
@@ -9015,7 +9180,7 @@
         return set;
       }
       function impactChainActive() {
-        return app.settings.level === "expert" && app.ui.impactChain;
+        return app.settings.level !== "essential" && app.ui.impactChain;
       }
       // Chaîne d'impact ordonnée (cause → conséquences) pour numérotation + bande
       function impactChainOrdered() {
@@ -9095,7 +9260,7 @@
       function renderPlanning() {
         let s = scale(),
           advanced = app.settings.level !== "essential",
-          expert = app.settings.level === "expert",
+          expert = app.settings.level !== "essential",
           prob = planningProblems(),
           readOnly = planningIsReadOnly(),
           resFilter = app.ui.planningResource,
@@ -9926,7 +10091,6 @@
           `<div class="attention-layout"><div><h2>Profondeur</h2>${[
             ["essential", "Essentiel"],
             ["pilot", "Pilotage"],
-            ["expert", "Expert"],
           ]
             .map(
               (x) =>
@@ -10032,7 +10196,7 @@
           docs = app.documents.filter((d) => d.taskId === id),
           photos = app.photos.filter((p) => p.taskId === id),
           pilot = app.settings.level !== "essential",
-          expert = app.settings.level === "expert",
+          expert = app.settings.level !== "essential",
           // V4.8.1 — verrou lecture seule : chantier non actif = consultation seule
           projectEditable = canEditProject(t.projectId);
         app.ui.selectedTask = id;
@@ -10188,7 +10352,7 @@
           isPerson = r.type === "person",
           archived = !resourceActive(r),
           pilot = app.settings.level !== "essential",
-          expert = app.settings.level === "expert",
+          expert = app.settings.level !== "essential",
           todayKey = dayKey(TODAY),
           today = getResourceTasks(id)
             .filter(
@@ -11536,10 +11700,10 @@
           },
           {
             cat: "AGIR",
-            label: "Passer en mode Expert",
+            label: "Passer en mode Pilotage",
             meta: "Réglage",
             run: () => {
-              setDepth("expert");
+              setDepth("pilot");
             },
           },
         ];
@@ -11601,18 +11765,13 @@
       function renderUserMenu() {
         let host = $("#userPopover"),
           label =
-            app.settings.level === "essential"
-              ? "Essentiel"
-              : app.settings.level === "pilot"
-                ? "Pilotage"
-                : "Expert";
+            app.settings.level === "essential" ? "Essentiel" : "Pilotage";
         if (!host) return;
         $("#profileLevel").innerHTML =
           `Mode · ${label} <span class="profile-gear" aria-hidden="true">${icon("settings")}</span>`;
         host.innerHTML = `<div class="user-popover-head"><b>Eric Leduc</b><small>Conducteur de travaux</small></div><div class="user-popover-section"><span class="user-popover-label">MODE</span>${[
-          ["essential", "Essentiel", "Comprendre et agir"],
-          ["pilot", "Pilotage", "Organiser et arbitrer"],
-          ["expert", "Expert", "Analyser en profondeur"],
+          ["essential", "Essentiel", "Voir l’essentiel, agir vite"],
+          ["pilot", "Pilotage", "Planning, dépendances, arbitrage"],
         ]
           .map(
             (x) =>
@@ -11704,8 +11863,20 @@
           "artisan-body",
           app.settings.role === "artisan",
         );
+        document.body.classList.toggle(
+          "sidebar-collapsed",
+          !!app.ui.sidebarCollapsed,
+        );
         document.body.dataset.level = app.settings.level;
         renderPage();
+      }
+      function toggleSidebar() {
+        app.ui.sidebarCollapsed = !app.ui.sidebarCollapsed;
+        save();
+        document.body.classList.toggle(
+          "sidebar-collapsed",
+          app.ui.sidebarCollapsed,
+        );
       }
       function go(p) {
         if (p === "planning" && app.ui.page !== "planning")
