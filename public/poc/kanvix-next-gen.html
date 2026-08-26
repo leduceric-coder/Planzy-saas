@@ -743,8 +743,14 @@
         border: 1px solid var(--border-light);
         border-radius: var(--radius-lg);
         box-shadow: var(--shadow);
-        padding: 14px 16px;
+        padding: 15px 18px;
         margin-bottom: 10px;
+        column-gap: 18px;
+      }
+      /* Aligner la pastille de statut avec le titre + espace avant la tâche */
+      #projectContent .row > .dot {
+        margin-top: 6px;
+        margin-left: 4px;
       }
       #projectContent .row,
       #projectContent .row:first-child {
@@ -4354,6 +4360,48 @@
         color: var(--text-tertiary);
         margin: 2px 0 8px;
       }
+      .task-activity {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .ta-row {
+        display: grid;
+        grid-template-columns: 14px 1fr;
+        gap: 10px;
+        position: relative;
+        padding: 4px 0;
+      }
+      .ta-row:not(:last-child)::before {
+        content: "";
+        position: absolute;
+        left: 6px;
+        top: 16px;
+        bottom: -4px;
+        width: 2px;
+        background: var(--border);
+      }
+      .ta-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--accent);
+        margin-top: 6px;
+        margin-left: 3px;
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+      }
+      .ta-body b {
+        display: block;
+        font-size: 13.5px;
+        font-weight: 600;
+        line-height: 1.35;
+      }
+      .ta-body small {
+        display: block;
+        margin-top: 1px;
+        font-size: 11.5px;
+        color: var(--text-tertiary);
+      }
       .modal-box {
         position: absolute;
         left: 50%;
@@ -7765,6 +7813,7 @@
           date: fmtTime(getDemoNow()),
           text: `Relance envoyée — ${i.title}`,
           author: "Eric",
+          taskId: i.taskId,
         });
         save();
         renderPage();
@@ -10189,6 +10238,18 @@
         if (thread) thread.scrollTop = thread.scrollHeight;
         $("#messageInput")?.focus();
       }
+      // Suivi de la tâche : événements horodatés rattachés à la tâche
+      // (démarrage terrain, retard/replanification, fin…). Vue conducteur.
+      function taskActivity(id) {
+        let events = app.history.filter((h) => h.taskId === id);
+        if (!events.length) return "";
+        return `<div class="drawer-section"><h3>Suivi de la tâche</h3><div class="task-activity">${events
+          .map(
+            (h) =>
+              `<div class="ta-row"><span class="ta-dot"></span><div class="ta-body"><b>${esc(h.text)}</b><small>${esc(h.date)} · ${esc(h.author)}</small></div></div>`,
+          )
+          .join("")}</div></div>`;
+      }
       function openTask(id) {
         let t = task(id),
           succ = getTaskSuccessors(id),
@@ -10237,6 +10298,7 @@
           actionSection +
           depsSection +
           pieces +
+          taskActivity(id) +
           (expert ? historyHTML() : "");
         $("#drawer").classList.add("open");
       }
@@ -10596,12 +10658,52 @@
         let t = task(id);
         if (!guardEditable(t.projectId)) return;
         snapshot();
+        let fromField = app.settings.role === "artisan";
         t.status = status;
+        // Historique horodaté rattaché à la tâche (commencement, retard, fin…)
         app.history.unshift({
           date: fmtTime(getDemoNow()),
-          text: `${t.name} passée « ${STATUS[status]} »`,
-          author: resourceLabel(t.resourceId),
+          text: `${t.name} · ${status === "doing" ? "commencée" : status === "done" ? "terminée" : "passée « " + STATUS[status] + " »"}${fromField ? " sur le terrain" : ""}`,
+          author: fromField ? resourceLabel(t.resourceId) : "Eric",
+          taskId: id,
         });
+        // Messagerie ↔ conducteur : une tâche démarrée sur le terrain remonte
+        // « À surveiller » côté conducteur (signal terrain), historique conservé.
+        if (fromField && status === "doing") {
+          if (
+            !app.issues.some(
+              (i) =>
+                i.taskId === id &&
+                i.kind === "field-start" &&
+                i.status !== "resolved",
+            )
+          )
+            app.issues.push({
+              id: "field-" + id + "-" + Date.now(),
+              title: t.name,
+              projectId: t.projectId,
+              taskId: id,
+              status: "watching",
+              severity: "warning",
+              source: "field",
+              kind: "field-start",
+              comment:
+                "Intervention démarrée sur le terrain par " +
+                resourceLabel(t.resourceId) +
+                ".",
+            });
+        }
+        // Tâche terminée : seul le signal « démarrage terrain » se referme
+        // (les réserves / signalements restent ouverts et bloquent la clôture).
+        if (status === "done")
+          app.issues
+            .filter(
+              (i) =>
+                i.taskId === id &&
+                i.kind === "field-start" &&
+                i.status !== "resolved",
+            )
+            .forEach((i) => (i.status = "resolved"));
         save();
         closeOverlay("drawer");
         render();
@@ -10631,6 +10733,7 @@
           date: fmtTime(getDemoNow()),
           text: `${t.name} déplacée au ${fmtDay(t.start)}`,
           author: "Eric",
+          taskId: id,
         });
         save();
         render();
