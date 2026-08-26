@@ -13,12 +13,14 @@
          ============================================================ */
       :root {
         /* Surfaces */
-        --app-bg: #eceff5;
-        --surface: #ffffff;
+        --bg-app: #eceff5;
+        --bg: var(--bg-app);
+        --surface-1: #ffffff;
+        --surface: var(--surface-1);
         --surface-subtle: #f7f9fc;
         --surface-muted: #f1f4f8;
         /* Sidebar */
-        --sidebar-bg: #ffffff;
+        --bg-sidebar: #ffffff;
         --sidebar-border: #e3e8ef;
         --sidebar-text: #475467;
         --sidebar-muted: #8593a5;
@@ -49,11 +51,11 @@
         /* Shadows */
         --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04),
           0 2px 6px rgba(15, 23, 42, 0.04);
-        --shadow-card: 0 8px 22px rgba(20, 32, 55, 0.1),
+        --shadow: 0 8px 22px rgba(20, 32, 55, 0.1),
           0 1px 3px rgba(20, 32, 55, 0.09), 0 0 1px rgba(20, 32, 55, 0.015);
         --shadow-hover: 0 14px 34px rgba(20, 32, 55, 0.14),
           0 2px 6px rgba(20, 32, 55, 0.1);
-        --shadow-pop: 0 24px 65px rgba(17, 31, 58, 0.18),
+        --shadow-strong: 0 24px 65px rgba(17, 31, 58, 0.18),
           0 4px 18px rgba(17, 31, 58, 0.08);
         /* Radius */
         --radius-xs: 6px;
@@ -64,8 +66,8 @@
         --canvas: var(--surface-muted);
         --line: var(--border-light);
         --surface-elevated: var(--surface);
-        --shadow-sm: var(--shadow-card);
-        --shadow-md: var(--shadow-pop);
+        --shadow-sm: var(--shadow);
+        --shadow-md: var(--shadow-strong);
         --success-border: #a7dcbf;
         --warning-border: #efc38a;
         --danger-border: #f4b9bb;
@@ -74,11 +76,12 @@
         --danger-ink: #c13b40;
       }
       body.dark {
-        --app-bg: #0a0d14;
-        --surface: #10202f;
+        --bg-app: #0a0d14;
+        --surface-1: #10202f;
+        --surface: var(--surface-1);
         --surface-subtle: #14283a;
         --surface-muted: #172d40;
-        --sidebar-bg: #0d1119;
+        --bg-sidebar: #0d1119;
         --sidebar-border: #1e3346;
         --sidebar-text: #a9bccf;
         --sidebar-muted: #6f8398;
@@ -103,11 +106,11 @@
         --danger: #f2686d;
         --danger-soft: #391c1f;
         --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.35);
-        --shadow-card: 0 0 1px rgba(255, 255, 255, 0.04),
+        --shadow: 0 0 1px rgba(255, 255, 255, 0.04),
           0 1px 0 rgba(255, 255, 255, 0.05), 0 16px 40px rgba(0, 0, 0, 0.36);
         --shadow-hover: 0 0 1px rgba(255, 255, 255, 0.05),
           0 22px 52px rgba(0, 0, 0, 0.46);
-        --shadow-pop: 0 24px 65px rgba(0, 0, 0, 0.55),
+        --shadow-strong: 0 24px 65px rgba(0, 0, 0, 0.55),
           0 4px 18px rgba(0, 0, 0, 0.4);
         --success-border: #1e5236;
         --warning-border: #5a441f;
@@ -124,7 +127,7 @@
         min-height: 100%;
       }
       body {
-        background: var(--app-bg);
+        background: var(--bg-app);
         color: var(--text);
         font: 400 14px/1.5 Inter, ui-sans-serif, -apple-system,
           BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -184,13 +187,13 @@
         display: grid;
         grid-template-columns: 178px minmax(0, 1fr);
         min-height: 100vh;
-        background: var(--app-bg);
+        background: var(--bg-app);
       }
       .sidebar {
         position: sticky;
         top: 0;
         height: 100vh;
-        background: var(--sidebar-bg);
+        background: var(--bg-sidebar);
         color: var(--sidebar-text);
         border-right: 1px solid var(--sidebar-border);
         padding: 22px 14px 16px;
@@ -313,11 +316,24 @@
         font-size: 11px;
       }
       .profile-level {
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
         margin-top: 3px;
         color: var(--accent-ink);
         font-size: 10.5px;
         font-weight: 600;
+      }
+      .profile-gear {
+        display: inline-flex;
+      }
+      .profile-gear svg {
+        width: 13px;
+        height: 13px;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        fill: none;
+        opacity: 0.85;
       }
       .avatar {
         width: 34px;
@@ -349,7 +365,7 @@
         border-radius: var(--radius-md);
         background: var(--surface);
         color: var(--text);
-        box-shadow: var(--shadow-pop);
+        box-shadow: var(--shadow-strong);
         z-index: 80;
       }
       .user-popover.open {
@@ -421,7 +437,7 @@
 
       /* ---------------- Main / header ---------------- */
       .main {
-        background: var(--app-bg);
+        background: var(--bg-app);
         padding: 34px 40px 60px;
         max-width: 1320px;
         width: 100%;
@@ -726,6 +742,54 @@
       .zone-watch {
         grid-area: watch;
         margin-top: 2px;
+      }
+      /* Aujourd'hui : deux colonnes À décider / À surveiller (timeline au-dessus) */
+      .today-grid.two {
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas: "decide watch";
+        margin-top: 4px;
+      }
+      .today-grid.two .zone-watch {
+        margin-top: 0;
+      }
+      /* Pop-up journée : liste des interventions */
+      .day-tasks {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin: 14px 0 4px;
+        max-height: 52vh;
+        overflow-y: auto;
+      }
+      .day-task {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+        text-align: left;
+        background: var(--surface-subtle);
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-md);
+        padding: 12px 14px;
+        cursor: pointer;
+        transition: border-color 0.14s, background 0.14s;
+      }
+      .day-task:hover {
+        border-color: var(--accent);
+        background: var(--surface);
+      }
+      .day-task .day-task-body {
+        flex: 1;
+        min-width: 0;
+      }
+      .day-task .day-task-body b {
+        display: block;
+        font-size: 14px;
+        color: var(--text);
+      }
+      .day-task .day-task-body small {
+        color: var(--text-secondary);
+        font-size: 12.5px;
       }
       .zone-head {
         display: flex;
@@ -3539,7 +3603,7 @@
         background: var(--surface);
         border: 1px solid var(--warning-border);
         border-radius: var(--radius-md);
-        box-shadow: var(--shadow-card);
+        box-shadow: var(--shadow);
         padding: 12px 15px;
         display: flex;
         justify-content: space-between;
@@ -4088,7 +4152,7 @@
         padding: 26px;
         border: 1px solid var(--border);
         border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-pop);
+        box-shadow: var(--shadow-strong);
         transition: opacity 0.18s, transform 0.18s;
       }
       .modal.open .modal-box {
@@ -4141,7 +4205,7 @@
         background: var(--surface);
         border: 1px solid var(--border);
         border-radius: var(--radius-md);
-        box-shadow: var(--shadow-pop);
+        box-shadow: var(--shadow-strong);
         display: none;
         z-index: 40;
       }
@@ -4226,7 +4290,7 @@
         opacity: 0;
         transform: translateY(8px);
         transition: 0.18s;
-        box-shadow: var(--shadow-pop);
+        box-shadow: var(--shadow-strong);
       }
       .toast.show {
         opacity: 1;
@@ -4258,7 +4322,7 @@
         background: var(--surface);
         border: 1px solid var(--border);
         border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-pop);
+        box-shadow: var(--shadow-strong);
         overflow: hidden;
       }
       .cmd-box input {
@@ -5343,6 +5407,9 @@
           grid-template-columns: 1fr;
           grid-template-areas: "decide" "watch" "today";
           gap: 20px;
+        }
+        .today-grid.two {
+          grid-template-areas: "decide" "watch";
         }
         .lib-controls {
           gap: 10px;
@@ -7355,10 +7422,10 @@
               if (conflict) signals += `<span class="wp-tag">Conflit</span>`;
               if (!signals)
                 signals = `<span class="wp-quiet">${count ? "Sous contrôle" : "—"}</span>`;
-              return `<button class="wp-day ${isToday ? "today" : ""}" onclick="focusPlanningDay('${day}')" aria-label="${label}, ${count} intervention${count > 1 ? "s" : ""}"><span class="wp-label">${label}${isToday ? `<span class="wp-today-tag">Auj.</span>` : ""}</span><span class="wp-count"><b>${count}</b>${count > 1 ? "interventions" : "intervention"}</span><span class="wp-signals">${signals}</span></button>`;
+              return `<button class="wp-day ${isToday ? "today" : ""}" onclick="openDayTasks('${day}')" aria-label="${label}, ${count} intervention${count > 1 ? "s" : ""}"><span class="wp-label">${label}${isToday ? `<span class="wp-today-tag">Auj.</span>` : ""}</span><span class="wp-count"><b>${count}</b>${count > 1 ? "interventions" : "intervention"}</span><span class="wp-signals">${signals}</span></button>`;
             })
             .join("");
-        return `<section class="week-preview"><div class="wp-head"><h2>Cette semaine</h2><span>Cliquez un jour pour l’ouvrir dans le planning</span></div><div class="wp-days">${cells}</div></section>`;
+        return `<section class="week-preview"><div class="wp-head"><h2>Cette semaine</h2><span>Cliquez un jour pour voir les interventions</span></div><div class="wp-days">${cells}</div></section>`;
       }
       function focusPlanningDay(day) {
         app.ui.planningProject = "all";
@@ -7371,6 +7438,34 @@
         save();
         renderPage();
         scrollTo(0, 0);
+      }
+      // Pop-up « journée » : toutes les tâches du jour + accès direct au planning.
+      function openDayTasks(day) {
+        let dt = date(day + "T12:00"),
+          cap = (s) => s.charAt(0).toUpperCase() + s.slice(1),
+          title = cap(
+            new Intl.DateTimeFormat("fr-FR", {
+              weekday: "long",
+              day: "numeric",
+              month: "long",
+            }).format(dt),
+          ),
+          tasks = app.tasks
+            .filter((t) => dayKey(t.start) <= day && dayKey(t.end) >= day)
+            .sort((a, b) => a.start.localeCompare(b.start)),
+          rows = tasks.length
+            ? tasks
+                .map(
+                  (t) =>
+                    `<button class="day-task" onclick="closeOverlay('modal');openTask('${t.id}')">${dot(taskTone(t))}<div class="day-task-body"><b>${esc(t.name)}</b><small>${esc(project(t.projectId).name)} · ${esc(resourceLabel(t.resourceId))} · ${fmtTime(t.start)}–${fmtTime(t.end)}</small></div>${pill(taskTone(t), STATUS[t.status])}</button>`,
+                )
+                .join("")
+            : `<p class="muted" style="padding:6px 2px">Aucune intervention ce jour.</p>`;
+        $("#modalContent").innerHTML =
+          `<h2>${title}</h2><p class="muted">${tasks.length} intervention${tasks.length > 1 ? "s" : ""}</p>` +
+          `<div class="day-tasks">${rows}</div>` +
+          `<div class="pop-actions"><button class="btn" onclick="closeOverlay('modal')">Fermer</button><button class="btn primary" onclick="closeOverlay('modal');focusPlanningDay('${day}')">Ouvrir le planning</button></div>`;
+        $("#modal").classList.add("open");
       }
       function pageToday() {
         let { decisions, actions, warnings } = getTodayWorkflow(),
@@ -7394,16 +7489,11 @@
             totalWarnings > warnings.length
               ? `<p class="multi-note">+ ${totalWarnings - warnings.length} autre point${s(totalWarnings - warnings.length)} sous surveillance</p>`
               : "";
-        if (calm)
-          return (
-            hero +
-            `<div class="today-calm"><section class="zone zone-today"><h2 class="zone-head today"><span class="zdot"></span>Aujourd’hui<em>${actions.length}</em></h2><div class="zone-body">${actions.map(workflowTaskRow).join("") || empty("Rien aujourd’hui", "Vos chantiers avancent normalement.")}</div></section><p class="calm-note">✓ Aucun point à décider ou à surveiller.</p></div>` +
-            weekPreview()
-          );
+        // Timeline de la semaine en tête, puis deux colonnes : À décider / À surveiller.
         return (
           hero +
-          `<div class="today-grid"><section class="zone zone-decide"><h2 class="zone-head decide"><span class="zdot"></span>À décider<em>${decisions.length}</em></h2><div class="zone-body">${decisions.map(decisionCard).join("") || '<div class="zone-empty">✓ <b>Rien à décider</b><span>Tout est sous contrôle.</span></div>'}${decideMore}</div></section><section class="zone zone-today"><h2 class="zone-head today"><span class="zdot"></span>Aujourd’hui<em>${actions.length}</em></h2><div class="zone-body">${actions.map(workflowTaskRow).join("") || empty("Rien aujourd’hui", "Aucune action prévue.")}</div></section><section class="zone zone-watch"><h2 class="zone-head watch"><span class="zdot"></span>À surveiller<em>${warnings.length}</em></h2><div class="zone-body">${warnings.map(watchCard).join("") || '<div class="zone-empty">✓ <b>Rien à surveiller</b><span>Tout est confirmé.</span></div>'}${watchMore}</div></section></div>` +
-          weekPreview()
+          weekPreview() +
+          `<div class="today-grid two"><section class="zone zone-decide"><h2 class="zone-head decide"><span class="zdot"></span>À décider<em>${decisions.length}</em></h2><div class="zone-body">${decisions.map(decisionCard).join("") || '<div class="zone-empty">✓ <b>Rien à décider</b><span>Tout est sous contrôle.</span></div>'}${decideMore}</div></section><section class="zone zone-watch"><h2 class="zone-head watch"><span class="zdot"></span>À surveiller<em>${warnings.length}</em></h2><div class="zone-body">${warnings.map(watchCard).join("") || '<div class="zone-empty">✓ <b>Rien à surveiller</b><span>Tout est confirmé.</span></div>'}${watchMore}</div></section></div>`
         );
       }
       function workflowTaskRow(t) {
@@ -11450,8 +11540,9 @@
                 ? "Pilotage"
                 : "Expert";
         if (!host) return;
-        $("#profileLevel").textContent = `${label} ⌄`;
-        host.innerHTML = `<div class="user-popover-head"><b>Eric Leduc</b><small>Conducteur de travaux</small></div><div class="user-popover-section"><span class="user-popover-label">VUE</span>${[
+        $("#profileLevel").innerHTML =
+          `Mode · ${label} <span class="profile-gear" aria-hidden="true">${icon("settings")}</span>`;
+        host.innerHTML = `<div class="user-popover-head"><b>Eric Leduc</b><small>Conducteur de travaux</small></div><div class="user-popover-section"><span class="user-popover-label">MODE</span>${[
           ["essential", "Essentiel", "Comprendre et agir"],
           ["pilot", "Pilotage", "Organiser et arbitrer"],
           ["expert", "Expert", "Analyser en profondeur"],
