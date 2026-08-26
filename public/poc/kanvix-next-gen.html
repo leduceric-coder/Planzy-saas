@@ -51,10 +51,10 @@
         /* Shadows */
         --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04),
           0 2px 6px rgba(15, 23, 42, 0.04);
-        --shadow: 0 8px 22px rgba(20, 32, 55, 0.1),
-          0 1px 3px rgba(20, 32, 55, 0.09), 0 0 1px rgba(20, 32, 55, 0.015);
-        --shadow-hover: 0 14px 34px rgba(20, 32, 55, 0.14),
-          0 2px 6px rgba(20, 32, 55, 0.1);
+        --shadow: 0 10px 26px rgba(20, 32, 55, 0.14),
+          0 2px 6px rgba(20, 32, 55, 0.1), 0 0 1px rgba(20, 32, 55, 0.04);
+        --shadow-hover: 0 18px 40px rgba(20, 32, 55, 0.18),
+          0 3px 8px rgba(20, 32, 55, 0.12);
         --shadow-strong: 0 24px 65px rgba(17, 31, 58, 0.18),
           0 4px 18px rgba(17, 31, 58, 0.08);
         /* Radius */
@@ -659,6 +659,9 @@
       .section {
         margin-top: 24px;
       }
+      .section:first-child {
+        margin-top: 0;
+      }
       .section-title {
         font-size: 11px;
         letter-spacing: 0.09em;
@@ -666,6 +669,27 @@
         color: var(--text-tertiary);
         font-weight: 700;
         margin: 0 0 10px;
+      }
+      /* Cockpit chantier : chaque item d'onglet dans une vignette, alignement
+         constant d'un onglet à l'autre (Aujourd'hui / À venir / Équipe / Historique) */
+      #projectContent .row {
+        background: var(--surface);
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow);
+        padding: 14px 16px;
+        margin-bottom: 10px;
+      }
+      #projectContent .row,
+      #projectContent .row:first-child {
+        border-top: 1px solid var(--border-light);
+      }
+      #projectContent .row:hover {
+        background: var(--surface);
+        border-color: var(--accent);
+      }
+      #projectContent .row:last-child {
+        margin-bottom: 0;
       }
       .empty {
         padding: 16px 0;
@@ -747,7 +771,7 @@
       .today-grid.two {
         grid-template-columns: 1fr 1fr;
         grid-template-areas: "decide watch";
-        margin-top: 4px;
+        margin-top: 28px;
       }
       .today-grid.two .zone-watch {
         margin-top: 0;
@@ -834,22 +858,22 @@
       .zone-head.watch em {
         color: var(--warning-ink);
       }
-      /* décider + aujourd'hui = surfaces présentes */
+      /* décider + à surveiller = mêmes vignettes (cartes présentes) */
       .zone-decide .zone-body,
-      .zone-today .zone-body {
+      .zone-today .zone-body,
+      .zone-watch .zone-body {
         background: var(--surface);
         border: 1px solid var(--border-light);
         border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-xs);
+        box-shadow: var(--shadow);
         padding: 2px 18px;
       }
-      /* décider = l'élément le plus fort : fine barre rouge à gauche */
+      /* décider = fine barre rouge à gauche ; surveiller = barre orange */
       .zone-decide .zone-body {
         border-left: 3px solid var(--danger);
       }
-      /* à surveiller = beaucoup plus léger, pas de carte */
       .zone-watch .zone-body {
-        padding: 0;
+        border-left: 3px solid var(--warning);
       }
       .zone-empty {
         display: grid;
@@ -2866,6 +2890,46 @@
         color: var(--text);
       }
       .ai-nudge .link {
+        margin-left: auto;
+      }
+      /* Planning en mode Essentiel : invitation à passer en Pilotage */
+      .mode-hint {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        padding: 12px 16px;
+        margin: 0 0 14px;
+        border: 1px solid var(--accent-soft);
+        background: var(--accent-soft);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-xs);
+      }
+      .mode-hint svg {
+        width: 18px;
+        height: 18px;
+        flex: 0 0 18px;
+        fill: none;
+        stroke: var(--accent);
+        stroke-width: 1.7;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .mode-hint-copy {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+        min-width: 0;
+      }
+      .mode-hint-copy b {
+        color: var(--text);
+        font-size: 13.5px;
+      }
+      .mode-hint-copy span {
+        color: var(--text-secondary);
+        font-size: 12.5px;
+      }
+      .mode-hint .btn {
         margin-left: auto;
       }
 
@@ -9063,6 +9127,9 @@
           `<div class="planning-header"><div><h1>${title}</h1><p class="muted">${app.settings.level === "essential" ? "Qui fait quoi et quand ?" : expert ? "Analysez les dépendances et les conséquences." : "Organisez et arbitrez vos interventions."}</p></div>${readOnly ? "" : `<button class="btn primary" onclick="openTaskForm()">${icon("plus")} Tâche</button>`}</div>` +
           (readOnly ? `<p class="lock-note">${icon("lock")} Planning historique · lecture seule</p>` : "") +
           `<div class="planning-nav"><button class="btn" aria-label="Période précédente" onclick="shiftPlanning(-1)">←</button><button class="btn" onclick="planningToday()">Aujourd’hui</button><button class="btn" aria-label="Période suivante" onclick="shiftPlanning(1)">→</button><span class="period-label">${periodLabel}</span></div>` +
+          (!advanced && !readOnly
+            ? `<div class="mode-hint">${icon("assistant")}<div class="mode-hint-copy"><b>Vue simplifiée</b><span>Passez en mode Pilotage pour voir les dépendances, la baseline et arbitrer les conflits.</span></div><button class="btn small primary" onclick="setDepth('pilot')">Passer en Pilotage</button></div>`
+            : "") +
           (advanced
             ? `<div class="plan-toolbar">${seg}<div class="plan-filters">${filters}</div>${!expert ? toggle("Dépendances", app.settings.dependencies, "app.settings.dependencies=this.checked;save();renderPage();requestAnimationFrame(drawDeps)") : ""}</div>`
             : "") +
