@@ -9207,7 +9207,20 @@
             filter: (t) =>
               date(t.start) < date(d + "T18:00") &&
               date(t.end) > date(d + "T08:00"),
-            todayIndex: d === dayKey(TODAY) ? 10 : -1,
+            // Repère « maintenant » = créneau réel de la journée (temps réel),
+            // borné à la journée de travail (08h–18h) au lieu d'un 13h figé.
+            todayIndex:
+              d === dayKey(TODAY)
+                ? Math.max(
+                    0,
+                    Math.min(
+                      19,
+                      Math.floor(
+                        (getDemoNow() - date(d + "T08:00")) / (30 * 60000),
+                      ),
+                    ),
+                  )
+                : -1,
           };
         }
         if (app.settings.period === "month") {
@@ -9493,7 +9506,12 @@
             app.settings.period === "week"
               ? weekRangeLabel(s)
               : app.settings.period === "day"
-                ? fmtDay(s.start)
+                ? new Intl.DateTimeFormat("fr-FR", {
+                    weekday: "long",
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  }).format(date(s.start))
                 : new Intl.DateTimeFormat("fr-FR", {
                     month: "long",
                     year: "numeric",
@@ -9564,7 +9582,13 @@
                 ? 180
                 : 210,
           cell = (wrap.scrollWidth - taskCol) / s.labels.length;
-        wrap.scrollLeft = Math.max(0, cell * Math.max(0, s.todayIndex - 0.5));
+        // Vue Jour : caler sur le début de la journée de travail (08h) pour que
+        // TOUTES les interventions du jour soient visibles à l'ouverture.
+        // Semaine / Mois : centrer sur la période « aujourd'hui ».
+        wrap.scrollLeft =
+          app.settings.period === "day"
+            ? 0
+            : Math.max(0, cell * Math.max(0, s.todayIndex - 0.5));
         app.ui.planningNeedsCenter = false;
         save();
         if (wrap.scrollWidth > wrap.clientWidth && !app.ui.planningUserScrolled)
