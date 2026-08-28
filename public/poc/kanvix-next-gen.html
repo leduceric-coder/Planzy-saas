@@ -5743,8 +5743,11 @@
           height: 150px;
         }
         .chips {
-          margin: 0 -18px 16px;
-          padding: 0 18px;
+          /* Doit correspondre exactement au padding horizontal mobile de
+             .main (16px) pour que la bande défilante affleure les bords
+             sans déborder du viewport. */
+          margin: 0 -16px 16px;
+          padding: 0 16px;
           flex-wrap: nowrap;
           overflow-x: auto;
         }
@@ -5869,12 +5872,6 @@
         }
         .artisan-body .main {
           max-width: none;
-        }
-        .artisan-body .page {
-          display: none !important;
-        }
-        .artisan-body #artisan {
-          display: block !important;
         }
       }
       @media (prefers-reduced-motion: reduce) {
