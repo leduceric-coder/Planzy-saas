@@ -8,8 +8,10 @@
     />
     <link rel="icon" href="data:" />
     <title>Kanvix — Piloter simplement</title>
-    <!-- PWA : installable en plein écran, s'ancre sur l'horloge de l'appareil -->
-    <link rel="manifest" href="kanvix.webmanifest" />
+    <!-- PWA : installable en plein écran, s'ancre sur l'horloge de l'appareil.
+         Le manifeste n'est référencé que servi en http/https (voir le script
+         d'amorçage) : en ouverture locale file://, le charger déclencherait une
+         erreur CORS inutile — le POC reste un fichier autonome. -->
     <meta name="application-name" content="Kanvix" />
     <meta name="apple-mobile-web-app-title" content="Kanvix" />
     <meta name="mobile-web-app-capable" content="yes" />
@@ -5186,32 +5188,67 @@
         }
       }
 
-      /* ---------------- Artisan (mobile messaging) ---------------- */
-      /* Sidebar toujours masquée en mode artisan (aucune navigation libre) :
-         la seule sortie possible est le bandeau de retour (artisanAwayBanner). */
+      /* ---------------- Artisan (usage smartphone) ---------------- */
+      /* Le mode Artisan est un usage smartphone EXCLUSIF. Sur desktop, on
+         simule donc un cadre « téléphone » (460px) centré — pour la
+         conversation ET toute page conducteur atteinte depuis elle (Documents…).
+         Sidebar masquée : la seule sortie est le bandeau de retour. */
       .artisan-body .sidebar,
       .artisan-body .add {
         display: none;
       }
       .artisan-body .shell {
         display: block;
-      }
-      /* Mise en page mobile étroite : réservée à la conversation elle-même.
-         Une page conducteur consultée depuis celle-ci (ex. Documents) garde
-         sa mise en page normale — sinon ses contrôles (recherche, grille de
-         cartes…) restent calés sur une largeur desktop et débordent. */
-      .artisan-body.artisan-page .shell {
         background: var(--surface-subtle);
       }
-      .artisan-body.artisan-page .main {
+      .artisan-body .main {
         max-width: 460px;
-        padding: 0;
         min-height: 100vh;
+        padding: 0;
         background: var(--surface);
         box-shadow: 0 0 0 1px var(--border-light);
       }
+      /* Conversation = chat plein cadre (padding 0). Une page conducteur
+         consultée depuis la conversation reçoit un padding « mobile ». */
+      .artisan-body:not(.artisan-page) .page {
+        padding: 18px 16px 84px;
+      }
+      /* Le cadre 460px est plus étroit que le point de rupture mobile (720px),
+         mais les media queries se basent sur le VIEWPORT réel — sur desktop
+         elles ne s'appliquent donc pas. On force ici la mise en page mobile à
+         l'intérieur du cadre artisan, quelle que soit la largeur du navigateur,
+         pour que les pages (Documents…) respectent le format smartphone. */
+      .artisan-body .header {
+        flex-direction: column;
+        gap: 8px;
+      }
+      .artisan-body .context {
+        text-align: left;
+      }
+      .artisan-body .lib-controls {
+        gap: 10px;
+      }
+      .artisan-body .search-field {
+        min-width: 100%;
+      }
+      .artisan-body .scope-select {
+        flex: 1;
+        min-width: 0;
+      }
+      .artisan-body .card-grid,
+      .artisan-body .photos {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+      .artisan-body .chips {
+        margin: 0 -16px 16px;
+        padding: 0 16px;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+      }
       /* Bandeau de retour quand l'artisan consulte une page conducteur
-         (ex. Documents du chantier) — seul chemin de retour, sidebar masquée. */
+         (ex. Documents du chantier) — seul chemin de retour, sidebar masquée.
+         Pleine largeur du cadre (le padding vit sur .page, pas sur .main). */
       .artisan-away-bar {
         position: sticky;
         top: 0;
@@ -12401,19 +12438,28 @@
         },
       );
       render();
-      // PWA — enregistrement du service worker uniquement en contexte sécurisé
-      // (https / localhost). Sans effet en file:// : le POC reste utilisable.
-      if (
-        "serviceWorker" in navigator &&
-        (location.protocol === "https:" || location.hostname === "localhost")
-      ) {
-        window.addEventListener("load", () => {
-          navigator.serviceWorker
-            .register("kanvix-sw.js")
-            .catch(() => {
-              /* hors-ligne indisponible : sans impact sur l'app */
-            });
-        });
+      // PWA — manifeste + service worker uniquement quand le POC est SERVI
+      // (http/https). En ouverture locale (file://), on ne les charge pas :
+      // le navigateur refuserait le manifeste (origine « null » = CORS) et le
+      // POC doit rester un fichier HTML autonome, console propre.
+      if (location.protocol === "http:" || location.protocol === "https:") {
+        let mf = document.createElement("link");
+        mf.rel = "manifest";
+        mf.href = "kanvix.webmanifest";
+        document.head.appendChild(mf);
+        if (
+          "serviceWorker" in navigator &&
+          (location.protocol === "https:" ||
+            location.hostname === "localhost")
+        ) {
+          window.addEventListener("load", () => {
+            navigator.serviceWorker
+              .register("kanvix-sw.js")
+              .catch(() => {
+                /* hors-ligne indisponible : sans impact sur l'app */
+              });
+          });
+        }
       }
     </script>
   </body>
