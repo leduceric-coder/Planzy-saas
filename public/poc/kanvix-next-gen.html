@@ -1022,7 +1022,7 @@
         background: var(--warning);
       }
       .zone-head em {
-        margin-left: auto;
+        margin-left: 2px;
         font-style: normal;
         font-size: 12px;
         font-weight: 700;
@@ -5187,20 +5187,41 @@
       }
 
       /* ---------------- Artisan (mobile messaging) ---------------- */
+      /* Sidebar toujours masquée en mode artisan (aucune navigation libre) :
+         la seule sortie possible est le bandeau de retour (artisanAwayBanner). */
       .artisan-body .sidebar,
       .artisan-body .add {
         display: none;
       }
       .artisan-body .shell {
         display: block;
+      }
+      /* Mise en page mobile étroite : réservée à la conversation elle-même.
+         Une page conducteur consultée depuis celle-ci (ex. Documents) garde
+         sa mise en page normale — sinon ses contrôles (recherche, grille de
+         cartes…) restent calés sur une largeur desktop et débordent. */
+      .artisan-body.artisan-page .shell {
         background: var(--surface-subtle);
       }
-      .artisan-body .main {
+      .artisan-body.artisan-page .main {
         max-width: 460px;
         padding: 0;
         min-height: 100vh;
         background: var(--surface);
         box-shadow: 0 0 0 1px var(--border-light);
+      }
+      /* Bandeau de retour quand l'artisan consulte une page conducteur
+         (ex. Documents du chantier) — seul chemin de retour, sidebar masquée. */
+      .artisan-away-bar {
+        position: sticky;
+        top: 0;
+        z-index: 8;
+        padding: 12px 16px;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border-light);
+      }
+      .artisan-away-bar .link {
+        font-size: 13px;
       }
       .chat {
         display: flex;
@@ -7374,7 +7395,7 @@
           )
           .slice(0, 3);
       }
-      function getTodayWarnings() {
+      function getTodayWarnings(limit = 3) {
         return app.issues
           .filter(
             (i) =>
@@ -7385,14 +7406,14 @@
           // Les signaux terrain (démarrage, incident) remontent en tête :
           // c'est ce que le conducteur doit surveiller en priorité.
           .sort((a, b) => (b.source === "field") - (a.source === "field"))
-          .slice(0, 3);
+          .slice(0, limit);
       }
-      function getTodayDecisions() {
+      function getTodayDecisions(limit = 2) {
         return app.decisions
           .filter((d) => d.status === "required")
           .map((d) => issue(d.issueId))
           .filter((i) => i && i.status === "open" && isProjectActive(i.projectId))
-          .slice(0, 2);
+          .slice(0, limit);
       }
       function priorityScore(item) {
         if (item.severity === "critical") return 100;
@@ -7793,9 +7814,6 @@
         return [a, b];
       }
       // COMPONENTS
-      function taskRow(t) {
-        return `<div class="row" onclick="openTask('${t.id}')">${dot(taskTone(t))}<div><h3>${t.name}</h3><p>${project(t.projectId).name} · ${resourceLabel(t.resourceId)}</p><p>${fmtRange(t)}</p></div>${pill(taskTone(t), STATUS[t.status])}</div>`;
-      }
       function projectStatus(id) {
         let h = getProjectHealth(id),
           delay = calculateProjectDelay(id);
@@ -7876,7 +7894,7 @@
               return `<button class="wp-day ${isToday ? "today" : ""}" onclick="openDayTasks('${day}')" aria-label="${label}, ${count} intervention${count > 1 ? "s" : ""}"><span class="wp-label">${label}${isToday ? `<span class="wp-today-tag">Auj.</span>` : ""}</span><span class="wp-count"><b>${count}</b>${count > 1 ? "interventions" : "intervention"}</span><span class="wp-signals">${signals}</span></button>`;
             })
             .join("");
-        return `<section class="week-preview"><div class="wp-head"><h2>Cette semaine</h2><span>Cliquez un jour pour voir les interventions</span></div><div class="wp-days">${cells}</div></section>`;
+        return `<section class="week-preview"><div class="wp-head"><h2>Les tâches de la semaine</h2><span>Cliquez un jour pour voir les interventions</span></div><div class="wp-days">${cells}</div></section>`;
       }
       function focusPlanningDay(day) {
         app.ui.planningProject = "all";
@@ -7918,27 +7936,43 @@
           `<div class="pop-actions"><button class="btn" onclick="closeOverlay('modal')">Fermer</button><button class="btn primary" onclick="closeOverlay('modal');focusPlanningDay('${day}')">Ouvrir le planning</button></div>`;
         $("#modal").classList.add("open");
       }
+      // Pop-up listant les décisions/surveillances au-delà des 2-3 vignettes
+      // affichées — accès direct au « + N autre » des colonnes Aujourd'hui.
+      function openMoreIssues(kind) {
+        let all =
+            kind === "decide" ? getTodayDecisions(Infinity) : getTodayWarnings(Infinity),
+          title = kind === "decide" ? "Décisions à traiter" : "Points à surveiller",
+          rows = all.length
+            ? all
+                .map(
+                  (i) =>
+                    `<button class="day-task" onclick="closeOverlay('modal');${kind === "decide" ? `openDecision('${i.id}')` : `openIssue('${i.id}')`}">${dot(i.severity === "critical" ? "danger" : "warning")}<div class="day-task-body"><b>${esc(i.title)}</b><small>${esc(project(i.projectId).name)}${i.comment ? " · " + esc(i.comment) : ""}</small></div></button>`,
+                )
+                .join("")
+            : `<p class="muted" style="padding:6px 2px">Rien à afficher.</p>`;
+        $("#modalContent").innerHTML =
+          `<h2>${title}</h2><p class="muted">${all.length} au total</p>` +
+          `<div class="day-tasks">${rows}</div>` +
+          `<div class="pop-actions"><button class="btn" onclick="closeOverlay('modal')">Fermer</button></div>`;
+        $("#modal").classList.add("open");
+      }
       function pageToday() {
         let { decisions, actions, warnings } = getTodayWorkflow(),
           calm = !decisions.length && !warnings.length,
-          totalDecisions = app.decisions
-            .filter((d) => d.status === "required")
-            .map((d) => issue(d.issueId))
-            .filter((i) => i && i.status === "open").length,
-          totalWarnings = app.issues.filter(
-            (i) =>
-              i.status === "watching" ||
-              (i.source === "field" && i.status === "open"),
-          ).length,
+          // Même source que les vignettes affichées (getTodayDecisions/Warnings,
+          // non tronquées) : le total du « + N autre » correspond exactement à
+          // ce que le pop-up de détail va lister.
+          totalDecisions = getTodayDecisions(Infinity).length,
+          totalWarnings = getTodayWarnings(Infinity).length,
           s = (n) => (n > 1 ? "s" : ""),
           hero = `<header class="today-hero"><h1>${calm ? "Tout est calme aujourd’hui." : "Bonjour Eric 👋"}</h1><p>${calm ? `${actions.length} action${s(actions.length)} prévue${s(actions.length)} · aucun point bloquant` : `${decisions.length} décision${s(decisions.length)} · ${actions.length} action${s(actions.length)} · ${warnings.length} surveillance${s(warnings.length)}`}</p></header>`,
           decideMore =
             totalDecisions > decisions.length
-              ? `<p class="multi-note">+ ${totalDecisions - decisions.length} autre décision${s(totalDecisions - decisions.length)} à traiter</p>`
+              ? `<button class="link multi-note" onclick="openMoreIssues('decide')">+ ${totalDecisions - decisions.length} autre décision${s(totalDecisions - decisions.length)} à traiter</button>`
               : "",
           watchMore =
             totalWarnings > warnings.length
-              ? `<p class="multi-note">+ ${totalWarnings - warnings.length} autre point${s(totalWarnings - warnings.length)} sous surveillance</p>`
+              ? `<button class="link multi-note" onclick="openMoreIssues('watch')">+ ${totalWarnings - warnings.length} autre point${s(totalWarnings - warnings.length)} sous surveillance</button>`
               : "";
         // Timeline de la semaine en tête, puis deux colonnes : À décider / À surveiller.
         return (
@@ -8942,12 +8976,114 @@
           "Enregistrer",
         );
       }
+      // Timeline horizontale de la journée (08h–18h) pour un chantier : les
+      // interventions du jour sont dispatchées de gauche à droite dans le
+      // temps, plutôt qu'empilées en liste — reprend le langage visuel du
+      // Gantt (mêmes classes .gantt/.g-row/.g-bar), sans toucher à l'état
+      // global du Planning (period/anchor), pour rester un simple aperçu.
       function projectToday(id) {
         let d = dayKey(TODAY),
-          ts = getProjectTasks(id).filter(
-            (t) => dayKey(t.start) <= d && dayKey(t.end) >= d,
+          tasks = getProjectTasks(id)
+            .filter((t) => dayKey(t.start) <= d && dayKey(t.end) >= d)
+            .sort((a, b) => a.start.localeCompare(b.start));
+        if (!tasks.length)
+          return `<section class="section">${empty("Rien aujourd’hui", "Le prochain jalon est sous contrôle.")}</section>`;
+        let dayStart = d + "T08:00",
+          dayEnd = d + "T18:00",
+          cols = 20,
+          labels = Array.from({ length: cols }, (_, i) =>
+            i % 2 === 0 ? `${8 + i / 2}h` : "·",
+          ),
+          nowIndex = Math.max(
+            0,
+            Math.min(
+              cols - 1,
+              Math.floor((getDemoNow() - date(dayStart)) / (30 * 60000)),
+            ),
+          ),
+          rows = tasks
+            .map((t) => {
+              let start = Math.max(+date(t.start), +date(dayStart)),
+                end = Math.min(+date(t.end), +date(dayEnd));
+              if (end <= start) return "";
+              let index = Math.floor(
+                  (start - date(dayStart)) / (30 * 60000),
+                ),
+                span = Math.max(1, (end - start) / (30 * 60000));
+              return `<div class="g-row" id="row-${t.id}"><div class="g-label"><b>${esc(t.name)}</b><small>${esc(resourceLabel(t.resourceId))}</small></div>${labels
+                .map(
+                  (_, i) =>
+                    `<div class="g-slot ${i === nowIndex ? "today-cell" : ""}">${i === index ? `<div class="g-bar ${taskTone(t)} ${t.status} ${taskColorClass(t)}" onclick="openTask('${t.id}')" title="${esc(t.name)} · ${esc(resourceLabel(t.resourceId))} · ${fmtRange(t)}" style="width:${Math.min(cols - i, span) * 100}%">${esc(t.name)}</div>` : ""}</div>`,
+                )
+                .join("")}</div>`;
+            })
+            .join("");
+        return `<section class="section"><div class="gantt-wrap"><div class="gantt" style="--cols:${cols}"><div class="g-head"><div><b>Tâche</b></div>${labels
+          .map(
+            (x, i) =>
+              `<div class="${i === nowIndex ? "today-cell" : ""}">${i === nowIndex ? "<small>MAINTENANT</small>" : ""}${x}</div>`,
+          )
+          .join("")}</div>${rows}</div></div></section>`;
+      }
+      // Timeline horizontale des 7 prochains jours pour un chantier : les
+      // colonnes sont les jours de la semaine, les tâches dispatchées de
+      // gauche à droite selon leur date — même logique visuelle que ci-dessus.
+      function projectUpcomingTimeline(id) {
+        let allUpcoming = getUpcomingTasks(id);
+        if (!allUpcoming.length)
+          return empty(
+            "Rien de prévu",
+            "Aucune intervention à venir sur ce chantier.",
           );
-        return `<section class="section">${ts.map(taskRow).join("") || empty("Rien aujourd’hui", "Le prochain jalon est sous contrôle.")}</section>`;
+        let winStart = getTomorrow(),
+          days = Array.from({ length: 7 }, (_, i) => shiftDateStr(winStart, i)),
+          windowStartMs = +date(days[0] + "T00:00"),
+          windowEndMs = +date(shiftDateStr(days[6], 1) + "T00:00"),
+          tasks = allUpcoming
+            .filter(
+              (t) =>
+                +date(t.end) > windowStartMs && +date(t.start) < windowEndMs,
+            )
+            .sort((a, b) => a.start.localeCompare(b.start)),
+          overflow = allUpcoming.length - tasks.length,
+          cols = days.length,
+          cap = (s) => s.charAt(0).toUpperCase() + s.slice(1),
+          isWeekend = (dstr) => [0, 6].includes(date(dstr + "T12:00").getDay()),
+          labels = days.map(
+            (dstr) =>
+              `${cap(new Intl.DateTimeFormat("fr-FR", { weekday: "short" }).format(date(dstr + "T12:00"))).replace(".", "")} ${date(dstr + "T12:00").getDate()}`,
+          ),
+          rows = tasks
+            .map((t) => {
+              let startMs = Math.max(+date(t.start), windowStartMs),
+                endMs = Math.min(+date(t.end), windowEndMs),
+                index = Math.min(
+                  cols - 1,
+                  Math.floor((startMs - windowStartMs) / DAY),
+                ),
+                span = Math.max(1, (endMs - startMs) / DAY);
+              return `<div class="g-row" id="row-${t.id}"><div class="g-label"><b>${esc(t.name)}</b><small>${esc(resourceLabel(t.resourceId))}</small></div>${days
+                .map(
+                  (dstr, i) =>
+                    `<div class="g-slot ${isWeekend(dstr) ? "weekend" : ""}">${i === index ? `<div class="g-bar ${taskTone(t)} ${t.status} ${taskColorClass(t)}" onclick="openTask('${t.id}')" title="${esc(t.name)} · ${esc(resourceLabel(t.resourceId))} · ${fmtRange(t)}" style="width:${Math.min(cols - i, span) * 100}%">${esc(t.name)}</div>` : ""}</div>`,
+                )
+                .join("")}</div>`;
+            })
+            .join("");
+        return (
+          `<div class="gantt-wrap"><div class="gantt" style="--cols:${cols}"><div class="g-head"><div><b>Tâche</b></div>${labels
+            .map(
+              (x, i) =>
+                `<div class="${isWeekend(days[i]) ? "weekend" : ""}">${x}</div>`,
+            )
+            .join("")}</div>${
+            rows ||
+            `<div class="g-row"><div class="g-label muted">Rien sur les 7 prochains jours</div>${days.map(() => `<div class="g-slot"></div>`).join("")}</div>`
+          }</div></div>` +
+          (overflow > 0
+            ? `<p class="multi-note">+${overflow} intervention${overflow > 1 ? "s" : ""} plus tard · <button class="link" onclick="app.ui.planningProject='${id}';go('planning')">Voir le planning</button></p>`
+            : "")
+        );
       }
       // Documents / Photos rendus EN LIGNE dans la fiche chantier (zone contenu),
       // filtrés sur le chantier — la page globale reste accessible par ailleurs.
@@ -8958,28 +9094,9 @@
         return photosBody(id, false);
       }
       function projectTabContent(name, id) {
-        let ts = getUpcomingTasks(id),
-          tomorrow = getTomorrow(),
-          range = getCurrentWeekRange();
+        let ts = getUpcomingTasks(id);
         if (name === "À venir")
-          return [
-            ["Demain", ts.filter((t) => dayKey(t.start) === tomorrow)],
-            [
-              "Cette semaine",
-              ts.filter(
-                (t) =>
-                  date(t.start) >= date(range.start) &&
-                  date(t.start) < date(range.end) &&
-                  dayKey(t.start) !== tomorrow,
-              ),
-            ],
-            ["Ensuite", ts.filter((t) => date(t.start) >= date(range.end))],
-          ]
-            .map(
-              ([g, f]) =>
-                `<section class="section"><h2 class="section-title">${g}</h2>${f.map(taskRow).join("") || '<p class="muted">Aucune intervention</p>'}</section>`,
-            )
-            .join("");
+          return `<section class="section">${projectUpcomingTimeline(id)}</section>`;
         if (name === "Planning") {
           app.ui.planningProject = id;
           return `<button class="btn primary" onclick="go('planning')">Ouvrir le planning complet</button>${gantt(id)}`;
@@ -12135,7 +12252,22 @@
           2200,
         );
       }
+      // Mode artisan : les pages ouvertes depuis la conversation (ex. Documents)
+      // sont des pages CONDUCTEUR — la sidebar est masquée, donc sans ce bandeau
+      // l'artisan resterait bloqué sans aucun moyen de revenir à sa conversation.
+      function artisanAwayBanner() {
+        return app.settings.role === "artisan" && app.ui.page !== "artisan"
+          ? `<div class="artisan-away-bar"><button class="link" onclick="go('artisan')">← Revenir à ma journée</button></div>`
+          : "";
+      }
       function renderPage() {
+        // Distingue « conversation artisan » d'une page conducteur consultée
+        // depuis celle-ci (ex. Documents) : seule la 1ère doit avoir la mise
+        // en page mobile étroite — l'autre doit rester une page normale.
+        document.body.classList.toggle(
+          "artisan-page",
+          app.settings.role === "artisan" && app.ui.page === "artisan",
+        );
         let f =
           {
             today: pageToday,
@@ -12152,6 +12284,7 @@
           }[app.ui.page] || pageToday;
         $("#main").innerHTML =
           simulationBanner() +
+          artisanAwayBanner() +
           `<section class="page active" id="${app.ui.page}">${f()}</section>`;
         nav();
         requestAnimationFrame(drawDeps);
