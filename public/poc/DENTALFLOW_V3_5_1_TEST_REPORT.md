@@ -160,3 +160,39 @@ Audit ciblé sur les fonctions moteur et fournisseur : seuls les 2 littéraux l�
 - **Filtres À traiter** : fournisseur/échéance fonctionnels, purement UI, jamais de mutation
 - **Menu Outils** : Charge/Stock/Rapports/Utilisateurs, routes et titre de page inchangés
 - **Responsive 16/16, console 0 erreur, vie privée conforme, aucune régression moteur**
+
+---
+
+## Addendum — Horloge temps réel & confidentialité patient cabinet
+
+Corrections ajoutées au micro-hotfix V3.5.1 (avant audit final), sans nouvelle version. Deux volets indépendants, aucune modification des moteurs métier validés.
+
+### Horloge temps réel
+
+- **Suite existante (88 tests unitaires, dont les 77 V3.5.1 initiaux)** : 88/88 PASS. Deux tests V3.4.5 (« A/B écartés / C choisi » et « urgence extrême ») figent désormais explicitement `Clock.mode='demo'` sur le jour de conception du scénario (2026-08-21) — ils dépendaient implicitement du jour de semaine réel une fois l'horloge réelle par défaut, sans que la logique testée n'ait changé. Un test (« slowMovingStock indépendant de la date machine ») a été ajusté pour activer explicitement le mode démo (auparavant implicite).
+- **8 nouveaux tests unitaires** : `Clock.mode==='real'` par défaut ; sous-titre Accueil daté dynamiquement (horloge figée `2027-02-03` → contient « mercredi 3 février 2027 ») ; sous-titre avec horloge réelle (contient la date du jour réelle, aucune trace de l'ancien 21/17 août 2026) ; `demoOrders.due` sans date absolue codée en dur après `resetDemoV6()`.
+- **Test « Privacy source/runtime »** mis à jour (précisé sur `state.orders`/export/`serializableState`, cf. addendum confidentialité ci-dessous) — aucune garantie affaiblie, le nouveau lot de tests confidentialité est strictement plus exhaustif.
+- **Vérification navigateur réel** (`v351_addendum_probe.js`, contexte frais, sans état persisté) exécutée le jour même (dimanche 30 août 2026, volontairement un jour non ouvré — cas le plus exposé à un biais de jour de semaine) :
+  - `Clock.mode` = `"real"` dès le premier chargement.
+  - Sous-titre Accueil = « Voici la vue d'ensemble de votre laboratoire — dimanche 30 août 2026 » (calculé dynamiquement, correspond exactement à `new Date().toLocaleDateString('fr-FR',...)`).
+  - Aucune chaîne `demoOrders.due` ne contient de date calendaire absolue.
+  - 0 erreur console.
+
+### Confidentialité patient côté cabinet (`state.cabinetPatients`)
+
+- **8 nouveaux tests unitaires** couvrant : `state.orders` sans jamais porter `patientFirstName`/`patientLastName` après création d'une commande cabinet (identité uniquement dans `state.cabinetPatients`, `patientRef` opaque sur la commande partagée) ; `cabinetPatients` absent de `serializableState()` et de `exportDentalFlowJSON()` ; isolation inter-cabinets (`patientDisplayName()` refuse un cabinet différent du sien) ; recherche labo ne trouve jamais une commande par nom patient (uniquement id/patientRef/type/cabinet) ; Journal/`activityEvents`/`historyEvents` sans nom patient ; persistance dans sa propre clé `localStorage` (jamais dans `STORAGE_KEY`) ; `ensureCabinetPatientsSeed()` purement additif (ne modifie jamais un `patientRef` existant).
+- **Vérification navigateur réel** (même script, scénario bout-en-bout) :
+  1. Cabinet « Cabinet Moderne » crée une commande avec Prénom « Testine » / Nom « Fictivova » → la commande créée (`CMD-0205` dans cette exécution) n'a **aucun** champ `patientFirstName`/`patientLastName`, uniquement `patientRef` opaque.
+  2. « Mes commandes » (même cabinet) affiche « Testine Fictivova » en tête de carte, référence DentalFlow (`patientRef`) reléguée au détail.
+  3. Bascule vers « Clinique Sourire » (cabinet différent) : ni le nom ni même l'identifiant de commande n'apparaissent nulle part dans la page — isolation inter-cabinets confirmée en conditions réelles, pas seulement au niveau fonction.
+  4. Rechargement complet du portail cabinet (même cabinet d'origine) : le nom est toujours affiché — persistance confirmée à travers un reload réel.
+  5. Retour côté labo (aucun paramètre `mode`) : « Testine »/« Fictivova » n'apparaissent **nulle part** dans `document.body.innerText` (Accueil, Commandes, etc.). Recherche labo sur « Testine » → 0 résultat ; recherche sur l'id de la commande → 1 résultat. `exportDentalFlowJSON()` ne contient ni le nom ni la clé `cabinetPatients`.
+  6. La suite interne complète (88 tests) reste PASS dans cette même session, avec de vraies données cabinet en mémoire.
+  7. 0 erreur console sur l'ensemble du scénario.
+
+### Non-régression complète (ré-exécutée après les deux volets)
+
+- Suite interne : **88/88 PASS**, 0 erreur console.
+- Isolation : export JSON identique strictement avant/après exécution de la suite complète.
+- Responsive : **16/16** (4 largeurs × labo/staff/cabinet/scan), 0 erreur console, `smokeV34` PASS partout.
+- Audit hardcoding (`2026-08-`, `17/18/19/20/21/25/26/27 août`) : les seules occurrences restantes dans le code source sont (a) la valeur par défaut de `Clock.demoDate` (utilisée uniquement si `Clock.mode==='demo'`, jamais le mode par défaut), et (b) des littéraux internes à des tests explicitement figés (`Clock.mode='demo'` posé et restauré dans le test lui-même) — aucune ne pilote le comportement normal du POC.

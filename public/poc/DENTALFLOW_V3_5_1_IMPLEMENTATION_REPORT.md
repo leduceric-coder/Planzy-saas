@@ -125,3 +125,51 @@ Un bouton « Réinitialiser » discret apparaît uniquement si au moins un filtr
 | `dentalflow-next-poc-v3.5.1.html` | `renderStockSupply`, `todoCardHTML` (nouvelle signature), `renderSupplyTodoTab` (+ filtres), `renderJournalTab` (+ recherche/période/pagination), `renderDataWizard`/`closeWizard` (scroll-lock), `NAV_ITEMS.planning`/`NAV_ITEMS.stock` (libellés) | `StockEngine`, `DemandEngine`, `SupplierEngine` (`evaluateSupplierCandidate`, `chooseSupplier`), `ProposalEngine` (`computeNeeds`, `decideProposal`, `approveProposal`), `receivePurchaseOrder`, migration V5→V6, persistance, gestion fournisseurs (`submitSupplierForm`, `setSupplierActive`, `submitTariffForm`), accordéon Outils, architecture Import/Export |
 
 Aucune signature de fonction moteur publique n'a changé.
+
+---
+
+## Addendum — Horloge temps réel & confidentialité patient cabinet
+
+Ajouté au micro-hotfix V3.5.1 (avant audit final), sans nouvelle version de fichier. Deux volets indépendants ; architecture générale et moteurs métier validés non retouchés.
+
+### 8. Horloge — `mode:'real'` par défaut
+
+Le POC démontrait un décalage temporel embarrassant : `Clock` était figée sur `demoDate:new Date('2026-08-21T10:42:00')` en permanence (`mode:'demo'`), si bien qu'ouvrir le démonstrateur après cette date affichait des recommandations déjà expirées (« Commander au plus tard lun. 17 août »).
+
+```js
+const Clock={
+  mode:'real', // était 'demo'
+  demoDate:new Date('2026-08-21T10:42:00'), // conservé, mais utilisé uniquement si mode==='demo'
+  now(){return this.mode==='real'?new Date():new Date(this.demoDate)},
+  iso(){return this.now().toISOString()}
+};
+```
+
+Aucune autre ligne du moteur n'a changé : toutes les fonctions métier (`addLabWorkingDays`, `subLabWorkingDays`, `businessDaysBetween`, `isLabWorkingDay`, `lastSafeOrderAt`/`stockoutAt` via `reconcileProposals`) routaient déjà exclusivement par `Clock.now()`/`today()`/`Clock.iso()` — un audit complet (grep `Date.now()` dans le moteur, grep `2026-08-`/`17 août`/`21 août`/`25/26/27 août`) n'a trouvé aucun autre point de couplage à corriger dans le moteur lui-même. Le mode `'demo'` reste disponible et est désormais utilisé exclusivement par les tests qui ont besoin d'un « maintenant » déterministe (ils basculent `Clock.mode` explicitement puis le restaurent).
+
+**Données de seed** : `DEMO_ARTICLES`/`DEMO_SUPPLIERS`/`DEMO_ARTICLE_SUPPLIERS`, la `PurchaseOrder` de démo `CF-DEMO-EMX` (`ensureV34Model()`/`seedV6()`) et l'historique `seedAuditLog` (Journal) étaient déjà construits de façon relative (`addLabWorkingDays(today(),N)`, `daysAgo`) — rien à changer. Seul `demoOrders` (tableau legacy alimentant Accueil/Commandes/Production) portait des dates d'affichage absolues codées en dur sur 7 entrées (`due:'26 août 14:00'`, etc.) plus une dans `addUrgentZirconeOrder()` (`'mardi 25 août'`). Vérification faite que `o.due` est un **champ d'affichage pur** (`isDueToday`/`dueRank` ne font que du filtrage texte, aucune fonction moteur ne parse ce champ comme une date) : remplacées par du texte relatif intemporel (« Après-demain 14:00 », « Dans 3 jours 09:00 », « Il y a 2 jours 15:30 », « Hier 10:00 »…), correct quel que soit le jour d'ouverture du POC — semaine, mois ou année suivante.
+
+**Accueil** : sous-titre statique remplacé par une version datée dynamiquement :
+
+```js
+function homeDateLabel(){return Clock.now().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}
+// setPageMeta(..., `Voici la vue d'ensemble de votre laboratoire — ${homeDateLabel()}`)
+```
+
+### 9. Confidentialité patient côté cabinet — `state.cabinetPatients`
+
+Le formulaire « Nouvelle commande » du portail cabinet ne demandait aucune identité patient. Le mandat exige que le cabinet puisse saisir Prénom/Nom, **sans jamais** que `state.orders` (modèle partagé labo) ne porte cette identité — invariant `patientRef` opaque en vigueur depuis le tout premier hotfix privacy du projet (P0-A).
+
+Un store logiquement séparé a été ajouté, jamais lu côté labo :
+
+```js
+cabinetPatients:{} // sur state, ex: {'CMD-0205':{cabinet:'Cabinet Moderne',patientFirstName:'Marie',patientLastName:'Dupont'}}
+```
+
+- **Persistance dédiée**, volontairement hors de `STORAGE_KEY`/`serializableState()` : `CABINET_PATIENTS_KEY='dentalflow-cabinet-patients-v1'`, `saveCabinetPatients()`/`loadCabinetPatients()`. `serializableState()` — qui alimente à la fois `v34Save()` (persistance labo) et `exportDentalFlowJSON()` (export) — n'a **pas** été modifiée : `cabinetPatients` n'y apparaît jamais, donc ne fuit ni dans la persistance labo ni dans un export labo/business.
+- **Création de commande** (`createDentistOrder` → extrait en `createDentistOrderCore(data,files)`, testable sans rendu DOM) : génère `patientRef` via `generatePatientRef()` (inchangé, déjà opaque), pousse la commande partagée sans aucun champ d'identité, puis écrit séparément `state.cabinetPatients[id]={cabinet,patientFirstName,patientLastName}`. Le message auto-généré au labo reste `Nouvelle commande {type} — livraison souhaitée {due}` — jamais de nom.
+- **Formulaire cabinet** (`dentistNewHTML`) : ajout Prénom/Nom en tête de formulaire (avant Type/Teinte/Fichiers, conformément au mandat), note de réassurance : « Le nom du patient reste privé dans votre espace cabinet. Le laboratoire reçoit uniquement une référence anonyme. »
+- **Affichage cabinet** : `patientDisplayName(orderId,cabinet)` renvoie le nom uniquement si `cabinetPatients[orderId].cabinet===cabinet` (garde de défense en profondeur, en plus du filtrage déjà existant des commandes par cabinet). Liste « Mes commandes » (`dentistOrdersHTML`) affiche le nom en avant, `patientRef` relégué en sous-texte. Détail (`dentistDetailHTML`) affiche Patient / Commande / Type / Livraison estimée / État / **Référence DentalFlow** (renommé depuis « Référence patient »).
+- **Aucune surface labo modifiée** : par construction (le store n'est référencé que dans les fonctions du portail cabinet), Accueil/Commandes/Production/Messages/Charge/Stocks/Rapports/Recherche/fiches imprimées/`ActivityEvents` ne lisent jamais `cabinetPatients` — zéro risque de fuite structurel plutôt que zéro risque vérifié après coup.
+- **Démo existante** : `ensureCabinetPatientsSeed()` ajoute additivement trois noms fictifs (dont « Marie Dupont », l'exemple même du mandat) pour des commandes de démo existantes, sans jamais toucher leur `patientRef` ; purge les entrées orphelines après un `resetDemoV6()` qui régénère `state.orders`.
+- **Documentation explicite de la limite** (commentaire en tête du bloc CABINET PRIVACY) : séparation **logique uniquement** — runtime JS monolithique unique, pas d'isolation serveur réelle ; une architecture SaaS de production nécessiterait un stockage tenant-isolé et un contrôle d'accès côté backend.

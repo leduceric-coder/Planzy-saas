@@ -2605,15 +2605,22 @@ var qrcode = function() {
 /* ===================== CONFIG ===================== */
 const STORAGE_KEY='dentalflow-next-mockup-state-v4';
 const LEGACY_STORAGE_KEY='dentalflow-next-mockup-state-v3';
+/* Store cabinet privé (identité patient), volontairement séparé de STORAGE_KEY :
+   voir la section CABINET PRIVACY plus bas pour la justification complète. */
+const CABINET_PATIENTS_KEY='dentalflow-cabinet-patients-v1';
 const STAGE_PALETTE=['#2d6bff','#7c4dff','#f5a623','#e5477d','#00b8d4','#20b970','#ff6b35','#8e44ad','#16a085','#3949ab'];
 /* Labels par défaut du flux (seed uniquement). La source de vérité runtime est state.stageDefinitions. */
 const DEFAULT_STAGE_LABELS=['Réception','Design CAD','Usinage','Céramique','Contrôle qualité','Prêtes'];
 function defaultStageDefinitions(){return DEFAULT_STAGE_LABELS.map((label,i)=>({id:'STG-'+String(i+1).padStart(3,'0'),label,active:true,order:i+1}))}
 
 /* ===================== CLOCK ===================== */
-/* Horloge unique de l'application. Mode DEMO = date de référence figée ; REAL = new Date(). */
+/* Horloge unique de l'application. Mode REAL (par défaut) = new Date() —
+   le démonstrateur doit rester cohérent quel que soit le jour où il est
+   ouvert. Mode DEMO = date figée, réservé aux tests/fixtures qui ont besoin
+   d'un "maintenant" déterministe (ils basculent Clock.mode explicitement et
+   le restaurent ensuite) — jamais l'état par défaut d'un POC ouvert normalement. */
 const Clock={
-  mode:'demo',
+  mode:'real',
   demoDate:new Date('2026-08-21T10:42:00'),
   now(){return this.mode==='real'?new Date():new Date(this.demoDate)},
   iso(){return this.now().toISOString()}
@@ -2717,16 +2724,16 @@ const demoOrders=[
   {id:'CMD-0194',patientRef:'PAT-W8N5C6',type:'Couronne céramo-métallique',cabinet:'Dr. Lucas Dupont',status:'qc',station:'Contrôle qualité',due:"Aujourd’hui 17:30",tech:'Rachid',timeAtPost:22,avgTime:40},
   {id:'CMD-0195',patientRef:'PAT-D4F1H7',type:'Inlay / Onlay',cabinet:'Cabinet Moderne',status:'progress',station:'Usinage',due:'Demain 10:30',tech:'Hugo',timeAtPost:15,avgTime:35},
   {id:'CMD-0196',patientRef:'PAT-T9G3J5',type:'Couronne zircone',cabinet:'Dr. Morvan',status:'ready',station:'Prêtes',due:"Aujourd’hui 15:00",tech:'Système',timeAtPost:8,avgTime:30},
-  {id:'CMD-0197',patientRef:'PAT-B6V2K8',type:'Denture partielle',cabinet:'Clinique Sourire',status:'progress',station:'Design CAD',due:'26 août 14:00',tech:'Camille',timeAtPost:26,avgTime:70},
-  {id:'CMD-0198',patientRef:'PAT-M1S7R3',type:'Facette céramique',cabinet:'Cabinet Moderne',status:'progress',station:'Céramique',due:'26 août 09:00',tech:'Manon',timeAtPost:34,avgTime:50},
+  {id:'CMD-0197',patientRef:'PAT-B6V2K8',type:'Denture partielle',cabinet:'Clinique Sourire',status:'progress',station:'Design CAD',due:'Après-demain 14:00',tech:'Camille',timeAtPost:26,avgTime:70},
+  {id:'CMD-0198',patientRef:'PAT-M1S7R3',type:'Facette céramique',cabinet:'Cabinet Moderne',status:'progress',station:'Céramique',due:'Après-demain 09:00',tech:'Manon',timeAtPost:34,avgTime:50},
   {id:'CMD-0199',patientRef:'PAT-Z5X8L4',type:'Couronne zircone',cabinet:'Dr. Lucas Dupont',status:'progress',station:'Usinage',due:'Demain 13:00',tech:'Marc',timeAtPost:18,avgTime:45},
   {id:'CMD-0200',patientRef:'PAT-C3D9N2',type:'Bridge 3 éléments',cabinet:'Clinique Belle Dent',status:'ready',station:'Prêtes',due:"Aujourd’hui 16:30",tech:'Système',timeAtPost:6,avgTime:60},
-  {id:'CMD-0201',patientRef:'PAT-Q7T4B1',type:'Inlay / Onlay',cabinet:'Clinique Sourire',status:'progress',station:'Réception',due:'27 août 09:00',tech:'Antoine',timeAtPost:5,avgTime:35},
+  {id:'CMD-0201',patientRef:'PAT-Q7T4B1',type:'Inlay / Onlay',cabinet:'Clinique Sourire',status:'progress',station:'Réception',due:'Dans 3 jours 09:00',tech:'Antoine',timeAtPost:5,avgTime:35},
   /* Historique livré — alimente le filtre « Terminées », le donut et les rapports. */
-  {id:'CMD-0130',patientRef:'PAT-H2N7V4',type:'Couronne zircone',cabinet:'Dr. Morvan',productionState:'completed',due:'18 août 16:00',tech:'Système',timeAtPost:0,avgTime:30},
-  {id:'CMD-0131',patientRef:'PAT-X5R1M9',type:'Facette céramique',cabinet:'Cabinet Moderne',productionState:'completed',due:'19 août 11:00',tech:'Système',timeAtPost:0,avgTime:50},
-  {id:'CMD-0132',patientRef:'PAT-J8D3K6',type:'Bridge 3 éléments',cabinet:'Clinique Belle Dent',productionState:'completed',due:'19 août 15:30',tech:'Système',timeAtPost:0,avgTime:60},
-  {id:'CMD-0133',patientRef:'PAT-T4Y9B2',type:'Inlay / Onlay',cabinet:'Dr. Lucas Dupont',productionState:'completed',due:'20 août 10:00',tech:'Système',timeAtPost:0,avgTime:35}
+  {id:'CMD-0130',patientRef:'PAT-H2N7V4',type:'Couronne zircone',cabinet:'Dr. Morvan',productionState:'completed',due:'Il y a 3 jours 16:00',tech:'Système',timeAtPost:0,avgTime:30},
+  {id:'CMD-0131',patientRef:'PAT-X5R1M9',type:'Facette céramique',cabinet:'Cabinet Moderne',productionState:'completed',due:'Il y a 2 jours 11:00',tech:'Système',timeAtPost:0,avgTime:50},
+  {id:'CMD-0132',patientRef:'PAT-J8D3K6',type:'Bridge 3 éléments',cabinet:'Clinique Belle Dent',productionState:'completed',due:'Il y a 2 jours 15:30',tech:'Système',timeAtPost:0,avgTime:60},
+  {id:'CMD-0133',patientRef:'PAT-T4Y9B2',type:'Inlay / Onlay',cabinet:'Dr. Lucas Dupont',productionState:'completed',due:'Hier 10:00',tech:'Système',timeAtPost:0,avgTime:35}
 ];
 const seedMessages={
   'CMD-0143':[{from:'cabinet',text:'Pouvez-vous confirmer la livraison à midi ?',at:'10:02'},{from:'lab',text:'Oui, la commande est en Usinage. Je surveille le retard.',at:'10:12'},{from:'cabinet',text:'Merci, tenez-nous informés.',at:'10:20'}],
@@ -2736,7 +2743,11 @@ function normalizeMessages(messages){const normalized={};Object.entries(messages
 function unreadIncomingCount(orderId){return (state.messages[orderId]||[]).filter(m=>m.from==='cabinet'&&!m.readAt).length}
 function totalUnreadIncoming(){return Object.keys(state.messages||{}).reduce((sum,id)=>sum+unreadIncomingCount(id),0)}
 function markThreadRead(orderId){let changed=false;(state.messages[orderId]||[]).forEach(m=>{if(m.from==='cabinet'&&!m.readAt){m.readAt=Clock.iso();m.unread=false;changed=true}});if(changed)save();return changed}
-let state={view:'home',filter:'all',search:'',searchOpen:false,sortKey:null,sortDir:'asc',dentistCabinet:null,dentistView:'orders',dentistThread:null,dentistDeliv:0,dentistDetail:null,auditSearch:'',leaveRequests:[],staffUser:null,staffView:'scan',staffScanStation:'Réception',staffMonth:0,whatIfSims:[],whatIfInclude:[],quickOrderId:null,drawer:null,drawerTab:'overview',sidePanel:null,sidePanelOrderId:null,sidePanelUserId:null,selectedThreadId:null,messagesListOnly:true,productionChartMode:'entries',reportPeriod:'30d',auditPage:0,auditSortKey:'at',auditSortDir:'desc',auditType:'all',ordersPage:0,kpiBucket:null,calMode:'charge',chargeMonth:0,sidebarCollapsed:false,navOrder:null,theme:'system',stageDefinitions:null,orders:[],stock:[],users:[],absences:[],scanEvents:[],historyEvents:[],messages:{},documents:{},scanStation:'Réception',scanTechnician:'Marc'};
+let state={view:'home',filter:'all',search:'',searchOpen:false,sortKey:null,sortDir:'asc',dentistCabinet:null,dentistView:'orders',dentistThread:null,dentistDeliv:0,dentistDetail:null,auditSearch:'',leaveRequests:[],staffUser:null,staffView:'scan',staffScanStation:'Réception',staffMonth:0,whatIfSims:[],whatIfInclude:[],quickOrderId:null,drawer:null,drawerTab:'overview',sidePanel:null,sidePanelOrderId:null,sidePanelUserId:null,selectedThreadId:null,messagesListOnly:true,productionChartMode:'entries',reportPeriod:'30d',auditPage:0,auditSortKey:'at',auditSortDir:'desc',auditType:'all',ordersPage:0,kpiBucket:null,calMode:'charge',chargeMonth:0,sidebarCollapsed:false,navOrder:null,theme:'system',stageDefinitions:null,orders:[],stock:[],users:[],absences:[],scanEvents:[],historyEvents:[],messages:{},documents:{},scanStation:'Réception',scanTechnician:'Marc',
+  /* cabinetPatients : store cabinet privé, JAMAIS lu côté labo, jamais inclus
+     dans serializableState()/exportDentalFlowJSON() ni dans save() — voir
+     CABINET PRIVACY plus bas. Persisté séparément (CABINET_PATIENTS_KEY). */
+  cabinetPatients:{}};
 function clone(x){return JSON.parse(JSON.stringify(x))}
 function minutesAgo(m){return new Date(baseNow.getTime()-m*60000).toISOString()}
 function isoDay(n){const d=new Date(baseNow);d.setDate(d.getDate()+n);d.setHours(0,0,0,0);return d.toISOString().slice(0,10)}
@@ -2990,7 +3001,8 @@ function renderNav(){const nav=$('#side-nav');if(!nav)return;const open=!!state.
 function updateNav(){document.querySelectorAll('.side-item[data-view]').forEach(btn=>btn.classList.toggle('active',btn.dataset.view===state.view)); const msg=$('#nav-messages'); if(msg)msg.classList.toggle('active',state.sidePanel==='messages')}
 function alertItems(){return getAttentionOrders().map(o=>{const scan=lastScan(o);const [label]=statusInfo(o.status);const color=isOrderLate(o)?'red':isOrderBlocked(o)?'orange':'blue';const reason=isOrderLate(o)?'Retard':isOrderBlocked(o)?'Bloquée':isScanExpected(o)?'Scan attendu':'À livrer aujourd\x27hui';const detail=isOrderLate(o)?`Échéance ${h(o.due)}`:isOrderBlocked(o)?'Validation requise':scan?`Dernier scan ${fmtTime(scan.at)}`:'Scan attendu';const location=scan?`${h(scan.station)} · ${h(scan.tech)} · scan ${fmtTime(scan.at)}`:'Localisation non confirmée';return {id:o.id,color,label,title:o.id,reason,detail,location,order:o}})}
 function updateNotif(){const alerts=getAttentionOrders().length;const bell=$('#notif-count');if(bell){bell.textContent=alerts;bell.classList.toggle('is-hidden',alerts===0)}const side=$('#side-message-count');if(side){const unread=totalUnreadIncoming();side.textContent=unread;side.classList.toggle('is-hidden',unread===0)}const stk=$('#side-stock-count');if(stk){const crit=stockSummary().critical;stk.textContent=crit;stk.classList.toggle('is-hidden',crit===0)}const pl=$('#side-planning-count');if(pl){const n=(state.leaveRequests||[]).filter(r=>r.status==='pending').length;pl.textContent=n;pl.classList.toggle('is-hidden',n===0)}}
-function renderHome(){const greet=Clock.now().getHours()<18?'Bonjour':'Bonsoir';setPageMeta(`${greet} Eric 👋`,'Voici la vue d’ensemble de votre laboratoire'); const k=kpiCounts();const kpi=(c,ic,num,label,sub,bucket)=>`<article class="hkpi" style="--c:var(--${c});cursor:pointer" data-kpi="${bucket}" title="Voir les commandes concernées"><div class="hkpi-ico ${c}">${icon(ic)}</div><div class="hkpi-num">${num}</div><div class="hkpi-label">${label}</div><div class="hkpi-sub">${sub}</div></article>`; $('#view-root').innerHTML=`
+function homeDateLabel(){return Clock.now().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}
+function renderHome(){const greet=Clock.now().getHours()<18?'Bonjour':'Bonsoir';setPageMeta(`${greet} Eric 👋`,`Voici la vue d’ensemble de votre laboratoire — ${homeDateLabel()}`); const k=kpiCounts();const kpi=(c,ic,num,label,sub,bucket)=>`<article class="hkpi" style="--c:var(--${c});cursor:pointer" data-kpi="${bucket}" title="Voir les commandes concernées"><div class="hkpi-ico ${c}">${icon(ic)}</div><div class="hkpi-num">${num}</div><div class="hkpi-label">${label}</div><div class="hkpi-sub">${sub}</div></article>`; $('#view-root').innerHTML=`
   <section class="grid kpis home-kpis">${kpi('blue','bag',k.prod,'En production',`${k.prod} commande${k.prod>1?'s':''} active${k.prod>1?'s':''}`,'prod')}${kpi('green','clock',k.today,'À livrer aujourd’hui','Échéances du jour','today')}${kpi('red','warn',k.late,'En retard',k.late?'À traiter':'Aucun retard','late')}${kpi('orange','lock',k.blocked,'Bloquées',k.blocked?'Validation requise':'Aucun blocage','blocked')}</section>
   <section class="grid two-col"><article class="card section"><div class="section-head"><h2>À surveiller</h2><button class="link" data-panel="alerts">Tout voir (${getAttentionOrders().length})</button></div><div class="watch-list">${renderWatch()}</div></article><article class="card section"><div class="section-head"><h2>Flux de production</h2></div><div class="flow-list">${stages().map(st=>renderFlow(st)).join('')}</div></article></section>
   <section class="grid charts"><article class="card chart-card"><div class="section-head"><div><h2>Production — cette semaine vs semaine précédente</h2><div class="mini-sub">Commandes produites par jour</div></div><div class="chart-legend"><span class="lg"><i class="dot cur"></i>Cette semaine</span><span class="lg"><i class="dot prev"></i>Semaine préc.</span></div></div>${renderCompareBars()}</article><article class="card chart-card"><div class="section-head"><h2>Répartition des commandes</h2></div>${renderDonut()}</article></section>`}
@@ -3101,6 +3113,47 @@ function renderComposerFiles(inp){if(!inp)return;const box=inp.parentElement.que
 function printReport(){const period=reportPeriods[state.reportPeriod]||reportPeriods['30d'];const events=auditInPeriod(period.days);const scans=events.filter(e=>e.type==='Scan').length;const blocks=events.filter(e=>e.type==='Blocage'||/bloqu/i.test(e.detail)).length;const delivered=events.filter(e=>e.type==='Livraison').length;const onTime=events.filter(e=>e.type==='Livraison'&&/à temps/i.test(e.detail)).length;const rate=delivered?Math.round(onTime/delivered*100):0;const rows=auditRows();let area=document.getElementById('print-area');if(!area){area=document.createElement('div');area.id='print-area';document.body.appendChild(area)}area.innerHTML=`<div class="fiche"><div class="fiche-head"><div><div class="fiche-brand">DentalFlow</div><h1>Rapport d’activité</h1></div><div class="fiche-code">${h(period.label)}</div></div><div class="report-print-kpis"><div><b>${events.length}</b><span>Événements</span></div><div><b>${delivered}</b><span>Livrées${delivered?` · ${rate}% à temps`:''}</span></div><div><b>${blocks}</b><span>Blocages</span></div><div><b>${scans}</b><span>Scans</span></div></div><h2 class="report-print-h2">Journal d’audit — ${rows.length} entrée${rows.length>1?'s':''}${state.auditType&&state.auditType!=='all'?` · ${h(state.auditType)}`:''}${state.auditSearch?` · « ${h(state.auditSearch)} »`:''}</h2><table class="print-audit"><thead><tr><th>Date</th><th>Type</th><th>Commande</th><th>Acteur</th><th>Détail</th></tr></thead><tbody>${rows.map(e=>`<tr><td>${fmtAuditDate(e.at)}</td><td>${h(e.type)}</td><td>${h(e.orderId)}</td><td>${h(e.actor)}</td><td>${h(e.detail)}</td></tr>`).join('')}</tbody></table><div class="fiche-foot">Émis le ${new Date().toLocaleDateString('fr-FR')} · DentalFlow Next — POC</div></div>`;window.print()}
 function addMessage(id,text,files){if(!text&&!(files&&files.length))return;if(!state.messages[id])state.messages[id]=[];files=capThreadFiles(id,files);state.messages[id].push({from:'lab',text,at:Clock.now().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}),readAt:Clock.iso(),unread:false,files:files||[]});save();if(state.sidePanel==='messages')renderMessagesPanel();else render()}
 function createOrder(data){const id=generateOrderId();const o={id,patientRef:generatePatientRef(),type:data.type,cabinet:data.cabinet,status:'progress',due:data.due,tech:'',priority:data.priority||'Normale',timeAtPost:0,avgTime:45,noInitialScan:true};deriveOrderModel(o); state.orders.unshift(o); state.historyEvents.push({orderId:o.id,type:'Création',at:Clock.iso(),detail:'Commande créée'}); state.messages[o.id]=[]; save(); state.view='orders'; closeSidePanel(); showToast(`${o.id} créée`); render(); openQuickView(o.id)}
+/* ===================== CABINET PRIVACY ===================== */
+/* state.cabinetPatients — identité patient (prénom/nom), saisie uniquement
+   côté cabinet, séparée physiquement de state.orders (qui reste, comme
+   depuis le tout premier hotfix privacy du projet, limité au patientRef
+   opaque). Ce n'est PAS une isolation de sécurité côté serveur : ce POC est
+   un unique runtime JS monolithique, tout objet JS reste techniquement
+   accessible depuis la même page. La séparation ici est purement logique
+   (store distinct, jamais lu par le code labo, jamais inclus dans
+   serializableState()/exportDentalFlowJSON()/save() qui alimentent les
+   écrans et exports labo) — elle documente et fait respecter la frontière
+   patientRef, elle ne la fait pas respecter par un mécanisme d'accès
+   contrôlé réel. Une architecture SaaS de production devrait porter cette
+   frontière côté backend : stockage tenant-isolé (un cabinet ne peut
+   interroger que ses propres enregistrements), contrôle d'accès serveur,
+   audit — aucune de ces garanties n'existe dans ce mockup client-only. */
+function saveCabinetPatients(){try{localStorage.setItem(CABINET_PATIENTS_KEY,JSON.stringify(state.cabinetPatients||{}))}catch(e){}}
+function loadCabinetPatients(){try{const raw=localStorage.getItem(CABINET_PATIENTS_KEY);state.cabinetPatients=raw?JSON.parse(raw):{}}catch(e){state.cabinetPatients={}}}
+/* Nom affichable pour un orderId, réservé au cabinet propriétaire de la
+   commande : renvoie null si aucune identité connue OU si le cabinet
+   demandeur ne correspond pas à celui qui a créé la commande (isolation
+   inter-cabinets, §21/§33 du mandat). */
+function patientDisplayName(orderId,cabinet){
+  const p=state.cabinetPatients&&state.cabinetPatients[orderId];
+  if(!p||!cabinet||p.cabinet!==cabinet)return null;
+  const full=[p.patientFirstName,p.patientLastName].filter(Boolean).join(' ').trim();
+  return full||null;
+}
+/* Complète additivement quelques noms fictifs pour les commandes de démo
+   existantes (jamais de modification de leur patientRef) et purge les
+   entrées dont la commande n'existe plus (après un reset qui régénère
+   state.orders). Idempotent : sûr à appeler à chaque démarrage. */
+function ensureCabinetPatientsSeed(){
+  if(!state.cabinetPatients)state.cabinetPatients={};
+  Object.keys(state.cabinetPatients).forEach(id=>{if(!state.orders.some(o=>o.id===id))delete state.cabinetPatients[id]});
+  const demoNames={'CMD-0197':['Marie','Dupont'],'CMD-0198':['Julien','Petit'],'CMD-0201':['Camille','Bernard']};
+  Object.entries(demoNames).forEach(([id,pair])=>{
+    const o=state.orders.find(x=>x.id===id);
+    if(o&&!state.cabinetPatients[id])state.cabinetPatients[id]={cabinet:o.cabinet,patientFirstName:pair[0],patientLastName:pair[1]};
+  });
+  saveCabinetPatients();
+}
 /* ===== Espace cabinet (dentiste) ===== */
 function isDentistMode(){return new URLSearchParams(location.search).get('mode')==='dentist'}
 function fabricationLeadDays(type){return fabricationDays[type]||fabricationDays.default}
@@ -3115,15 +3168,44 @@ function proposedDeliveries(type){return getAvailableDeliveryDates(type)}
 const DENTIST_STEPS=[['received','Reçue'],['fab','Fabrication'],['control','Contrôle'],['ready','Prête'],['delivered','Livrée']];
 function getDentistFacingStatus(o){if(isOrderCompleted(o))return{key:'delivered',label:'Livrée',color:'green'};if(isOrderReady(o))return{key:'ready',label:'Prête',color:'green'};const c=getConfirmedStage(o.id);if(!c.confirmed)return{key:'received',label:'Reçue',color:'blue'};const label=c.label||'';if(/pr[êe]t/i.test(label))return{key:'ready',label:'Prête',color:'green'};if(/contr[ôo]le|qualit/i.test(label))return{key:'control',label:'Contrôle',color:'blue'};if(/r[ée]ception|arriv/i.test(label))return{key:'received',label:'Reçue',color:'blue'};return{key:'fab',label:'Fabrication en cours',color:'orange'}}
 function dentistStepIndex(key){const i=DENTIST_STEPS.findIndex(s=>s[0]===key);return i<0?0:i}
-function dentistOrdersHTML(orders){if(!orders.length)return '<section class="card section"><div class="empty">Aucune commande pour ce cabinet. Créez-en une via « Nouvelle commande ».</div></section>';return `<section class="card section"><div class="section-head"><h2>Mes commandes</h2><span class="muted">Cliquez une commande pour le suivi</span></div><div class="watch-list">${orders.map(o=>{const st=getDentistFacingStatus(o);return `<div class="watch-item" data-ddetail="${h(o.id)}" style="cursor:pointer;grid-template-columns:48px 1fr auto"><div class="alert-ico ${st.color}">${icon('tooth')}</div><div class="watch-main"><b>${h(o.id)}</b><span class="pill ${st.color}">${h(st.label)}</span><div class="watch-sub">${h(o.type)} · Réf. ${h(o.patientRef)}</div><div class="watch-meta">Livraison estimée ${h(o.due)}</div></div><div class="chev">›</div></div>`}).join('')}</div></section>`}
+function dentistOrdersHTML(orders){if(!orders.length)return '<section class="card section"><div class="empty">Aucune commande pour ce cabinet. Créez-en une via « Nouvelle commande ».</div></section>';return `<section class="card section"><div class="section-head"><h2>Mes commandes</h2><span class="muted">Cliquez une commande pour le suivi</span></div><div class="watch-list">${orders.map(o=>{const st=getDentistFacingStatus(o);const pname=patientDisplayName(o.id,o.cabinet);return `<div class="watch-item" data-ddetail="${h(o.id)}" style="cursor:pointer;grid-template-columns:48px 1fr auto"><div class="alert-ico ${st.color}">${icon('tooth')}</div><div class="watch-main"><b>${pname?h(pname):h(o.id)}</b><span class="pill ${st.color}">${h(st.label)}</span><div class="watch-sub">${h(o.type)}${pname?` · ${h(o.id)}`:` · Réf. ${h(o.patientRef)}`}</div><div class="watch-meta">Livraison estimée ${h(o.due)}</div></div><div class="chev">›</div></div>`}).join('')}</div></section>`}
 function dentistStepsHTML(o){const cur=dentistStepIndex(getDentistFacingStatus(o).key);return `<div class="steps" style="grid-template-columns:repeat(${DENTIST_STEPS.length},1fr)">${DENTIST_STEPS.map((s,i)=>{const cls=i<cur?'done':i===cur?'current':'';return `<div class="step ${cls}"><div class="step-dot">${i<cur?'✓':i+1}</div>${h(s[1])}</div>`}).join('')}</div>`}
-function dentistDetailHTML(o){const st=getDentistFacingStatus(o);return `<div class="pdetail-layer" id="pdetail"><div class="pdetail-card"><div class="quick-head"><div><h2>${h(o.id)} <span class="pill ${st.color}">${h(st.label)}</span></h2><div class="quick-sub">${h(o.type)} · Réf. ${h(o.patientRef)}</div></div><button class="quick-close" data-ddetail-close aria-label="Fermer">×</button></div><section class="quick-grid"><div class="mini-card"><div class="mini-label">Référence patient</div><div class="mini-value">${h(o.patientRef)}</div></div><div class="mini-card"><div class="mini-label">Livraison estimée</div><div class="mini-value">${h(o.due)}</div></div><div class="mini-card"><div class="mini-label">État</div><div class="mini-value">${h(st.label)}</div></div><div class="mini-card"><div class="mini-label">Type</div><div class="mini-value">${h(o.type)}</div></div></section><div class="progress" style="margin-top:18px"><h3>Suivi de fabrication</h3>${dentistStepsHTML(o)}</div><div class="order-qr"><div class="order-qr-code">${qrSvg(o.id)}</div><div class="order-qr-info"><div class="mini-label">QR commande ${h(o.id)}</div><div class="mini-sub">À joindre au dossier physique envoyé au laboratoire.</div><button class="ghost" data-print-fiche="${h(o.id)}" style="margin-top:8px">Imprimer la fiche</button></div></div><div class="quick-actions" style="grid-template-columns:1fr;margin-top:14px"><button class="big-primary" data-dthread="${h(o.id)}">Écrire au laboratoire</button></div></div></div>`}
-function dentistNewHTML(){const types=Object.keys(fabricationDays).filter(t=>t!=='default');const type=(state.dentistNewType&&types.includes(state.dentistNewType))?state.dentistNewType:types[0];const deliveries=proposedDeliveries(type);const sel=Math.min(state.dentistDeliv||0,deliveries.length-1);return `<section class="card section"><div class="section-head"><h2>Nouvelle commande</h2></div><form id="dentist-order-form" class="dnew-form"><div class="dnew-main"><div class="field"><label>Type de prothèse</label><select name="type" id="dentist-type">${types.map(t=>`<option${t===type?' selected':''}>${h(t)}</option>`).join('')}</select></div><div class="field"><label>Teinte / indications</label><input name="notes" placeholder="Teinte A3, contact mésial…" /></div><div class="field" style="margin-top:-2px"><span class="mini-sub">Une référence patient opaque est générée automatiquement. Aucune donnée nominative n’est transmise au laboratoire via ce POC.</span></div><div class="field"><label>Fichiers joints (empreintes, radios, photos…)</label><input type="file" name="orderfiles" id="dentist-order-files" class="composer-file" multiple hidden><label class="attach-line" for="dentist-order-files"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 11.5 12.5 20a5 5 0 0 1-7-7l8.5-8.5a3.5 3.5 0 0 1 5 5l-8.5 8.5a2 2 0 0 1-3-3l7.8-7.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Joindre des fichiers</span></label><div class="composer-files"></div></div></div><aside class="dnew-side"><div class="deliv-title" style="margin-top:0">Dates de livraison proposées</div><div class="deliv-hint">Calculées selon le délai de fabrication (<b>${fabricationLeadDays(type)} j ouvrés</b>) et la charge actuelle du laboratoire (<b>+${labLoadBufferDays()} j</b>).</div><div class="deliv-opts dnew-deliv">${deliveries.map((d,i)=>`<label class="deliv-opt ${i===sel?'active':''}"><input type="radio" name="deliv" value="${i}" ${i===sel?'checked':''} hidden><div class="deliv-tag">${h(d.tag)}</div><div class="deliv-date">${h(fmtDateShort(d.date))}</div></label>`).join('')}</div><button class="big-primary" type="submit" style="width:100%;margin-top:6px">Envoyer la commande au laboratoire</button></aside></form></section>`}
+function dentistDetailHTML(o){const st=getDentistFacingStatus(o);const pname=patientDisplayName(o.id,o.cabinet);return `<div class="pdetail-layer" id="pdetail"><div class="pdetail-card"><div class="quick-head"><div><h2>${pname?h(pname):h(o.id)} <span class="pill ${st.color}">${h(st.label)}</span></h2><div class="quick-sub">${h(o.type)}${pname?` · ${h(o.id)}`:` · Réf. ${h(o.patientRef)}`}</div></div><button class="quick-close" data-ddetail-close aria-label="Fermer">×</button></div><section class="quick-grid">${pname?`<div class="mini-card"><div class="mini-label">Patient</div><div class="mini-value">${h(pname)}</div></div><div class="mini-card"><div class="mini-label">Commande</div><div class="mini-value">${h(o.id)}</div></div>`:''}<div class="mini-card"><div class="mini-label">Type</div><div class="mini-value">${h(o.type)}</div></div><div class="mini-card"><div class="mini-label">Livraison estimée</div><div class="mini-value">${h(o.due)}</div></div><div class="mini-card"><div class="mini-label">État</div><div class="mini-value">${h(st.label)}</div></div><div class="mini-card"><div class="mini-label">Référence DentalFlow</div><div class="mini-value">${h(o.patientRef)}</div></div></section><div class="progress" style="margin-top:18px"><h3>Suivi de fabrication</h3>${dentistStepsHTML(o)}</div><div class="order-qr"><div class="order-qr-code">${qrSvg(o.id)}</div><div class="order-qr-info"><div class="mini-label">QR commande ${h(o.id)}</div><div class="mini-sub">À joindre au dossier physique envoyé au laboratoire.</div><button class="ghost" data-print-fiche="${h(o.id)}" style="margin-top:8px">Imprimer la fiche</button></div></div><div class="quick-actions" style="grid-template-columns:1fr;margin-top:14px"><button class="big-primary" data-dthread="${h(o.id)}">Écrire au laboratoire</button></div></div></div>`}
+function dentistNewHTML(){const types=Object.keys(fabricationDays).filter(t=>t!=='default');const type=(state.dentistNewType&&types.includes(state.dentistNewType))?state.dentistNewType:types[0];const deliveries=proposedDeliveries(type);const sel=Math.min(state.dentistDeliv||0,deliveries.length-1);return `<section class="card section"><div class="section-head"><h2>Nouvelle commande</h2></div><form id="dentist-order-form" class="dnew-form"><div class="dnew-main"><div class="field"><label>Prénom du patient</label><input name="patientFirstName" required placeholder="Marie" autocomplete="off" /></div><div class="field"><label>Nom du patient</label><input name="patientLastName" required placeholder="Dupont" autocomplete="off" /></div><div class="field" style="margin-top:-2px"><span class="mini-sub">Le nom du patient reste privé dans votre espace cabinet. Le laboratoire reçoit uniquement une référence anonyme.</span></div><div class="field"><label>Type de prothèse</label><select name="type" id="dentist-type">${types.map(t=>`<option${t===type?' selected':''}>${h(t)}</option>`).join('')}</select></div><div class="field"><label>Teinte / indications</label><input name="notes" placeholder="Teinte A3, contact mésial…" /></div><div class="field"><label>Fichiers joints (empreintes, radios, photos…)</label><input type="file" name="orderfiles" id="dentist-order-files" class="composer-file" multiple hidden><label class="attach-line" for="dentist-order-files"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 11.5 12.5 20a5 5 0 0 1-7-7l8.5-8.5a3.5 3.5 0 0 1 5 5l-8.5 8.5a2 2 0 0 1-3-3l7.8-7.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Joindre des fichiers</span></label><div class="composer-files"></div></div></div><aside class="dnew-side"><div class="deliv-title" style="margin-top:0">Dates de livraison proposées</div><div class="deliv-hint">Calculées selon le délai de fabrication (<b>${fabricationLeadDays(type)} j ouvrés</b>) et la charge actuelle du laboratoire (<b>+${labLoadBufferDays()} j</b>).</div><div class="deliv-opts dnew-deliv">${deliveries.map((d,i)=>`<label class="deliv-opt ${i===sel?'active':''}"><input type="radio" name="deliv" value="${i}" ${i===sel?'checked':''} hidden><div class="deliv-tag">${h(d.tag)}</div><div class="deliv-date">${h(fmtDateShort(d.date))}</div></label>`).join('')}</div><button class="big-primary" type="submit" style="width:100%;margin-top:6px">Envoyer la commande au laboratoire</button></aside></form></section>`}
 function dentistThreadHTML(o){return `<div class="section-head"><h2>${h(o.id)} · ${h(o.type)}</h2></div><div id="thread-messages">${(state.messages[o.id]||[]).map(m=>`<div class="bubble ${m.from==='cabinet'?'lab':'cabinet'}"><b>${m.from==='cabinet'?'Vous':'Laboratoire'}</b><br>${m.text?h(m.text):''}${attachmentHTML(m.files)}<div style="opacity:.7;font-size:11px;margin-top:4px">${h(m.at)}</div></div>`).join('')}</div><form class="composer" id="dentist-compose" data-order="${h(o.id)}"><input class="composer-text" placeholder="Écrire au laboratoire…" /><input type="file" id="dent-file-${h(o.id)}" class="composer-file" multiple hidden /><label class="composer-attach" for="dent-file-${h(o.id)}" title="Joindre un fichier"><svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M21 11.5 12.5 20a5 5 0 0 1-7-7l8.5-8.5a3.5 3.5 0 0 1 5 5l-8.5 8.5a2 2 0 0 1-3-3l7.8-7.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></label><button>Envoyer</button><div class="composer-files"></div></form>`}
 function dentistMessagesHTML(orders){const threads=orders.filter(o=>state.messages[o.id]&&state.messages[o.id].length);const active=state.dentistThread&&orders.find(o=>o.id===state.dentistThread);return `<section class="side-message-layout"><article class="card thread-list">${threads.length?threads.map(o=>{const last=(state.messages[o.id]||[]).slice(-1)[0]?.text||'';return `<button class="thread-item ${o.id===state.dentistThread?'active':''}" data-dthread="${h(o.id)}"><div class="thread-top"><strong>${h(o.id)}</strong></div><div class="thread-order">${h(o.type)}</div><div class="thread-preview">${h(last)}</div></button>`}).join(''):'<div class="empty">Aucune conversation.</div>'}</article><article class="card section thread-panel">${active?dentistThreadHTML(active):'<div class="empty">Sélectionnez une commande.</div>'}</article></section>`}
 function renderDentistMode(){const cabinets=[...new Set(state.orders.map(o=>o.cabinet))].filter(Boolean).sort();if(!cabinets.length)cabinets.push('Cabinet démo');if(!state.dentistCabinet||!cabinets.includes(state.dentistCabinet))state.dentistCabinet=cabinets[0];const cab=state.dentistCabinet;const tab=state.dentistView||'orders';const myOrders=state.orders.filter(o=>o.cabinet===cab);const content=tab==='orders'?dentistOrdersHTML(myOrders):tab==='new'?dentistNewHTML():dentistMessagesHTML(myOrders);document.body.innerHTML=`<div class="portal" id="portal"><header class="portal-header"><div class="portal-brand"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M7.8 3.4c1 0 1.9.5 2.7.9.6.3 1 .5 1.5.5s.9-.2 1.5-.5c.8-.4 1.7-.9 2.7-.9 2.3 0 3.9 1.9 3.9 4.6 0 1.5-.6 3.2-1.4 4.8-.6 1.3-1 2.7-1.3 4.1-.4 1.9-.9 3.4-2.2 3.4-.9 0-1.3-.9-1.8-2.6-.4-1.4-.8-2.3-1.5-2.3s-1.1.9-1.5 2.3c-.5 1.7-.9 2.6-1.8 2.6-1.3 0-1.8-1.5-2.2-3.4-.3-1.4-.7-2.8-1.3-4.1C4.5 11.2 4 9.5 4 8c0-2.7 1.5-4.6 3.8-4.6Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>DentalFlow · Espace cabinet</span></div><div class="portal-cabsel"><label>Cabinet</label><select id="portal-cab">${cabinets.map(c=>`<option${c===cab?' selected':''}>${h(c)}</option>`).join('')}</select></div><button class="ghost" id="portal-back">Retour laboratoire</button></header><div class="portal-body"><div class="portal-tabs"><button class="ptab ${tab==='orders'?'active':''}" data-dtab="orders">Mes commandes</button><button class="ptab ${tab==='new'?'active':''}" data-dtab="new">Nouvelle commande</button></div>${content}</div>${state.dentistDetail&&myOrders.find(o=>o.id===state.dentistDetail)?dentistDetailHTML(myOrders.find(o=>o.id===state.dentistDetail)):''}<div class="toast" id="toast"></div></div>`;attachDentistHandlers()}
 function attachDentistHandlers(){const root=document.getElementById('portal');if(!root)return;root.addEventListener('click',e=>{const cf=e.target.closest('[data-clear-files]');if(cf){const inp=document.getElementById(cf.dataset.clearFiles);if(inp){inp.value='';renderComposerFiles(inp)}return}const tab=e.target.closest('[data-dtab]');if(tab){state.dentistView=tab.dataset.dtab;state.dentistDetail=null;renderDentistMode();return}const thr=e.target.closest('[data-dthread]');if(thr){state.dentistThread=thr.dataset.dthread;state.dentistView='messages';state.dentistDetail=null;renderDentistMode();return}if(e.target.closest('[data-ddetail-close]')||e.target.id==='pdetail'){state.dentistDetail=null;renderDentistMode();return}const pf=e.target.closest('[data-print-fiche]');if(pf){printFiche(pf.dataset.printFiche);return}const det=e.target.closest('[data-ddetail]');if(det){state.dentistDetail=det.dataset.ddetail;renderDentistMode();return}if(e.target.closest('#portal-back')){location.href=location.pathname;return}const opt=e.target.closest('.deliv-opt');if(opt){const inp=opt.querySelector('input');if(inp){state.dentistDeliv=+inp.value;renderDentistMode()}return}});root.addEventListener('change',e=>{if(e.target.id==='portal-cab'){state.dentistCabinet=e.target.value;state.dentistThread=null;renderDentistMode()}if(e.target.id==='dentist-type'){state.dentistNewType=e.target.value;state.dentistDeliv=0;renderDentistMode()}});root.addEventListener('submit',e=>{if(e.target.id==='dentist-order-form'){e.preventDefault();const form=e.target;const data=Object.fromEntries(new FormData(form).entries());const fileInp=form.querySelector('.composer-file');readAttachments(fileInp&&fileInp.files,files=>createDentistOrder(data,files));return}if(e.target.id==='dentist-compose'){e.preventDefault();const form=e.target;const inp=form.querySelector('.composer-text');const fileInp=form.querySelector('.composer-file');const text=inp?inp.value.trim():'';readAttachments(fileInp&&fileInp.files,files=>addCabinetMessage(form.dataset.order,text,files))}});root.addEventListener('change',e=>{if(e.target.classList&&e.target.classList.contains('composer-file'))renderComposerFiles(e.target)})}
-function createDentistOrder(data,files){const cab=state.dentistCabinet;const type=data.type||Object.keys(fabricationDays)[0];const id=generateOrderId();const deliveries=proposedDeliveries(type);const chosen=deliveries[Math.min(+data.deliv||0,deliveries.length-1)];const due=fmtDateShort(chosen.date);const o={id,patientRef:generatePatientRef(),type,cabinet:cab,status:'progress',due,tech:'',priority:'Normale',timeAtPost:0,avgTime:45,noInitialScan:true,createdByCabinet:true};deriveOrderModel(o);state.orders.unshift(o);const now=Clock.now().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});state.messages[id]=[{from:'cabinet',text:`Nouvelle commande ${type} — livraison souhaitée ${due}.${data.notes?' Indications : '+data.notes:''}`,at:now,readAt:null,unread:true,files:(files||[]).slice(0,MAX_FILES_PER_THREAD)}];logAudit(id,'Création',`Commande créée via l'espace cabinet (${cab})`);save();state.dentistView='orders';state.dentistThread=id;renderDentistMode();showToast(`${id} envoyée au laboratoire`)}
+/* createDentistOrderCore — mutations d'état pures (commande partagée +
+   identité patient privée), sans effet de bord DOM. patientFirstName/
+   patientLastName ne rejoignent JAMAIS l'objet order (state.orders) : ils
+   sont écrits uniquement dans state.cabinetPatients, séparément. Extrait de
+   createDentistOrder() pour rester testable sans passer par le rendu du
+   portail (document.body.innerHTML). */
+function createDentistOrderCore(data,files){
+  const cab=state.dentistCabinet;
+  const type=data.type||Object.keys(fabricationDays)[0];
+  const id=generateOrderId();
+  const deliveries=proposedDeliveries(type);
+  const chosen=deliveries[Math.min(+data.deliv||0,deliveries.length-1)];
+  const due=fmtDateShort(chosen.date);
+  const o={id,patientRef:generatePatientRef(),type,cabinet:cab,status:'progress',due,tech:'',priority:'Normale',timeAtPost:0,avgTime:45,noInitialScan:true,createdByCabinet:true};
+  deriveOrderModel(o);
+  state.orders.unshift(o);
+  const first=String(data.patientFirstName||'').trim();
+  const last=String(data.patientLastName||'').trim();
+  if(first||last){
+    if(!state.cabinetPatients)state.cabinetPatients={};
+    state.cabinetPatients[id]={cabinet:cab,patientFirstName:first,patientLastName:last};
+    saveCabinetPatients();
+  }
+  const now=Clock.now().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+  state.messages[id]=[{from:'cabinet',text:`Nouvelle commande ${type} — livraison souhaitée ${due}.${data.notes?' Indications : '+data.notes:''}`,at:now,readAt:null,unread:true,files:(files||[]).slice(0,MAX_FILES_PER_THREAD)}];
+  logAudit(id,'Création',`Commande créée via l'espace cabinet (${cab})`);
+  save();
+  return id;
+}
+function createDentistOrder(data,files){const id=createDentistOrderCore(data,files);state.dentistView='orders';state.dentistThread=id;renderDentistMode();showToast(`${id} envoyée au laboratoire`)}
 function addCabinetMessage(id,text,files){if(!text&&!(files&&files.length))return;if(!state.messages[id])state.messages[id]=[];files=capThreadFiles(id,files);const now=Clock.now().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});state.messages[id].push({from:'cabinet',text,at:now,readAt:null,unread:true,files:files||[]});save();renderDentistMode()}
 /* ===== Plan de charge (GTA) ===== */
 function weekStartOf(date){const d=new Date(date);const wd=(d.getDay()+6)%7;d.setDate(d.getDate()-wd);d.setHours(0,0,0,0);return d}
@@ -3319,7 +3401,7 @@ document.addEventListener('click',handleAppClick);
 document.addEventListener('change',e=>{if(e.target.classList&&e.target.classList.contains('composer-file'))renderComposerFiles(e.target)});
 document.addEventListener('submit',e=>{if(e.target.matches('[data-compose]')){e.preventDefault();const form=e.target;const input=form.querySelector('.composer-text');const fileInp=form.querySelector('.composer-file');const text=input?input.value.trim():'';readAttachments(fileInp&&fileInp.files,files=>addMessage(form.dataset.compose,text,files))} if(e.target.id==='order-form'){e.preventDefault();const fd=new FormData(e.target);createOrder(Object.fromEntries(fd.entries()));e.target.reset()} if(e.target.id==='stock-form'){e.preventDefault();const fd=new FormData(e.target);submitStockForm(Object.fromEntries(fd.entries()))} if(e.target.id==='user-form'){e.preventDefault();const fd=new FormData(e.target);submitUserForm(Object.fromEntries(fd.entries()))} if(e.target.id==='absence-form'){e.preventDefault();const fd=new FormData(e.target);submitAbsenceForm(Object.fromEntries(fd.entries()))} if(e.target.id==='whatif-form'){e.preventDefault();const d=Object.fromEntries(new FormData(e.target).entries());if(d.userId&&d.from&&d.to&&new Date(d.to)>=new Date(d.from)){state.whatIfSims.push({userId:d.userId,from:d.from,to:d.to});render()}else showToast('Dates invalides')}});
 $('#search').addEventListener('input',e=>{state.search=e.target.value;state.searchOpen=!!state.search.trim();state.ordersPage=0;render()});$('#search').addEventListener('focus',()=>{state.searchOpen=!!state.search.trim();renderSearchPopup()});document.addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();$('#search').focus();state.searchOpen=!!state.search.trim();renderSearchPopup()}if(e.key==='Escape'){const um=document.getElementById('user-menu');if(um&&um.classList.contains('open')){closeUserMenu();return}if(state.searchOpen){closeSearchPopup();return}if(state.quickOrderId){closeQuickView();return}if(state.sidePanel){closeSidePanel();return}}});
-load();applyTheme();applySidebar();if(isScanMode())renderScanMode();else if(isDentistMode())renderDentistMode();else if(isStaffMode())renderStaffMode();else{renderNav();render()}
+load();loadCabinetPatients();ensureCabinetPatientsSeed();applyTheme();applySidebar();if(isScanMode())renderScanMode();else if(isDentistMode())renderDentistMode();else if(isStaffMode())renderStaffMode();else{renderNav();render()}
 </script>
 
 <style id="dentalflow-v34-styles">
@@ -3337,7 +3419,7 @@ const PURCHASE_STATUSES_OPEN=['ordered','confirmed','shipped','partially_receive
 const PROPOSAL_OPEN=['draft','waiting','ready'];
 const ENGINE_DEFAULTS={reviewPeriodDays:10,securityMarginDays:1,maxWaitDays:5,minSavings:10,maxCoverageDays:120,dormantCoverageDays:180,dormantNoConsumptionDays:120};
 function uid(prefix){return prefix+'-'+Math.random().toString(36).slice(2,8).toUpperCase()+'-'+Date.now().toString(36).toUpperCase()}
-function today(){return Clock&&Clock.now?Clock.now():new Date('2026-08-21T10:42:00')}
+function today(){return Clock&&Clock.now?Clock.now():new Date()}
 function ymd(d){const x=new Date(d);return `${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,'0')}-${String(x.getDate()).padStart(2,'0')}`}
 function atNoon(d){const x=new Date(d);x.setHours(12,0,0,0);return x}
 function money(n){return `${Math.round((+n||0)*100)/100} €`}
@@ -3736,7 +3818,7 @@ function seedV6(){
   rebuildLegacyStockView();
   reconcileProposals(state);
 }
-function resetDemoV6(){seed();seedV6();save()}
+function resetDemoV6(){seed();seedV6();ensureCabinetPatientsSeed();save()}
 function serializableState(){rebuildLegacyStockView();const clean={schemaVersion:V34_SCHEMA_VERSION,orders:state.orders,scanEvents:state.scanEvents,historyEvents:state.historyEvents,messages:state.messages,documents:state.documents,users:state.users,absences:state.absences,leaveRequests:state.leaveRequests,stageDefinitions:state.stageDefinitions,sidebarCollapsed:!!state.sidebarCollapsed,theme:state.theme||'system',scanStation:state.scanStation,scanTechnician:state.scanTechnician,articles:state.articles,suppliers:state.suppliers,articleSuppliers:state.articleSuppliers,stockMovements:state.stockMovements,purchaseOrders:state.purchaseOrders,purchaseProposals:state.purchaseProposals,activityEvents:(state.activityEvents||[]).slice(0,200),importJobs:state.importJobs||[],importErrors:state.importErrors||[],engineSettings:state.engineSettings||ENGINE_DEFAULTS,purchaseScenarioUrgent:!!state.purchaseScenarioUrgent};return clean}
 function v34Save(){localStorage.setItem(V34_STORAGE_KEY,JSON.stringify(serializableState()))}
 function applyImportedFullState(data){if(!data||data.schemaVersion!==V34_SCHEMA_VERSION)throw new Error('JSON DentalFlow V6 requis');Object.assign(state,{...state,...data});ensureV34Model();save();render()}
@@ -3804,7 +3886,7 @@ function cancelPurchaseOrder(id){const po=state.purchaseOrders.find(x=>x.id===id
    données ajoutées (V3.4.3) : "2 bridges … 4 disques" crée réellement 2
    commandes Bridge 3 éléments (BOM ×2 chacune = 4 unités), pas une seule. */
 const URGENT_ZIR_ORDER_IDS=['CMD-URG-ZIR-1','CMD-URG-ZIR-2'];
-function addUrgentZirconeOrder(){state.purchaseScenarioUrgent=true;URGENT_ZIR_ORDER_IDS.forEach((id,i)=>{if(!state.orders.some(o=>o.id===id)){const o={id,patientRef:'PAT-'+randToken(6),type:'Bridge 3 éléments',cabinet:'Cabinet Démo',status:'progress',due:'mardi 25 août',tech:'',priority:'Urgente',timeAtPost:0,avgTime:60,noInitialScan:true};deriveOrderModel(o);state.orders.unshift(o)}});logActivity({type:'ORDER',severity:'WARNING',source:'USER_ACTION',entityType:'Order',entityId:URGENT_ZIR_ORDER_IDS[0],title:'Commande urgente créée',message:'2 bridges urgents ajoutent 4 disques de Zircone HT.'});reconcileProposals(state);save();render();showToast('Urgence Zircone simulée')}
+function addUrgentZirconeOrder(){state.purchaseScenarioUrgent=true;URGENT_ZIR_ORDER_IDS.forEach((id,i)=>{if(!state.orders.some(o=>o.id===id)){const o={id,patientRef:'PAT-'+randToken(6),type:'Bridge 3 éléments',cabinet:'Cabinet Démo',status:'progress',due:'Dans 2 jours',tech:'',priority:'Urgente',timeAtPost:0,avgTime:60,noInitialScan:true};deriveOrderModel(o);state.orders.unshift(o)}});logActivity({type:'ORDER',severity:'WARNING',source:'USER_ACTION',entityType:'Order',entityId:URGENT_ZIR_ORDER_IDS[0],title:'Commande urgente créée',message:'2 bridges urgents ajoutent 4 disques de Zircone HT.'});reconcileProposals(state);save();render();showToast('Urgence Zircone simulée')}
 function clearUrgentZirconeOrder(){state.purchaseScenarioUrgent=false;state.orders=state.orders.filter(o=>!URGENT_ZIR_ORDER_IDS.includes(o.id));logActivity({type:'ORDER',severity:'INFO',source:'USER_ACTION',entityType:'Order',entityId:URGENT_ZIR_ORDER_IDS[0],title:'Urgence retirée',message:'La Zircone redevient commandable chez le fournisseur préféré.'});reconcileProposals(state);save();render();showToast('Urgence retirée')}
 function exportDentalFlowJSON(){return JSON.stringify(serializableState(),null,2)}
 function toCSV(rows){if(!rows.length)return '';const cols=[...new Set(rows.flatMap(r=>Object.keys(r)))];const esc=v=>`"${String(v??'').replace(/"/g,'""')}"`;return cols.join(',')+'\n'+rows.map(r=>cols.map(c=>esc(r[c])).join(',')).join('\n')}
@@ -4428,7 +4510,167 @@ test('Import stock crée ADJUSTMENT',()=>{const bak=cloneDeep(serializableState(
 test('Import errors détaillées',()=>{const rows=parseCSV('reference,stock\nUNKNOWN,-4');const v=validateImportRows('stocks',rows);return {errors:v.errors.map(e=>e.code),pass:v.errors.some(e=>e.code==='UNKNOWN_ARTICLE')&&v.errors.some(e=>e.code==='NEGATIVE_QTY')}});
 test('Export JSON complet ré-importable',()=>{const txt=exportDentalFlowJSON();const data=JSON.parse(txt);return {schemaVersion:data.schemaVersion,hasStores:!!(data.articles&&data.stockMovements&&data.purchaseOrders&&data.activityEvents),pass:data.schemaVersion===6&&!!data.articles&&!!data.stockMovements&&!!data.purchaseOrders&&!!data.activityEvents}});
 test('Export CSV métiers',()=>{const types=['commandes','production','stocks','articles','fournisseurs','achats','tracabilite'];const ok=types.every(t=>exportCSV(t).includes(','));return {types,pass:ok}});
-test('Privacy source/runtime sans patient name fields',()=>{const forbidden=['patient'+'First','patient'+'Last'];const body=document.documentElement.outerHTML;const data=JSON.stringify(serializableState());const bad=forbidden.some(k=>body.includes(k)||data.includes(k));return {bad:!!bad,pass:!bad}});
+/* Mis à jour V3.5.1 addendum : la V3.5.1 initiale interdisait toute identité
+   patient nulle part dans le code (state.orders ne l'a jamais portée). Le
+   mandat "Cabinet Patient Privacy" introduit délibérément ces champs, mais
+   UNIQUEMENT dans le store cabinet séparé state.cabinetPatients — jamais sur
+   state.orders (modèle partagé labo), jamais dans l'export/la persistance
+   labo. Le test est donc précisé pour cibler exactement cette frontière
+   (plutôt que outerHTML, qui inclut désormais légitimement le texte source
+   des champs de formulaire cabinet) ; aucune garantie de la version
+   précédente n'est affaiblie — le nouveau lot de tests ci-dessous (Isolation
+   inter-cabinets, Recherche labo, Journal, cabinetPatients jamais exposé…)
+   couvre en outre bien plus de surfaces que l'ancien test.*/
+test('Privacy: state.orders / export labo / serializableState sans identité patient',()=>{
+  const forbidden=['patient'+'First','patient'+'Last'];
+  const ordersBad=(state.orders||[]).some(o=>Object.keys(o).some(key=>forbidden.some(f=>key.toLowerCase().includes(f.toLowerCase()))));
+  const serial=JSON.stringify(serializableState());
+  const exportJson=exportDentalFlowJSON();
+  const serialBad=forbidden.some(k=>serial.includes(k));
+  const exportBad=forbidden.some(k=>exportJson.includes(k));
+  const bad=ordersBad||serialBad||exportBad;
+  return {ordersBad,serialBad,exportBad,bad,pass:!bad};
+});
+/* ===== V3.5.1 addendum — Horloge temps réel ===== */
+test('Clock: mode réel par défaut (pas figé sur une date de démo)',()=>({mode:Clock.mode,pass:Clock.mode==='real'}));
+test('Accueil: sous-titre daté dynamiquement (horloge figée 2027-02-03)',()=>{
+  const bak=cloneDeep(serializableState());
+  const viewBak=state.view;const modeBak=Clock.mode,dateBak=Clock.demoDate;
+  Clock.mode='demo';Clock.demoDate=new Date('2027-02-03T09:00:00');
+  state.view='home';
+  render();
+  const sub=$('#page-subtitle')?$('#page-subtitle').textContent:'';
+  Clock.mode=modeBak;Clock.demoDate=dateBak;
+  state.view=viewBak;
+  Object.assign(state,{...state,...bak});
+  render();
+  return {sub,pass:/mercredi 3 février 2027/.test(sub)};
+});
+test('Accueil: sous-titre daté avec l’horloge réelle (pas de date figée résiduelle)',()=>{
+  const bak=cloneDeep(serializableState());
+  const viewBak=state.view;
+  state.view='home';
+  render();
+  const sub=$('#page-subtitle')?$('#page-subtitle').textContent:'';
+  const expected=homeDateLabel();
+  state.view=viewBak;
+  Object.assign(state,{...state,...bak});
+  render();
+  return {sub,expected,pass:sub.includes(expected)&&!/21 août 2026|17 août 2026/.test(sub)};
+});
+/* Cible directement les données de seed (demoOrders.due) plutôt que le texte
+   rendu : une date "N août" peut légitimement apparaître dans un rendu réel
+   (ex. un mouvement de stock daté d'il y a quelques jours autour de la vraie
+   date du jour) sans être un hardcoding — seul le champ due des commandes de
+   démo est concerné par ce hotfix, et il ne doit plus jamais contenir de
+   date calendaire absolue, uniquement du texte relatif (Aujourd'hui/Demain/
+   Après-demain/Hier/Dans N jours/Il y a N jours). */
+test('demoOrders.due : aucune date absolue codée en dur après seed/reset',()=>{
+  const bak=cloneDeep(serializableState());
+  resetDemoV6();
+  const forbidden=['2026-08-','17 août','18 août','19 août','20 août','21 août','25 août','26 août','27 août'];
+  const bad=[];
+  state.orders.forEach(o=>{forbidden.forEach(s=>{if((o.due||'').includes(s))bad.push(o.id+':'+s)})});
+  Object.assign(state,{...state,...bak});
+  return {bad,pass:bad.length===0};
+});
+/* ===== V3.5.1 addendum — Cabinet patient privacy (state.cabinetPatients) ===== */
+test('Commande cabinet: patientRef opaque sur state.orders, identité uniquement dans cabinetPatients',()=>{
+  const bak=cloneDeep(serializableState());
+  const cabBak=state.dentistCabinet;
+  state.dentistCabinet='Cabinet Moderne';
+  const id=createDentistOrderCore({type:'Couronne zircone',patientFirstName:'Marie',patientLastName:'Dupont',deliv:0,notes:''},[]);
+  const o=state.orders.find(x=>x.id===id);
+  const cp=state.cabinetPatients[id];
+  const noIdentityOnOrder=!!o&&!(('patient'+'First'+'Name') in o)&&!(('patient'+'Last'+'Name') in o)&&!('patientName' in o);
+  const hasRef=!!o&&typeof o.patientRef==='string'&&/^PAT-/.test(o.patientRef);
+  const cpOk=!!cp&&cp.patientFirstName==='Marie'&&cp.patientLastName==='Dupont'&&cp.cabinet==='Cabinet Moderne';
+  const noNameInMessage=!(state.messages[id]||[]).some(m=>/Marie|Dupont/.test(m.text||''));
+  const out={found:!!o,noIdentityOnOrder,hasRef,cpOk,noNameInMessage,pass:!!o&&noIdentityOnOrder&&hasRef&&cpOk&&noNameInMessage};
+  delete state.cabinetPatients[id];
+  state.dentistCabinet=cabBak;
+  Object.assign(state,{...state,...bak});
+  return out;
+});
+test('cabinetPatients jamais exposé par serializableState (export/persistance labo)',()=>{
+  const bak=cloneDeep(serializableState());
+  const cabBak=state.dentistCabinet;
+  state.dentistCabinet='Cabinet Moderne';
+  const id=createDentistOrderCore({type:'Couronne zircone',patientFirstName:'Wanda',patientLastName:'Ylenn',deliv:0},[]);
+  const json=JSON.stringify(serializableState());
+  const exportJson=exportDentalFlowJSON();
+  const bad=/Wanda|Ylenn|cabinetPatients/.test(json)||/Wanda|Ylenn|cabinetPatients/.test(exportJson);
+  delete state.cabinetPatients[id];
+  state.dentistCabinet=cabBak;
+  Object.assign(state,{...state,...bak});
+  return {bad,pass:!bad};
+});
+test('Isolation inter-cabinets: patientDisplayName refuse un cabinet différent du sien',()=>{
+  const bak=cloneDeep(serializableState());
+  const cabBak=state.dentistCabinet;
+  state.dentistCabinet='Cabinet Moderne';
+  const id=createDentistOrderCore({type:'Couronne zircone',patientFirstName:'Marie',patientLastName:'Dupont',deliv:0},[]);
+  const own=patientDisplayName(id,'Cabinet Moderne');
+  const other=patientDisplayName(id,'Clinique Sourire');
+  delete state.cabinetPatients[id];
+  state.dentistCabinet=cabBak;
+  Object.assign(state,{...state,...bak});
+  return {own,other,pass:own==='Marie Dupont'&&other===null};
+});
+test('Recherche labo ne trouve jamais une commande par nom patient (uniquement id/patientRef/type/cabinet)',()=>{
+  const bak=cloneDeep(serializableState());
+  const cabBak=state.dentistCabinet;const searchBak=state.search;
+  state.dentistCabinet='Cabinet Moderne';
+  const id=createDentistOrderCore({type:'Couronne zircone',patientFirstName:'Zzyxel',patientLastName:'Qwerpo',deliv:0},[]);
+  state.search='Zzyxel';
+  const byName=searchResults();
+  state.search=id;
+  const byId=searchResults();
+  delete state.cabinetPatients[id];
+  state.dentistCabinet=cabBak;state.search=searchBak;
+  Object.assign(state,{...state,...bak});
+  return {byNameCount:byName.length,byIdCount:byId.length,pass:byName.length===0&&byId.length===1};
+});
+test('Journal/activityEvents ne contiennent jamais le nom du patient (commande cabinet)',()=>{
+  const bak=cloneDeep(serializableState());
+  const cabBak=state.dentistCabinet;
+  state.dentistCabinet='Cabinet Moderne';
+  const id=createDentistOrderCore({type:'Couronne zircone',patientFirstName:'Xanthe',patientLastName:'Vorlek',deliv:0},[]);
+  const evText=JSON.stringify(state.activityEvents||[])+JSON.stringify(state.historyEvents||[]);
+  const bad=/Xanthe|Vorlek/.test(evText);
+  delete state.cabinetPatients[id];
+  state.dentistCabinet=cabBak;
+  Object.assign(state,{...state,...bak});
+  return {bad,pass:!bad};
+});
+test('cabinetPatients persiste dans sa propre clé localStorage, jamais dans STORAGE_KEY',()=>{
+  const bak=cloneDeep(serializableState());
+  const cabBak=state.dentistCabinet;
+  const originalRaw=localStorage.getItem(CABINET_PATIENTS_KEY);
+  state.dentistCabinet='Cabinet Moderne';
+  const id=createDentistOrderCore({type:'Couronne zircone',patientFirstName:'Quorra',patientLastName:'Ilven',deliv:0},[]);
+  const rawAfterSave=localStorage.getItem(CABINET_PATIENTS_KEY);
+  const parsed=rawAfterSave?JSON.parse(rawAfterSave):{};
+  const persisted=!!parsed[id]&&parsed[id].patientFirstName==='Quorra';
+  const mainStorageRaw=localStorage.getItem(STORAGE_KEY)||'';
+  const notInMainStorage=!/Quorra|Ilven/.test(mainStorageRaw);
+  delete state.cabinetPatients[id];
+  if(originalRaw===null)localStorage.removeItem(CABINET_PATIENTS_KEY);else localStorage.setItem(CABINET_PATIENTS_KEY,originalRaw);
+  state.dentistCabinet=cabBak;
+  Object.assign(state,{...state,...bak});
+  return {persisted,notInMainStorage,pass:persisted&&notInMainStorage};
+});
+test('ensureCabinetPatientsSeed: additif uniquement, ne touche jamais patientRef',()=>{
+  const bak=cloneDeep(serializableState());
+  const cpBak=cloneDeep(state.cabinetPatients);
+  const refBefore=(state.orders.find(o=>o.id==='CMD-0197')||{}).patientRef;
+  ensureCabinetPatientsSeed();
+  const refAfter=(state.orders.find(o=>o.id==='CMD-0197')||{}).patientRef;
+  const seeded=state.cabinetPatients['CMD-0197'];
+  state.cabinetPatients=cpBak;
+  Object.assign(state,{...state,...bak});
+  return {refBefore,refAfter,seededOk:!!seeded&&seeded.patientFirstName==='Marie'&&seeded.patientLastName==='Dupont',pass:refBefore===refAfter&&!!seeded&&seeded.patientFirstName==='Marie'};
+});
 test('Journal unifié activityEvents',()=>({events:(state.activityEvents||[]).length,legacyAdapted:typeof auditEvents==='function',pass:Array.isArray(state.activityEvents)&&typeof logActivity==='function'}));
 test('Import commandes crée une commande avec patientRef opaque',()=>{
   const bak=cloneDeep(serializableState());
@@ -4504,6 +4746,11 @@ test('Minimum de commande + urgence SANS alternatif viable : BLOCKED',()=>{
 });
 test('V3.4.5 seconde passe computeNeeds : A/B écartés (minimum non atteint), C choisi réellement (moteur réel)',()=>{
   const bak=cloneDeep(serializableState());
+  // Horloge figée sur le jour de calendrier avec lequel ce scénario a été conçu et
+  // vérifié (marges d'un jour ouvré serré entre A/B/C) : le Clock étant réel par
+  // défaut depuis V3.5.1 addendum, ce test n'a pas à dépendre du jour de la semaine
+  // réel au moment de l'exécution.
+  const clockBak={mode:Clock.mode,demoDate:Clock.demoDate};Clock.mode='demo';Clock.demoDate=new Date('2026-08-21T09:00:00');
   const artId='ART-TST-MINABC';const supA='SUP-TST-MINABC-A',supB='SUP-TST-MINABC-B',supC='SUP-TST-MINABC-C';
   // A préféré (lead 1, minimum 150), B (lead 1, minimum 200), C (lead 2, minimum 0).
   // Tous livrent avant rupture. subtotal réel ≈120€ : A et B rejetés (minimum propre
@@ -4524,6 +4771,7 @@ test('V3.4.5 seconde passe computeNeeds : A/B écartés (minimum non atteint), C
   const ppB=state.purchaseProposals.find(p=>p.supplierId===supB&&PROPOSAL_OPEN.includes(p.status)&&(p.lines||[]).some(l=>l.articleId===artId));
   const ppC=state.purchaseProposals.find(p=>p.supplierId===supC&&PROPOSAL_OPEN.includes(p.status)&&(p.lines||[]).some(l=>l.articleId===artId));
   const out={ppAFound:!!ppA,ppBFound:!!ppB,ppCFound:!!ppC,ppCSubtotal:ppC?ppC.subtotal:null,ppCAction:ppC?ppC.recommendedAction:null,pass:!ppA&&!ppB&&!!ppC&&ppC.recommendedAction==='ORDER_NOW'};
+  Clock.mode=clockBak.mode;Clock.demoDate=clockBak.demoDate;
   Object.assign(state,{...state,...bak});
   return out;
 });
@@ -4552,6 +4800,9 @@ test('V3.4.5 seconde passe computeNeeds : deux alternatifs viables, landed cost 
 });
 test('V3.4.5 seconde passe computeNeeds : urgence extrême, seul le fournisseur à temps est choisi malgré le coût',()=>{
   const bak=cloneDeep(serializableState());
+  // Voir commentaire du test précédent : horloge figée sur le jour de conception du
+  // scénario, indépendante du jour réel d'exécution des tests.
+  const clockBak={mode:Clock.mode,demoDate:Clock.demoDate};Clock.mode='demo';Clock.demoDate=new Date('2026-08-21T09:00:00');
   const artId='ART-TST-UE2';const supA='SUP-TST-UE2-A',supB='SUP-TST-UE2-B',supC='SUP-TST-UE2-C';
   // Même structure que le test précédent (B moins cher... non, ici B plus cher mais
   // seul à temps) mais rupture beaucoup plus proche (consommation forte) : C (lead 2)
@@ -4571,6 +4822,7 @@ test('V3.4.5 seconde passe computeNeeds : urgence extrême, seul le fournisseur 
   const ppC=state.purchaseProposals.find(p=>p.supplierId===supC&&PROPOSAL_OPEN.includes(p.status)&&(p.lines||[]).some(l=>l.articleId===artId));
   const stAt=stockoutAt(artId,state);
   const out={ppBFound:!!ppB,ppCFound:!!ppC,ppBSubtotal:ppB?ppB.subtotal:null,stockoutAt:stAt?stAt.toISOString():null,pass:!!ppB&&ppB.recommendedAction==='ORDER_NOW'&&!ppC};
+  Clock.mode=clockBak.mode;Clock.demoDate=clockBak.demoDate;
   Object.assign(state,{...state,...bak});
   return out;
 });
@@ -4603,20 +4855,22 @@ test('slowMovingStock utilise Clock.now(), pas Date.now() (indépendant de la da
   const bak=cloneDeep(serializableState());
   const artId='ART-TST-CLOCKDORM';
   state.articles.push({id:artId,reference:'TST-CLOCKDORM',label:'Article test horloge dormant',category:'Test',unit:'unités',capacity:50,safetyStock:5,averageConsumption:{qty:1,periodWorkingDays:5},active:true});
-  const originalDemoDate=Clock.demoDate;
+  const originalDemoDate=Clock.demoDate;const originalMode=Clock.mode;
   // Horloge fictive placée loin dans le passé réel (des décennies avant la
   // vraie date machine, quelle qu'elle soit) : si slowMovingStock utilisait
   // encore Date.now(), le cutoff serait ancré sur la vraie date (~aujourd'hui)
   // et considérerait à tort la consommation ci-dessous comme très ancienne
   // (dormant=true). Avec Clock.now(), le cutoff est ancré sur cette horloge
-  // fictive et la consommation reste "récente" au sens des 120 jours.
+  // fictive et la consommation reste "récente" au sens des 120 jours. Le
+  // Clock étant réel par défaut (V3.5.1), le mode démo doit être activé
+  // explicitement ici pour figer l'horloge le temps du test.
   const fakeNow=new Date('1990-01-01T00:00:00');
-  Clock.demoDate=fakeNow;
+  Clock.mode='demo';Clock.demoDate=fakeNow;
   const recentConsumptionDate=new Date(fakeNow.getTime()-115*86400000);
   state.stockMovements.push({id:uid('MOV'),at:new Date(fakeNow.getTime()-200*86400000).toISOString(),articleId:artId,type:'OPENING',qty:10,reason:'test',sourceType:'test',sourceId:'TST',consumptionKey:null,userId:null});
   state.stockMovements.push({id:uid('MOV'),at:recentConsumptionDate.toISOString(),articleId:artId,type:'CONSUMPTION',qty:-1,reason:'test',sourceType:'test',sourceId:'TST',consumptionKey:null,userId:null});
   const dormant=slowMovingStock(artId);
-  Clock.demoDate=originalDemoDate;
+  Clock.demoDate=originalDemoDate;Clock.mode=originalMode;
   const out={dormant,pass:dormant===false};
   Object.assign(state,{...state,...bak});
   return out;
