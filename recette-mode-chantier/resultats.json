@@ -1,0 +1,494 @@
+{
+  "passed": 84,
+  "failed": [],
+  "results": [
+    {
+      "section": "PM-F1",
+      "name": "bouton \"Mode Chantier\" visible sur l'Accueil mobile conducteur",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F1",
+      "name": "entrée : driverMode = field",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F1",
+      "name": "shell Mode Chantier (.field-wrap) affiché immédiatement",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F1",
+      "name": "sidebar Bureau absente",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F1",
+      "name": "position en haut de l'écran (scrollY=0)",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F1",
+      "name": "barre basse = exactement [Chantier][Messages] (Chantier|Messages)",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F1",
+      "name": "sélecteur : chantier archivé (Villa du Port) NON proposé",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F1",
+      "name": "sélecteur : chantiers actifs proposés (Résidence Keravel, Les Terrasses, Bâtiment Horizon)",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F1",
+      "name": "sélection Keravel mémorisée + titre affiché",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F1",
+      "name": "consultation tâche = POPUP (#modal), aucun drawer",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F1",
+      "name": "fermeture popup : retour Mode Chantier, chantier conservé",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F2",
+      "name": "recherche \"fenêtre\" → tâche terminée avec \"Signaler une reprise\"",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F2",
+      "name": "formulaire reprise ouvert (commentaire + photo + planification)",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F2",
+      "name": "aperçu photo affiché dans le brouillon de reprise",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F2",
+      "name": "popup \"Reprise créée\" + impact planning affiché",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F2",
+      "name": "reprise créée (task.reworkOfTaskId = k-windows)",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F2",
+      "name": "tâche d'origine reste TERMINÉE (jamais rouverte)",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F2",
+      "name": "photo liée à la reprise (projectId+taskId corrects)",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F2",
+      "name": "successeur (Doublage) redirige sa dépendance vers la reprise",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F2",
+      "name": "replanification",
+      "status": "INFO",
+      "detail": "aucune tâche aval à décaler dans ce scénario"
+    },
+    {
+      "section": "PM-F2",
+      "name": "bouton \"Prévenir Thomas\" proposé",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F2",
+      "name": "conversation ouverte en Mode Chantier (onglet Messages, pas un drawer)",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F2",
+      "name": "message pré-rempli avec le contexte de reprise",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F2",
+      "name": "photo de la reprise jointe au brouillon de message (#fieldConvDraft)",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F2",
+      "name": "reprise visible dans \"Reprises en cours\" au retour chantier",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F2-verdict",
+      "name": "PM-F2 (scénario maître SAV) réalisable de bout en bout",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F3",
+      "name": "planning : reste en Mode Chantier (driverMode=field)",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F3",
+      "name": "planning : sous-vue fieldView=planning",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F3",
+      "name": "planning mobile : aucun Gantt, aucune sidebar Bureau",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F3",
+      "name": "tâche focalisée mise en avant (bloc \"Tâche sélectionnée\")",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F3",
+      "name": "contexte de dépendances affiché (Dépend de / Puis) — Puis",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F3",
+      "name": "planning mobile : uniquement Aujourd'hui / Cette semaine (pas Jour/Mois/Année/PDF)",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F3",
+      "name": "bouton \"← Chantier\" présent",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F3",
+      "name": "clic tâche liée dans le planning → popup (jamais drawer)",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F3",
+      "name": "retour ← Chantier : chantier conservé, aucune impasse",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F3",
+      "name": "barre basse \"Chantier\" referme aussi le planning (issue garantie)",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F4",
+      "name": "Messages = vraie page plein écran (pas un drawer)",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F4",
+      "name": "page Messages : header stable + \"+ Nouveau\"",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F4",
+      "name": "conversation plein écran (ids fieldConv*), aucun drawer",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F4",
+      "name": "envoi message texte (conversation actualisée)",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F4",
+      "name": "photo attachée visible dans le composer (#fieldConvDraft)",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F4",
+      "name": "envoi message avec photo (photoId renseigné)",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F4",
+      "name": "retour Chantier : sélection conservée, aucune impasse",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F4",
+      "name": "+ Nouveau : liste de destinataires (personnes de l'équipe active)",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F5",
+      "name": "une tâche artisan du jour existe (onglet B)",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F5",
+      "name": "onglet A (Mode Chantier) : statut \"En cours\" reflété sans F5",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F5",
+      "name": "onglet A : tâche terminée reflétée sans F5",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F5",
+      "name": "tâche terminée bascule dans \"À contrôler\" (sans F5)",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F6",
+      "name": "reprise ouverte comptée comme intervention ouverte (chantier non prêt à clôturer)",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F6",
+      "name": "chantier NON prêt à clôturer tant que la reprise est ouverte",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F6",
+      "name": "chantier jamais clôturé automatiquement",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F6",
+      "name": "reprise terminée : n'est plus une intervention ouverte (recalcul cohérent)",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F6",
+      "name": "terminer la reprise ne clôture jamais automatiquement le chantier",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F7",
+      "name": "météo KO + offline : Mode Chantier pleinement fonctionnel",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F7",
+      "name": "météo indisponible : aucune valeur fictive (badge vide)",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F7",
+      "name": "390px sombre : aucun scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "section": "PM-F7",
+      "name": "textes longs (chantier/tâche) : aucun débordement horizontal",
+      "status": "PASS"
+    },
+    {
+      "section": "TECH-1",
+      "name": "header/barre basse/largeur stables après 20 bascules (±1px)",
+      "status": "PASS"
+    },
+    {
+      "section": "TECH-1",
+      "name": "géométrie base/after",
+      "status": "INFO",
+      "detail": {
+        "base": {
+          "hx": 0,
+          "hy": 0,
+          "bx": 0,
+          "bw": 390,
+          "ww": 390
+        },
+        "after": {
+          "hx": 0,
+          "hy": 0,
+          "bx": 0,
+          "bw": 390,
+          "ww": 390
+        }
+      }
+    },
+    {
+      "section": "TECH-1",
+      "name": "aucun scroll horizontal après les bascules",
+      "status": "PASS"
+    },
+    {
+      "section": "TECH-2",
+      "name": "tâche À faire/En cours (k-cloisons) → popup, jamais drawer",
+      "status": "PASS"
+    },
+    {
+      "section": "TECH-2",
+      "name": "tâche Terminée (k-windows) → popup, jamais drawer",
+      "status": "PASS"
+    },
+    {
+      "section": "TECH-2",
+      "name": "tâche En attente (k-electric) → popup, jamais drawer",
+      "status": "PASS"
+    },
+    {
+      "section": "TECH-3",
+      "name": "390px : aucun scroll horizontal (home/popup/planning/messages/conversation)",
+      "status": "PASS"
+    },
+    {
+      "section": "TECH-3",
+      "name": "375px : aucun scroll horizontal (home/popup/planning/messages/conversation)",
+      "status": "PASS"
+    },
+    {
+      "section": "TECH-3",
+      "name": "430px : aucun scroll horizontal (home/popup/planning/messages/conversation)",
+      "status": "PASS"
+    },
+    {
+      "section": "TECH-3",
+      "name": "412px : aucun scroll horizontal (home/popup/planning/messages/conversation)",
+      "status": "PASS"
+    },
+    {
+      "section": "TECH-3",
+      "name": "393px : aucun scroll horizontal (home/popup/planning/messages/conversation)",
+      "status": "PASS"
+    },
+    {
+      "section": "TECH-4",
+      "name": "CSS : field-header intègre safe-area-inset-top",
+      "status": "PASS"
+    },
+    {
+      "section": "TECH-4",
+      "name": "CSS : field-bottom intègre safe-area-inset-bottom",
+      "status": "PASS"
+    },
+    {
+      "section": "TECH-4",
+      "name": "popup tâche : #modal role=\"dialog\" (hérité V2.4.5)",
+      "status": "PASS"
+    },
+    {
+      "section": "TECH-4",
+      "name": "popup tâche : bouton de fermeture identifiable",
+      "status": "PASS"
+    },
+    {
+      "section": "TECH-4",
+      "name": "Échap ferme le popup",
+      "status": "PASS"
+    },
+    {
+      "section": "TECH-5",
+      "name": "mode sombre appliqué",
+      "status": "PASS"
+    },
+    {
+      "section": "TECH-5",
+      "name": "textes clés (titre chantier, tâche, sections) ont une couleur définie",
+      "status": "PASS"
+    },
+    {
+      "section": "TECH-5",
+      "name": "popup tâche lisible en sombre",
+      "status": "PASS"
+    },
+    {
+      "section": "TECH-6",
+      "name": "jour sans tâche : écran non cassé",
+      "status": "PASS"
+    },
+    {
+      "section": "TECH-6",
+      "name": "jour sans tâche : message calme \"Aucune intervention prévue\"",
+      "status": "PASS"
+    },
+    {
+      "section": "TECH-6",
+      "name": "aucune reprise : section \"Reprises en cours\" simplement absente",
+      "status": "PASS"
+    },
+    {
+      "section": "TECH-6",
+      "name": "aucun message : liste vide propre",
+      "status": "PASS"
+    },
+    {
+      "section": "TECH-7",
+      "name": "chantier chargé : aucun scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "section": "TECH-7",
+      "name": "densité (aujourd'hui / reprises / à-contrôler affichées)",
+      "status": "INFO",
+      "detail": {
+        "todayCount": 32,
+        "reworkCount": 8,
+        "controlCapped": 0,
+        "hscroll": false
+      }
+    },
+    {
+      "section": "TECH-7",
+      "name": "\"À contrôler\" plafonné à 8 sans recherche (pas de liste infinie)",
+      "status": "PASS"
+    },
+    {
+      "section": "TECH-8",
+      "name": "sortie : driverMode=office, retour Accueil Bureau",
+      "status": "PASS"
+    },
+    {
+      "section": "TECH-8",
+      "name": "aucune donnée perdue (reprise conservée)",
+      "status": "PASS"
+    },
+    {
+      "section": "TECH-8",
+      "name": "chantier sélectionné conservé pour le retour",
+      "status": "PASS"
+    },
+    {
+      "section": "TECH-8",
+      "name": "retour Mode Chantier : état cohérent (chantier conservé)",
+      "status": "PASS"
+    },
+    {
+      "section": "FINDING-1",
+      "name": "bouton \"Voir dans le planning\" présent dans le popup impact",
+      "status": "INFO",
+      "detail": true
+    },
+    {
+      "section": "FINDING-1",
+      "name": "état après clic",
+      "status": "INFO",
+      "detail": {
+        "field": true,
+        "page": "planning",
+        "fieldView": "site",
+        "planningVisible": false,
+        "chantierHomeVisible": true
+      }
+    },
+    {
+      "section": "FINDING-1",
+      "name": "MC-01 reproduit (bouton n'atteint pas le planning mobile, pas d'impasse)",
+      "status": "INFO",
+      "detail": true
+    }
+  ],
+  "errors": [
+    {
+      "where": "PM-F7",
+      "msg": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+    }
+  ]
+}

@@ -848,7 +848,7 @@
     },
     {
       "section": "weather-driver",
-      "name": "A. géoloc. autorisée: rendu Accueil non bloqué (32ms)",
+      "name": "A. géoloc. autorisée: rendu Accueil non bloqué (20ms)",
       "status": "PASS"
     },
     {
