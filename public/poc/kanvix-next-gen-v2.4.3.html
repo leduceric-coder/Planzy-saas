@@ -929,6 +929,10 @@
         align-items: center;
         gap: 12px;
         width: 100%;
+        /* Élément de grille (.attention-grid) : sans min-width:0, un enfant en
+           nowrap (.attention-top-item) empêche la carte de rétrécir sous sa
+           largeur de contenu minimale et fait déborder la page en mobile. */
+        min-width: 0;
         padding: 14px 16px;
         border: 1px solid var(--border-light);
         border-radius: var(--radius-lg);
@@ -1022,6 +1026,254 @@
         text-align: center;
         color: var(--text-tertiary);
         font-size: 16px;
+      }
+      /* Teinte très légère (decide=rouge, watch=orange) — neutre dès que calme. */
+      .attention-card.decide:not(.calm) {
+        background: var(--danger-soft);
+        border-color: transparent;
+      }
+      .attention-card.watch:not(.calm) {
+        background: var(--warning-soft);
+        border-color: transparent;
+      }
+      /* Élément le plus prioritaire — une seule ligne représentative. */
+      .attention-top-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 3px;
+        font-size: 12px;
+        color: var(--text-secondary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      /* En-tête Accueil : ligne de synthèse ⚠/▣/◉ — calculée, jamais figée. */
+      .today-summary {
+        display: flex;
+        gap: 18px;
+        margin-top: 10px;
+        flex-wrap: wrap;
+      }
+      .ts-item {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-secondary);
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .ts-decide {
+        color: var(--danger-ink);
+      }
+      .ts-action {
+        color: var(--accent-ink);
+      }
+      .ts-watch {
+        color: var(--warning-ink);
+      }
+      /* ---------------- Bloc principal Aujourd'hui / Chantiers actifs ---------------- */
+      .today-main-grid {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr;
+        gap: 16px;
+        align-items: start;
+        margin-bottom: 24px;
+      }
+      @media (max-width: 1080px) {
+        .today-main-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      .today-panel {
+        background: var(--surface);
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-xs);
+        padding: 16px 18px 18px;
+      }
+      .panel-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+      .panel-head h2 {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text);
+      }
+      .panel-head .link {
+        font-size: 12.5px;
+        flex: none;
+      }
+      /* Aujourd'hui — lignes intervention */
+      .today-actions-list {
+        display: grid;
+        gap: 10px;
+      }
+      .tp-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        width: 100%;
+        text-align: left;
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-md);
+        padding: 11px 13px;
+        cursor: pointer;
+        background: var(--surface);
+        transition: border-color 0.14s, background 0.14s;
+      }
+      .tp-row:hover {
+        border-color: var(--accent);
+      }
+      .tp-time {
+        flex: none;
+        font-size: 11.5px;
+        font-weight: 600;
+        color: var(--text-tertiary);
+        line-height: 1.5;
+        padding-top: 1px;
+      }
+      .tp-dot {
+        flex: none;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin-top: 6px;
+        background: var(--text-tertiary);
+      }
+      .tp-dot.danger {
+        background: var(--danger);
+      }
+      .tp-dot.warning {
+        background: var(--warning);
+      }
+      .tp-dot.success {
+        background: var(--success);
+      }
+      .tp-dot.accent {
+        background: var(--accent);
+      }
+      .tp-body {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .tp-body b {
+        font-size: 13.5px;
+      }
+      .tp-body small {
+        font-size: 12px;
+        color: var(--text-secondary);
+      }
+      .tp-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin-top: 2px;
+      }
+      .tp-res {
+        font-size: 12px;
+        color: var(--text-secondary);
+      }
+      .tp-confirm {
+        margin-top: 2px;
+        font-size: 11.5px;
+        font-weight: 600;
+      }
+      .tp-confirm.start {
+        color: var(--accent-ink, var(--accent));
+      }
+      .tp-confirm.done {
+        color: var(--success-ink, var(--success));
+      }
+      /* Chantiers actifs — lignes compactes */
+      .acp-list {
+        display: grid;
+        gap: 10px;
+      }
+      .acp-row {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        width: 100%;
+        text-align: left;
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-md);
+        padding: 9px 12px;
+        cursor: pointer;
+        background: var(--surface);
+        transition: border-color 0.14s;
+      }
+      .acp-row:hover {
+        border-color: var(--accent);
+      }
+      .acp-visual {
+        flex: none;
+        width: 44px;
+        height: 44px;
+        border-radius: var(--radius-sm);
+        overflow: hidden;
+      }
+      .acp-visual svg {
+        width: 100%;
+        height: 100%;
+      }
+      .acp-body {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+      }
+      .acp-body b {
+        font-size: 13.5px;
+      }
+      .acp-body small {
+        font-size: 11.5px;
+        color: var(--text-tertiary);
+      }
+      .acp-badge {
+        flex: none;
+        font-size: 11.5px;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+      .acp-badge.danger {
+        color: var(--danger-ink);
+      }
+      .acp-badge.warning {
+        color: var(--warning-ink);
+      }
+      .acp-badge.success {
+        color: var(--success);
+      }
+      /* Bandeau contextuel "À savoir" — une phrase, discret. */
+      .today-insight {
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+        margin-top: 22px;
+        padding: 13px 16px;
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-md);
+        background: var(--surface-subtle);
+        font-size: 13px;
+      }
+      .today-insight b {
+        flex: none;
+        color: var(--text);
+      }
+      .today-insight p {
+        margin: 0;
+        color: var(--text-secondary);
       }
       /* Two prominent zones (À décider + Aujourd'hui), À surveiller light below */
       .today-grid {
@@ -1333,13 +1585,13 @@
       }
       /* Aperçu « Cette semaine » — bande légère sous le workflow */
       .week-preview {
-        margin-top: 28px;
+        margin-top: 8px;
       }
       .wp-head {
         display: flex;
         align-items: baseline;
         justify-content: space-between;
-        margin-bottom: 11px;
+        margin-bottom: 8px;
       }
       .wp-head h2 {
         font-size: 12px;
@@ -1360,9 +1612,9 @@
       }
       .wp-day {
         display: grid;
-        gap: 7px;
+        gap: 5px;
         align-content: start;
-        padding: 12px 12px 13px;
+        padding: 9px 10px 10px;
         text-align: left;
         border: 1px solid var(--border-light);
         border-radius: var(--radius-md);
@@ -1387,7 +1639,7 @@
         display: flex;
         align-items: center;
         gap: 6px;
-        font-size: 14.5px;
+        font-size: 12.5px;
         font-weight: 700;
         color: var(--text);
         text-transform: capitalize;
@@ -1406,19 +1658,19 @@
         text-transform: uppercase;
       }
       .wp-count {
-        font-size: 13.5px;
+        font-size: 12px;
         color: var(--text-secondary);
       }
       .wp-count b {
         color: var(--text);
-        font-size: 21px;
+        font-size: 16px;
         margin-right: 4px;
       }
       .wp-signals {
         display: flex;
         align-items: center;
         gap: 6px;
-        min-height: 15px;
+        min-height: 13px;
         flex-wrap: wrap;
       }
       .wp-dot {
@@ -8585,25 +8837,41 @@
           return "warning";
         return "success";
       }
-      function getTodayActions() {
+      function getTodayActions(limit = 3) {
         let d = dayKey(TODAY),
-          decisionTasks = new Set(getTodayDecisions().map((i) => i.taskId)),
-          rank = { late: 0, waiting: 1, doing: 2, todo: 3 };
+          decisionTasks = new Set(getTodayDecisions(Infinity).map((i) => i.taskId)),
+          // Un signal terrain frais (démarrage ou fin pas encore vu) fait
+          // remonter la tâche en tête — sinon la confirmation temps réel
+          // pourrait rester invisible, hors des N premières lignes affichées
+          // (voir fieldStartDoneNote) ; réutilise field-start/-done existants,
+          // aucun nouveau système. Une tâche tout juste terminée peut aussi
+          // apparaître brièvement tant que sa confirmation n'a pas été vue.
+          freshSignalIds = new Set(
+            app.issues
+              .filter(
+                (i) =>
+                  (i.kind === "field-done" || i.kind === "field-start") &&
+                  i.status !== "resolved",
+              )
+              .map((i) => i.taskId),
+          ),
+          rank = { late: 0, waiting: 1, doing: 2, todo: 3, done: 4 };
         return app.tasks
           .filter(
             (t) =>
               taskIsOperational(t) &&
               dayKey(t.start) <= d &&
               dayKey(t.end) >= d &&
-              t.status !== "done",
+              (t.status !== "done" || freshSignalIds.has(t.id)),
           )
           .sort(
             (a, b) =>
+              freshSignalIds.has(b.id) - freshSignalIds.has(a.id) ||
               decisionTasks.has(a.id) - decisionTasks.has(b.id) ||
-              rank[a.status] - rank[b.status] ||
+              (rank[a.status] ?? 5) - (rank[b.status] ?? 5) ||
               a.start.localeCompare(b.start),
           )
-          .slice(0, 3);
+          .slice(0, limit);
       }
       function getTodayWarnings(limit = 3) {
         // Priorité métier (B4) au sein d'« À surveiller » :
@@ -8660,15 +8928,14 @@
       // decisions/warnings sont donc les listes COMPLÈTES (le détail reste
       // accessible via openMoreIssues), pas une sélection tronquée à afficher.
       function getTodayWorkflow() {
-        let decisions = getTodayDecisions(Infinity),
-          actions = getTodayActions()
-            .filter((x) => x.status !== "done")
-            .sort(
-              (a, b) =>
-                priorityScore(b) - priorityScore(a) ||
-                a.start.localeCompare(b.start),
-            )
-            .slice(0, 4),
+        // Listes COMPLÈTES : la carte de synthèse affiche le total réel et
+        // l'élément le plus prioritaire, le panneau Aujourd'hui affiche un
+        // sous-ensemble raisonnable — getTodayActions() trie et filtre déjà
+        // tout seul (opérationnel, jour, fraîchement terminé), pas de re-tri ici.
+        let decisions = getTodayDecisions(Infinity).sort(
+            (a, b) => priorityScore(b) - priorityScore(a),
+          ),
+          actions = getTodayActions(Infinity),
           warnings = getTodayWarnings(Infinity);
         return { decisions, actions, warnings };
       }
@@ -9220,7 +9487,7 @@
               return `<button class="wp-day ${isToday ? "today" : ""}" onclick="openDayTasks('${day}')" aria-label="${label}, ${count} intervention${count > 1 ? "s" : ""}"><span class="wp-label">${label}${isToday ? `<span class="wp-today-tag">Auj.</span>` : ""}</span><span class="wp-count"><b>${count}</b>${count > 1 ? "interventions" : "intervention"}</span><span class="wp-signals">${signals}</span></button>`;
             })
             .join("");
-        return `<section class="week-preview"><div class="wp-head"><h2>Les tâches de la semaine</h2><span>Cliquez un jour pour voir les interventions</span></div><div class="wp-days">${cells}</div></section>`;
+        return `<section class="week-preview"><div class="wp-head"><h2>Cette semaine</h2><button class="link" onclick="openWeekPlanning()">Vue semaine complète ›</button></div><div class="wp-days">${cells}</div></section>`;
       }
       function focusPlanningDay(day) {
         app.ui.planningProject = "all";
@@ -9362,14 +9629,110 @@
             : decide
               ? "Aucun point à traiter"
               : "Tout est sous contrôle",
-          critical = decide && items.some((i) => i.severity === "critical");
-        return `<button class="${cls}" data-sev="${critical ? "critical" : ""}" onclick="${onclickExpr}"><span class="attention-ico">${icon(decide ? "alert" : "eye")}</span><span class="attention-body"><span class="attention-top"><b>${esc(label)}</b><span class="attention-count">${total}</span></span><span class="attention-sub">${total ? "" : "✓ "}${esc(summary)}</span></span><span class="attention-chevron">›</span></button>`;
+          critical = decide && items.some((i) => i.severity === "critical"),
+          // Une seule information représentative — la plus prioritaire (les
+          // listes arrivent déjà triées : priorityScore pour les décisions,
+          // rang métier existant pour les surveillances).
+          top = items[0],
+          topLine = top
+            ? `<span class="attention-top-item">${dot(attentionRowTone(kind, top))}${esc(top.title)} — ${esc(project(top.projectId)?.name || "")}</span>`
+            : "";
+        return `<button class="${cls}" data-sev="${critical ? "critical" : ""}" onclick="${onclickExpr}"><span class="attention-ico">${icon(decide ? "alert" : "eye")}</span><span class="attention-body"><span class="attention-top"><b>${esc(label)}</b><span class="attention-count">${total}</span></span><span class="attention-sub">${total ? "" : "✓ "}${esc(summary)}</span>${topLine}</span><span class="attention-chevron">›</span></button>`;
+      }
+      // Badge compact d'un chantier pour le panneau "Chantiers actifs" —
+      // réutilise getProjectSummary (donc getProjectHealth/getProjectIssues),
+      // aucune nouvelle vérité métier.
+      function projectAttentionBadge(pid) {
+        let sum = getProjectSummary(pid),
+          criticals = sum.issues.filter((i) => i.severity === "critical").length;
+        if (criticals)
+          return { tone: "danger", icon: "⚠", text: `${criticals} critique${criticals > 1 ? "s" : ""}` };
+        if (sum.issues.length)
+          return { tone: "warning", icon: "◉", text: `${sum.issues.length} à surveiller` };
+        return { tone: "success", icon: "✓", text: "Tout est à jour" };
+      }
+      // Panneau "Chantiers actifs" — activeProjects() + fonctions existantes
+      // uniquement (getProjectSummary), 4 chantiers maximum, le reste via
+      // "Voir tous les chantiers" (page Chantiers existante).
+      function activeProjectsPanel() {
+        let all = activeProjects(),
+          shown = all.slice(0, 4),
+          rows = shown.length
+            ? shown
+                .map((p) => {
+                  let badge = projectAttentionBadge(p.id);
+                  return `<button class="acp-row" onclick="selectProject('${p.id}')"><span class="acp-visual">${projectVisual(p.id)}</span><span class="acp-body"><b>${esc(p.name)}</b><small>${[p.phase, p.location].filter(Boolean).map(esc).join(" · ")}</small></span><span class="acp-badge ${badge.tone}">${badge.icon} ${esc(badge.text)}</span></button>`;
+                })
+                .join("")
+            : `<p class="field-none">Aucun chantier actif.</p>`;
+        return `<div class="today-panel projects-panel"><div class="panel-head"><h2>Chantiers actifs</h2><button class="link" onclick="go('sites')">Voir tous les chantiers ›</button></div><div class="acp-list">${rows}</div></div>`;
+      }
+      // Ligne "confirmation terrain" sous une intervention du jour — réutilise
+      // les signaux field-start/field-done existants, aucun nouveau système.
+      function fieldStartDoneNote(t) {
+        let done = app.issues.find(
+            (i) => i.taskId === t.id && i.kind === "field-done" && i.status !== "resolved",
+          ),
+          start = app.issues.find(
+            (i) => i.taskId === t.id && i.kind === "field-start" && i.status !== "resolved",
+          ),
+          hit = done || start;
+        if (!hit || !hit.createdAt) return "";
+        return `<span class="tp-confirm ${done ? "done" : "start"}">✓ ${done ? "Terminée" : "Démarrée"} à ${fmtTime(new Date(hit.createdAt))}</span>`;
+      }
+      function todayActionRow(t) {
+        return `<article class="tp-row" onclick="openTask('${t.id}')"><span class="tp-time">${fmtTime(t.start)}<br>${fmtTime(t.end)}</span><span class="tp-dot ${taskTone(t)}"></span><span class="tp-body"><b>${esc(t.name)}</b><small>${esc(project(t.projectId).name)}</small><span class="tp-meta"><span class="tp-res">${esc(resourceLabel(t.resourceId))}</span>${pill(taskTone(t), STATUS[t.status])}</span>${fieldStartDoneNote(t)}</span></article>`;
+      }
+      // Panneau "Aujourd'hui" — getTodayActions() (déjà filtrée/triée), pas de
+      // nouvelle collection ; 4 actions maximum, le reste via openDayTasks (déjà
+      // le popup "toutes les interventions du jour" réutilisé tel quel).
+      function todayActionsPanel(actions) {
+        let total = actions.length,
+          shown = actions.slice(0, 4),
+          day = dayKey(TODAY),
+          s = (n) => (n > 1 ? "s" : "");
+        return (
+          `<div class="today-panel actions-panel"><div class="panel-head"><h2>Aujourd’hui${total ? ` — ${total} action${s(total)}` : ""}</h2><button class="link" onclick="focusPlanningDay('${day}')">Voir le planning du jour ›</button></div>` +
+          (shown.length
+            ? `<div class="today-actions-list">${shown.map(todayActionRow).join("")}</div>${total > shown.length ? `<button class="link multi-note" onclick="openDayTasks('${day}')">Voir toutes les actions du jour (${total}) ›</button>` : ""}`
+            : `<p class="field-none">Aucune intervention prévue aujourd’hui.</p>`) +
+          `</div>`
+        );
+      }
+      // "Vue semaine complète" — même glissière que focusPlanningDay/Task,
+      // seule la période change (semaine plutôt que jour).
+      function openWeekPlanning() {
+        app.ui.planningProject = "all";
+        app.ui.planningResource = "all";
+        app.settings.period = "week";
+        app.ui.periodAnchor = TODAY;
+        app.ui.planningNeedsCenter = true;
+        app.ui.page = "planning";
+        save();
+        renderPage();
+        scrollTo(0, 0);
+      }
+      // Bandeau "À savoir" — UNE phrase maximum, seulement si réellement utile
+      // (pas de bruit). Réutilise les listes déjà calculées, aucun nouvel état.
+      function todayInsight(decisions, warnings) {
+        if (decisions.length >= 3)
+          return `${decisions.length} décisions en attente peuvent encore impacter le planning.`;
+        let confirmedToday = app.issues.filter(
+          (i) =>
+            i.kind === "field-done" &&
+            i.createdAt &&
+            dayKey(i.createdAt) === dayKey(TODAY),
+        ).length;
+        if (confirmedToday >= 2)
+          return `${confirmedToday} interventions ont été confirmées sur le terrain aujourd’hui.`;
+        if (!decisions.length && !warnings.length)
+          return "Tout est sous contrôle aujourd’hui.";
+        return null;
       }
       function pageToday() {
         let { decisions, actions, warnings } = getTodayWorkflow(),
-          calm = !decisions.length && !warnings.length,
           s = (n) => (n > 1 ? "s" : ""),
-          hero = `<header class="today-hero"><h1>${calm ? "Tout est calme aujourd’hui." : "Bonjour Eric 👋"}</h1><p>${calm ? `${actions.length} action${s(actions.length)} prévue${s(actions.length)} · aucun point bloquant` : `${decisions.length} décision${s(decisions.length)} · ${actions.length} action${s(actions.length)} · ${warnings.length} surveillance${s(warnings.length)}`}</p></header>`,
+          hero = `<header class="today-hero"><h1>Bonjour Eric 👋</h1><p>Voici l’essentiel de votre journée.</p><div class="today-summary"><span class="ts-item ts-decide">⚠ ${decisions.length} décision${s(decisions.length)}</span><span class="ts-item ts-action">▣ ${actions.length} action${s(actions.length)}</span><span class="ts-item ts-watch">◉ ${warnings.length} surveillance${s(warnings.length)}</span></div></header>`,
           // Sur mobile, le menu profil (seul point d'entrée du Mode Chantier
           // côté bureau) est masqué : ce raccourci est donc le seul chemin.
           // Masqué en desktop par CSS — jamais dupliqué avec le menu profil.
@@ -9380,8 +9743,13 @@
           // Deux cartes synthétiques uniquement — le détail (decisionCard,
           // watchCard, impactMini…) reste accessible via openMoreIssues, plus
           // affiché directement sur l'Accueil (voir Partie B de la demande).
-          attention = `<div class="attention-grid">${attentionCard("decide", decisions, "openMoreIssues('decide')")}${attentionCard("watch", warnings, "openMoreIssues('watch')")}</div>`;
-        return hero + fieldEntry + attention + weekPreview();
+          attention = `<div class="attention-grid">${attentionCard("decide", decisions, "openMoreIssues('decide')")}${attentionCard("watch", warnings, "openMoreIssues('watch')")}</div>`,
+          mainGrid = `<div class="today-main-grid">${todayActionsPanel(actions)}${activeProjectsPanel()}</div>`,
+          insight = todayInsight(decisions, warnings),
+          insightBar = insight
+            ? `<div class="today-insight">💡 <b>À savoir</b><p>${esc(insight)}</p></div>`
+            : "";
+        return hero + fieldEntry + attention + mainGrid + weekPreview() + insightBar;
       }
       function workflowTaskRow(t) {
         let pilot = app.settings.level !== "essential";
