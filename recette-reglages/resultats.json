@@ -1,0 +1,357 @@
+{
+  "passed": 63,
+  "failed": [],
+  "results": [
+    {
+      "sec": "A",
+      "name": "A : page intitulée \"Réglages\"",
+      "status": "PASS"
+    },
+    {
+      "sec": "B",
+      "name": "B : sous-titre exact",
+      "status": "PASS"
+    },
+    {
+      "sec": "C",
+      "name": "C : aucune occurrence \"Plus\"",
+      "status": "PASS"
+    },
+    {
+      "sec": "C",
+      "name": "C : aucune occurrence \"Profondeur\"",
+      "status": "PASS"
+    },
+    {
+      "sec": "C",
+      "name": "C : aucun badge \"Niveau essential/pilot\"",
+      "status": "PASS"
+    },
+    {
+      "sec": "C",
+      "name": "C : aucune section \"Outils contextuels\"",
+      "status": "PASS"
+    },
+    {
+      "sec": "D",
+      "name": "D : exactement 3 cartes de réglage",
+      "status": "PASS"
+    },
+    {
+      "sec": "D",
+      "name": "D : carte \"Expérience Kanvix\"",
+      "status": "PASS"
+    },
+    {
+      "sec": "D",
+      "name": "D : carte \"Mode de démonstration\"",
+      "status": "PASS"
+    },
+    {
+      "sec": "D",
+      "name": "D : carte \"Données & démonstration\"",
+      "status": "PASS"
+    },
+    {
+      "sec": "E",
+      "name": "E : \"Essentiel\" sélectionné (niveau=essential)",
+      "status": "PASS"
+    },
+    {
+      "sec": "F",
+      "name": "F : description Essentiel affichée",
+      "status": "PASS"
+    },
+    {
+      "sec": "E",
+      "name": "E : clic \"Pilotage\" → niveau=pilot, sélection mise à jour",
+      "status": "PASS"
+    },
+    {
+      "sec": "F",
+      "name": "F : description bascule dynamiquement pour Pilotage",
+      "status": "PASS"
+    },
+    {
+      "sec": "G",
+      "name": "G : \"Sombre\" → appearance=dark",
+      "status": "PASS"
+    },
+    {
+      "sec": "G",
+      "name": "G : \"Sombre\" applique bien le thème sombre",
+      "status": "PASS"
+    },
+    {
+      "sec": "G",
+      "name": "G : \"Clair\" → appearance=light",
+      "status": "PASS"
+    },
+    {
+      "sec": "G",
+      "name": "G : \"Système\" → appearance=system",
+      "status": "PASS"
+    },
+    {
+      "sec": "H",
+      "name": "H : deux cartes rôle (Conducteur/Artisan)",
+      "status": "PASS"
+    },
+    {
+      "sec": "H",
+      "name": "H : Conducteur sélectionné par défaut (rôle courant)",
+      "status": "PASS"
+    },
+    {
+      "sec": "H",
+      "name": "H : carte Artisan présente",
+      "status": "PASS"
+    },
+    {
+      "sec": "H",
+      "name": "H : clic Artisan → setRole(artisan) (simulation de rôle)",
+      "status": "PASS"
+    },
+    {
+      "sec": "H",
+      "name": "H : retour Conducteur → setRole(driver)",
+      "status": "PASS"
+    },
+    {
+      "sec": "I",
+      "name": "I : Ressources/Documents/Photos/Impact absents de la page Réglages",
+      "status": "PASS"
+    },
+    {
+      "sec": "J",
+      "name": "J : renderResources/Documents/Photos/Impact toujours définies",
+      "status": "PASS"
+    },
+    {
+      "sec": "J",
+      "name": "J : page \"resources\" toujours accessible et rendue (go('resources'))",
+      "status": "PASS"
+    },
+    {
+      "sec": "J",
+      "name": "J : page \"documents\" toujours accessible et rendue (go('documents'))",
+      "status": "PASS"
+    },
+    {
+      "sec": "J",
+      "name": "J : page \"photos\" toujours accessible et rendue (go('photos'))",
+      "status": "PASS"
+    },
+    {
+      "sec": "J",
+      "name": "J : page \"impact\" toujours accessible et rendue (go('impact'))",
+      "status": "PASS"
+    },
+    {
+      "sec": "J",
+      "name": "accès Ressources dans la palette de commandes",
+      "status": "INFO",
+      "detail": true
+    },
+    {
+      "sec": "K",
+      "name": "lignes Données",
+      "status": "INFO",
+      "detail": [
+        "Modèle d’entreprise",
+        "Importer des données",
+        "Exporter les données",
+        "Réinitialiser la démonstration"
+      ]
+    },
+    {
+      "sec": "K",
+      "name": "K : ligne \"Modèle d'entreprise\" (sous-titre + chevron)",
+      "status": "PASS"
+    },
+    {
+      "sec": "L",
+      "name": "L : ligne \"Importer des données\"",
+      "status": "PASS"
+    },
+    {
+      "sec": "M",
+      "name": "M : ligne \"Exporter les données\"",
+      "status": "PASS"
+    },
+    {
+      "sec": "M",
+      "name": "M : \"JSON\" retiré du titre d'export",
+      "status": "PASS"
+    },
+    {
+      "sec": "K",
+      "name": "K : clic Modèle d'entreprise → openCompanyTemplateForm (drawer)",
+      "status": "PASS"
+    },
+    {
+      "sec": "L",
+      "name": "L : clic Importer câblé à openKanvixImport() (moteur existant, sélecteur fichier natif)",
+      "status": "PASS"
+    },
+    {
+      "sec": "L",
+      "name": "L : openKanvixImport ouvre bien un sélecteur de fichier (.json)",
+      "status": "PASS"
+    },
+    {
+      "sec": "N",
+      "name": "N : clic Réinitialiser → popup de confirmation (pas de reset immédiat)",
+      "status": "PASS"
+    },
+    {
+      "sec": "N",
+      "name": "N : aucune réinitialisation tant que non confirmée",
+      "status": "PASS"
+    },
+    {
+      "sec": "N",
+      "name": "N : \"Annuler\" conserve les données",
+      "status": "PASS"
+    },
+    {
+      "sec": "N",
+      "name": "N : \"Réinitialiser\" confirmé → resetApp() restaure les données d'origine",
+      "status": "PASS"
+    },
+    {
+      "sec": "O",
+      "name": "O/P : 1440px — aucun scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "P",
+      "name": "P : 1440px — contrôles segmentés ne débordent pas",
+      "status": "PASS"
+    },
+    {
+      "sec": "O",
+      "name": "O : colonne centrale plafonnée (~820px, mesuré 820)",
+      "status": "PASS"
+    },
+    {
+      "sec": "O",
+      "name": "O/P : 1280px — aucun scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "P",
+      "name": "P : 1280px — contrôles segmentés ne débordent pas",
+      "status": "PASS"
+    },
+    {
+      "sec": "O",
+      "name": "O/P : 900px — aucun scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "P",
+      "name": "P : 900px — contrôles segmentés ne débordent pas",
+      "status": "PASS"
+    },
+    {
+      "sec": "O",
+      "name": "O/P : 768px — aucun scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "P",
+      "name": "P : 768px — contrôles segmentés ne débordent pas",
+      "status": "PASS"
+    },
+    {
+      "sec": "O",
+      "name": "O/P : 430px — aucun scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "P",
+      "name": "P : 430px — contrôles segmentés ne débordent pas",
+      "status": "PASS"
+    },
+    {
+      "sec": "O",
+      "name": "O/P : 390px — aucun scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "P",
+      "name": "P : 390px — contrôles segmentés ne débordent pas",
+      "status": "PASS"
+    },
+    {
+      "sec": "Q",
+      "name": "Q : mode sombre appliqué",
+      "status": "PASS"
+    },
+    {
+      "sec": "Q",
+      "name": "Q : cartes ont un fond défini en sombre",
+      "status": "PASS"
+    },
+    {
+      "sec": "Q",
+      "name": "Q : titres et sous-titres lisibles en sombre",
+      "status": "PASS"
+    },
+    {
+      "sec": "Q",
+      "name": "Q : action destructive (rouge) définie en sombre",
+      "status": "PASS"
+    },
+    {
+      "sec": "Q",
+      "name": "Q : sélection segmentée visible en sombre",
+      "status": "PASS"
+    },
+    {
+      "sec": "Q",
+      "name": "couleurs sombres",
+      "status": "INFO",
+      "detail": {
+        "body": true,
+        "cardBg": "rgb(16, 32, 47)",
+        "title": "rgb(238, 244, 249)",
+        "sub": "rgb(163, 179, 196)",
+        "danger": "rgb(193, 59, 64)",
+        "segActiveBg": "rgb(23, 51, 90)"
+      }
+    },
+    {
+      "sec": "A11Y",
+      "name": "A11Y : tous les contrôles sont des <button> natifs (accessibles clavier)",
+      "status": "PASS"
+    },
+    {
+      "sec": "A11Y",
+      "name": "A11Y : groupes radio (niveau/apparence/rôle) sémantiques",
+      "status": "PASS"
+    },
+    {
+      "sec": "A11Y",
+      "name": "A11Y : options segmentées portent aria-checked",
+      "status": "PASS"
+    },
+    {
+      "sec": "A11Y",
+      "name": "A11Y : une option segmentée peut recevoir le focus clavier",
+      "status": "PASS"
+    },
+    {
+      "sec": "A11Y",
+      "name": "A11Y : activation clavier (Entrée) fonctionne",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    {
+      "where": "A11Y",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    }
+  ]
+}
