@@ -1,12 +1,6 @@
 {
-  "passed": 118,
-  "failed": [
-    "[a11y] Lignes Aujourd'hui : élément focusable au clavier",
-    "[long-text] textes longs (nom chantier + localisation): pas de débordement horizontal de page",
-    "[long-text] Chantiers actifs: la ligne ne dépasse pas le viewport avec un nom/localisation très longs",
-    "[long-text] nom de tâche très long: hauteur des lignes Aujourd'hui reste cohérente (±2px)",
-    "[project-weather] météo chantier: au moins une ligne affiche une météo réelle"
-  ],
+  "passed": 149,
+  "failed": [],
   "results": [
     {
       "section": "align",
@@ -402,6 +396,24 @@
       }
     },
     {
+      "section": "f06-add-button",
+      "name": "F06 : bouton \"+\" invisible sur l'Accueil Mobile Bureau",
+      "status": "PASS"
+    },
+    {
+      "section": "f06-add-button",
+      "name": "F06 : aucun chevauchement avec la navigation basse (le bouton est masqué)",
+      "status": "PASS"
+    },
+    {
+      "section": "f06-add-button",
+      "name": "bouton \"+\" sur la page Chantiers (comportement existant conservé)",
+      "status": "INFO",
+      "detail": {
+        "addVisible": true
+      }
+    },
+    {
       "section": "dark",
       "name": "mode sombre appliqué (classe body.dark)",
       "status": "PASS"
@@ -557,22 +569,48 @@
     },
     {
       "section": "a11y",
-      "name": "Lignes Aujourd'hui : élément focusable au clavier",
-      "status": "FAIL"
+      "name": "F04 : lignes Aujourd'hui focusables au clavier (tabindex)",
+      "status": "PASS"
     },
     {
       "section": "a11y",
-      "name": "détails",
+      "name": "F04 : role=\"button\" présent sur .tp-row",
+      "status": "PASS"
+    },
+    {
+      "section": "a11y",
+      "name": "F04 : aria-label utile (\"Tâche X — Chantier — Statut\")",
+      "status": "PASS"
+    },
+    {
+      "section": "a11y",
+      "name": "détails F04",
       "status": "INFO",
       "detail": {
         "tpRowTag": "ARTICLE",
-        "tpRowTabIndex": -1,
-        "tpRowFocusable": false,
+        "tpRowRole": "button",
+        "tpRowTabIndex": 0,
+        "tpRowFocusable": true,
+        "tpRowAriaLabel": "Tâche Tableau électrique — Résidence Keravel — En attente",
         "acpRowTag": "BUTTON",
         "attCardTag": "BUTTON",
-        "wpDayTag": "BUTTON",
-        "modalHasDialogRole": null
+        "wpDayTag": "BUTTON"
       }
+    },
+    {
+      "section": "a11y",
+      "name": "F04 : Entrée sur une ligne focalisée ouvre la tâche",
+      "status": "PASS"
+    },
+    {
+      "section": "a11y",
+      "name": "F04 : Espace sur une ligne focalisée ouvre la tâche",
+      "status": "PASS"
+    },
+    {
+      "section": "a11y",
+      "name": "F04 : aucun double déclenchement (openTask appelé exactement 1 fois)",
+      "status": "PASS"
     },
     {
       "section": "a11y",
@@ -584,16 +622,66 @@
       }
     },
     {
+      "section": "a11y-modal",
+      "name": "F05 : #modal a role=\"dialog\"",
+      "status": "PASS"
+    },
+    {
+      "section": "a11y-modal",
+      "name": "F05 : #modal a aria-modal=\"true\"",
+      "status": "PASS"
+    },
+    {
+      "section": "a11y-modal",
+      "name": "F05 : #modal a aria-labelledby",
+      "status": "PASS"
+    },
+    {
+      "section": "a11y-modal",
+      "name": "F05 : popup \"À décider\" toujours fonctionnel",
+      "status": "PASS"
+    },
+    {
+      "section": "a11y-modal",
+      "name": "F05 : aria-labelledby pointe vers un titre réel (\"Décisions à traiter\")",
+      "status": "PASS"
+    },
+    {
+      "section": "a11y-modal",
+      "name": "F05 : popup \"À surveiller\" toujours fonctionnel",
+      "status": "PASS"
+    },
+    {
+      "section": "a11y-modal",
+      "name": "F05 : aria-labelledby pointe vers un titre réel (\"Points à surveiller\")",
+      "status": "PASS"
+    },
+    {
+      "section": "a11y-modal",
+      "name": "F05 : popup \"jour de la semaine\" toujours fonctionnel",
+      "status": "PASS"
+    },
+    {
+      "section": "a11y-modal",
+      "name": "F05 : aria-labelledby pointe vers un titre réel (\"Lundi 31 août\")",
+      "status": "PASS"
+    },
+    {
+      "section": "a11y-modal",
+      "name": "F05 : Échap ferme toujours le popup",
+      "status": "PASS"
+    },
+    {
       "section": "density",
       "name": "hauteur cas CALME (px)",
       "status": "INFO",
-      "detail": 1013
+      "detail": 943
     },
     {
       "section": "density",
       "name": "hauteur cas NORMAL (px)",
       "status": "INFO",
-      "detail": 1013
+      "detail": 943
     },
     {
       "section": "density",
@@ -609,7 +697,7 @@
       "section": "density",
       "name": "hauteur cas CHARGÉ (px)",
       "status": "INFO",
-      "detail": 1013
+      "detail": 943
     },
     {
       "section": "density",
@@ -644,6 +732,26 @@
       "detail": "1.00"
     },
     {
+      "section": "insight",
+      "name": "CAS NORMAL (3 décisions, rien de transverse) : pas de bandeau \"À savoir\"",
+      "status": "PASS"
+    },
+    {
+      "section": "insight",
+      "name": "CAS CALME (0/0) : pas de bandeau \"À savoir\" (déjà dit par les cartes calmes)",
+      "status": "PASS"
+    },
+    {
+      "section": "insight",
+      "name": "CAS TERRAIN (2 confirmations) : bandeau \"À savoir\" visible avec le texte exact (2 interventions ont été confirmées sur le terrain aujourd’hui.)",
+      "status": "PASS"
+    },
+    {
+      "section": "insight",
+      "name": "CAS TERRAIN : mise en page Bureau normale (pas de cadre mobile résiduel)",
+      "status": "PASS"
+    },
+    {
       "section": "empty",
       "name": "Accueil ne casse pas avec 0 chantier/0 tâche/0 issue",
       "status": "PASS"
@@ -662,53 +770,85 @@
     },
     {
       "section": "long-text",
-      "name": "textes longs (nom chantier + localisation): pas de débordement horizontal de page",
-      "status": "FAIL"
-    },
-    {
-      "section": "long-text",
-      "name": "Chantiers actifs: la ligne ne dépasse pas le viewport avec un nom/localisation très longs",
-      "status": "FAIL"
-    },
-    {
-      "section": "long-text",
-      "name": "dépassement mesuré (px, >0 = débordement)",
+      "name": "longueurs (attendu >100)",
       "status": "INFO",
       "detail": {
-        "pageHScroll": true,
-        "acpRowRight": 18.84375,
-        "acpBodySmallTruncated": true,
-        "tpRowRight": -569.59375
+        "name": 122,
+        "location": 123
       }
     },
     {
       "section": "long-text",
-      "name": "nom de tâche très long: pas de débordement horizontal de page",
+      "name": "F02 : nom chantier + localisation >100 caractères -> 0 débordement horizontal de page",
       "status": "PASS"
     },
     {
       "section": "long-text",
-      "name": "nom de tâche très long: hauteur des lignes Aujourd'hui reste cohérente (±2px)",
-      "status": "FAIL"
+      "name": "F02 : .acp-row reste dans son conteneur (min-width:0 appliqué)",
+      "status": "PASS"
     },
     {
       "section": "long-text",
-      "name": "hauteurs lignes Aujourd'hui avec texte long",
+      "name": "F02 : hauteur des lignes Chantiers actifs inchangée malgré le texte long",
+      "status": "PASS"
+    },
+    {
+      "section": "long-text",
+      "name": "F02 mesures",
+      "status": "INFO",
+      "detail": {
+        "pageHScroll": false,
+        "acpRowRight": -74.015625,
+        "acpNameTruncated": false,
+        "heights": [
+          72,
+          72,
+          72,
+          72
+        ],
+        "heightSpread": 0
+      }
+    },
+    {
+      "section": "long-text",
+      "name": "F03 : nom complet accessible via title=\"...\" natif",
+      "status": "PASS"
+    },
+    {
+      "section": "long-text",
+      "name": "F03 : titre tronqué sur une seule ligne (ellipsis, pas de retour à la ligne)",
+      "status": "PASS"
+    },
+    {
+      "section": "long-text",
+      "name": "F03 : nom de tâche à 150 caractères -> pas de débordement horizontal de page",
+      "status": "PASS"
+    },
+    {
+      "section": "long-text",
+      "name": "F03 : hauteur des lignes Aujourd'hui reste cohérente ±2px même à 150 caractères",
+      "status": "PASS"
+    },
+    {
+      "section": "long-text",
+      "name": "F03 mesures",
       "status": "INFO",
       "detail": {
         "pageHScroll": false,
         "heights": [
           91,
-          111,
+          91,
           91,
           91
         ],
-        "heightSpread": 20
+        "heightSpread": 0,
+        "titleAttr": "Pose complète des menuiseries extérieures triple vitrage avec finitions et joints d’étanchéité renforcés sur toute la façade principale du bâtiment C ok",
+        "isSingleLine": true
       }
     },
     {
       "section": "weather-driver",
-      "name": "A. géoloc. autorisée: rendu Accueil non bloqué (26ms)",
+      "name": "A. géoloc. autorisée: rendu Accueil non bloqué (32ms)",
       "status": "PASS"
     },
     {
@@ -743,23 +883,23 @@
       "status": "INFO",
       "detail": [
         {
-          "text": "Second œuvre · Plouzané ",
-          "weather": "",
+          "text": "Second œuvre · Plouzané 🌤 18°",
+          "weather": "🌤 18°",
           "height": 72
         },
         {
-          "text": "Gros œuvre · Brest ",
-          "weather": "",
+          "text": "Gros œuvre · Brest 🌤 18°",
+          "weather": "🌤 18°",
           "height": 72
         },
         {
-          "text": "Finitions · Le Relecq ",
-          "weather": "",
+          "text": "Finitions · Le Relecq 🌤 18°",
+          "weather": "🌤 18°",
           "height": 72
         },
         {
-          "text": "Électricité · Brest ",
-          "weather": "",
+          "text": "Électricité · Brest 🌤 18°",
+          "weather": "🌤 18°",
           "height": 72
         }
       ]
@@ -772,7 +912,7 @@
     {
       "section": "project-weather",
       "name": "météo chantier: au moins une ligne affiche une météo réelle",
-      "status": "FAIL"
+      "status": "PASS"
     },
     {
       "section": "project-weather",
@@ -780,26 +920,18 @@
       "status": "PASS"
     },
     {
-      "section": "project-weather-finding",
-      "name": "viewport fixé à la création (contrôle)",
-      "status": "INFO",
-      "detail": "🌤 18°"
+      "section": "project-weather-f01",
+      "name": "F01 : 30/30 cycles affichent la météo dans les 4 lignes chantier",
+      "status": "PASS"
     },
     {
-      "section": "project-weather-finding",
-      "name": "setViewportSize() après chargement (reproduction)",
-      "status": "INFO",
-      "detail": ""
+      "section": "project-weather-f01",
+      "name": "F01 : météo chantier toujours visible après 10 navigations Accueil <-> Chantiers",
+      "status": "PASS"
     },
     {
-      "section": "project-weather-finding",
-      "name": "météo conducteur dans le même scénario (non affectée attendu)",
-      "status": "INFO",
-      "detail": ""
-    },
-    {
-      "section": "project-weather-finding",
-      "name": "CONTRÔLE : météo chantier présente sans changement de viewport en cours de session",
+      "section": "project-weather-f01",
+      "name": "F01 : météo toujours présente après une salve de rendus rapides",
       "status": "PASS"
     },
     {
@@ -859,7 +991,7 @@
       "msg": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
     },
     {
-      "url": "file:///home/user/Planzy-saas/public/poc/kanvix-next-gen-v2.4.4.1.html",
+      "url": "file:///home/user/Planzy-saas/public/poc/kanvix-next-gen-v2.4.5.html",
       "msg": "Failed to load resource: net::ERR_FAILED"
     }
   ]
