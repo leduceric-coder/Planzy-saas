@@ -1,0 +1,866 @@
+{
+  "passed": 118,
+  "failed": [
+    "[a11y] Lignes Aujourd'hui : élément focusable au clavier",
+    "[long-text] textes longs (nom chantier + localisation): pas de débordement horizontal de page",
+    "[long-text] Chantiers actifs: la ligne ne dépasse pas le viewport avec un nom/localisation très longs",
+    "[long-text] nom de tâche très long: hauteur des lignes Aujourd'hui reste cohérente (±2px)",
+    "[project-weather] météo chantier: au moins une ligne affiche une météo réelle"
+  ],
+  "results": [
+    {
+      "section": "align",
+      "name": "1920x1080: left(À décider)=left(Aujourd'hui)",
+      "status": "PASS"
+    },
+    {
+      "section": "align",
+      "name": "1920x1080: right(À décider)=right(Aujourd'hui)",
+      "status": "PASS"
+    },
+    {
+      "section": "align",
+      "name": "1920x1080: left(À surveiller)=left(Chantiers actifs)",
+      "status": "PASS"
+    },
+    {
+      "section": "align",
+      "name": "1920x1080: right(À surveiller)=right(Chantiers actifs)",
+      "status": "PASS"
+    },
+    {
+      "section": "align",
+      "name": "1920x1080: gap=16px (attention=16, today=16)",
+      "status": "PASS"
+    },
+    {
+      "section": "height",
+      "name": "1920x1080: hauteur À décider=À surveiller (96/96)",
+      "status": "PASS"
+    },
+    {
+      "section": "height",
+      "name": "1920x1080: hauteur lignes Aujourd'hui cohérente (90.75,90.75,90.75,90.75)",
+      "status": "PASS"
+    },
+    {
+      "section": "height",
+      "name": "1920x1080: hauteur lignes Chantiers actifs cohérente (72,72,72,72)",
+      "status": "PASS"
+    },
+    {
+      "section": "height",
+      "name": "1920x1080: hauteur 5 cellules semaine cohérente (100,100,100,100,100)",
+      "status": "PASS"
+    },
+    {
+      "section": "align",
+      "name": "1600x900: left(À décider)=left(Aujourd'hui)",
+      "status": "PASS"
+    },
+    {
+      "section": "align",
+      "name": "1600x900: right(À décider)=right(Aujourd'hui)",
+      "status": "PASS"
+    },
+    {
+      "section": "align",
+      "name": "1600x900: left(À surveiller)=left(Chantiers actifs)",
+      "status": "PASS"
+    },
+    {
+      "section": "align",
+      "name": "1600x900: right(À surveiller)=right(Chantiers actifs)",
+      "status": "PASS"
+    },
+    {
+      "section": "align",
+      "name": "1600x900: gap=16px (attention=16, today=16)",
+      "status": "PASS"
+    },
+    {
+      "section": "height",
+      "name": "1600x900: hauteur À décider=À surveiller (96/96)",
+      "status": "PASS"
+    },
+    {
+      "section": "height",
+      "name": "1600x900: hauteur lignes Aujourd'hui cohérente (90.75,90.75,90.75,90.75)",
+      "status": "PASS"
+    },
+    {
+      "section": "height",
+      "name": "1600x900: hauteur lignes Chantiers actifs cohérente (72,72,72,72)",
+      "status": "PASS"
+    },
+    {
+      "section": "height",
+      "name": "1600x900: hauteur 5 cellules semaine cohérente (100,100,100,100,100)",
+      "status": "PASS"
+    },
+    {
+      "section": "align",
+      "name": "1440x900: left(À décider)=left(Aujourd'hui)",
+      "status": "PASS"
+    },
+    {
+      "section": "align",
+      "name": "1440x900: right(À décider)=right(Aujourd'hui)",
+      "status": "PASS"
+    },
+    {
+      "section": "align",
+      "name": "1440x900: left(À surveiller)=left(Chantiers actifs)",
+      "status": "PASS"
+    },
+    {
+      "section": "align",
+      "name": "1440x900: right(À surveiller)=right(Chantiers actifs)",
+      "status": "PASS"
+    },
+    {
+      "section": "align",
+      "name": "1440x900: gap=16px (attention=16, today=16)",
+      "status": "PASS"
+    },
+    {
+      "section": "height",
+      "name": "1440x900: hauteur À décider=À surveiller (96/96)",
+      "status": "PASS"
+    },
+    {
+      "section": "height",
+      "name": "1440x900: hauteur lignes Aujourd'hui cohérente (90.75,90.75,90.75,90.75)",
+      "status": "PASS"
+    },
+    {
+      "section": "height",
+      "name": "1440x900: hauteur lignes Chantiers actifs cohérente (72,72,72,72)",
+      "status": "PASS"
+    },
+    {
+      "section": "height",
+      "name": "1440x900: hauteur 5 cellules semaine cohérente (100,100,100,100,100)",
+      "status": "PASS"
+    },
+    {
+      "section": "align",
+      "name": "1366x768: left(À décider)=left(Aujourd'hui)",
+      "status": "PASS"
+    },
+    {
+      "section": "align",
+      "name": "1366x768: right(À décider)=right(Aujourd'hui)",
+      "status": "PASS"
+    },
+    {
+      "section": "align",
+      "name": "1366x768: left(À surveiller)=left(Chantiers actifs)",
+      "status": "PASS"
+    },
+    {
+      "section": "align",
+      "name": "1366x768: right(À surveiller)=right(Chantiers actifs)",
+      "status": "PASS"
+    },
+    {
+      "section": "align",
+      "name": "1366x768: gap=16px (attention=16, today=16)",
+      "status": "PASS"
+    },
+    {
+      "section": "height",
+      "name": "1366x768: hauteur À décider=À surveiller (96/96)",
+      "status": "PASS"
+    },
+    {
+      "section": "height",
+      "name": "1366x768: hauteur lignes Aujourd'hui cohérente (90.75,90.75,90.75,90.75)",
+      "status": "PASS"
+    },
+    {
+      "section": "height",
+      "name": "1366x768: hauteur lignes Chantiers actifs cohérente (72,72,72,72)",
+      "status": "PASS"
+    },
+    {
+      "section": "height",
+      "name": "1366x768: hauteur 5 cellules semaine cohérente (100,100,100,100,100)",
+      "status": "PASS"
+    },
+    {
+      "section": "align",
+      "name": "1280x800: left(À décider)=left(Aujourd'hui)",
+      "status": "PASS"
+    },
+    {
+      "section": "align",
+      "name": "1280x800: right(À décider)=right(Aujourd'hui)",
+      "status": "PASS"
+    },
+    {
+      "section": "align",
+      "name": "1280x800: left(À surveiller)=left(Chantiers actifs)",
+      "status": "PASS"
+    },
+    {
+      "section": "align",
+      "name": "1280x800: right(À surveiller)=right(Chantiers actifs)",
+      "status": "PASS"
+    },
+    {
+      "section": "align",
+      "name": "1280x800: gap=16px (attention=16, today=16)",
+      "status": "PASS"
+    },
+    {
+      "section": "height",
+      "name": "1280x800: hauteur À décider=À surveiller (96/96)",
+      "status": "PASS"
+    },
+    {
+      "section": "height",
+      "name": "1280x800: hauteur lignes Aujourd'hui cohérente (90.75,90.75,90.75,90.75)",
+      "status": "PASS"
+    },
+    {
+      "section": "height",
+      "name": "1280x800: hauteur lignes Chantiers actifs cohérente (72,72,72,72)",
+      "status": "PASS"
+    },
+    {
+      "section": "height",
+      "name": "1280x800: hauteur 5 cellules semaine cohérente (100,100,100,100,100)",
+      "status": "PASS"
+    },
+    {
+      "section": "align",
+      "name": "1081x800: left(À décider)=left(Aujourd'hui)",
+      "status": "PASS"
+    },
+    {
+      "section": "align",
+      "name": "1081x800: right(À décider)=right(Aujourd'hui)",
+      "status": "PASS"
+    },
+    {
+      "section": "align",
+      "name": "1081x800: left(À surveiller)=left(Chantiers actifs)",
+      "status": "PASS"
+    },
+    {
+      "section": "align",
+      "name": "1081x800: right(À surveiller)=right(Chantiers actifs)",
+      "status": "PASS"
+    },
+    {
+      "section": "align",
+      "name": "1081x800: gap=16px (attention=16, today=16)",
+      "status": "PASS"
+    },
+    {
+      "section": "height",
+      "name": "1081x800: hauteur À décider=À surveiller (96/96)",
+      "status": "PASS"
+    },
+    {
+      "section": "height",
+      "name": "1081x800: hauteur lignes Aujourd'hui cohérente (90.75,90.75,90.75,90.75)",
+      "status": "PASS"
+    },
+    {
+      "section": "height",
+      "name": "1081x800: hauteur lignes Chantiers actifs cohérente (72,72,72,72)",
+      "status": "PASS"
+    },
+    {
+      "section": "height",
+      "name": "1081x800: hauteur 5 cellules semaine cohérente (100,100,100,100,100)",
+      "status": "PASS"
+    },
+    {
+      "section": "breakpoint",
+      "name": "1081px: mêmes colonnes attention/today (2/2)",
+      "status": "PASS"
+    },
+    {
+      "section": "breakpoint",
+      "name": "1081px: pas de scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "section": "breakpoint",
+      "name": "1081px colonnes",
+      "status": "INFO",
+      "detail": {
+        "attention": 2,
+        "today": 2
+      }
+    },
+    {
+      "section": "breakpoint",
+      "name": "1080px: mêmes colonnes attention/today (1/1)",
+      "status": "PASS"
+    },
+    {
+      "section": "breakpoint",
+      "name": "1080px: pas de scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "section": "breakpoint",
+      "name": "1080px colonnes",
+      "status": "INFO",
+      "detail": {
+        "attention": 1,
+        "today": 1
+      }
+    },
+    {
+      "section": "breakpoint",
+      "name": "1079px: mêmes colonnes attention/today (1/1)",
+      "status": "PASS"
+    },
+    {
+      "section": "breakpoint",
+      "name": "1079px: pas de scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "section": "breakpoint",
+      "name": "1079px colonnes",
+      "status": "INFO",
+      "detail": {
+        "attention": 1,
+        "today": 1
+      }
+    },
+    {
+      "section": "tablet",
+      "name": "900px: ordre vertical À décider→À surveiller→Aujourd'hui→Chantiers→Semaine→À savoir",
+      "status": "PASS"
+    },
+    {
+      "section": "tablet",
+      "name": "900px: pas de scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "section": "tablet",
+      "name": "768px: ordre vertical À décider→À surveiller→Aujourd'hui→Chantiers→Semaine→À savoir",
+      "status": "PASS"
+    },
+    {
+      "section": "tablet",
+      "name": "768px: pas de scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "section": "mobile-bureau",
+      "name": "430px: pas de scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "section": "mobile-bureau",
+      "name": "430px: tous les blocs Accueil Bureau présents",
+      "status": "PASS"
+    },
+    {
+      "section": "mobile-bureau",
+      "name": "430px blocs",
+      "status": "INFO",
+      "detail": {
+        "hero": true,
+        "fieldEntry": true,
+        "attention": true,
+        "today": true,
+        "sites": true,
+        "week": true
+      }
+    },
+    {
+      "section": "mobile-bureau",
+      "name": "390px: pas de scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "section": "mobile-bureau",
+      "name": "390px: tous les blocs Accueil Bureau présents",
+      "status": "PASS"
+    },
+    {
+      "section": "mobile-bureau",
+      "name": "390px blocs",
+      "status": "INFO",
+      "detail": {
+        "hero": true,
+        "fieldEntry": true,
+        "attention": true,
+        "today": true,
+        "sites": true,
+        "week": true
+      }
+    },
+    {
+      "section": "dark",
+      "name": "mode sombre appliqué (classe body.dark)",
+      "status": "PASS"
+    },
+    {
+      "section": "dark",
+      "name": "compteur À décider a une couleur définie en sombre",
+      "status": "PASS"
+    },
+    {
+      "section": "dark",
+      "name": "compteur À surveiller a une couleur définie en sombre",
+      "status": "PASS"
+    },
+    {
+      "section": "dark",
+      "name": "texte secondaire lisible en sombre (couleur définie)",
+      "status": "PASS"
+    },
+    {
+      "section": "dark",
+      "name": "valeurs mesurées",
+      "status": "INFO",
+      "detail": {
+        "decideCount": "rgb(193, 59, 64)",
+        "watchCount": "rgb(164, 91, 18)",
+        "weekCardBg": "rgb(16, 32, 47)",
+        "todayCellBg": "rgb(23, 51, 90)",
+        "bodyIsDark": true,
+        "secondaryText": "rgb(117, 137, 156)"
+      }
+    },
+    {
+      "section": "popup",
+      "name": "popup À décider s'ouvre au clic",
+      "status": "PASS"
+    },
+    {
+      "section": "popup",
+      "name": "titre popup correct: \"Décisions à traiter\"",
+      "status": "PASS"
+    },
+    {
+      "section": "popup",
+      "name": "retour Accueil intact après fermeture popup À décider",
+      "status": "PASS"
+    },
+    {
+      "section": "popup",
+      "name": "popup À surveiller s'ouvre au clic",
+      "status": "PASS"
+    },
+    {
+      "section": "popup",
+      "name": "titre popup correct: \"Points à surveiller\"",
+      "status": "PASS"
+    },
+    {
+      "section": "popup",
+      "name": "clic sur une décision ouvre le workflow existant (#aiOverlay \"RÉSOUDRE\")",
+      "status": "PASS"
+    },
+    {
+      "section": "popup",
+      "name": "retour Accueil intact après workflow décision",
+      "status": "PASS"
+    },
+    {
+      "section": "week-click",
+      "name": "5 jours affichés (lun-ven)",
+      "status": "PASS"
+    },
+    {
+      "section": "week-click",
+      "name": "popup jour s'ouvre au clic",
+      "status": "PASS"
+    },
+    {
+      "section": "week-click",
+      "name": "titre du jour complet présent (Lundi 31 août)",
+      "status": "PASS"
+    },
+    {
+      "section": "week-click",
+      "name": "bouton \"Ouvrir le planning\" présent",
+      "status": "PASS"
+    },
+    {
+      "section": "week-click",
+      "name": "retour Accueil intact après popup jour",
+      "status": "PASS"
+    },
+    {
+      "section": "task-click",
+      "name": "nombre de lignes Aujourd'hui visibles",
+      "status": "INFO",
+      "detail": 4
+    },
+    {
+      "section": "task-click",
+      "name": "ligne Aujourd'hui #1: ouvre bien la tâche (drawer)",
+      "status": "PASS"
+    },
+    {
+      "section": "task-click",
+      "name": "ligne Aujourd'hui #1: retour exact à l'Accueil",
+      "status": "PASS"
+    },
+    {
+      "section": "task-click",
+      "name": "ligne Aujourd'hui #2: ouvre bien la tâche (drawer)",
+      "status": "PASS"
+    },
+    {
+      "section": "task-click",
+      "name": "ligne Aujourd'hui #2: retour exact à l'Accueil",
+      "status": "PASS"
+    },
+    {
+      "section": "task-click",
+      "name": "ligne Aujourd'hui #3: ouvre bien la tâche (drawer)",
+      "status": "PASS"
+    },
+    {
+      "section": "task-click",
+      "name": "ligne Aujourd'hui #3: retour exact à l'Accueil",
+      "status": "PASS"
+    },
+    {
+      "section": "task-click",
+      "name": "ligne Aujourd'hui #4: ouvre bien la tâche (drawer)",
+      "status": "PASS"
+    },
+    {
+      "section": "task-click",
+      "name": "ligne Aujourd'hui #4: retour exact à l'Accueil",
+      "status": "PASS"
+    },
+    {
+      "section": "a11y",
+      "name": "Chantiers actifs : élément <button> natif (accessible clavier)",
+      "status": "PASS"
+    },
+    {
+      "section": "a11y",
+      "name": "Cartes attention : élément <button> natif (accessible clavier)",
+      "status": "PASS"
+    },
+    {
+      "section": "a11y",
+      "name": "Cellules semaine : élément <button> natif (accessible clavier)",
+      "status": "PASS"
+    },
+    {
+      "section": "a11y",
+      "name": "Lignes Aujourd'hui : élément focusable au clavier",
+      "status": "FAIL"
+    },
+    {
+      "section": "a11y",
+      "name": "détails",
+      "status": "INFO",
+      "detail": {
+        "tpRowTag": "ARTICLE",
+        "tpRowTabIndex": -1,
+        "tpRowFocusable": false,
+        "acpRowTag": "BUTTON",
+        "attCardTag": "BUTTON",
+        "wpDayTag": "BUTTON",
+        "modalHasDialogRole": null
+      }
+    },
+    {
+      "section": "a11y",
+      "name": "focus-visible cartes attention",
+      "status": "INFO",
+      "detail": {
+        "outlineWidth": "",
+        "outlineStyle": ""
+      }
+    },
+    {
+      "section": "density",
+      "name": "hauteur cas CALME (px)",
+      "status": "INFO",
+      "detail": 1013
+    },
+    {
+      "section": "density",
+      "name": "hauteur cas NORMAL (px)",
+      "status": "INFO",
+      "detail": 1013
+    },
+    {
+      "section": "density",
+      "name": "compteurs cas NORMAL",
+      "status": "INFO",
+      "detail": {
+        "decide": "3",
+        "watch": "3",
+        "projects": 4
+      }
+    },
+    {
+      "section": "density",
+      "name": "hauteur cas CHARGÉ (px)",
+      "status": "INFO",
+      "detail": 1013
+    },
+    {
+      "section": "density",
+      "name": "compteurs cas CHARGÉ",
+      "status": "INFO",
+      "detail": {
+        "decide": "10",
+        "watch": "8",
+        "projects": 4,
+        "actionsShown": 4
+      }
+    },
+    {
+      "section": "density",
+      "name": "cas chargé: compteur À décider = 10 (total réel, pas juste les affichées)",
+      "status": "PASS"
+    },
+    {
+      "section": "density",
+      "name": "cas chargé: compteur À surveiller = 8 (total réel)",
+      "status": "PASS"
+    },
+    {
+      "section": "density",
+      "name": "cas chargé: max 4 lignes Aujourd'hui affichées (pas d'explosion de hauteur)",
+      "status": "PASS"
+    },
+    {
+      "section": "density",
+      "name": "ratio hauteur chargé/calme",
+      "status": "INFO",
+      "detail": "1.00"
+    },
+    {
+      "section": "empty",
+      "name": "Accueil ne casse pas avec 0 chantier/0 tâche/0 issue",
+      "status": "PASS"
+    },
+    {
+      "section": "empty",
+      "name": "contenu affiché",
+      "status": "INFO",
+      "detail": {
+        "heroPresent": true,
+        "attentionPresent": true,
+        "todayText": "Aujourd’huiVoir le planning du jour ›Aucune intervention prévue aujourd’hui.",
+        "sitesText": "Chantiers actifsVoir tous les chantiers ›Aucun chantier actif.",
+        "crashed": false
+      }
+    },
+    {
+      "section": "long-text",
+      "name": "textes longs (nom chantier + localisation): pas de débordement horizontal de page",
+      "status": "FAIL"
+    },
+    {
+      "section": "long-text",
+      "name": "Chantiers actifs: la ligne ne dépasse pas le viewport avec un nom/localisation très longs",
+      "status": "FAIL"
+    },
+    {
+      "section": "long-text",
+      "name": "dépassement mesuré (px, >0 = débordement)",
+      "status": "INFO",
+      "detail": {
+        "pageHScroll": true,
+        "acpRowRight": 18.84375,
+        "acpBodySmallTruncated": true,
+        "tpRowRight": -569.59375
+      }
+    },
+    {
+      "section": "long-text",
+      "name": "nom de tâche très long: pas de débordement horizontal de page",
+      "status": "PASS"
+    },
+    {
+      "section": "long-text",
+      "name": "nom de tâche très long: hauteur des lignes Aujourd'hui reste cohérente (±2px)",
+      "status": "FAIL"
+    },
+    {
+      "section": "long-text",
+      "name": "hauteurs lignes Aujourd'hui avec texte long",
+      "status": "INFO",
+      "detail": {
+        "pageHScroll": false,
+        "heights": [
+          91,
+          111,
+          91,
+          91
+        ],
+        "heightSpread": 20
+      }
+    },
+    {
+      "section": "weather-driver",
+      "name": "A. géoloc. autorisée: rendu Accueil non bloqué (26ms)",
+      "status": "PASS"
+    },
+    {
+      "section": "weather-driver",
+      "name": "A. météo conducteur affichée après résolution",
+      "status": "PASS"
+    },
+    {
+      "section": "weather-driver",
+      "name": "B. géoloc. refusée: Accueil pleinement fonctionnel",
+      "status": "PASS"
+    },
+    {
+      "section": "weather-driver",
+      "name": "C. réseau indisponible: Accueil pleinement fonctionnel",
+      "status": "PASS"
+    },
+    {
+      "section": "weather-driver",
+      "name": "C. réseau indisponible: bloc météo masqué (pas de valeur fictive)",
+      "status": "PASS"
+    },
+    {
+      "section": "weather-driver",
+      "name": "D. cache présent + réseau coupé: contenu widget",
+      "status": "INFO",
+      "detail": ""
+    },
+    {
+      "section": "project-weather",
+      "name": "lignes chantiers actifs",
+      "status": "INFO",
+      "detail": [
+        {
+          "text": "Second œuvre · Plouzané ",
+          "weather": "",
+          "height": 72
+        },
+        {
+          "text": "Gros œuvre · Brest ",
+          "weather": "",
+          "height": 72
+        },
+        {
+          "text": "Finitions · Le Relecq ",
+          "weather": "",
+          "height": 72
+        },
+        {
+          "text": "Électricité · Brest ",
+          "weather": "",
+          "height": 72
+        }
+      ]
+    },
+    {
+      "section": "project-weather",
+      "name": "météo chantier: aucune ligne ne change de hauteur",
+      "status": "PASS"
+    },
+    {
+      "section": "project-weather",
+      "name": "météo chantier: au moins une ligne affiche une météo réelle",
+      "status": "FAIL"
+    },
+    {
+      "section": "project-weather",
+      "name": "météo chantier: dédoublonnage géocodage (Brest ×2 -> 1 seul appel)",
+      "status": "PASS"
+    },
+    {
+      "section": "project-weather-finding",
+      "name": "viewport fixé à la création (contrôle)",
+      "status": "INFO",
+      "detail": "🌤 18°"
+    },
+    {
+      "section": "project-weather-finding",
+      "name": "setViewportSize() après chargement (reproduction)",
+      "status": "INFO",
+      "detail": ""
+    },
+    {
+      "section": "project-weather-finding",
+      "name": "météo conducteur dans le même scénario (non affectée attendu)",
+      "status": "INFO",
+      "detail": ""
+    },
+    {
+      "section": "project-weather-finding",
+      "name": "CONTRÔLE : météo chantier présente sans changement de viewport en cours de session",
+      "status": "PASS"
+    },
+    {
+      "section": "stability",
+      "name": "position X stable après 10 aller-retours Accueil↔Chantiers (±1px)",
+      "status": "PASS"
+    },
+    {
+      "section": "stability",
+      "name": "largeur de scroll stable après 10 aller-retours",
+      "status": "PASS"
+    },
+    {
+      "section": "stability",
+      "name": "position X stable après 10 aller-retours Accueil↔Planning (±1px)",
+      "status": "PASS"
+    },
+    {
+      "section": "stability",
+      "name": "position X stable après ouverture/fermeture répétée des popups",
+      "status": "PASS"
+    },
+    {
+      "section": "stability",
+      "name": "aucun popup fantôme resté ouvert",
+      "status": "PASS"
+    },
+    {
+      "section": "field-sync",
+      "name": "une tâche artisan du jour existe (onglet B)",
+      "status": "PASS"
+    },
+    {
+      "section": "field-sync",
+      "name": "onglet A (Accueil): confirmation \"Démarrée à HH:MM\" visible sans F5",
+      "status": "PASS"
+    },
+    {
+      "section": "field-sync",
+      "name": "onglet A (Accueil): confirmation \"Terminée à HH:MM\" visible sans F5",
+      "status": "PASS"
+    },
+    {
+      "section": "kanban-sync",
+      "name": "onglet A (Accueil): statut Kanban répercuté sans F5",
+      "status": "PASS"
+    },
+    {
+      "section": "kanban-sync",
+      "name": "onglet A (Accueil): aucune fausse confirmation terrain créée depuis le Kanban",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    {
+      "url": "field-sync",
+      "msg": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+    },
+    {
+      "url": "file:///home/user/Planzy-saas/public/poc/kanvix-next-gen-v2.4.4.1.html",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    }
+  ]
+}
