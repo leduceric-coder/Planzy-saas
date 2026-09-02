@@ -1,0 +1,308 @@
+{
+  "passed": 58,
+  "failed": [],
+  "results": [
+    {
+      "sec": "ENTRY",
+      "name": "ENTRY : fiche tâche (depuis Gantt) propose \"Modifier la tâche\"",
+      "status": "PASS"
+    },
+    {
+      "sec": "ENTRY",
+      "name": "ENTRY : fiche tâche (depuis Kanban) propose \"Modifier la tâche\"",
+      "status": "PASS"
+    },
+    {
+      "sec": "ENTRY",
+      "name": "ENTRY : popup tâche Mode Chantier propose \"Modifier\"",
+      "status": "PASS"
+    },
+    {
+      "sec": "EDIT-01",
+      "name": "EDIT-01 : chantier affiché en lecture seule (jamais modifiable)",
+      "status": "PASS"
+    },
+    {
+      "sec": "EDIT-01",
+      "name": "EDIT-01 : nom modifié",
+      "status": "PASS"
+    },
+    {
+      "sec": "EDIT-01",
+      "name": "EDIT-01 : aucun aperçu d'impact (changement sans conséquence planning)",
+      "status": "PASS"
+    },
+    {
+      "sec": "EDIT-01",
+      "name": "EDIT-01 : aucune tâche décalée",
+      "status": "PASS"
+    },
+    {
+      "sec": "EDIT-01",
+      "name": "EDIT-01 : historique présent (diff Nom)",
+      "status": "PASS"
+    },
+    {
+      "sec": "EDIT-01",
+      "name": "EDIT-01 : un seul snapshot Undo",
+      "status": "PASS"
+    },
+    {
+      "sec": "EDIT-01",
+      "name": "EDIT-01 : Undo restaure l'ancien nom",
+      "status": "PASS"
+    },
+    {
+      "sec": "EDIT-01",
+      "name": "EDIT-01 : Kanban reflète le nom sans F5",
+      "status": "PASS"
+    },
+    {
+      "sec": "EDIT-02",
+      "name": "EDIT-02 : aperçu d'impact AVANT application",
+      "status": "PASS"
+    },
+    {
+      "sec": "EDIT-02",
+      "name": "EDIT-02 : arbitrage signalé pour la tâche EN COURS (k-lining)",
+      "status": "PASS"
+    },
+    {
+      "sec": "EDIT-02",
+      "name": "EDIT-02 : tâche source modifiée",
+      "status": "PASS"
+    },
+    {
+      "sec": "EDIT-02",
+      "name": "EDIT-02 : tâche EN COURS jamais déplacée silencieusement",
+      "status": "PASS"
+    },
+    {
+      "sec": "EDIT-02",
+      "name": "EDIT-02 : UN seul snapshot pour la modif + toute la propagation",
+      "status": "PASS"
+    },
+    {
+      "sec": "EDIT-02",
+      "name": "EDIT-02 : Undo restaure la source ET la chaîne",
+      "status": "PASS"
+    },
+    {
+      "sec": "EDIT-02b",
+      "name": "EDIT-02b : \"Annuler\" l'aperçu ne modifie aucune donnée",
+      "status": "PASS"
+    },
+    {
+      "sec": "EDIT-02b",
+      "name": "EDIT-02b : aucun historique après annulation",
+      "status": "PASS"
+    },
+    {
+      "sec": "EDIT-03",
+      "name": "EDIT-03 : Marc disponible dans le sélecteur d'intervenant",
+      "status": "PASS"
+    },
+    {
+      "sec": "EDIT-03",
+      "name": "EDIT-03 : intervenant changé (Thomas → Marc)",
+      "status": "PASS"
+    },
+    {
+      "sec": "EDIT-03",
+      "name": "EDIT-03 : aucune propagation de dates",
+      "status": "PASS"
+    },
+    {
+      "sec": "EDIT-03",
+      "name": "EDIT-03 : historique Thomas → Marc",
+      "status": "PASS"
+    },
+    {
+      "sec": "EDIT-04",
+      "name": "dépendances candidates (même chantier)",
+      "status": "INFO",
+      "detail": 6
+    },
+    {
+      "sec": "EDIT-04",
+      "name": "EDIT-04 : C dépend de A ET B (deps multiples, jamais A→B→C)",
+      "status": "PASS"
+    },
+    {
+      "sec": "EDIT-04",
+      "name": "EDIT-04 : cycle refusé (C→A alors que A→…→C)",
+      "status": "PASS"
+    },
+    {
+      "sec": "EDIT-05",
+      "name": "EDIT-05 : Kanban reste actif après l'édition",
+      "status": "PASS"
+    },
+    {
+      "sec": "EDIT-05",
+      "name": "EDIT-05 : nouvelle date appliquée (visible côté Gantt aussi)",
+      "status": "PASS"
+    },
+    {
+      "sec": "EDIT-05",
+      "name": "EDIT-05 : aucune fausse confirmation terrain",
+      "status": "PASS"
+    },
+    {
+      "sec": "EDIT-06",
+      "name": "EDIT-06 : éditeur ouvert depuis le Planning mobile",
+      "status": "PASS"
+    },
+    {
+      "sec": "EDIT-06",
+      "name": "EDIT-06 : reste en Mode Chantier (jamais Bureau)",
+      "status": "PASS"
+    },
+    {
+      "sec": "EDIT-06",
+      "name": "EDIT-06 : aucun Gantt desktop, aucune sidebar",
+      "status": "PASS"
+    },
+    {
+      "sec": "EDIT-06",
+      "name": "EDIT-06 : modification appliquée",
+      "status": "PASS"
+    },
+    {
+      "sec": "EDIT-07",
+      "name": "EDIT-07 : statut = En cours",
+      "status": "PASS"
+    },
+    {
+      "sec": "EDIT-07",
+      "name": "EDIT-07 : AUCUN signal terrain (field-start/field-done)",
+      "status": "PASS"
+    },
+    {
+      "sec": "EDIT-07",
+      "name": "EDIT-07 : historique \"statut modifié manuellement : À faire → En cours\"",
+      "status": "PASS"
+    },
+    {
+      "sec": "EDIT-08",
+      "name": "EDIT-08 : éditeur refusé pour une tâche terminée",
+      "status": "PASS"
+    },
+    {
+      "sec": "EDIT-08",
+      "name": "EDIT-08 : \"Modifier la tâche\" absent d'une tâche terminée",
+      "status": "PASS"
+    },
+    {
+      "sec": "EDIT-08",
+      "name": "EDIT-08 : \"Signaler une reprise\" toujours proposé",
+      "status": "PASS"
+    },
+    {
+      "sec": "EDIT-08",
+      "name": "EDIT-08 : tâche d'origine reste terminée",
+      "status": "PASS"
+    },
+    {
+      "sec": "EDIT-09",
+      "name": "EDIT-09 : éditeur refusé sur chantier archivé",
+      "status": "PASS"
+    },
+    {
+      "sec": "EDIT-09",
+      "name": "EDIT-09 : aucun bouton \"Modifier la tâche\" (lecture seule)",
+      "status": "PASS"
+    },
+    {
+      "sec": "EDIT-10",
+      "name": "EDIT-10 : onglet B (Kanban) reflète la modification sans F5",
+      "status": "PASS"
+    },
+    {
+      "sec": "VALID",
+      "name": "VALID : nom vide refusé (erreur inline)",
+      "status": "PASS"
+    },
+    {
+      "sec": "VALID",
+      "name": "VALID : fin < début refusé (erreur inline)",
+      "status": "PASS"
+    },
+    {
+      "sec": "VALID",
+      "name": "VALID : le drawer reste ouvert tant que le formulaire est invalide",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST",
+      "name": "HIST : UNE entrée principale pour Nom+Intervenant+Dates simultanés",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST",
+      "name": "HIST : le diff liste tous les champs modifiés",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST",
+      "name": "HIST : commentaire enregistré dans l'entrée",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP",
+      "name": "RESP : 375px — éditeur sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP",
+      "name": "RESP : 375px — barre d'action Annuler/Enregistrer présente",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP",
+      "name": "RESP : 390px — éditeur sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP",
+      "name": "RESP : 390px — barre d'action Annuler/Enregistrer présente",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP",
+      "name": "RESP : 430px — éditeur sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP",
+      "name": "RESP : 430px — barre d'action Annuler/Enregistrer présente",
+      "status": "PASS"
+    },
+    {
+      "sec": "DARK",
+      "name": "DARK : éditeur lisible en sombre (titres/champs/lecture seule)",
+      "status": "PASS"
+    },
+    {
+      "sec": "DARK",
+      "name": "DARK : aperçu d'impact lisible en sombre",
+      "status": "PASS"
+    },
+    {
+      "sec": "A11Y",
+      "name": "A11Y : labels, boutons natifs, radiogroup + aria-checked",
+      "status": "PASS"
+    },
+    {
+      "sec": "A11Y",
+      "name": "A11Y : champ Nom focusable au clavier",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    {
+      "where": "A11Y",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    }
+  ]
+}

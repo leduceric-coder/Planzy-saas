@@ -1,0 +1,97 @@
+{
+  "passed": 17,
+  "failed": [],
+  "results": [
+    {
+      "sec": "P1",
+      "name": "P1 : Gantt affiche des barres et des lignes de tâches",
+      "status": "PASS"
+    },
+    {
+      "sec": "P2",
+      "name": "P2 : Kanban affiche colonnes + cartes",
+      "status": "PASS"
+    },
+    {
+      "sec": "P3",
+      "name": "P3 : drag change le statut (À faire → En cours)",
+      "status": "PASS"
+    },
+    {
+      "sec": "P3",
+      "name": "P3 : drag ne déplace PAS les dates (statut uniquement)",
+      "status": "PASS"
+    },
+    {
+      "sec": "P3",
+      "name": "P3 : un snapshot Undo posé par le moteur central",
+      "status": "PASS"
+    },
+    {
+      "sec": "P3",
+      "name": "P3 : conducteur — aucun faux « démarrage confirmé sur le terrain »",
+      "status": "PASS"
+    },
+    {
+      "sec": "P3",
+      "name": "P3 : historique « commencée » (jamais « sur le terrain »)",
+      "status": "PASS"
+    },
+    {
+      "sec": "P4",
+      "name": "P4 : Artisan — statut passe à En cours",
+      "status": "PASS"
+    },
+    {
+      "sec": "P4",
+      "name": "P4 : Artisan — signal terrain « field-start » toujours créé (moteur intact)",
+      "status": "PASS"
+    },
+    {
+      "sec": "P4",
+      "name": "P4 : Artisan — historique « commencée sur le terrain »",
+      "status": "PASS"
+    },
+    {
+      "sec": "P5",
+      "name": "P5 : moveTask pose un snapshot",
+      "status": "PASS"
+    },
+    {
+      "sec": "P5",
+      "name": "P5 : moveTask déplace la tâche source",
+      "status": "PASS"
+    },
+    {
+      "sec": "P5",
+      "name": "P5 : Undo restaure le planning",
+      "status": "PASS"
+    },
+    {
+      "sec": "P6",
+      "name": "P6 : Undo restaure le statut précédent",
+      "status": "PASS"
+    },
+    {
+      "sec": "P7",
+      "name": "P7 : page Accueil (Today) rend correctement",
+      "status": "PASS"
+    },
+    {
+      "sec": "P8",
+      "name": "P8 : clic barre ouvre la CONSULTATION (drawer), pas l’éditeur",
+      "status": "PASS"
+    },
+    {
+      "sec": "P8",
+      "name": "P8 : la consultation propose « Modifier la tâche » (2ᵉ temps)",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    {
+      "where": "P8",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    }
+  ]
+}
