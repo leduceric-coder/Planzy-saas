@@ -385,7 +385,7 @@
     },
     {
       "where": "IMP-15",
-      "msg": "Kanvix: import annulé (rollback) Error: erreur simulée\n    at applyImportNow (file:///home/user/Planzy-saas/public/poc/kanvix-next-gen-v2.4.10.html?now=2026-08-13T09:00:00:14265:32)\n    at eval (eval at evaluate (:311:30), <anonymous>:4:5)\n    at UtilityScript.evaluate (<anonymous>:313:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+      "msg": "Kanvix: import annulé (rollback) Error: erreur simulée\n    at applyImportNow (file:///home/user/Planzy-saas/public/poc/kanvix-next-gen-v2.4.10.1.html?now=2026-08-13T09:00:00:14329:32)\n    at eval (eval at evaluate (:311:30), <anonymous>:4:5)\n    at UtilityScript.evaluate (<anonymous>:313:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
     }
   ]
 }
