@@ -1,0 +1,77 @@
+{
+  "passed": 14,
+  "failed": [],
+  "results": [
+    {
+      "sec": "RES-DATE-01",
+      "name": "RES-DATE-01 : aucune date d’août dans les scénarios (recalculés sur septembre)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RES-DATE-01",
+      "name": "RES-DATE-01 : toutes les dates cohérentes avec septembre",
+      "status": "PASS"
+    },
+    {
+      "sec": "RES-DATE-01",
+      "name": "RES-DATE-01 : aucune date runtime antérieure à la date courante (pas de retour dans le passé)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RES-DATE-02",
+      "name": "RES-DATE-02 : aucune date août/septembre figée",
+      "status": "PASS"
+    },
+    {
+      "sec": "RES-DATE-02",
+      "name": "RES-DATE-02 : dates recalculées autour de novembre",
+      "status": "PASS"
+    },
+    {
+      "sec": "RES-DATE-02",
+      "name": "RES-DATE-02 : aucun retour dans le passé",
+      "status": "PASS"
+    },
+    {
+      "sec": "RES-DATE-03",
+      "name": "RES-DATE-03 : les deux scénarios existent et sont calculés sur le seed",
+      "status": "PASS"
+    },
+    {
+      "sec": "RES-DATE-03",
+      "name": "RES-DATE-03 : dates cohérentes avec la date de seed (août)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RES-DATE-04",
+      "name": "RES-DATE-04 : les deux scénarios ont une date finale / des changements différents",
+      "status": "PASS"
+    },
+    {
+      "sec": "RES-DATE-04",
+      "name": "RES-DATE-04 : « Maintenir le jalon » tient réellement la date du jalon (retard ≤ « Décaler la chaîne »)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RES-DATE-05",
+      "name": "RES-DATE-05 : startWhatIf(doneTask) ne crée aucune simulation",
+      "status": "PASS"
+    },
+    {
+      "sec": "RES-DATE-05",
+      "name": "RES-DATE-05 : showWhatIf(doneTask) n’ouvre pas non plus de simulation",
+      "status": "PASS"
+    },
+    {
+      "sec": "RES-DATE-06",
+      "name": "RES-DATE-06 : un scénario runtime s’applique proprement (1 Undo, 0 orpheline, état valide)",
+      "status": "PASS"
+    },
+    {
+      "sec": "CONSOLE",
+      "name": "CONSOLE : 0 erreur JavaScript applicative",
+      "status": "PASS"
+    }
+  ],
+  "consoleApp": []
+}
