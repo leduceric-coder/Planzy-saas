@@ -1,0 +1,259 @@
+{
+  "passed": 48,
+  "failed": [],
+  "results": [
+    {
+      "sec": "SITE-F1",
+      "name": "SITE-F1 : onglet Actifs affiche exactement les chantiers actifs + résumé + 3 onglets",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-F1",
+      "name": "SITE-F1 : aucun chantier présent dans deux cycles de vie à la fois",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-F1",
+      "name": "SITE-F1 : onglet Clôturés — nombre de cartes cohérent",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-F1",
+      "name": "SITE-F1 : onglet Archives — nombre de cartes cohérent",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-F2",
+      "name": "SITE-F2 : « + Chantier » ouvre un sidewindow avec 3 possibilités",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-F2",
+      "name": "SITE-F2 : annuler le wizard ne crée aucun chantier/tâche",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-F2",
+      "name": "SITE-F2 : chantier créé, actif",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-F2",
+      "name": "SITE-F2 : aucune tâche inventée à la création vierge",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-F2",
+      "name": "SITE-F2 : 0 référence orpheline après création",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-F2",
+      "name": "SITE-F2 : Undo retire le chantier créé",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-F4",
+      "name": "SITE-F4 : l’onglet Documents ne montre aucun document d’un autre chantier",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-F4",
+      "name": "SITE-F4 : onglet Aujourd’hui rendu",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-F4",
+      "name": "SITE-F4 : Équipe — aucun faux profil « Non affecté »",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-F5",
+      "name": "SITE-F5 : l’historique du chantier montre bien ses propres événements",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-F5",
+      "name": "SITE-F5 : comportement d’isolation observé (voir finding)",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-F6",
+      "name": "SITE-F6 : active→closed→active→closed→archived→closed→active (restore→closed, jamais active)",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-F6",
+      "name": "SITE-F6 : aucune donnée perdue au fil du cycle de vie",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-F6",
+      "name": "SITE-F6 : 0 référence orpheline après le cycle de vie complet",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-F6",
+      "name": "SITE-F6 : closedAt/archivedAt retirés en fin de réactivation",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESTORE",
+      "name": "RESTORE : restaurer une archive donne « closed », jamais « active »",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-F7",
+      "name": "SITE-F7 (closed) : guardEditable = false",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-F7",
+      "name": "SITE-F7 (closed) : Modifier / +Tâche / éditeur de tâche refusés",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-F7",
+      "name": "SITE-F7 (closed) : aucune mutation (statut/dates/données inchangés)",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-F7",
+      "name": "SITE-F7 (archived) : guardEditable = false",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-F7",
+      "name": "SITE-F7 (archived) : Modifier / +Tâche / éditeur de tâche refusés",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-F7",
+      "name": "SITE-F7 (archived) : aucune mutation (statut/dates/données inchangés)",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-F8",
+      "name": "SITE-F8 : le prompt de clôture signale les tâches/points ouverts + « Clôturer quand même »",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-F8",
+      "name": "SITE-F8 : « Clôturer quand même » → closed, aucune donnée supprimée",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-F9",
+      "name": "SITE-F9 : chantier vide → « Supprimer » proposé",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-F9",
+      "name": "SITE-F9 : chantier non vide → pas de suppression simple",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-F9",
+      "name": "SITE-F9 : suppression chantier vide + snapshot Undo",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-F9",
+      "name": "SITE-F9 : Undo restaure le chantier vide supprimé",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-F9",
+      "name": "SITE-F9 : suppression définitive exige la saisie du nom (bouton désactivé)",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-F9",
+      "name": "SITE-F9 : suppression définitive supprime le chantier et ses données",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-F9",
+      "name": "SITE-F9 : 0 référence orpheline après suppression définitive",
+      "status": "PASS"
+    },
+    {
+      "sec": "MENUS",
+      "name": "MENUS : clôturé → Réouvrir + Archiver (ni Modifier ni Supprimer simple)",
+      "status": "PASS"
+    },
+    {
+      "sec": "MENUS",
+      "name": "MENUS : archive → Restaurer + Supprimer définitivement",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLANNING",
+      "name": "PLANNING : l’onglet Planning cible le bon chantier (planningProject=keravel)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP",
+      "name": "RESP : 1920px — liste + cockpit sans scroll horizontal de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP",
+      "name": "RESP : 1440px — liste + cockpit sans scroll horizontal de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP",
+      "name": "RESP : 1280px — liste + cockpit sans scroll horizontal de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP",
+      "name": "RESP : 1080px — liste + cockpit sans scroll horizontal de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP",
+      "name": "RESP : 900px — liste + cockpit sans scroll horizontal de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP",
+      "name": "RESP : 768px — liste + cockpit sans scroll horizontal de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP",
+      "name": "RESP : 430px — liste + cockpit sans scroll horizontal de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP",
+      "name": "RESP : 390px — liste + cockpit sans scroll horizontal de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "SYNC",
+      "name": "SYNC : la clôture dans l’onglet A se reflète dans l’onglet B sans F5",
+      "status": "PASS"
+    },
+    {
+      "sec": "CONSOLE",
+      "name": "CONSOLE : 0 erreur JavaScript applicative (hors coupures réseau simulées)",
+      "status": "PASS"
+    }
+  ],
+  "findings": [
+    {
+      "id": "SITE-01",
+      "sev": "MAJOR",
+      "scenario": "SITE-F5 / §33-§34",
+      "observed": "L’onglet « Historique » d’une fiche chantier affiche l’historique GLOBAL (app.history) : l’historique de Keravel contient l’événement « TERRASSES-EVT » d’un autre chantier, et l’historique rendu est identique d’un chantier à l’autre. projectTabContent(\"Historique\") appelle historyHTML() sans filtrer par projectId.",
+      "expected": "L’onglet Historique doit être limité aux événements du chantier courant (filtrage par projectId via les tâches du chantier). Sinon la traçabilité par chantier n’est pas fiable — bloquant pour le gel de Chantiers (§94)."
+    }
+  ],
+  "bySev": {
+    "MAJOR": 1
+  },
+  "consoleApp": []
+}
