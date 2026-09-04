@@ -469,7 +469,7 @@
         "driverMode": "field",
         "page": "field",
         "fieldView": "planning",
-        "fieldPlanningTaskId": "rework-1788553697363",
+        "fieldPlanningTaskId": "rework-1788554982423",
         "planningVisible": true,
         "focusFocusedRework": "Reprise — Pose des 6 fenêtres",
         "hasGantt": false,
@@ -529,7 +529,7 @@
       "detail": {
         "field": true,
         "fieldView": "planning",
-        "fieldPlanningTaskId": "rework-1788553698226",
+        "fieldPlanningTaskId": "rework-1788554983284",
         "planningVisible": true,
         "hasGantt": false
       }
@@ -546,7 +546,7 @@
       "detail": {
         "field": false,
         "page": "planning",
-        "selectedTask": "rework-1788553699141",
+        "selectedTask": "rework-1788554984202",
         "planningProject": "keravel",
         "hasGanttOrKanban": true
       }

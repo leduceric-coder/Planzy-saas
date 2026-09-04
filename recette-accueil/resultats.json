@@ -848,7 +848,7 @@
     },
     {
       "section": "weather-driver",
-      "name": "A. géoloc. autorisée: rendu Accueil non bloqué (42ms)",
+      "name": "A. géoloc. autorisée: rendu Accueil non bloqué (47ms)",
       "status": "PASS"
     },
     {
@@ -991,7 +991,7 @@
       "msg": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
     },
     {
-      "url": "file:///home/user/Planzy-saas/public/poc/kanvix-next-gen-v2.4.9.1.html",
+      "url": "file:///home/user/Planzy-saas/public/poc/kanvix-next-gen-v2.4.10.html",
       "msg": "Failed to load resource: net::ERR_FAILED"
     }
   ]

@@ -1,0 +1,295 @@
+{
+  "passed": 57,
+  "failed": [],
+  "results": [
+    {
+      "sec": "PLAN-F1",
+      "name": "PLAN-F1 : période changée sans perte du filtre chantier",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLAN-F1",
+      "name": "PLAN-F1 : ← / → / Aujourd’hui modifient l’ancre de période",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLAN-F1",
+      "name": "PLAN-F1 : filtre conservé après navigation",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLAN-F2",
+      "name": "PLAN-F2 : Gantt et Kanban affichent le MÊME ensemble de tâches (toutes)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLAN-F2",
+      "name": "PLAN-F2 : filtre chantier — parité Gantt/Kanban + uniquement Keravel",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLAN-F2",
+      "name": "PLAN-F2 : filtre ressource — uniquement les tâches de Thomas",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLAN-F2",
+      "name": "PLAN-F2 : filtre à 0 tâche → état vide + réinitialiser (jamais écran blanc)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLAN-F3",
+      "name": "PLAN-F3 : modification simple appliquée",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLAN-F3",
+      "name": "PLAN-F3 : contexte (filtre + période) conservé après édition",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLAN-F3",
+      "name": "PLAN-F3 : un snapshot Undo",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLAN-F3",
+      "name": "PLAN-F3 : Undo restaure le nom",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLAN-F3",
+      "name": "PLAN-F3 : après édition depuis Kanban, on reste en Kanban",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLAN-F4",
+      "name": "PLAN-F4(A) : le drag ouvre le MÊME aperçu d’impact que l’éditeur AVANT application",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLAN-F4",
+      "name": "PLAN-F4(A) : aucune tâche aval déplacée tant que l’aperçu n’est pas confirmé (P-01a corrigé)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLAN-F4",
+      "name": "PLAN-F4 : « Annuler » l’aperçu restaure la source ET la chaîne, sans historique",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLAN-F4",
+      "name": "PLAN-F4(C) : tâche terminée en aval JAMAIS déplacée par le drag (P-01c corrigé)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLAN-F4",
+      "name": "PLAN-F4(C) : un seul snapshot Undo pour le drag + toute sa propagation",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLAN-F4",
+      "name": "PLAN-F4(D) : le drag affiche l’arbitrage « en cours » dans l’aperçu (P-01d corrigé)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLAN-F4",
+      "name": "PLAN-F4(D) : tâche en cours en aval jamais déplacée en silence",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLAN-F4",
+      "name": "PLAN-F4 : PARITÉ — état métier final + nb de snapshots identiques (éditeur vs drag, +4 j avec propagation)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLAN-F4",
+      "name": "PLAN-F4 : Undo restaure exactement la source ET la chaîne après un drag",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLAN-F4",
+      "name": "PLAN-F4 : aucune référence orpheline après drag/propagation",
+      "status": "PASS"
+    },
+    {
+      "sec": "DRAG-INDEP",
+      "name": "DRAG-INDEP : durée conservée après déplacement",
+      "status": "PASS"
+    },
+    {
+      "sec": "DRAG-INDEP",
+      "name": "DRAG-INDEP : aucun aperçu inutile pour un déplacement sans impact (§8/§35)",
+      "status": "PASS"
+    },
+    {
+      "sec": "DRAG-INDEP",
+      "name": "DRAG-INDEP : un snapshot Undo posé",
+      "status": "PASS"
+    },
+    {
+      "sec": "DRAG-INDEP",
+      "name": "DRAG-INDEP : le drag journalise une entrée d’historique (tâche + Début + Fin) — P-03 corrigé",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLAN-F5",
+      "name": "PLAN-F5 : drag Kanban change le statut sans toucher aux dates",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLAN-F5",
+      "name": "PLAN-F5 : aucune fausse confirmation terrain (conducteur)",
+      "status": "PASS"
+    },
+    {
+      "sec": "STATUTS",
+      "name": "STATUTS : waiting/late conservés dans le modèle métier (fiche)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLAN-F7",
+      "name": "PLAN-F7 : bandeau « lecture seule » + planningIsReadOnly=true",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLAN-F7",
+      "name": "PLAN-F7 : bouton « + Tâche » absent",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLAN-F7",
+      "name": "PLAN-F7 : aucune barre draggable (drag Gantt désactivé)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLAN-F7",
+      "name": "PLAN-F7 : openTaskEdit refusé (lecture seule inviolable)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLAN-F7",
+      "name": "PLAN-F7 : même forcé, dropTask est bloqué par guardEditable",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLAN-F7",
+      "name": "PLAN-F7 : navigation temporelle toujours possible en lecture seule",
+      "status": "PASS"
+    },
+    {
+      "sec": "DONE",
+      "name": "DONE : l’éditeur universel refuse une tâche terminée (comportement sûr, §36)",
+      "status": "PASS"
+    },
+    {
+      "sec": "DONE",
+      "name": "DONE : la barre d’une tâche terminée n’est PLUS draggable (P-02 corrigé)",
+      "status": "PASS"
+    },
+    {
+      "sec": "DONE",
+      "name": "DONE : dropTask ET requestGanttTaskMove refusent défensivement de déplacer une tâche terminée",
+      "status": "PASS"
+    },
+    {
+      "sec": "DONE",
+      "name": "DONE : message calme « Tâche terminée … Signalez une reprise »",
+      "status": "PASS"
+    },
+    {
+      "sec": "ANALYSE",
+      "name": "ANALYSE : baseline affiche les barres « prévu initial »",
+      "status": "PASS"
+    },
+    {
+      "sec": "ANALYSE",
+      "name": "ANALYSE : désactiver baseline ne laisse aucun reste graphique",
+      "status": "PASS"
+    },
+    {
+      "sec": "ANALYSE",
+      "name": "ANALYSE : chaîne d’impact activable",
+      "status": "PASS"
+    },
+    {
+      "sec": "ANALYSE",
+      "name": "ANALYSE : aucun conflit inventé sur le seed par défaut",
+      "status": "PASS"
+    },
+    {
+      "sec": "ANALYSE",
+      "name": "ANALYSE : un conflit de dépendance réel est bien compté",
+      "status": "PASS"
+    },
+    {
+      "sec": "CREATE",
+      "name": "CREATE : « + Tâche » ouvre un formulaire de création",
+      "status": "PASS"
+    },
+    {
+      "sec": "COLLAPSE",
+      "name": "COLLAPSE : 20 cycles replier/déplier → lignes restituées exactement",
+      "status": "PASS"
+    },
+    {
+      "sec": "COLLAPSE",
+      "name": "COLLAPSE : aucune dérive de données",
+      "status": "PASS"
+    },
+    {
+      "sec": "SYNC",
+      "name": "SYNC : onglet B (Kanban) reflète l’édition de A sans F5",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP",
+      "name": "RESP : 1920px — pas de scroll horizontal de page (le Gantt peut scroller en interne)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP",
+      "name": "RESP : 1600px — pas de scroll horizontal de page (le Gantt peut scroller en interne)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP",
+      "name": "RESP : 1440px — pas de scroll horizontal de page (le Gantt peut scroller en interne)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP",
+      "name": "RESP : 1366px — pas de scroll horizontal de page (le Gantt peut scroller en interne)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP",
+      "name": "RESP : 1280px — pas de scroll horizontal de page (le Gantt peut scroller en interne)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP",
+      "name": "RESP : 1180px — pas de scroll horizontal de page (le Gantt peut scroller en interne)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP",
+      "name": "RESP : 1080px — pas de scroll horizontal de page (le Gantt peut scroller en interne)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP",
+      "name": "RESP : 900px — pas de scroll horizontal de page (le Gantt peut scroller en interne)",
+      "status": "PASS"
+    },
+    {
+      "sec": "CONSOLE",
+      "name": "CONSOLE : 0 erreur JavaScript applicative (hors coupures réseau simulées)",
+      "status": "PASS"
+    }
+  ],
+  "findings": [],
+  "bySev": {},
+  "consoleApp": [],
+  "consoleNet": 1
+}
