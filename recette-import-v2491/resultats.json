@@ -1,0 +1,391 @@
+{
+  "passed": 75,
+  "failed": [],
+  "results": [
+    {
+      "sec": "IMP-01",
+      "name": "IMP-01 : assistant ouvert, 1 nouveau chantier détecté",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-01",
+      "name": "IMP-01 : nouveau chantier importé",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-01",
+      "name": "IMP-01 : rapport d'import affiché",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-01",
+      "name": "IMP-01 : 0 référence orpheline",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-02",
+      "name": "IMP-02 : nombre de chantiers inchangé après 2 imports",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-02",
+      "name": "IMP-02 : nombre de tâches inchangé",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-02",
+      "name": "IMP-02 : AUCUN « (importé) » / « copie »",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-02",
+      "name": "IMP-02 : AUCUN id import-*",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-02",
+      "name": "IMP-02 : aucune duplication de modèle d'entreprise",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-02",
+      "name": "IMP-02 : état valide (0 référence orpheline)",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-03",
+      "name": "IMP-03 : nouveaux (D, E) importés",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-03",
+      "name": "IMP-03 : doublon (Keravel) ignoré, inchangé",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-03",
+      "name": "IMP-03 : 0 orpheline",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-04",
+      "name": "IMP-04 : T1/T2 mises à jour, T3 conservée, T4 ajoutée",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-04",
+      "name": "IMP-04 : T1 mise à jour depuis le fichier",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-04",
+      "name": "IMP-04 : T3 (absente du fichier) conservée",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-04",
+      "name": "IMP-04 : statut terrain local de T2 préservé",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-04",
+      "name": "IMP-04 : deps de T4 remappées (→ t2 canonique)",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-04",
+      "name": "IMP-04 : aucun doublon de chantier",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-04",
+      "name": "IMP-04 : 0 orpheline",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-05",
+      "name": "IMP-05 : planning de Keravel remplacé (anciennes tâches supprimées)",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-05",
+      "name": "IMP-05 : autres chantiers conservés (B, C…)",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-05",
+      "name": "IMP-05 : jalons du chantier remplacés",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-05",
+      "name": "IMP-05 : 0 référence orpheline",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-06",
+      "name": "IMP-06 : confirmation destructive explicite",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-06",
+      "name": "IMP-06 : seuls A + D subsistent (B, C supprimés)",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-06",
+      "name": "IMP-06 : réglages / ressources / compte conservés",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-06",
+      "name": "IMP-06 : 0 orpheline après remplacement global",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-07",
+      "name": "IMP-07 : copie indépendante créée (« — copie »)",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-07",
+      "name": "IMP-07 : nouveaux IDs de tâches (pas de collision)",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-07",
+      "name": "IMP-07 : deps remappées vers les IDs de la copie",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-07",
+      "name": "IMP-07 : chantier d'origine intact, 0 orpheline",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-07",
+      "name": "IMP-07 : 0 orpheline",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-08",
+      "name": "IMP-08 : même ID → doublon certain (exact-id)",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-09",
+      "name": "IMP-09 : nom+lieu normalisés identiques → doublon (name-location)",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-09",
+      "name": "IMP-09 : normalisation (accents/casse/espaces) cohérente",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-10",
+      "name": "IMP-10 : nom identique + lieu différent → correspondance possible (jamais doublon certain)",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-10",
+      "name": "IMP-10 : classé « À vérifier », décision utilisateur requise",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-10",
+      "name": "IMP-10 : non importé automatiquement (défaut ignoré)",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-11",
+      "name": "IMP-11 : C.deps pointent vers les IDs canoniques (A, B)",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-11",
+      "name": "IMP-11 : toutes les deps valides (0 référence obsolète)",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-11",
+      "name": "IMP-11 : aucun id import-* résiduel",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-12",
+      "name": "IMP-12 : T1 (k-windows) survit à la fusion",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-12",
+      "name": "IMP-12 : alertes / photos / messages toujours rattachés",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-12",
+      "name": "IMP-12 : 0 orpheline",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-13",
+      "name": "IMP-13 : une seule occurrence par id/nom (Maison + Immeuble)",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-13",
+      "name": "IMP-13 : aucun id import-xxxx-tpl généré",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-14",
+      "name": "IMP-14 : UN seul snapshot Undo pour tout l'import",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-14",
+      "name": "IMP-14 : Undo restaure exactement l'état métier précédent",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-15",
+      "name": "IMP-15 : rollback complet — aucune donnée importée",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-15",
+      "name": "IMP-15 : aucun snapshot résiduel après rollback",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-15",
+      "name": "IMP-15 : message d'erreur clair, jamais de demi-import",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-16",
+      "name": "IMP-16 : assistant sans scroll horizontal (390 px)",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-16",
+      "name": "IMP-16 : stratégies empilées + barre d'action accessible",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-17",
+      "name": "IMP-17 : assistant lisible en sombre (résumé, badges, stratégies)",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-17",
+      "name": "IMP-17 : récapitulatif lisible en sombre",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-18",
+      "name": "IMP-18 : validateImportState OK (aucune référence invalide)",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-18",
+      "name": "IMP-18 : 0 orpheline (issues/photos/messages/jalons/deps/décisions)",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-18",
+      "name": "IMP-18 : aucun id import-* dans l'état final",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-19",
+      "name": "IMP-19 : bloc « Données locales supprimées » affiché",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-19",
+      "name": "IMP-19 : 2 alertes annoncées",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-19",
+      "name": "IMP-19 : 2 décisions annoncées",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-19",
+      "name": "IMP-19 : 3 photos annoncées",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-19",
+      "name": "IMP-19 : 4 messages annoncés",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-19",
+      "name": "IMP-19 : 5 documents annoncés",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-19",
+      "name": "IMP-19 : 6 entrées d’historique annoncées",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-19",
+      "name": "IMP-19 : aucune donnée modifiée avant confirmation",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-20",
+      "name": "IMP-20 : bouton « Remplacer tous les chantiers » absent si clone invalide",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-20",
+      "name": "IMP-20 : message d'invalidité affiché",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-20",
+      "name": "IMP-20 : seul « Retour » proposé",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-20",
+      "name": "IMP-20 : app strictement inchangé",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-21",
+      "name": "IMP-21 : résumé aperçu === résumé application (mêmes chiffres)",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-21",
+      "name": "IMP-21 : 0 référence orpheline après application",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-21",
+      "name": "IMP-21 : état final = chantiers du fichier",
+      "status": "PASS"
+    },
+    {
+      "sec": "IMP-22",
+      "name": "IMP-22 : Undo restaure exactement projets/tâches/jalons/alertes/décisions/photos/messages/documents/historique",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    {
+      "where": "IMP-22",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "IMP-15",
+      "msg": "Kanvix: import annulé (rollback) Error: erreur simulée\n    at applyImportNow (file:///home/user/Planzy-saas/public/poc/kanvix-next-gen-v2.4.9.1.html?now=2026-08-13T09:00:00:14257:32)\n    at eval (eval at evaluate (:311:30), <anonymous>:4:5)\n    at UtilityScript.evaluate (<anonymous>:313:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+    }
+  ]
+}
