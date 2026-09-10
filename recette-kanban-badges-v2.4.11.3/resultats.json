@@ -1,0 +1,1301 @@
+{
+  "passed": 165,
+  "failed": [],
+  "results": [
+    {
+      "sec": "BADGE-01",
+      "name": "BADGE-01 : A (todo + incident direct) affiche À TRAITER",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-01",
+      "name": "BADGE-01 : A n’affiche PAS SOUS IMPACT en plus",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-01",
+      "name": "BADGE-01 : libellé rendu « À TRAITER »",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-02",
+      "name": "BADGE-02 : A (todo) → À TRAITER",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-02",
+      "name": "BADGE-02 : B → SOUS IMPACT (et aucun badge direct)",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-02",
+      "name": "BADGE-02 : C → SOUS IMPACT (et aucun badge direct)",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-02",
+      "name": "BADGE-02 : libellé rendu « SOUS IMPACT »",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-03",
+      "name": "BADGE-03 : B est initialement dans « À faire »",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-03",
+      "name": "BADGE-03 : B est passée dans « En cours »",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-03",
+      "name": "BADGE-03 : B conserve SOUS IMPACT une fois démarrée",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-03",
+      "name": "BADGE-03 : B ne prend AUCUN badge direct (ni À traiter ni À suivre) en démarrant",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-03",
+      "name": "BADGE-03 : A (toujours todo) reste À TRAITER",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-04",
+      "name": "BADGE-04 : A ne porte plus aucun badge direct",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-04",
+      "name": "BADGE-04 : A ne bascule pas en SOUS IMPACT",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-04",
+      "name": "BADGE-04 : B ne porte plus SOUS IMPACT",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-04",
+      "name": "BADGE-04 : C ne porte plus SOUS IMPACT",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-05",
+      "name": "BADGE-05 : A (todo) → À TRAITER",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-05",
+      "name": "BADGE-05 : B (todo) → À TRAITER (incident propre)",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-05",
+      "name": "BADGE-05 : B n’affiche PAS SOUS IMPACT en même temps (§19)",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-05",
+      "name": "BADGE-05 : C → SOUS IMPACT",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-06",
+      "name": "BADGE-06 : le toggle a bien changé d’état",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-06",
+      "name": "BADGE-06 : badges Kanban strictement identiques toggle OFF et ON",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-06",
+      "name": "BADGE-06 : SOUS IMPACT présent même avec le toggle actif",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-07",
+      "name": "BADGE-07 : le Gantt ne rend aucune carte Kanban",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-07",
+      "name": "BADGE-07 : badges recalculés à l’identique au retour",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-07",
+      "name": "BADGE-07 : aucune propriété de badge persistée sur les tâches",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-08",
+      "name": "BADGE-08 : le filtre réduit bien le périmètre",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-08",
+      "name": "BADGE-08 : badges identiques avant/après filtrage (logique inchangée)",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-08",
+      "name": "BADGE-08 : « Pose des 6 fenêtres » (todo + incident direct) → À TRAITER",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-09",
+      "name": "BADGE-09 : la tâche isolée est bien rendue",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-09",
+      "name": "BADGE-09 : aucun badge d’incident direct",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-09",
+      "name": "BADGE-09 : aucune mention SOUS IMPACT",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-09",
+      "name": "BADGE-09 : aucun badge du tout sur la carte neutre",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-10",
+      "name": "BADGE-10 : A → REPRISE + À TRAITER",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-10",
+      "name": "BADGE-10 : B → REPRISE + SOUS IMPACT",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-10",
+      "name": "BADGE-10 : B ne prend aucun badge direct à cause de la reprise",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-10",
+      "name": "BADGE-10 : REPRISE reste affiché en premier",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-11",
+      "name": "BADGE-11 : les trois badges coexistent dans la vue sombre",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-11",
+      "name": "BADGE-11 : SOUS IMPACT ≠ À TRAITER (couleur de texte)",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-11",
+      "name": "BADGE-11 : SOUS IMPACT ≠ À TRAITER (fond)",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-11",
+      "name": "BADGE-11 : SOUS IMPACT ≠ REPRISE",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-11",
+      "name": "BADGE-11 : SOUS IMPACT ≠ badge chantier",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-11",
+      "name": "BADGE-11 : SOUS IMPACT n’utilise pas de rouge",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-12",
+      "name": "BADGE-12 : libellé exact « SOUS IMPACT »",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-12",
+      "name": "BADGE-12 : libellé exact « À TRAITER » conservé",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-12",
+      "name": "BADGE-12 : les deux badges sont visuellement distincts",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-12",
+      "name": "BADGE-12 : SOUS IMPACT ≠ REPRISE (bleu accent)",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-12",
+      "name": "BADGE-12 : aucun rouge sur SOUS IMPACT",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-12",
+      "name": "BADGE-12 : le terme « À surveiller » n’est pas réutilisé (§13)",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-13",
+      "name": "BADGE-13 : 1920px — des badges sont rendus",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-13",
+      "name": "BADGE-13 : 1920px — aucun badge ne déborde de sa carte",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-13",
+      "name": "BADGE-13 : 1920px — aucun scroll horizontal de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-13",
+      "name": "BADGE-13 : 1440px — des badges sont rendus",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-13",
+      "name": "BADGE-13 : 1440px — aucun badge ne déborde de sa carte",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-13",
+      "name": "BADGE-13 : 1440px — aucun scroll horizontal de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-13",
+      "name": "BADGE-13 : 1280px — des badges sont rendus",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-13",
+      "name": "BADGE-13 : 1280px — aucun badge ne déborde de sa carte",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-13",
+      "name": "BADGE-13 : 1280px — aucun scroll horizontal de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-13",
+      "name": "BADGE-13 : 900px — des badges sont rendus",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-13",
+      "name": "BADGE-13 : 900px — aucun badge ne déborde de sa carte",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-13",
+      "name": "BADGE-13 : 900px — aucun scroll horizontal de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-13",
+      "name": "BADGE-13 : 768px — des badges sont rendus",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-13",
+      "name": "BADGE-13 : 768px — aucun badge ne déborde de sa carte",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-13",
+      "name": "BADGE-13 : 768px — aucun scroll horizontal de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-13",
+      "name": "BADGE-13 : 430px — des badges sont rendus",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-13",
+      "name": "BADGE-13 : 430px — aucun badge ne déborde de sa carte",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-13",
+      "name": "BADGE-13 : 430px — aucun scroll horizontal de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-13",
+      "name": "BADGE-13 : 390px — des badges sont rendus",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-13",
+      "name": "BADGE-13 : 390px — aucun badge ne déborde de sa carte",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-13",
+      "name": "BADGE-13 : 390px — aucun scroll horizontal de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-14",
+      "name": "BADGE-14 : les libellés texte sont toujours visibles",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-14",
+      "name": "BADGE-14 : différenciation non chromatique (SOUS IMPACT contouré, POINT OUVERT plein)",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-15",
+      "name": "BADGE-15 : rendre le Kanban ne mute aucune tâche",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-15",
+      "name": "BADGE-15 : exactement 3 colonnes (À faire / En cours / Terminée)",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-15",
+      "name": "BADGE-15 : SCHEMA_VERSION inchangé (8)",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-15",
+      "name": "BADGE-15 : STORE inchangé (kanvix-product-8-3)",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-15",
+      "name": "BADGE-15 : kanbanImpactContext() renvoie bien deux Set",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-16",
+      "name": "BADGE-16 : C est bien dans « Terminée »",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-16",
+      "name": "BADGE-16 : une tâche terminée reste non draggable (V2.4.10.1)",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-18",
+      "name": "BADGE-18 : « Pose des 6 fenêtres » (incident « Fenêtres décalées ») → POINT OUVERT seul",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-18",
+      "name": "BADGE-18 : au moins une conséquence aval porte SOUS IMPACT sur la démo",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-18",
+      "name": "BADGE-18 : aucune carte ne cumule SOUS IMPACT et POINT OUVERT",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-18",
+      "name": "BADGE-18 : les deux niveaux coexistent dans une même vue Kanban",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-19",
+      "name": "BADGE-19 : « Tableau électrique » porte bien son incident de démonstration",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-19",
+      "name": "BADGE-19 : départ en « À faire »",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-19",
+      "name": "BADGE-19 : À faire → À TRAITER",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-19",
+      "name": "BADGE-19 : la carte est passée en « En cours »",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-19",
+      "name": "BADGE-19 : En cours + À SUIVRE",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-19",
+      "name": "BADGE-19 : libellé rendu « À SUIVRE »",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-19",
+      "name": "BADGE-19 : INTERDIT — ni « À TRAITER » ni « POINT OUVERT » sur la carte démarrée",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-19",
+      "name": "BADGE-19 : pas de cumul avec SOUS IMPACT",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-20",
+      "name": "BADGE-20 : « Peinture étage 1 » (conséquence pure) → SOUS IMPACT",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-20",
+      "name": "BADGE-20 : la carte est passée en « En cours »",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-20",
+      "name": "BADGE-20 : En cours + SOUS IMPACT",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-20",
+      "name": "BADGE-20 : elle ne bascule jamais en À SUIVRE",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-21",
+      "name": "BADGE-21 : des badges « À TRAITER » sont rendus (tâches non démarrées)",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-21",
+      "name": "BADGE-21 : aucun « POINT OUVERT » sur des tâches non terminées",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-21",
+      "name": "BADGE-21 : §7 — le cockpit chantier conserve sa zone « À traiter »",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-21",
+      "name": "BADGE-21 : l’Accueil se rend normalement (aucun remplacement aveugle)",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-A",
+      "name": "KAN-CTX-A : départ — À faire + À TRAITER",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-A",
+      "name": "KAN-CTX-A : le drag réel a bien été dispatché sur les handlers de l’app",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-A",
+      "name": "KAN-CTX-A : le DataTransfer porte bien l’id de la tâche",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-A",
+      "name": "KAN-CTX-A : le drag a réellement changé le statut via kanbanDrop → setTaskStatus",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-A",
+      "name": "KAN-CTX-A : la carte est dans la colonne « En cours »",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-A",
+      "name": "KAN-CTX-A : badge « À SUIVRE » après drag réel",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-A",
+      "name": "KAN-CTX-A : libellé rendu « À SUIVRE »",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-A",
+      "name": "KAN-CTX-A : ni À TRAITER, ni POINT OUVERT, ni SOUS IMPACT",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-A",
+      "name": "KAN-CTX-A : le drag retour a bien été dispatché",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-A",
+      "name": "KAN-CTX-A : retour — la carte revient dans « À faire »",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-A",
+      "name": "KAN-CTX-A : retour — le badge redevient « À TRAITER »",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-A",
+      "name": "KAN-CTX-A : retour — plus de « À SUIVRE »",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-B",
+      "name": "KAN-CTX-B : À faire → À TRAITER",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-B",
+      "name": "KAN-CTX-B : drag réel dispatché",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-B",
+      "name": "KAN-CTX-B : colonne « En cours »",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-B",
+      "name": "KAN-CTX-B : badge « À SUIVRE »",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-B",
+      "name": "KAN-CTX-B : plus de « À TRAITER » en colonne En cours",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-C",
+      "name": "KAN-CTX-C : B doing sans incident propre → SOUS IMPACT (jamais À SUIVRE)",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-C",
+      "name": "KAN-CTX-C : B doing + incident propre → À SUIVRE",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-C",
+      "name": "KAN-CTX-C : SOUS IMPACT disparaît (incident direct prioritaire, §5)",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-C",
+      "name": "KAN-CTX-C : C reste SOUS IMPACT",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-C",
+      "name": "KAN-CTX-C : incident propre résolu → plus de À SUIVRE",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-C",
+      "name": "KAN-CTX-C : B redevient SOUS IMPACT (incident amont toujours ouvert, §23)",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-C",
+      "name": "KAN-CTX-C : tous incidents résolus → aucun badge sur A, B, C (§24)",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-D",
+      "name": "KAN-CTX-D : la tâche est en colonne « Terminée »",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-D",
+      "name": "KAN-CTX-D : badge « POINT OUVERT »",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-D",
+      "name": "KAN-CTX-D : jamais « À TRAITER » ni « À SUIVRE » sur une tâche terminée",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-D",
+      "name": "KAN-CTX-D : la tâche terminée reste non draggable (V2.4.10.1, §9)",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-D",
+      "name": "KAN-CTX-D : la tâche n’est pas rouverte",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-E",
+      "name": "KAN-CTX-E : À TRAITER présent",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-E",
+      "name": "KAN-CTX-E : À SUIVRE présent",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-E",
+      "name": "KAN-CTX-E : SOUS IMPACT présent",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-E",
+      "name": "KAN-CTX-E : POINT OUVERT présent",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-E",
+      "name": "KAN-CTX-E : les 4 badges sont deux à deux distincts (clair)",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-E",
+      "name": "KAN-CTX-E : À TRAITER plein / À SUIVRE contouré — hiérarchie d’action lisible (§10/§11)",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-E",
+      "name": "KAN-CTX-E : les 4 badges coexistent en mode sombre",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-E",
+      "name": "KAN-CTX-E : les 4 badges restent deux à deux distincts (sombre)",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-E",
+      "name": "KAN-CTX-E : aucun rouge sur À SUIVRE / POINT OUVERT / SOUS IMPACT",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-F",
+      "name": "KAN-CTX-F : 1920px — les 4 types de badges sont rendus",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-F",
+      "name": "KAN-CTX-F : 1920px — aucun badge ne déborde de sa carte",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-F",
+      "name": "KAN-CTX-F : 1920px — aucun scroll horizontal de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-F",
+      "name": "KAN-CTX-F : 1440px — les 4 types de badges sont rendus",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-F",
+      "name": "KAN-CTX-F : 1440px — aucun badge ne déborde de sa carte",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-F",
+      "name": "KAN-CTX-F : 1440px — aucun scroll horizontal de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-F",
+      "name": "KAN-CTX-F : 1280px — les 4 types de badges sont rendus",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-F",
+      "name": "KAN-CTX-F : 1280px — aucun badge ne déborde de sa carte",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-F",
+      "name": "KAN-CTX-F : 1280px — aucun scroll horizontal de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-F",
+      "name": "KAN-CTX-F : 900px — les 4 types de badges sont rendus",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-F",
+      "name": "KAN-CTX-F : 900px — aucun badge ne déborde de sa carte",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-F",
+      "name": "KAN-CTX-F : 900px — aucun scroll horizontal de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-F",
+      "name": "KAN-CTX-F : 768px — les 4 types de badges sont rendus",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-F",
+      "name": "KAN-CTX-F : 768px — aucun badge ne déborde de sa carte",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-F",
+      "name": "KAN-CTX-F : 768px — aucun scroll horizontal de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-F",
+      "name": "KAN-CTX-F : 430px — les 4 types de badges sont rendus",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-F",
+      "name": "KAN-CTX-F : 430px — aucun badge ne déborde de sa carte",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-F",
+      "name": "KAN-CTX-F : 430px — aucun scroll horizontal de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-F",
+      "name": "KAN-CTX-F : 390px — les 4 types de badges sont rendus",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-F",
+      "name": "KAN-CTX-F : 390px — aucun badge ne déborde de sa carte",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-F",
+      "name": "KAN-CTX-F : 390px — aucun scroll horizontal de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-G",
+      "name": "KAN-CTX-G : rendre le Kanban ne modifie ni statuts, ni deps, ni incidents, ni chaîne d’impact (§32)",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-G",
+      "name": "KAN-CTX-G : aucun champ de badge persisté sur les tâches (§33)",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-G",
+      "name": "KAN-CTX-G : kanbanDirectIssueLabel() ne mute pas la tâche",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-G",
+      "name": "KAN-CTX-G : matrice todo/waiting/late→À traiter, doing→À suivre, done→Point ouvert",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-G",
+      "name": "KAN-CTX-G : SCHEMA_VERSION inchangé (8)",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-CTX-G",
+      "name": "KAN-CTX-G : STORE inchangé",
+      "status": "PASS"
+    },
+    {
+      "sec": "BADGE-17",
+      "name": "BADGE-17 : 0 erreur JavaScript applicative",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    {
+      "where": "B01",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B01",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B01",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B02",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B02",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B02",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B03",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B03",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B03",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B04",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B04",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B04",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B05",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B05",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B05",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B06",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B06",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B06",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B07",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B07",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B07",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B08",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B08",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B08",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B09",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B09",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B09",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B10",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B10",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B10",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B11",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B11",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B11",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B12",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B12",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B12",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B13-1920",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B13-1920",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B13-1920",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B13-1440",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B13-1440",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B13-1440",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B13-1280",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B13-1280",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B13-1280",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B13-900",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B13-900",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B13-900",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B13-768",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B13-768",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B13-768",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B13-430",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B13-430",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B13-430",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B13-390",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B13-390",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B13-390",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B14",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B14",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B14",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B15",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B15",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B15",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B16",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B16",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B16",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B18",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B18",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B18",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B19",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B19",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B19",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B20",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B20",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B20",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B21",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B21",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "B21",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CTXA",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CTXA",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CTXA",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CTXB",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CTXB",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CTXB",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CTXC",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CTXC",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CTXC",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CTXD",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CTXD",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CTXD",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CTXE",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CTXE",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CTXE",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CTXF-1920",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CTXF-1920",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CTXF-1920",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CTXF-1440",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CTXF-1440",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CTXF-1440",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CTXF-1280",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CTXF-1280",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CTXF-1280",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CTXF-900",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CTXF-900",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CTXF-900",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CTXF-768",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CTXF-768",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CTXF-768",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CTXF-430",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CTXF-430",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CTXF-430",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CTXF-390",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CTXF-390",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CTXF-390",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CTXG",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CTXG",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CTXG",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    }
+  ]
+}
