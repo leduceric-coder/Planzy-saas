@@ -1,0 +1,874 @@
+{
+  "passed": 106,
+  "failed": [],
+  "results": [
+    {
+      "sec": "SITE-01",
+      "name": "SITE-01 : le défaut est bien REPRODUIT sur la baseline V2.4.11.3 (fuite + historiques identiques)",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-01",
+      "name": "SITE-01 : plus aucune fuite Villa → Keravel",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-01",
+      "name": "SITE-01 : plus aucune fuite Keravel → Villa",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-01",
+      "name": "SITE-01 : les historiques de deux chantiers ne sont plus identiques",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-01",
+      "name": "SITE-01 : l’entrée globale n’apparaît pas dans la fiche chantier",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-01",
+      "name": "SITE-01 : le chantier montre bien ses propres événements",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-HIST-01",
+      "name": "SITE-HIST-01 : Keravel montre son événement",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-HIST-01",
+      "name": "SITE-HIST-01 : Keravel ne montre PAS l’événement Villa",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-HIST-02",
+      "name": "SITE-HIST-02 : Villa montre son événement",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-HIST-02",
+      "name": "SITE-HIST-02 : Villa ne montre PAS l’événement Keravel",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-HIST-03",
+      "name": "SITE-HIST-03 : Les Terrasses montre son événement",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-HIST-03",
+      "name": "SITE-HIST-03 : Horizon ne montre PAS l’événement Les Terrasses",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-HIST-03",
+      "name": "SITE-HIST-03 : Horizon montre l’événement dérivé de sourceTaskId",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-HIST-03",
+      "name": "SITE-HIST-03 : aucune fuite Horizon → Les Terrasses",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-HIST-04",
+      "name": "SITE-HIST-04 : aucune entrée globale dans « keravel »",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-HIST-04",
+      "name": "SITE-HIST-04 : aucune entrée globale dans « villa »",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-HIST-04",
+      "name": "SITE-HIST-04 : aucune entrée globale dans « horizon »",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-HIST-04",
+      "name": "SITE-HIST-04 : aucune entrée globale dans « terrasses »",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-HIST-04",
+      "name": "SITE-HIST-04 : les entrées globales sont CONSERVÉES dans app.history (aucune suppression, §5)",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-HIST-05",
+      "name": "SITE-HIST-05 : l’entrée ne porte AUCUN projectId explicite",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-HIST-05",
+      "name": "SITE-HIST-05 : historyProjectId() dérive « keravel » depuis la tâche",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-HIST-05",
+      "name": "SITE-HIST-05 : visible uniquement dans Keravel",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-HIST-06",
+      "name": "SITE-HIST-06 : l’entrée porte projectId=keravel (§14)",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-HIST-06",
+      "name": "SITE-HIST-06 : historyProjectId() la rattache à Keravel",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-HIST-06",
+      "name": "SITE-HIST-06 : l’événement apparaît dans l’historique Keravel",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-HIST-06",
+      "name": "SITE-HIST-06 : absent de « villa »",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-HIST-06",
+      "name": "SITE-HIST-06 : absent de « horizon »",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-HIST-06",
+      "name": "SITE-HIST-06 : absent de « terrasses »",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-HIST-07",
+      "name": "SITE-HIST-07 : la simulation a bien été appliquée puis vidée",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-HIST-07",
+      "name": "SITE-HIST-07 : l’entrée « Simulation … appliquée » porte projectId=keravel (§17)",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-HIST-07",
+      "name": "SITE-HIST-07 : elle est rattachée au bon chantier",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-HIST-07",
+      "name": "SITE-HIST-07 : visible dans l’historique Keravel",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-HIST-07",
+      "name": "SITE-HIST-07 : absente de Villa du Port",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-HIST-07",
+      "name": "SITE-HIST-07 : le scénario multi-chantiers s’applique bien",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-HIST-07",
+      "name": "SITE-HIST-07 : scénario multi-chantiers → entrée GLOBALE, aucune attribution arbitraire",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-HIST-08",
+      "name": "SITE-HIST-08 : historique Keravel non vide en état actif (§26)",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-HIST-08",
+      "name": "SITE-HIST-08 : Keravel est clôturé",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-HIST-08",
+      "name": "SITE-HIST-08 : historique conservé et toujours filtré en état clôturé (§27)",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-HIST-08",
+      "name": "SITE-HIST-08 : aucune fuite sur un chantier clôturé",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-HIST-09",
+      "name": "SITE-HIST-09 : même timeline en état archivé (§28)",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-HIST-09",
+      "name": "SITE-HIST-09 : rendu strictement identique closed / archived — aucune duplication",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-HIST-10",
+      "name": "SITE-HIST-10 : restauration → timeline inchangée (§30)",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-HIST-10",
+      "name": "SITE-HIST-10 : réouverture → une seule timeline, aucune duplication (§29)",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-HIST-10",
+      "name": "SITE-HIST-10 : toujours aucune fuite après le cycle complet",
+      "status": "PASS"
+    },
+    {
+      "sec": "TASK-HIST-01",
+      "name": "TASK-HIST-01 : la fiche tâche conserve « Suivi de la tâche »",
+      "status": "PASS"
+    },
+    {
+      "sec": "TASK-HIST-01",
+      "name": "TASK-HIST-01 : aucune seconde section « Historique » globale (§10/§11)",
+      "status": "PASS"
+    },
+    {
+      "sec": "TASK-HIST-01",
+      "name": "TASK-HIST-01 : les événements de CETTE tâche sont présents",
+      "status": "PASS"
+    },
+    {
+      "sec": "TASK-HIST-02",
+      "name": "TASK-HIST-02 : l’événement d’une autre tâche du même chantier n’apparaît pas",
+      "status": "PASS"
+    },
+    {
+      "sec": "TASK-HIST-03",
+      "name": "TASK-HIST-03 : aucune trace d’un autre chantier",
+      "status": "PASS"
+    },
+    {
+      "sec": "TASK-HIST-03",
+      "name": "TASK-HIST-03 : aucune entrée globale dans la fiche tâche",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-CROSS",
+      "name": "HIST-CROSS : Historique Projet A = A1 + A2 seulement",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-CROSS",
+      "name": "HIST-CROSS : Historique Projet B = B1 seulement",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-CROSS",
+      "name": "HIST-CROSS : Fiche tâche A1 = A1 seulement",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-NAME",
+      "name": "HIST-NAME : chaque chantier ne voit QUE ses 2 entrées, malgré des noms quasi identiques (§31)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-NAME",
+      "name": "HIST-NAME : chaque chantier récupère SES entrées (indices disjoints), pas celles du voisin",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-NAME",
+      "name": "HIST-NAME : un texte strictement identique apparaît dans chaque chantier séparément (§46 — pas de filtre textuel)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-DEL",
+      "name": "HIST-DEL : avant suppression, les deux entrées sont rattachées",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-DEL",
+      "name": "HIST-DEL : après suppression, projectId préserve la traçabilité (§22)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-DEL",
+      "name": "HIST-DEL : une entrée taskId seul devient non attribuable — jamais rattachée arbitrairement",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-DEL",
+      "name": "HIST-DEL : seule l’entrée attribuable reste affichée",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-PURE",
+      "name": "HIST-PURE : historyHTML / projectHistory / historyProjectId ne modifient rien (§48)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-PURE",
+      "name": "HIST-PURE : l’ordre de app.history est préservé (plus récent en tête, §24)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-PURE",
+      "name": "HIST-PURE : sans options, historyHTML() rend toujours l’historique complet",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-EMPTY",
+      "name": "HIST-EMPTY : « Aucune modification récente. » quand le chantier n’a aucun événement",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-EMPTY",
+      "name": "HIST-EMPTY : la zone n’est JAMAIS remplie avec des événements d’autres chantiers (§9)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-LEVELS",
+      "name": "HIST-LEVELS : l’onglet Historique reste absent en Essentiel (§52)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-LEVELS",
+      "name": "HIST-LEVELS : l’onglet Historique est présent en Pilotage (§53)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-PERF",
+      "name": "HIST-PERF : filtrage exact sur 1000 entrées / 30 chantiers",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-PERF",
+      "name": "HIST-PERF : rendu fluide (2 ms, seuil 300 ms)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-DARK",
+      "name": "HIST-DARK : historique chantier rendu en mode sombre",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-DARK",
+      "name": "HIST-DARK : filtrage toujours effectif en sombre",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-RESP",
+      "name": "HIST-RESP : 1920px — l’historique est rendu",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-RESP",
+      "name": "HIST-RESP : 1920px — aucun débordement ni scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-RESP",
+      "name": "HIST-RESP : 1920px — aucune fuite inter-chantiers",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-RESP",
+      "name": "HIST-RESP : 1440px — l’historique est rendu",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-RESP",
+      "name": "HIST-RESP : 1440px — aucun débordement ni scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-RESP",
+      "name": "HIST-RESP : 1440px — aucune fuite inter-chantiers",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-RESP",
+      "name": "HIST-RESP : 1280px — l’historique est rendu",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-RESP",
+      "name": "HIST-RESP : 1280px — aucun débordement ni scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-RESP",
+      "name": "HIST-RESP : 1280px — aucune fuite inter-chantiers",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-RESP",
+      "name": "HIST-RESP : 900px — l’historique est rendu",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-RESP",
+      "name": "HIST-RESP : 900px — aucun débordement ni scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-RESP",
+      "name": "HIST-RESP : 900px — aucune fuite inter-chantiers",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-RESP",
+      "name": "HIST-RESP : 768px — l’historique est rendu",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-RESP",
+      "name": "HIST-RESP : 768px — aucun débordement ni scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-RESP",
+      "name": "HIST-RESP : 768px — aucune fuite inter-chantiers",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-RESP",
+      "name": "HIST-RESP : 430px — l’historique est rendu",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-RESP",
+      "name": "HIST-RESP : 430px — aucun débordement ni scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-RESP",
+      "name": "HIST-RESP : 430px — aucune fuite inter-chantiers",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-RESP",
+      "name": "HIST-RESP : 390px — l’historique est rendu",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-RESP",
+      "name": "HIST-RESP : 390px — aucun débordement ni scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-RESP",
+      "name": "HIST-RESP : 390px — aucune fuite inter-chantiers",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-LEGACY",
+      "name": "HIST-LEGACY : les 4 entrées survivent au rechargement (aucune migration destructive, §20)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-LEGACY",
+      "name": "HIST-LEGACY : 1 — taskId seul → chantier dérivé",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-LEGACY",
+      "name": "HIST-LEGACY : 2 — projectId seul → chantier explicite",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-LEGACY",
+      "name": "HIST-LEGACY : 3 — sans rattachement → globale",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-LEGACY",
+      "name": "HIST-LEGACY : 4 — taskId invalide → non attribuable, jamais injectée arbitrairement",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-LEGACY",
+      "name": "HIST-LEGACY : fiche Keravel = uniquement l’entrée 1",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-LEGACY",
+      "name": "HIST-LEGACY : fiche Villa = uniquement l’entrée 2",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-LEGACY",
+      "name": "HIST-LEGACY : SCHEMA_VERSION inchangé (8), aucune migration ajoutée (§61)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-SCOPE",
+      "name": "HIST-SCOPE : aucune collection app.projectHistory / taskHistory / globalHistory (§1)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-SCOPE",
+      "name": "HIST-SCOPE : app.history reste la source unique",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-SCOPE",
+      "name": "HIST-SCOPE : aucune page « Historique » ajoutée au menu (§54)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-SCOPE",
+      "name": "HIST-SCOPE : STORE et SCHEMA_VERSION inchangés (§61)",
+      "status": "PASS"
+    },
+    {
+      "sec": "CAPTURES",
+      "name": "CAPTURES : Keravel et Villa capturés",
+      "status": "PASS"
+    },
+    {
+      "sec": "CONSOLE",
+      "name": "CONSOLE : 0 erreur JavaScript applicative",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    {
+      "where": "S01-before",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "S01-before",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "S01-before",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "S01-after",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "S01-after",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "S01-after",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "H123",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "H123",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "H123",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "H04",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "H04",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "H04",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "H05",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "H05",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "H05",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "H06",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "H06",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "H06",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "H07",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "H07",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "H07",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "H8910",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "H8910",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "H8910",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "TH",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "TH",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "TH",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CROSS",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CROSS",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CROSS",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "NAME",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "NAME",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "NAME",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "DEL",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "DEL",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "DEL",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "PURE",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "PURE",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "PURE",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "EMPTY",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "EMPTY",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "EMPTY",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "LVL",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "LVL",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "LVL",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "PERF",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "PERF",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "PERF",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "DARK",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "DARK",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "DARK",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1920",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1920",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1920",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1440",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1440",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1440",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1280",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1280",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1280",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-900",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-900",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-900",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-768",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-768",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-768",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-430",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-430",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-430",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-390",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-390",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-390",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "LEG",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "LEG",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "LEG",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "LEG",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "LEG",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "LEG",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SCOPE",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SCOPE",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SCOPE",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SHOT",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SHOT",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SHOT",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    }
+  ]
+}
