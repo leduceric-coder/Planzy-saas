@@ -1,0 +1,746 @@
+{
+  "passed": 90,
+  "failed": [],
+  "results": [
+    {
+      "sec": "HIST-UI-01",
+      "name": "HIST-UI-01 : structure .history-panel / .history-header / .history-list présente",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-01",
+      "name": "HIST-UI-01 : aucun `.row` générique dans l’historique (§1/§75)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-01",
+      "name": "HIST-UI-01 : un .history-event par entrée filtrée",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-01",
+      "name": "HIST-UI-01 : rail + pastille sur chaque événement (§11)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-01",
+      "name": "HIST-UI-01 : compteur = projectHistory().length (§9) — « 6 événements »",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-02",
+      "name": "HIST-UI-02 : cursor: default sur chaque .history-event",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-02",
+      "name": "HIST-UI-02 : corps et titre non cliquables — pas de main (§68)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-02",
+      "name": "HIST-UI-02 : seul « Voir la tâche » affiche la main",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-02",
+      "name": "HIST-UI-02 : aucun hover suggérant un lien sur le fond de l’événement (§35)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-02",
+      "name": "HIST-UI-02 : `.row { cursor: pointer }` conservé pour les écrans où la ligne est réellement cliquable (§75)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-03",
+      "name": "HIST-UI-03 : les événements à tâche valide portent un bouton",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-03",
+      "name": "HIST-UI-03 : vrai <button type=\"button\">, pas un div onclick (§36)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-03",
+      "name": "HIST-UI-03 : « Voir la tâche source » pour une entrée sourceTaskId seule (§23)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-04",
+      "name": "HIST-UI-04 : l’événement « Tableau électrique » est présent",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-04",
+      "name": "HIST-UI-04 : la fiche s’ouvre pour « Tableau électrique »",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-04",
+      "name": "HIST-UI-04 : c’est bien la BONNE tâche (« Tableau électrique »)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-04",
+      "name": "HIST-UI-04 : l’événement « Pose des 6 fenêtres » est présent",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-04",
+      "name": "HIST-UI-04 : la fiche s’ouvre pour « Pose des 6 fenêtres »",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-04",
+      "name": "HIST-UI-04 : c’est bien la BONNE tâche (« Pose des 6 fenêtres »)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-05",
+      "name": "HIST-UI-05 : app.ui.page reste « project » (§39)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-05",
+      "name": "HIST-UI-05 : l’onglet Historique est toujours actif",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-05",
+      "name": "HIST-UI-05 : la timeline est intacte après fermeture",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-06",
+      "name": "HIST-UI-06 : entrée projectId seul → visible, aucun bouton tâche (§24)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-07",
+      "name": "HIST-UI-07 : taskId supprimé → événement visible, aucun bouton mort (§22)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-07",
+      "name": "HIST-UI-07 : date illisible → événement JAMAIS perdu (§7)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-07",
+      "name": "HIST-UI-07 : la valeur brute est affichée telle quelle",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-08",
+      "name": "HIST-UI-08 : 5 événements du même jour → UNE seule date de groupe (§4)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-08",
+      "name": "HIST-UI-08 : chaque événement garde son heure en colonne (§5)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-08",
+      "name": "HIST-UI-08 : heures au format HH:MM",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-09",
+      "name": "HIST-UI-09 : deux journées → deux groupes distincts",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-09",
+      "name": "HIST-UI-09 : 2 événements le premier jour, 1 le second",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-09",
+      "name": "HIST-UI-09 : ordre chronologique de app.history strictement conservé (§47/§48)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-09",
+      "name": "HIST-UI-09 : deux libellés de date différents",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-10",
+      "name": "HIST-UI-10 : les deux différences sont rendues (§16)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-10",
+      "name": "HIST-UI-10 : avant → après lisible",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-10",
+      "name": "HIST-UI-10 : le commentaire est conservé (§17)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-10",
+      "name": "HIST-UI-10 : l’auteur est affiché tel quel, jamais réinventé (§18)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-10",
+      "name": "HIST-UI-10 : plus de liste .ta-changes lourde dans l’historique",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-11",
+      "name": "HIST-UI-11 : entrée globale toujours absente de la fiche chantier",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-12",
+      "name": "HIST-UI-12 : aucune fuite Keravel ↔ Villa",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-12",
+      "name": "HIST-UI-12 : chaque chantier a son propre historique",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-12",
+      "name": "HIST-UI-12 : historyProjectId / projectHistory toujours en place (§40)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-12",
+      "name": "HIST-UI-12 : la fiche tâche ne réintroduit pas l’historique global (§42)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-13",
+      "name": "HIST-UI-13 : la vue est bien en mode sombre",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-13",
+      "name": "HIST-UI-13 : aucun aplat blanc forcé sur les événements (§34)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-13",
+      "name": "HIST-UI-13 : heure, auteur, bouton et différences tous rendus en sombre",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-13",
+      "name": "HIST-UI-13 : date de groupe lisible en mode sombre",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-13",
+      "name": "HIST-UI-13 : textes lisibles (couleur ≠ fond)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-14",
+      "name": "HIST-UI-14 : 1920px — la timeline est rendue",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-14",
+      "name": "HIST-UI-14 : 1920px — aucun débordement, 0 scroll horizontal (§33)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-14",
+      "name": "HIST-UI-14 : 1920px — rail visible (3 zones, §31)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-14",
+      "name": "HIST-UI-14 : 1440px — la timeline est rendue",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-14",
+      "name": "HIST-UI-14 : 1440px — aucun débordement, 0 scroll horizontal (§33)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-14",
+      "name": "HIST-UI-14 : 1440px — rail visible (3 zones, §31)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-14",
+      "name": "HIST-UI-14 : 1280px — la timeline est rendue",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-14",
+      "name": "HIST-UI-14 : 1280px — aucun débordement, 0 scroll horizontal (§33)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-14",
+      "name": "HIST-UI-14 : 1280px — rail visible (3 zones, §31)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-14",
+      "name": "HIST-UI-14 : 900px — la timeline est rendue",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-14",
+      "name": "HIST-UI-14 : 900px — aucun débordement, 0 scroll horizontal (§33)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-14",
+      "name": "HIST-UI-14 : 900px — rail visible (3 zones, §31)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-14",
+      "name": "HIST-UI-14 : 768px — la timeline est rendue",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-14",
+      "name": "HIST-UI-14 : 768px — aucun débordement, 0 scroll horizontal (§33)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-14",
+      "name": "HIST-UI-14 : 768px — rail visible (3 zones, §31)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-14",
+      "name": "HIST-UI-14 : 430px — la timeline est rendue",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-14",
+      "name": "HIST-UI-14 : 430px — aucun débordement, 0 scroll horizontal (§33)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-14",
+      "name": "HIST-UI-14 : 430px — pas de colonne gauche coûteuse sur petit écran (§33)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-14",
+      "name": "HIST-UI-14 : 390px — la timeline est rendue",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-14",
+      "name": "HIST-UI-14 : 390px — aucun débordement, 0 scroll horizontal (§33)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-14",
+      "name": "HIST-UI-14 : 390px — pas de colonne gauche coûteuse sur petit écran (§33)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-15",
+      "name": "HIST-UI-15 : le bouton est atteignable au clavier (focus natif)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-15",
+      "name": "HIST-UI-15 : Entrée ouvre la bonne tâche",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-15",
+      "name": "HIST-UI-15 : Espace active également le bouton",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-16",
+      "name": "HIST-UI-16 : aucun onclick / role=button / tabindex / cursor:pointer sur un élément non interactif",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-UI-16",
+      "name": "HIST-UI-16 : les seuls éléments focusables sont les boutons « Voir la tâche »",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-DENSITY",
+      "name": "HIST-DENSITY : 10 événements identiques des deux côtés",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-DENSITY",
+      "name": "HIST-DENSITY : hauteur moyenne par événement réduite (77px → 59px)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-DENSITY",
+      "name": "HIST-DENSITY : hauteur totale réduite de 24% (855px → 648px)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-DENSITY",
+      "name": "HIST-DENSITY : événement simple compact sans être illisible (59px)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-VOLUME",
+      "name": "HIST-VOLUME : 1 événement → même structure timeline (§44)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-VOLUME",
+      "name": "HIST-VOLUME : compteur au singulier",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-VOLUME",
+      "name": "HIST-VOLUME : 50 événements tous rendus (§45)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-VOLUME",
+      "name": "HIST-VOLUME : 1000 entrées / 30 chantiers — filtrage exact conservé (§46)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-VOLUME",
+      "name": "HIST-VOLUME : rendu performant (1 ms)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-PURE",
+      "name": "HIST-PURE : ouvrir l’historique ne modifie ni history, ni tasks, ni projects, ni issues (§49)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-PURE",
+      "name": "HIST-PURE : aucun eventType / tone persisté (§27)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-PURE",
+      "name": "HIST-PURE : SCHEMA_VERSION et STORE inchangés (§74)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-EMPTY",
+      "name": "HIST-EMPTY : zone vide légère avec le libellé attendu (§43)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-EMPTY",
+      "name": "HIST-EMPTY : jamais rempli avec les événements d’un autre chantier",
+      "status": "PASS"
+    },
+    {
+      "sec": "HIST-EMPTY",
+      "name": "HIST-EMPTY : compteur à 0",
+      "status": "PASS"
+    },
+    {
+      "sec": "CONSOLE",
+      "name": "CONSOLE : 0 erreur JavaScript applicative",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    {
+      "where": "UI01",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI01",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI01",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI02",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI02",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI02",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI03",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI03",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI03",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI04",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI04",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI04",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI05",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI05",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI05",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI0607",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI0607",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI0607",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI0809",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI0809",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI0809",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI10",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI10",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI10",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI1112",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI1112",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI1112",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI13",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI13",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI13",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI14-1920",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI14-1920",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI14-1920",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI14-1440",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI14-1440",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI14-1440",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI14-1280",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI14-1280",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI14-1280",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI14-900",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI14-900",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI14-900",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI14-768",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI14-768",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI14-768",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI14-430",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI14-430",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI14-430",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI14-390",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI14-390",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI14-390",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI15",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI15",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI15",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI16",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI16",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI16",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "DENS-before",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "DENS-before",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "DENS-before",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "DENS-after",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "DENS-after",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "DENS-after",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "VOL",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "VOL",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "VOL",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "PURE",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "PURE",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "PURE",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "EMPTY",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "EMPTY",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "EMPTY",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    }
+  ]
+}

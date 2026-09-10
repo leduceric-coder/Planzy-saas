@@ -27,6 +27,13 @@ async function newPage(w = 1440, h = 950, tag = 'x', url = FILE) {
   return { ctx, p };
 }
 const ev = (p, f, ...a) => p.evaluate(f, ...a);
+// V2.4.12.1 — l'historique n'utilise plus la classe générique `.row` mais une
+// timeline `.history-event`. Ces assertions portent sur le PÉRIMÈTRE DES
+// DONNÉES, pas sur le markup : on compte donc les entrées indépendamment de la
+// version rendue, pour que cette suite reste valable sur les deux fichiers.
+const HIST_ITEM_SELECTOR = '.section .row, .history-event';
+const countHistoryItems = (html) =>
+  (html.match(/class="row"/g) || []).length + (html.match(/class="history-event /g) || []).length;
 const run = async (p, src) => { await ev(p, (s) => (0, eval)(s), src); await p.waitForTimeout(200); };
 
 // Jeu de données déterministe : 4 chantiers de démo + une entrée par chantier,
@@ -231,7 +238,7 @@ console.log('\n[SITE-HIST-08..10] active → closed → archived → restore →
   const { ctx, p } = await newPage(1440, 950, 'H8910');
   await run(p, DATASET);
   const baseline = await histOf(p, 'keravel');
-  const countRows = (html) => (html.match(/class="row"/g) || []).length;
+  const countRows = countHistoryItems;
   const n0 = countRows(baseline);
   ok(n0 > 0, 'SITE-HIST-08 : historique Keravel non vide en état actif (§26)', 'SITE-HIST-08');
 
@@ -348,7 +355,7 @@ console.log('\n[HIST-NAME] Noms proches et textes identiques');
     save();
     const hK = projectTabContent('Historique', 'keravel');
     const hE = projectTabContent('Historique', 'keravel-ext');
-    const rows = (h) => (h.match(/class="row"/g) || []).length;
+    const rows = (h) => (h.match(/class="row"/g) || []).length + (h.match(/class="history-event /g) || []).length;
     // Les deux chantiers portent volontairement des textes IDENTIQUES : le HTML
     // rendu est donc légitimement identique. Ce qui doit différer, ce sont les
     // ENTRÉES rattachées — on les compare par identité d'objet.
@@ -412,7 +419,7 @@ console.log('\n[HIST-PURE] Pureté des fonctions de filtre');
     return {
       pure: before === after,
       order: projectHistory('keravel').map((h) => app.history.indexOf(h)),
-      globalStillFull: historyHTML().split('class="row"').length - 1,
+      globalStillFull: (historyHTML().match(/class="row"/g) || []).length + (historyHTML().match(/class="history-event /g) || []).length,
       total: app.history.length,
     };
   });
@@ -436,7 +443,7 @@ console.log('\n[HIST-EMPTY] État vide');
     ];
     save();
     const h = projectTabContent('Historique', 'keravel');
-    return { empty: /Aucune modification récente/.test(h), rows: (h.match(/class="row"/g) || []).length, leak: /EVT-VILLA|EVT-GLOBAL/.test(h) };
+    return { empty: /Aucune modification récente/.test(h), rows: (h.match(/class="row"/g) || []).length + (h.match(/class="history-event /g) || []).length, leak: /EVT-VILLA|EVT-GLOBAL/.test(h) };
   });
   note('HIST-EMPTY', r);
   ok(r.empty, 'HIST-EMPTY : « Aucune modification récente. » quand le chantier n’a aucun événement', 'HIST-EMPTY');
@@ -489,7 +496,7 @@ console.log('\n[HIST-PERF] 1000 entrées / 30 chantiers');
     const html = projectTabContent('Historique', 'perf-7');
     const ms = performance.now() - t0;
     const expected = app.history.filter((h) => h.taskId === 'perf-t-7').length;
-    return { ms: Math.round(ms), rows: (html.match(/class="row"/g) || []).length, expected, total: app.history.length, projects: app.projects.length };
+    return { ms: Math.round(ms), rows: (html.match(/class="row"/g) || []).length + (html.match(/class="history-event /g) || []).length, expected, total: app.history.length, projects: app.projects.length };
   });
   note('HIST-PERF', r);
   ok(r.rows === r.expected, 'HIST-PERF : filtrage exact sur 1000 entrées / 30 chantiers', 'HIST-PERF');
@@ -505,12 +512,12 @@ console.log('\n[HIST-DARK] Dark mode');
   const r = await ev(p, () => {
     app.settings.theme = 'dark'; document.body.classList.add('dark');
     app.ui.projectId = 'keravel'; go('project'); openProjectTab('keravel', 'Historique');
-    const sec = document.querySelector('.main .section');
-    const row = document.querySelector('.main .section .row');
+    const sec = document.querySelector('.main .section, .main .history-panel');
+    const row = document.querySelector('.main .section .row, .main .history-event');
     return {
       dark: document.body.classList.contains('dark'),
       hasRows: !!row,
-      fg: row ? getComputedStyle(row.querySelector('b')).color : null,
+      fg: row ? getComputedStyle(row.querySelector('b, .history-event-title')).color : null,
       bg: sec ? getComputedStyle(sec).backgroundColor : null,
       leak: /EVT-VILLA-PROJECTID/.test(document.querySelector('.main').innerText),
     };
@@ -533,11 +540,11 @@ console.log('\n[HIST-RESP] Responsive');
       app.ui.projectId = 'keravel'; go('project'); openProjectTab('keravel', 'Historique');
       const main = document.querySelector('.main');
       let overflow = 0;
-      main.querySelectorAll('.section .row').forEach((row) => {
+      main.querySelectorAll('.section .row, .history-event').forEach((row) => {
         if (row.getBoundingClientRect().right > main.getBoundingClientRect().right + 1) overflow++;
       });
       return {
-        rows: main.querySelectorAll('.section .row').length,
+        rows: main.querySelectorAll('.section .row, .history-event').length,
         overflow,
         hscroll: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
         leak: /EVT-VILLA-PROJECTID/.test(main.innerText),
