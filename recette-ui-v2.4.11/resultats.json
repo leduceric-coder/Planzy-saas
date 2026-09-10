@@ -1,0 +1,242 @@
+{
+  "passed": 47,
+  "failed": [],
+  "results": [
+    {
+      "sec": "UI-01",
+      "name": "UI-01 : .main occupe la largeur disponible à 1920 (plus de bloc étroit centré)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-01",
+      "name": "UI-01 : marge latérale élégante conservée (32–60px)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-01",
+      "name": "UI-01 : aucun scroll horizontal de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-02",
+      "name": "UI-02 : 1440 — today sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-02",
+      "name": "UI-02 : 1440 — sites sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-02",
+      "name": "UI-02 : 1440 — planning sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-02",
+      "name": "UI-02 : 1440 — team sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-02",
+      "name": "UI-02 : 1440 — contrôles non comprimés",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-03",
+      "name": "UI-03 : 900 — today sans overflow de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-03",
+      "name": "UI-03 : 900 — sites sans overflow de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-03",
+      "name": "UI-03 : 900 — planning sans overflow de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-03",
+      "name": "UI-03 : 900 — team sans overflow de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-04",
+      "name": "UI-04 : 390 — today sans overflow de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-04",
+      "name": "UI-04 : 390 — sites sans overflow de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-04",
+      "name": "UI-04 : 390 — team sans overflow de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-05",
+      "name": "UI-05 : chaque groupe chantier porte une identité couleur (.ptone-*)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-05",
+      "name": "UI-05 : chaque chantier visible a une teinte distincte",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-05",
+      "name": "UI-05 : repère coloré (bordure gauche) présent sur le bandeau",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-06",
+      "name": "UI-06 : le nom du chantier reste toujours affiché (couleur = renfort)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-07",
+      "name": "UI-07 : les états métier (Risque / À surveiller / OK) restent affichés et distincts",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-05",
+      "name": "UI-05 : identité couleur STABLE après changement de période",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-08",
+      "name": "UI-08 : chaque carte porte l’identité de son chantier (pastille + liseré + badge)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-09",
+      "name": "UI-09 : un même chantier a exactement la même couleur sur toutes ses cartes",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-10",
+      "name": "UI-10 : Gantt et Kanban utilisent le MÊME mapping couleur (source unique)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-11",
+      "name": "UI-11 : Kanban conserve exactement 3 colonnes (À faire / En cours / Terminée)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-08",
+      "name": "UI-08 : légende des chantiers affichée en vue multi-chantiers",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-08",
+      "name": "UI-08 : légende masquée quand un seul chantier est filtré",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-12",
+      "name": "UI-12 : plus aucun lien « Charge semaine → » dans la page Équipe",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-12",
+      "name": "UI-12 : le bouton « + Ressource » est conservé",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-13",
+      "name": "UI-13 : « Charge des ressources » visible directement sous la liste",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-14",
+      "name": "UI-14 : la charge affichée est STRICTEMENT le composant existant (aucun calcul dupliqué)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-14",
+      "name": "UI-14 : la route historique « Charge des ressources » reste fonctionnelle (aucun legacy cassé)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-15",
+      "name": "UI-15 : au moins 18px de respiration entre le bouton et l’aperçu du Gantt",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-16",
+      "name": "UI-16 : bandeau chantier lisible en sombre (fond teinté + accent + texte)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-16",
+      "name": "UI-16 : badge chantier Kanban lisible en sombre",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-17",
+      "name": "UI-17 : sidebar repliée — le contenu exploite l’espace libéré (aucune réduction)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-17",
+      "name": "UI-17 : aucun scroll horizontal après repli de la sidebar",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-18",
+      "name": "UI-18 : 1920px — Planning + Chantiers sans scroll horizontal de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-18",
+      "name": "UI-18 : 1680px — Planning + Chantiers sans scroll horizontal de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-18",
+      "name": "UI-18 : 1600px — Planning + Chantiers sans scroll horizontal de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-18",
+      "name": "UI-18 : 1440px — Planning + Chantiers sans scroll horizontal de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-18",
+      "name": "UI-18 : 1366px — Planning + Chantiers sans scroll horizontal de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-18",
+      "name": "UI-18 : 1280px — Planning + Chantiers sans scroll horizontal de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-18",
+      "name": "UI-18 : 1080px — Planning + Chantiers sans scroll horizontal de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-18",
+      "name": "UI-18 : 900px — Planning + Chantiers sans scroll horizontal de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-18",
+      "name": "UI-18 : 768px — Planning + Chantiers sans scroll horizontal de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI-19",
+      "name": "UI-19 : 0 erreur JavaScript applicative",
+      "status": "PASS"
+    }
+  ],
+  "consoleApp": []
+}

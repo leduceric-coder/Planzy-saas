@@ -493,7 +493,7 @@
     },
     {
       "section": "week-click",
-      "name": "titre du jour complet présent (Lundi 31 août)",
+      "name": "titre du jour complet présent (Lundi 7 septembre)",
       "status": "PASS"
     },
     {
@@ -663,7 +663,7 @@
     },
     {
       "section": "a11y-modal",
-      "name": "F05 : aria-labelledby pointe vers un titre réel (\"Lundi 31 août\")",
+      "name": "F05 : aria-labelledby pointe vers un titre réel (\"Lundi 7 septembre\")",
       "status": "PASS"
     },
     {
@@ -798,7 +798,7 @@
       "status": "INFO",
       "detail": {
         "pageHScroll": false,
-        "acpRowRight": -74.015625,
+        "acpRowRight": -77.203125,
         "acpNameTruncated": false,
         "heights": [
           72,
@@ -848,7 +848,7 @@
     },
     {
       "section": "weather-driver",
-      "name": "A. géoloc. autorisée: rendu Accueil non bloqué (21ms)",
+      "name": "A. géoloc. autorisée: rendu Accueil non bloqué (45ms)",
       "status": "PASS"
     },
     {
@@ -991,7 +991,7 @@
       "msg": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
     },
     {
-      "url": "file:///home/user/Planzy-saas/public/poc/kanvix-next-gen-v2.4.10.2.html",
+      "url": "file:///home/user/Planzy-saas/public/poc/kanvix-next-gen-v2.4.11.html",
       "msg": "Failed to load resource: net::ERR_FAILED"
     }
   ]
