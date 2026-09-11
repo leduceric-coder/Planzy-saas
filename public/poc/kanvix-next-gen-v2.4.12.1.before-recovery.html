@@ -14357,56 +14357,6 @@
             : `<div class="history-empty"><span aria-hidden="true">${icon("today")}</span><p>Aucune modification récente.</p></div>`
         }</section>`;
       }
-      // ============================================================
-      // RÉCUPÉRATION V2.4.12.1 → V2.4.13.1  (ajout TEMPORAIRE, LECTURE SEULE)
-      // Ce bloc est le SEUL ajout à ce fichier. Il ne modifie aucune donnée :
-      //   · aucun save(), aucun localStorage.setItem
-      //   · aucune migration, aucun changement de STORE ni de SCHEMA_VERSION
-      //   · aucun resetApp(), aucun render() nécessaire
-      // Il produit un fichier au format `kanvix-backup` v1, directement
-      // restaurable depuis Réglages → Restaurer une sauvegarde de V2.4.13.1.
-      // ============================================================
-      function buildKanvixBackup() {
-        let state = structuredClone(app);
-        state.undoStack = [];
-        state.simulation = null;
-        state.ui = state.ui || {};
-        state.ui.selectedTask = null;
-        state.ui.pendingTaskEdit = null;
-        state.ui.pendingRework = null;
-        state.ui.pendingImport = null;
-        if (state.ui.ai) state.ui.ai.open = false;
-        return {
-          format: "kanvix-backup",
-          backupVersion: 1,
-          appVersion: "2.4.12.1",
-          schemaVersion: state.schemaVersion || SCHEMA_VERSION,
-          exportedAt: new Date().toISOString(),
-          seededFor: state.seededFor || SEED_TODAY,
-          state,
-        };
-      }
-      function downloadKanvixBackup() {
-        try {
-          let d = new Date(),
-            p2 = (n) => String(n).padStart(2, "0"),
-            json = JSON.stringify(buildKanvixBackup(), null, 2),
-            blob = new Blob([json], { type: "application/json;charset=utf-8" }),
-            url = URL.createObjectURL(blob),
-            a = document.createElement("a");
-          a.href = url;
-          a.download = `kanvix-backup-${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())}-${p2(d.getHours())}${p2(d.getMinutes())}.json`;
-          a.style.display = "none";
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
-          setTimeout(() => URL.revokeObjectURL(url), 5000);
-          toast("Sauvegarde Kanvix téléchargée");
-        } catch (error) {
-          console.error("Kanvix: sauvegarde impossible", error);
-          toast("Sauvegarde impossible dans ce navigateur.");
-        }
-      }
       function exportKanvixData() {
         let payload = {
           format: "kanvix-portable", version: 1, exportedAt: new Date().toISOString(),
@@ -15176,11 +15126,6 @@
           settingsRow("openCompanyTemplateForm()", "🏢", "Modèle d’entreprise", "Définir les paramètres par défaut de l’entreprise.") +
           settingsRow("openKanvixImport()", "⬆️", "Importer des données", "Restaurer des données Kanvix depuis un fichier.") +
           settingsRow("exportKanvixData()", "⬇️", "Exporter les données", "Télécharger les données de la démonstration.") +
-          `</div>` +
-          `<div class="settings-danger-sep" role="separator"></div>` +
-          `<p class="settings-sublabel">Sauvegarde Kanvix</p>` +
-          `<div class="settings-rows">` +
-          settingsRow("downloadKanvixBackup()", "💾", "Exporter une sauvegarde complète", "Pour reprendre ces données dans une version plus récente de Kanvix.") +
           `</div>` +
           `<div class="settings-danger-sep" role="separator"></div>` +
           `<div class="settings-rows">` +

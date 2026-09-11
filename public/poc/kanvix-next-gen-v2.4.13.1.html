@@ -8353,6 +8353,119 @@
         background: color-mix(in srgb, var(--accent) 10%, var(--surface));
         border-color: color-mix(in srgb, var(--accent) 32%, var(--border-light));
       }
+      /* V2.4.13 — transition de statut : AVANT → APRÈS, compacte, sur une
+         ligne. L'état de départ reste neutre, l'état d'arrivée porte la
+         couleur du statut. Volontairement sobre : la timeline ne doit pas
+         devenir un sapin de Noël (§13). */
+      .history-transition {
+        margin: 4px 0 0;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .hs-chip {
+        font-size: 11.5px;
+        font-weight: 600;
+        line-height: 1.5;
+        padding: 1px 8px;
+        border-radius: 999px;
+        border: 1px solid var(--border-light);
+        background: var(--surface-subtle);
+        color: var(--text-secondary);
+        white-space: nowrap;
+      }
+      .hs-arrow {
+        font-size: 12px;
+        color: var(--text-tertiary);
+      }
+      /* Seul l'état d'ARRIVÉE est affirmé. */
+      .hs-chip.hs-to.hs-todo {
+        background: var(--surface-subtle);
+        border-color: var(--border-light);
+        color: var(--text);
+      }
+      .hs-chip.hs-to.hs-doing {
+        background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+        border-color: color-mix(in srgb, var(--accent) 32%, var(--border-light));
+        color: var(--accent-ink, var(--accent));
+      }
+      .hs-chip.hs-to.hs-done {
+        background: color-mix(in srgb, var(--success) 14%, var(--surface));
+        border-color: color-mix(in srgb, var(--success) 34%, var(--border-light));
+        color: var(--success-ink, var(--success));
+      }
+      .hs-chip.hs-to.hs-waiting,
+      .hs-chip.hs-to.hs-late {
+        background: color-mix(in srgb, var(--warning) 13%, var(--surface));
+        border-color: color-mix(in srgb, var(--warning) 32%, var(--border-light));
+        color: var(--warning-ink, var(--warning));
+      }
+      .history-event-sub {
+        margin: 4px 0 0;
+        font-size: 11.5px;
+        color: var(--text-tertiary);
+      }
+      /* V2.4.13.1 — bannière de continuité : informative, jamais bloquante.
+         Elle se pose au-dessus du contenu sans overlay ni capture de focus. */
+      .continuity-notice {
+        position: fixed;
+        left: 50%;
+        bottom: 18px;
+        transform: translateX(-50%);
+        z-index: 60;
+        width: min(620px, calc(100vw - 32px));
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        flex-wrap: wrap;
+        padding: 12px 16px;
+        background: var(--surface);
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-lg);
+        box-shadow: 0 10px 30px rgba(16, 32, 54, 0.16);
+      }
+      .continuity-body {
+        flex: 1 1 260px;
+        min-width: 0;
+      }
+      .continuity-body b {
+        display: block;
+        font-size: 13.5px;
+        line-height: 1.35;
+        color: var(--text);
+      }
+      .continuity-body p {
+        margin: 3px 0 0;
+        font-size: 12px;
+        color: var(--text-secondary);
+      }
+      .continuity-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .continuity-actions .btn {
+        font-size: 12.5px;
+        padding: 6px 12px;
+      }
+      /* V2.4.13.1 — résumé de contenu d'une sauvegarde (modal de restauration) */
+      .backup-summary {
+        margin: 10px 0 14px;
+        padding: 10px 14px;
+        list-style: none;
+        display: grid;
+        gap: 3px;
+        background: var(--surface-subtle);
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-md);
+        font-size: 13px;
+        color: var(--text-secondary);
+      }
+      .backup-summary b {
+        color: var(--text);
+        font-variant-numeric: tabular-nums;
+      }
       .history-empty {
         display: flex;
         align-items: center;
@@ -9192,6 +9305,19 @@
           });
         return value;
       }
+      // V2.4.13.1 — un état INITIAL_STATE n'est PAS une ancienne sauvegarde.
+      // Ce drapeau, posé par load() AVANT toute migration, distingue « ce
+      // fichier a déjà servi » de « ce fichier démarre sur la démonstration ».
+      // Déclaré ici, donc avant l'initialisation de app : load() y accède dès
+      // la première ligne exécutée.
+      let KANVIX_HAD_PERSISTED_STATE = false;
+      function hasPersistedKanvixState() {
+        try {
+          return localStorage.getItem(STORE) !== null;
+        } catch (_) {
+          return false;
+        }
+      }
       let app = migrateState(load());
       function migrateState(value) {
         if (!value || !value.settings || !Array.isArray(value.tasks))
@@ -9291,6 +9417,7 @@
         return value;
       }
       function load() {
+        KANVIX_HAD_PERSISTED_STATE = hasPersistedKanvixState();
         try {
           return (
             JSON.parse(localStorage.getItem(STORE)) ||
@@ -9820,6 +9947,19 @@
       function getDemoNow() {
         return nowDate();
       }
+      // V2.4.13 — horodatage COMPLET des nouvelles entrées d'historique.
+      // Jusqu'ici app.history stockait `fmtTime(...)`, soit une heure seule
+      // (« 21:18 ») : impossible de savoir de quel jour venait un événement, et
+      // donc impossible pour la timeline de regrouper par journée. On écrit
+      // désormais un horodatage local complet (« 2026-09-11T08:43 »).
+      // Périmètre STRICT : app.history uniquement. Les dates des tâches,
+      // incidents, photos, chantiers et jalons ne sont pas concernées, et
+      // fmtTime() reste utilisé partout ailleurs dans l'application.
+      // Les anciennes entrées heure-seule restent lisibles telles quelles :
+      // historyStamp() les gère déjà, aucune migration n'est nécessaire.
+      function historyNow() {
+        return localDateTime(getDemoNow());
+      }
       // Fige/relâche l'horloge de démo puis réaligne les données (démo pilotée).
       function setDemoClock(iso) {
         NOW_OVERRIDE = iso || null;
@@ -10044,7 +10184,7 @@
           });
           closed.forEach((i) => {
             app.history.unshift({
-              date: fmtTime(getDemoNow()),
+              date: historyNow(),
               text: `${i.title} · décision clôturée automatiquement : intervention ${status === "done" ? "terminée" : "passée « " + STATUS[status] + " »"}.`,
               author: "Kanvix",
               taskId,
@@ -10565,7 +10705,7 @@
           t.start = s.to.start;
           t.end = s.to.end;
           app.history.unshift({
-            date: fmtTime(getDemoNow()),
+            date: historyNow(),
             text: `${t.name} replanifiée automatiquement suite à la modification de « ${src?.name || "une tâche"} ». ${fmtDay(s.from.start)} → ${fmtDay(s.to.start)}.`,
             author,
             taskId: t.id,
@@ -11486,7 +11626,7 @@
         let i = issue(id);
         i.relaunched = true;
         app.history.unshift({
-          date: fmtTime(getDemoNow()),
+          date: historyNow(),
           text: `Relance envoyée — ${i.title}`,
           author: "Eric",
           taskId: i.taskId,
@@ -11836,7 +11976,7 @@
                 deps: (t.deps || []).map((id) => keyMap[id]).filter(Boolean) }))
             });
             if (!save()) return false;
-            app.history.unshift({ date: fmtTime(getDemoNow()), text: `Modèle d’entreprise créé — ${f.get("name").trim()}`, author: "Eric" });
+            app.history.unshift({ date: historyNow(), text: `Modèle d’entreprise créé — ${f.get("name").trim()}`, author: "Eric" });
             save(); actionToast("Modèle d’entreprise enregistré et disponible dans Nouveau chantier");
           },
           "Enregistrer le modèle",
@@ -14279,10 +14419,59 @@
         //    affichée telle quelle et il rejoint le groupe « Date non précisée ».
         return { key: null, dayLabel: null, time: raw || null, raw };
       }
-      // Tonalité PUREMENT VISUELLE de la pastille. Cette lecture du texte ne
-      // sert qu'à choisir une couleur : elle ne rattache rien, ne filtre rien,
-      // ne modifie rien. Repli systématique sur « neutral ».
+      // ------------------------------------------------------------
+      // V2.4.13 — HELPERS DE RENDU DES ÉVÉNEMENTS (purs : ils ne modifient
+      // ni l'entrée, ni app). Un événement doit répondre à QUOI / AVANT /
+      // APRÈS / QUAND / PAR QUI.
+      // ------------------------------------------------------------
+      // Titre : le NOM de la tâche quand on le connaît. taskName est copié dans
+      // l'entrée au moment de l'écriture, il survit donc à la suppression de la
+      // tâche ; on retombe sur la tâche vivante, puis sur le texte legacy.
+      function historyEventTitle(h) {
+        if (h?.taskName) return h.taskName;
+        // Entrée structurée sans taskName : la tâche vivante fait l'affaire.
+        if (h?.eventType && h.taskId) {
+          let t = task(h.taskId);
+          if (t) return t.name;
+        }
+        // Entrée LEGACY : son texte reste la vérité. On n'y substitue pas le
+        // nom de la tâche, sinon « Tableau électrique · commencée » perdrait
+        // le seul indice qu'il porte sur ce qui s'est passé (§29).
+        return h?.text || "";
+      }
+      // Transition de statut — UNIQUEMENT à partir des champs structurés.
+      // Jamais reconstruite depuis le texte, jamais déduite du statut COURANT
+      // de la tâche : l'historique doit montrer l'état au moment de l'action.
+      // Les entrées antérieures à V2.4.13 n'en ont pas et restent en forme
+      // legacy plutôt que d'afficher une transition inventée (§29).
+      function historyStatusTransition(h) {
+        if (!h || h.eventType !== "task-status") return null;
+        if (!h.fromStatus || !h.toStatus) return null;
+        return {
+          from: STATUS[h.fromStatus] || h.fromStatus,
+          to: STATUS[h.toStatus] || h.toStatus,
+          fromKey: h.fromStatus,
+          toKey: h.toStatus,
+        };
+      }
+      // Précision secondaire, affichée seulement si la donnée la porte.
+      function historyEventSubtitle(h) {
+        if (h?.eventType !== "task-status") return "";
+        if (h.fromField) return "Confirmé sur le terrain";
+        if (h.manual) return "Statut modifié manuellement";
+        return "";
+      }
+      // Tonalité PUREMENT VISUELLE de la pastille. Pour un événement structuré
+      // elle découle du statut d'arrivée ; sinon seulement, on retombe sur une
+      // lecture du texte. Dans tous les cas elle ne rattache rien, ne filtre
+      // rien, ne modifie rien. Repli systématique sur « neutral ».
       function historyEventTone(h) {
+        if (h?.eventType === "task-status" && h.toStatus)
+          return h.toStatus === "done"
+            ? "done"
+            : h.toStatus === "doing"
+              ? "start"
+              : "warn";
         let t = (h?.text || "").toLowerCase();
         if (/terminée|résolu|résolue|clôturée|appliquée/.test(t)) return "done";
         if (/commencée|démarr|créée|ajoutée|modifiée|replanifiée/.test(t))
@@ -14303,9 +14492,22 @@
             : src
               ? `<button type="button" class="history-task-link" onclick="openTask('${src.id}')">Voir la tâche source <span aria-hidden="true">→</span></button>`
               : "",
+          // V2.4.13 — un changement de statut structuré s'affiche comme une
+          // transition compacte plutôt que dans la liste générique des
+          // différences (qui porterait la même information en double).
+          transition = historyStatusTransition(h),
+          changeList = transition
+            ? (h.changes || []).filter((c) => c.field !== "Statut")
+            : h.changes,
+          transitionHTML = transition
+            ? `<p class="history-transition"><span class="hs-chip hs-${esc(transition.fromKey)}">${esc(transition.from)}</span><span class="hs-arrow" aria-hidden="true">→</span><span class="hs-chip hs-to hs-${esc(transition.toKey)}">${esc(transition.to)}</span></p>`
+            : "",
+          subtitle = historyEventSubtitle(h)
+            ? `<p class="history-event-sub">${esc(historyEventSubtitle(h))}</p>`
+            : "",
           changes =
-            Array.isArray(h.changes) && h.changes.length
-              ? `<dl class="history-changes">${h.changes
+            Array.isArray(changeList) && changeList.length
+              ? `<dl class="history-changes">${changeList
                   .map(
                     (c) =>
                       `<div class="history-change"><dt>${esc(c.field)}</dt><dd>${esc(c.from)} <span aria-hidden="true">→</span> ${esc(c.to)}</dd></div>`,
@@ -14315,7 +14517,7 @@
           note = h.comment
             ? `<p class="history-event-detail">${esc(h.comment)}</p>`
             : "";
-        return `<article class="history-event tone-${historyEventTone(h)}"><span class="history-time">${stamp.time ? esc(stamp.time) : ""}</span><span class="history-rail" aria-hidden="true"><i class="history-dot"></i></span><div class="history-event-body"><p class="history-event-title">${esc(h.text)}</p>${changes}${note}<div class="history-event-foot"><span class="history-event-meta">${esc(h.author)}</span>${action}</div></div></article>`;
+        return `<article class="history-event tone-${historyEventTone(h)}"><span class="history-time">${stamp.time ? esc(stamp.time) : ""}</span><span class="history-rail" aria-hidden="true"><i class="history-dot"></i></span><div class="history-event-body"><p class="history-event-title">${esc(historyEventTitle(h))}</p>${transitionHTML}${subtitle}${changes}${note}<div class="history-event-foot"><span class="history-event-meta">${esc(h.author)}</span>${action}</div></div></article>`;
       }
       // Regroupement par journée. L'ORDRE de projectHistory() est conservé
       // strictement : aucun tri par tâche, auteur ou texte (§47/§48).
@@ -14358,16 +14560,44 @@
         }</section>`;
       }
       // ============================================================
-      // RÉCUPÉRATION V2.4.12.1 → V2.4.13.1  (ajout TEMPORAIRE, LECTURE SEULE)
-      // Ce bloc est le SEUL ajout à ce fichier. Il ne modifie aucune donnée :
-      //   · aucun save(), aucun localStorage.setItem
-      //   · aucune migration, aucun changement de STORE ni de SCHEMA_VERSION
-      //   · aucun resetApp(), aucun render() nécessaire
-      // Il produit un fichier au format `kanvix-backup` v1, directement
-      // restaurable depuis Réglages → Restaurer une sauvegarde de V2.4.13.1.
+      // SAUVEGARDE KANVIX COMPLÈTE  (V2.4.13.1)
+      //
+      // POURQUOI. Le POC persiste dans localStorage sous la clé STORE. Or le
+      // localStorage est cloisonné PAR ORIGINE : deux fichiers ouverts en
+      // file:// peuvent très bien ne pas partager la même zone de stockage.
+      // Garder le même nom de clé ne garantit donc RIEN d'un fichier à
+      // l'autre. Kanvix ne tente volontairement pas de lire le stockage d'un
+      // ancien fichier : ce serait au mieux fragile, au pire faux.
+      // La continuité entre versions passe par un FICHIER :
+      //   ancienne version → Sauvegarder Kanvix → nouvelle version → Restaurer.
+      //
+      // À NE PAS CONFONDRE avec l'export métier (`kanvix-portable`), qui sert
+      // à transporter des chantiers et des tâches et passe par l'import
+      // intelligent. Une sauvegarde REMPLACE l'état ; un import INTÈGRE.
       // ============================================================
+      const KANVIX_BACKUP_FORMAT = "kanvix-backup",
+        KANVIX_BACKUP_VERSION = 1,
+        KANVIX_APP_BUILD = "2.4.13.1";
+      // Clés d'état métier qui doivent impérativement figurer dans une
+      // sauvegarde : leur absence rend la sauvegarde inexploitable.
+      const KANVIX_BACKUP_REQUIRED = [
+        "projects",
+        "tasks",
+        "resources",
+        "issues",
+        "decisions",
+        "milestones",
+        "documents",
+        "photos",
+        "messages",
+        "history",
+      ];
+      // Construit le payload complet. PURE : ne touche ni app, ni localStorage,
+      // ne déclenche aucun téléchargement.
       function buildKanvixBackup() {
         let state = structuredClone(app);
+        // États éphémères neutralisés : restaurer une pile d'annulation ou une
+        // simulation en cours n'aurait aucun sens et pourrait être dangereux.
         state.undoStack = [];
         state.simulation = null;
         state.ui = state.ui || {};
@@ -14376,36 +14606,226 @@
         state.ui.pendingRework = null;
         state.ui.pendingImport = null;
         if (state.ui.ai) state.ui.ai.open = false;
+        // Les préférences utilisateur utiles (niveau, apparence, rôle, mode
+        // conducteur, période, filtres planning, vue Kanban/Gantt) restent
+        // dans settings/ui et sont donc conservées telles quelles.
         return {
-          format: "kanvix-backup",
-          backupVersion: 1,
-          appVersion: "2.4.12.1",
+          format: KANVIX_BACKUP_FORMAT,
+          backupVersion: KANVIX_BACKUP_VERSION,
+          appVersion: KANVIX_APP_BUILD,
           schemaVersion: state.schemaVersion || SCHEMA_VERSION,
           exportedAt: new Date().toISOString(),
+          // seededFor voyage AVEC la sauvegarde : alignDemoDates() s'en sert
+          // comme point de départ. Restaurée le même jour, la sauvegarde ne
+          // subit donc AUCUN décalage de dates ; restaurée un autre jour, le
+          // réalignement de démo joue exactement une fois.
           seededFor: state.seededFor || SEED_TODAY,
           state,
         };
       }
-      function downloadKanvixBackup() {
+      function kanvixBackupFileName() {
+        let d = new Date(),
+          p2 = (n) => String(n).padStart(2, "0");
+        return `kanvix-backup-${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())}-${p2(d.getHours())}${p2(d.getMinutes())}.json`;
+      }
+      function downloadKanvixBackup(silent) {
         try {
-          let d = new Date(),
-            p2 = (n) => String(n).padStart(2, "0"),
-            json = JSON.stringify(buildKanvixBackup(), null, 2),
+          let json = JSON.stringify(buildKanvixBackup(), null, 2),
             blob = new Blob([json], { type: "application/json;charset=utf-8" }),
             url = URL.createObjectURL(blob),
             a = document.createElement("a");
           a.href = url;
-          a.download = `kanvix-backup-${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())}-${p2(d.getHours())}${p2(d.getMinutes())}.json`;
+          a.download = kanvixBackupFileName();
           a.style.display = "none";
           document.body.appendChild(a);
           a.click();
           a.remove();
           setTimeout(() => URL.revokeObjectURL(url), 5000);
-          toast("Sauvegarde Kanvix téléchargée");
+          if (!silent) toast("Sauvegarde Kanvix téléchargée");
+          return true;
         } catch (error) {
           console.error("Kanvix: sauvegarde impossible", error);
           toast("Sauvegarde impossible dans ce navigateur.");
+          return false;
         }
+      }
+      // Validation AVANT toute mutation. Retourne { ok, reason } — jamais
+      // d'exception technique remontée à l'utilisateur.
+      function validateKanvixBackup(payload) {
+        if (!payload || typeof payload !== "object")
+          return { ok: false, reason: "Sauvegarde illisible." };
+        // Refus EXPLICITE de l'export métier : il ne doit jamais être appliqué
+        // silencieusement comme une restauration.
+        if (payload.format === "kanvix-portable")
+          return {
+            ok: false,
+            reason:
+              "Ce fichier est un export de données, pas une sauvegarde Kanvix complète. Utilisez « Importer des données ».",
+          };
+        if (payload.format !== KANVIX_BACKUP_FORMAT)
+          return { ok: false, reason: "Format de sauvegarde incompatible." };
+        let st = payload.state;
+        if (!st || typeof st !== "object")
+          return { ok: false, reason: "Sauvegarde incomplète." };
+        if (!st.settings || typeof st.settings !== "object")
+          return { ok: false, reason: "Sauvegarde incomplète." };
+        for (const key of KANVIX_BACKUP_REQUIRED)
+          if (!Array.isArray(st[key]))
+            return { ok: false, reason: "Sauvegarde incomplète." };
+        // Contrôles d'intégrité raisonnables : unicité des identifiants et
+        // cohérence tâche → chantier. On refuse une sauvegarde manifestement
+        // corrompue plutôt que de l'appliquer à moitié.
+        let pIds = st.projects.map((x) => x && x.id);
+        if (pIds.some((x) => !x) || new Set(pIds).size !== pIds.length)
+          return { ok: false, reason: "Sauvegarde corrompue : chantiers en double." };
+        let tIds = st.tasks.map((x) => x && x.id);
+        if (tIds.some((x) => !x) || new Set(tIds).size !== tIds.length)
+          return { ok: false, reason: "Sauvegarde corrompue : tâches en double." };
+        let known = new Set(pIds);
+        if (st.tasks.some((t) => t.projectId && !known.has(t.projectId)))
+          return {
+            ok: false,
+            reason: "Sauvegarde corrompue : une tâche référence un chantier absent.",
+          };
+        return { ok: true };
+      }
+      // Candidat en attente de confirmation. Volontairement HORS de app.ui :
+      // rien de tout cela ne doit être persisté ni restauré plus tard.
+      let pendingKanvixBackup = null;
+      function openKanvixBackupRestore() {
+        let input = document.createElement("input");
+        input.type = "file";
+        input.accept = ".json,application/json";
+        input.setAttribute("aria-label", "Fichier de sauvegarde Kanvix");
+        input.onchange = () =>
+          input.files?.[0] && readKanvixBackupFile(input.files[0]);
+        input.click();
+      }
+      function kanvixBackupError(message) {
+        pendingKanvixBackup = null;
+        $("#modalContent").innerHTML =
+          `<h2>Restauration impossible</h2><p class="muted">${esc(message)}</p><p class="muted">Vos données actuelles n’ont pas été modifiées.</p><div class="pop-actions"><button class="btn primary" onclick="closeOverlay('modal')">Compris</button></div>`;
+        $("#modal").classList.add("open");
+      }
+      function readKanvixBackupFile(file) {
+        let reader = new FileReader();
+        reader.onload = () => {
+          let payload;
+          try {
+            payload = JSON.parse(reader.result);
+          } catch (_) {
+            return kanvixBackupError("Sauvegarde illisible.");
+          }
+          let check = validateKanvixBackup(payload);
+          if (!check.ok) return kanvixBackupError(check.reason);
+          pendingKanvixBackup = payload;
+          showKanvixBackupPreview(payload);
+        };
+        reader.onerror = () => kanvixBackupError("Sauvegarde illisible.");
+        reader.readAsText(file);
+      }
+      function showKanvixBackupPreview(payload) {
+        let st = payload.state,
+          when = (() => {
+            let d = new Date(payload.exportedAt);
+            if (isNaN(d.getTime())) return "date inconnue";
+            return (
+              new Intl.DateTimeFormat("fr-FR", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              }).format(d) +
+              " à " +
+              new Intl.DateTimeFormat("fr-FR", {
+                hour: "2-digit",
+                minute: "2-digit",
+              }).format(d)
+            );
+          })(),
+          line = (n, singular, plural) =>
+            `<li><b>${n}</b> ${n > 1 ? plural : singular}</li>`,
+          contents =
+            line(st.projects.length, "chantier", "chantiers") +
+            line(st.tasks.length, "tâche", "tâches") +
+            line(st.resources.length, "ressource", "ressources") +
+            line(st.issues.length, "incident", "incidents") +
+            line(st.history.length, "événement d’historique", "événements d’historique") +
+            line(st.documents.length, "document", "documents") +
+            line(st.photos.length, "photo", "photos") +
+            line(st.messages.length, "message", "messages");
+        $("#modalContent").innerHTML =
+          `<p class="muted">SAUVEGARDE KANVIX</p><h2>Restaurer cette sauvegarde ?</h2>` +
+          `<p class="muted">Sauvegardée le ${esc(when)}${payload.appVersion ? ` · version ${esc(payload.appVersion)}` : ""}</p>` +
+          `<ul class="backup-summary">${contents}</ul>` +
+          `<p>Restaurer cette sauvegarde remplacera les données actuellement présentes dans Kanvix.</p>` +
+          `<p class="muted"><button type="button" class="link" onclick="downloadKanvixBackup()">Sauvegarder d’abord l’état actuel</button></p>` +
+          `<div class="pop-actions"><button class="btn" onclick="cancelKanvixRestore()">Annuler</button><button class="btn primary" onclick="confirmKanvixRestore()">Restaurer</button></div>`;
+        $("#modal").classList.add("open");
+      }
+      function cancelKanvixRestore() {
+        pendingKanvixBackup = null;
+        closeOverlay("modal");
+        toast("La restauration a été annulée.");
+      }
+      // Restauration ATOMIQUE : l'état candidat est entièrement construit et
+      // migré EN DEHORS de app. Tant que tout n'est pas bon, app n'est pas
+      // touché — en cas d'échec, l'état courant reste strictement intact.
+      function confirmKanvixRestore() {
+        let payload = pendingKanvixBackup;
+        if (!payload) return closeOverlay("modal");
+        let candidate;
+        try {
+          candidate = structuredClone(payload.state);
+          // seededFor rétabli AVANT migrateState : alignDemoDates() part donc
+          // du jour de la sauvegarde. Même jour = delta nul = aucune dérive.
+          candidate.seededFor = payload.seededFor || candidate.seededFor;
+          // Une sauvegarde plus ancienne repasse par les migrations DÉJÀ
+          // existantes — aucun second système de migration n'a été écrit.
+          candidate = migrateState(candidate);
+          candidate.undoStack = [];
+          candidate.simulation = null;
+        } catch (error) {
+          console.error("Kanvix: restauration impossible", error);
+          return kanvixBackupError("Sauvegarde illisible.");
+        }
+        let recheck = validateKanvixBackup({
+          format: KANVIX_BACKUP_FORMAT,
+          state: candidate,
+        });
+        if (!recheck.ok) return kanvixBackupError(recheck.reason);
+        // Point de bascule : une seule affectation, un seul save.
+        app = candidate;
+        pendingKanvixBackup = null;
+        if (!save()) return;
+        closeOverlay("modal");
+        render();
+        go("today");
+        toast("Sauvegarde restaurée.");
+      }
+      // Message de continuité — uniquement en ouverture LOCALE (file://) et
+      // uniquement si ce fichier n'a jamais rien enregistré. Une démo hébergée
+      // (http/https) n'affiche rien : son stockage est partagé par origine.
+      // §25 — message NON BLOQUANT : une bannière discrète, jamais une modal.
+      // Une modal au démarrage masquerait l'application et s'interposerait
+      // devant tous les autres parcours (popups, aperçus, confirmations).
+      // Affiché UNE SEULE FOIS, uniquement en ouverture locale (file://) et
+      // uniquement si ce fichier n'a jamais rien enregistré. Une démo hébergée
+      // (http/https) partage son stockage par origine : elle n'affiche rien.
+      function maybeShowKanvixContinuityNotice() {
+        if (location.protocol !== "file:") return;
+        if (KANVIX_HAD_PERSISTED_STATE) return;
+        if (document.querySelector("#kanvixContinuity")) return;
+        let el = document.createElement("div");
+        el.id = "kanvixContinuity";
+        el.className = "continuity-notice";
+        el.setAttribute("role", "status");
+        el.innerHTML =
+          `<div class="continuity-body"><b>Cette copie de Kanvix ne contient pas encore de données enregistrées.</b><p>Si vous venez d’une autre version, restaurez une sauvegarde depuis Réglages.</p></div>` +
+          `<div class="continuity-actions"><button type="button" class="btn" onclick="dismissKanvixContinuityNotice()">Continuer avec la démonstration</button><button type="button" class="btn primary" onclick="dismissKanvixContinuityNotice();openKanvixBackupRestore()">Restaurer une sauvegarde</button></div>`;
+        document.body.appendChild(el);
+      }
+      function dismissKanvixContinuityNotice() {
+        document.querySelector("#kanvixContinuity")?.remove();
       }
       function exportKanvixData() {
         let payload = {
@@ -15174,13 +15594,14 @@
           `<h2 class="settings-section-title" id="set-data-title"><span class="settings-ico" aria-hidden="true">🗄️</span>Données &amp; démonstration</h2>` +
           `<div class="settings-rows">` +
           settingsRow("openCompanyTemplateForm()", "🏢", "Modèle d’entreprise", "Définir les paramètres par défaut de l’entreprise.") +
-          settingsRow("openKanvixImport()", "⬆️", "Importer des données", "Restaurer des données Kanvix depuis un fichier.") +
-          settingsRow("exportKanvixData()", "⬇️", "Exporter les données", "Télécharger les données de la démonstration.") +
+          settingsRow("openKanvixImport()", "⬆️", "Importer des données", "Ajouter des chantiers et des tâches depuis un fichier d’export.") +
+          settingsRow("exportKanvixData()", "⬇️", "Exporter les données", "Télécharger vos chantiers et vos tâches (export métier).") +
           `</div>` +
           `<div class="settings-danger-sep" role="separator"></div>` +
           `<p class="settings-sublabel">Sauvegarde Kanvix</p>` +
           `<div class="settings-rows">` +
-          settingsRow("downloadKanvixBackup()", "💾", "Exporter une sauvegarde complète", "Pour reprendre ces données dans une version plus récente de Kanvix.") +
+          settingsRow("downloadKanvixBackup()", "💾", "Sauvegarder Kanvix", "Télécharger une copie complète de vos données et réglages.") +
+          settingsRow("openKanvixBackupRestore()", "♻️", "Restaurer une sauvegarde", "Remplacer l’état actuel par une sauvegarde Kanvix.") +
           `</div>` +
           `<div class="settings-danger-sep" role="separator"></div>` +
           `<div class="settings-rows">` +
@@ -15728,7 +16149,7 @@
         // fiche du BON chantier (projectId explicite, donc robuste même si la
         // tâche est supprimée plus tard).
         app.history.unshift({
-          date: fmtTime(getDemoNow()),
+          date: historyNow(),
           text: `Incident « ${i.title} » ${status === "resolved" ? "résolu" : "placé sous surveillance"}`,
           author: "Eric",
           projectId: i.projectId,
@@ -15765,6 +16186,12 @@
         let silent = opts.transactional === true,
           manual = opts.manual === true,
           prevStatus = t.status;
+        // V2.4.13 — garde NO-OP, posée AVANT tout effet de bord (snapshot,
+        // mutation, réconciliation, historique, notification) : réaffecter à une
+        // tâche le statut qu'elle a déjà n'est pas une transition métier et ne
+        // doit rien produire. C'est la SEULE déduplication autorisée — jamais de
+        // fusion temporelle ni textuelle, qui détruirait l'audit.
+        if (prevStatus === status) return;
         // §3 — garde métier CENTRALE : une tâche terminée est historique. Aucun
         // chemin (Kanban, éditeur, appel indirect) ne peut la rouvrir. La reprise
         // (nouvelle intervention liée) est le seul parcours. On n'entrave pas
@@ -15781,13 +16208,35 @@
         // Historique horodaté rattaché à la tâche (commencement, retard, fin…).
         // En édition manuelle, on trace explicitement « Statut modifié
         // manuellement : X → Y » — jamais « commencée/terminée sur le terrain ».
+        // V2.4.13 — l'entrée devient STRUCTURÉE : elle porte l'état AVANT et
+        // l'état APRÈS, de sorte que la timeline puisse dire « À faire → En
+        // cours » sans jamais le déduire du statut courant de la tâche.
+        // projectId et taskName sont copiés volontairement : l'événement reste
+        // attribuable et lisible même si la tâche est supprimée plus tard.
+        // `text` est conservé à l'identique pour la compatibilité (anciens
+        // tests, anciennes vues) mais n'est plus la vérité du rendu.
         app.history.unshift({
-          date: fmtTime(getDemoNow()),
+          date: historyNow(),
+          eventType: "task-status",
+          projectId: t.projectId,
+          taskId: id,
+          taskName: t.name,
+          fromStatus: prevStatus,
+          toStatus: status,
+          origin,
+          manual,
+          fromField,
+          changes: [
+            {
+              field: "Statut",
+              from: STATUS[prevStatus] || prevStatus,
+              to: STATUS[status] || status,
+            },
+          ],
           text: manual
             ? `${t.name} · statut modifié manuellement : ${STATUS[prevStatus] || prevStatus} → ${STATUS[status] || status}`
             : `${t.name} · ${status === "doing" ? "commencée" : status === "done" ? "terminée" : "passée « " + STATUS[status] + " »"}${fromField ? " sur le terrain" : ""}`,
           author: fromField ? resourceLabel(t.resourceId) : "Eric",
-          taskId: id,
         });
         // Messagerie ↔ conducteur : une tâche démarrée sur le terrain remonte
         // « À surveiller » côté conducteur (signal terrain), historique conservé.
@@ -16047,7 +16496,7 @@
         );
         if (i?.projectId && project(i.projectId)) simProjects.add(i.projectId);
         app.history.unshift({
-          date: fmtTime(getDemoNow()),
+          date: historyNow(),
           text: `Simulation ${app.simulation.label || app.simulation.id} appliquée`,
           author: "Eric",
           projectId: simProjects.size === 1 ? [...simProjects][0] : undefined,
@@ -16162,10 +16611,12 @@
         t.start = newStart;
         t.end = newEnd;
         let mainEntry = {
-          date: fmtTime(getDemoNow()),
+          date: historyNow(),
           text: `${t.name} modifiée.`,
           author: "Eric",
+          projectId: t.projectId,
           taskId,
+          taskName: t.name,
           changes,
         };
         let plan = planReflow(taskId);
@@ -16434,7 +16885,7 @@
             // Entrée « Suivi de la tâche » : champs modifiés + motif + propagation.
             if (changes.length || changeComment || impacted.length) {
               app.history.unshift({
-                date: fmtTime(getDemoNow()),
+                date: historyNow(),
                 text:
                   `${current.name} modifiée.` +
                   (impacted.length
@@ -16687,10 +17138,12 @@
         let mainEntry =
           changes.length || comment
             ? {
-                date: fmtTime(getDemoNow()),
+                date: historyNow(),
                 text: `${name} modifiée.`,
                 author: "Eric",
+                projectId: task(st.id)?.projectId,
                 taskId: st.id,
+                taskName: name,
                 changes,
                 comment: comment || undefined,
               }
@@ -16875,14 +17328,14 @@
         }
         // Historique : sur la reprise ET une trace sur la tâche d'origine.
         app.history.unshift({
-          date: fmtTime(getDemoNow()),
+          date: historyNow(),
           text: `Reprise créée après « ${orig.name} ».`,
           author: "Eric",
           taskId: reworkId,
           comment,
         });
         app.history.unshift({
-          date: fmtTime(getDemoNow()),
+          date: historyNow(),
           text: `Reprise signalée sur « ${orig.name} » (tâche conservée terminée).`,
           author: "Eric",
           taskId: originalId,
@@ -16952,7 +17405,7 @@
         let plan = planReflow(pr.reworkId, {}, true);
         let impacted = applyReflowPlan(plan, pr.reworkId, "Eric");
         app.history.unshift({
-          date: fmtTime(getDemoNow()),
+          date: historyNow(),
           text: `Replanification appliquée après la reprise · ${impacted.length} intervention${impacted.length > 1 ? "s" : ""} recalée${impacted.length > 1 ? "s" : ""}.`,
           author: "Eric",
           taskId: pr.reworkId,
@@ -17713,7 +18166,7 @@
           // une entrée globale : projectId est déjà dans le contexte, on le
           // reporte (aucun moteur photo modifié, seule l'attribution change).
           app.history.unshift({
-            date: fmtTime(getDemoNow()),
+            date: historyNow(),
             text: `Photo ajoutée — ${taskId ? task(taskId).name : project(projectId).name}`,
             author,
             projectId: projectId || undefined,
@@ -18733,6 +19186,8 @@
         },
       );
       render();
+      // V2.4.13.1 — message de continuité (file:// + aucun état enregistré).
+      maybeShowKanvixContinuityNotice();
       // PWA — manifeste + service worker uniquement quand le POC est SERVI
       // (http/https). En ouverture locale (file://), on ne les charge pas :
       // le navigateur refuserait le manifeste (origine « null » = CORS) et le

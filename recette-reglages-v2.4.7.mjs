@@ -170,7 +170,10 @@ console.log('\n[K/L/M] Données & démonstration — actions');
   note('K', 'lignes Données', rows.map((r) => r.title));
   ok(rows.some((r) => r.title === 'Modèle d’entreprise' && /par défaut de l’entreprise/.test(r.sub) && r.chevron), 'K : ligne "Modèle d\'entreprise" (sous-titre + chevron)', 'K');
   ok(rows.some((r) => r.title === 'Importer des données' && /depuis un fichier/.test(r.sub) && r.chevron), 'L : ligne "Importer des données"', 'L');
-  ok(rows.some((r) => r.title === 'Exporter les données' && /Télécharger les données/.test(r.sub) && r.chevron), 'M : ligne "Exporter les données"', 'M');
+  // V2.4.13.1 — le sous-titre de l'export métier a été précisé pour le
+  // distinguer de la nouvelle « Sauvegarde Kanvix » : on vérifie désormais que
+  // la ligne existe, télécharge bien quelque chose, et reste une action métier.
+  ok(rows.some((r) => r.title === 'Exporter les données' && /Télécharger/.test(r.sub) && r.chevron), 'M : ligne "Exporter les données"', 'M');
   ok(!rows.some((r) => /JSON/.test(r.title)), 'M : "JSON" retiré du titre d\'export', 'M');
   // Modèle entreprise déclenche bien le moteur existant (drawer)
   await ev(p, () => [...document.querySelectorAll('#more .settings-row')].find((r) => /Modèle d’entreprise/.test(r.textContent)).click());

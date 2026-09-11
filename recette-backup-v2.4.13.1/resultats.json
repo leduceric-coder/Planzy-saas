@@ -1,0 +1,778 @@
+{
+  "passed": 106,
+  "failed": [],
+  "results": [
+    {
+      "sec": "BACKUP-F1",
+      "name": "BACKUP-F1 : format « kanvix-backup » v1",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F1",
+      "name": "BACKUP-F1 : appVersion et schemaVersion présents",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F1",
+      "name": "BACKUP-F1 : seededFor conservé (§18)",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F1",
+      "name": "BACKUP-F1 : undoStack vidé, simulation neutralisée (§8)",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F1",
+      "name": "BACKUP-F1 : resetApp a bien remis un état de démonstration",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F1",
+      "name": "BACKUP-F1 : la prévisualisation s’affiche avant toute mutation (§14)",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F1",
+      "name": "BACKUP-F1 : le résumé détaille le contenu",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F1",
+      "name": "BACKUP-F1 : projects restauré à l’identique",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F1",
+      "name": "BACKUP-F1 : tasks restauré à l’identique",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F1",
+      "name": "BACKUP-F1 : resources restauré à l’identique",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F1",
+      "name": "BACKUP-F1 : issues restauré à l’identique",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F1",
+      "name": "BACKUP-F1 : decisions restauré à l’identique",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F1",
+      "name": "BACKUP-F1 : milestones restauré à l’identique",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F1",
+      "name": "BACKUP-F1 : documents restauré à l’identique",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F1",
+      "name": "BACKUP-F1 : photos restauré à l’identique",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F1",
+      "name": "BACKUP-F1 : messages restauré à l’identique",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F1",
+      "name": "BACKUP-F1 : history restauré à l’identique",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F1",
+      "name": "BACKUP-F1 : companyTemplates restauré à l’identique",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F1",
+      "name": "BACKUP-F1 : seededFor restauré à l’identique",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F1",
+      "name": "BACKUP-F1 : settings restaurés à l’identique",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F2",
+      "name": "BACKUP-F2 : 6 événements restaurés, aucun perdu",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F2",
+      "name": "BACKUP-F2 : même ordre, mêmes dates, mêmes fromStatus/toStatus, mêmes rattachements",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F2",
+      "name": "BACKUP-F2 : les transitions structurées survivent",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F2",
+      "name": "BACKUP-F2 : les entrées legacy heure-seule survivent",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F3",
+      "name": "BACKUP-F3 : niveau Pilotage restauré",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F3",
+      "name": "BACKUP-F3 : l’onglet Historique est visible après restauration",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F3",
+      "name": "BACKUP-F3 : préférence d’apparence restaurée",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F4",
+      "name": "BACKUP-F4 : dataUrl de la photo identique (§5)",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F5",
+      "name": "BACKUP-F5 : message restauré avec read/unread et photoId (§7)",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F5",
+      "name": "BACKUP-F5 : contenu du message identique",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F6",
+      "name": "BACKUP-F6 : Sauvegarde illisible → message clair, aucune erreur technique brute",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F6",
+      "name": "BACKUP-F6 : Sauvegarde illisible → état courant STRICTEMENT inchangé",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F7",
+      "name": "BACKUP-F7 : export métier refusé → message clair, aucune erreur technique brute",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F7",
+      "name": "BACKUP-F7 : export métier refusé → état courant STRICTEMENT inchangé",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F8",
+      "name": "BACKUP-F8 : backup sans tasks → message clair, aucune erreur technique brute",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F8",
+      "name": "BACKUP-F8 : backup sans tasks → état courant STRICTEMENT inchangé",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F8",
+      "name": "BACKUP-F8 : backup sans settings → message clair, aucune erreur technique brute",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F8",
+      "name": "BACKUP-F8 : backup sans settings → état courant STRICTEMENT inchangé",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F8",
+      "name": "BACKUP-F8 : chantiers en double → message clair, aucune erreur technique brute",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F8",
+      "name": "BACKUP-F8 : chantiers en double → état courant STRICTEMENT inchangé",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F8",
+      "name": "BACKUP-F8 : tâche orpheline → message clair, aucune erreur technique brute",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F8",
+      "name": "BACKUP-F8 : tâche orpheline → état courant STRICTEMENT inchangé",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F9",
+      "name": "BACKUP-F9 : une sauvegarde de schéma 7 est acceptée",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F9",
+      "name": "BACKUP-F9 : migrateState() répare vers le schéma courant (§17)",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F9",
+      "name": "BACKUP-F9 : aucune perte de données",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F9",
+      "name": "BACKUP-F9 : les champs manquants sont recréés par les migrations existantes",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F10",
+      "name": "BACKUP-F10 : dates des tâches STRICTEMENT identiques — aucune dérive (§19)",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F10",
+      "name": "BACKUP-F10 : jalons identiques",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F10",
+      "name": "BACKUP-F10 : documents et photos identiques",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F10",
+      "name": "BACKUP-F10 : horodatages d’historique identiques",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F10",
+      "name": "BACKUP-F10 : seededFor inchangé le même jour",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F10",
+      "name": "BACKUP-F10 : seededFor recalé sur le jour d’ouverture",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F10",
+      "name": "BACKUP-F10 : réalignement appliqué UNE seule fois (+1 jour, §20)",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F10",
+      "name": "BACKUP-F10 : l’historique n’est jamais réaligné",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F11",
+      "name": "BACKUP-F11 : V2.4.12.1 expose « Exporter une sauvegarde complète » dans Réglages",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F11",
+      "name": "BACKUP-F11 : l’export legacy est READ-ONLY — localStorage inchangé (§32)",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F11",
+      "name": "BACKUP-F11 : la sauvegarde legacy est au format kanvix-backup v1 (§31)",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F11",
+      "name": "BACKUP-F11 : B démarre sans état enregistré (§24)",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F11",
+      "name": "BACKUP-F11 : message de continuité affiché en file:// (§25)",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F11",
+      "name": "BACKUP-F11 : le message est NON BLOQUANT — aucune modal ne s’interpose (§25)",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F11",
+      "name": "BACKUP-F11 : B ne voit PAS les données de A — les deux fichiers ne partagent pas le stockage",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F11",
+      "name": "BACKUP-F11 : la sauvegarde legacy est reconnue par V2.4.13.1",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F11",
+      "name": "BACKUP-F11 : la tâche marqueur de A est présente dans B",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F11",
+      "name": "BACKUP-F11 : l’historique de A est intégralement récupéré",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F11",
+      "name": "BACKUP-F11 : niveau Pilotage et apparence conservés",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F11",
+      "name": "BACKUP-F11 : message et photo (dataUrl) récupérés",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F11",
+      "name": "BACKUP-F11 : statut métier conservé",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F11",
+      "name": "BACKUP-F11 : mêmes chantiers et mêmes tâches",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F12",
+      "name": "BACKUP-F12 : exportKanvixData() produit toujours « kanvix-portable » (§73)",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F12",
+      "name": "BACKUP-F12 : l’export métier ne devient PAS une sauvegarde complète",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F12",
+      "name": "BACKUP-F12 : les deux formats sont immédiatement distinguables (§74)",
+      "status": "PASS"
+    },
+    {
+      "sec": "BACKUP-F12",
+      "name": "BACKUP-F12 : les moteurs d’import intelligent sont intacts",
+      "status": "PASS"
+    },
+    {
+      "sec": "HTTP",
+      "name": "HTTP : la page est bien servie",
+      "status": "PASS"
+    },
+    {
+      "sec": "HTTP",
+      "name": "HTTP : aucun message de continuité sur une démo hébergée (§26/§62)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HTTP",
+      "name": "HTTP : le stockage même-origine fonctionne comme avant",
+      "status": "PASS"
+    },
+    {
+      "sec": "HTTP",
+      "name": "HTTP : toujours aucun message invasif",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI",
+      "name": "UI : ligne « Sauvegarder Kanvix » présente (§21)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI",
+      "name": "UI : ligne « Restaurer une sauvegarde » présente",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI",
+      "name": "UI : sous-section « Sauvegarde Kanvix » distincte de l’import/export métier",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI",
+      "name": "UI : import et export métier conservés (§22)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI",
+      "name": "UI : les sous-titres métier clarifient la différence (§23)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI",
+      "name": "UI : toutes les lignes sont de vrais boutons — accessibles clavier (§63)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI",
+      "name": "UI : « Restaurer une sauvegarde » reçoit le focus clavier",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI",
+      "name": "UI : la modal de restauration est compatible dark (§64)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI",
+      "name": "UI : contraste suffisant",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI",
+      "name": "UI : 1920px — workflow utilisable",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI",
+      "name": "UI : 1920px — aucun débordement (§65)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI",
+      "name": "UI : 1440px — workflow utilisable",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI",
+      "name": "UI : 1440px — aucun débordement (§65)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI",
+      "name": "UI : 900px — workflow utilisable",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI",
+      "name": "UI : 900px — aucun débordement (§65)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI",
+      "name": "UI : 430px — workflow utilisable",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI",
+      "name": "UI : 430px — aucun débordement (§65)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI",
+      "name": "UI : 390px — workflow utilisable",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI",
+      "name": "UI : 390px — aucun débordement (§65)",
+      "status": "PASS"
+    },
+    {
+      "sec": "ANNULATION",
+      "name": "ANNULATION : « Annuler » laisse l’état courant strictement intact",
+      "status": "PASS"
+    },
+    {
+      "sec": "ANNULATION",
+      "name": "ANNULATION : la restauration n’a bien pas eu lieu",
+      "status": "PASS"
+    },
+    {
+      "sec": "ANNULATION",
+      "name": "ANNULATION : le candidat en attente est libéré",
+      "status": "PASS"
+    },
+    {
+      "sec": "PURETE",
+      "name": "PURETE : buildKanvixBackup() ne modifie pas app (§9)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PURETE",
+      "name": "PURETE : aucune écriture dans localStorage",
+      "status": "PASS"
+    },
+    {
+      "sec": "PURETE",
+      "name": "PURETE : le payload est un clone isolé",
+      "status": "PASS"
+    },
+    {
+      "sec": "PURETE",
+      "name": "PURETE : aucune seconde clé de sauvegarde dans localStorage (§48)",
+      "status": "PASS"
+    },
+    {
+      "sec": "SCHEMA",
+      "name": "SCHEMA : SCHEMA_VERSION reste 8 (§56)",
+      "status": "PASS"
+    },
+    {
+      "sec": "SCHEMA",
+      "name": "SCHEMA : STORE inchangé (§55)",
+      "status": "PASS"
+    },
+    {
+      "sec": "SCHEMA",
+      "name": "SCHEMA : le format de sauvegarde a son propre backupVersion",
+      "status": "PASS"
+    },
+    {
+      "sec": "CONSOLE",
+      "name": "CONSOLE : 0 erreur JavaScript applicative",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    {
+      "where": "F1",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "F1",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "F1",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "F2",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "F2",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "F2",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "F345",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "F345",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "F345",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "F678",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "F678",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "F678",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "F9",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "F9",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "F9",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "F10",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "F10",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "F10",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "F10-next",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "F10-next",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "F10-next",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "F11-A",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "F11-A",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "F11-A",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "F11-B",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "F11-B",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "F11-B",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "F12",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "F12",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "F12",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "HTTP",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "HTTP",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "HTTP",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI-1920",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI-1920",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI-1920",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI-1440",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI-1440",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI-1440",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI-900",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI-900",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI-900",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI-430",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI-430",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI-430",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI-390",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI-390",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "UI-390",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CANCEL",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CANCEL",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CANCEL",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "PURE",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "PURE",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "PURE",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SCH",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SCH",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SCH",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    }
+  ]
+}
