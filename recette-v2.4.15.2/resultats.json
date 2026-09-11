@@ -1,0 +1,232 @@
+{
+  "passed": 16,
+  "failed": [],
+  "results": [
+    {
+      "sec": "MENU-1512",
+      "name": "MENU-1512-01 : plus de bouton ••• dans l’en-tête du cockpit",
+      "status": "PASS"
+    },
+    {
+      "sec": "MENU-1512",
+      "name": "MENU-1512-01 : le badge de statut reste affiché",
+      "status": "PASS"
+    },
+    {
+      "sec": "MENU-1512",
+      "name": "MENU-1512-02 : le clic sur ••• (liste Chantiers) ne navigue toujours pas",
+      "status": "PASS"
+    },
+    {
+      "sec": "MENU-1512",
+      "name": "MENU-1512-02 : Modifier/Clôturer toujours disponibles depuis la liste Chantiers",
+      "status": "PASS"
+    },
+    {
+      "sec": "MENU-1512",
+      "name": "MENU-1512-03 : « Modifier » depuis la liste Chantiers ouvre bien l’édition",
+      "status": "PASS"
+    },
+    {
+      "sec": "JANK-1512",
+      "name": "JANK-1512-01 : scrollY inchangé (177 → 177), plus de retour en haut de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "JANK-1512",
+      "name": "JANK-1512-02 : un onglet plus long peut toujours grandir au-delà du plancher",
+      "status": "PASS"
+    },
+    {
+      "sec": "JANK-1512",
+      "name": "JANK-1512-03 : profondeur initiale 50px — 0 déplacement sur les 8 transitions",
+      "status": "PASS"
+    },
+    {
+      "sec": "JANK-1512",
+      "name": "JANK-1512-03 : profondeur initiale 150px — 0 déplacement sur les 8 transitions",
+      "status": "PASS"
+    },
+    {
+      "sec": "JANK-1512",
+      "name": "JANK-1512-03 : profondeur initiale 300px — 0 déplacement sur les 8 transitions",
+      "status": "PASS"
+    },
+    {
+      "sec": "JANK-1512",
+      "name": "JANK-1512-04 : le plancher (non vide sur Keravel) redevient vide sur un nouveau chantier",
+      "status": "PASS"
+    },
+    {
+      "sec": "JANK-1512",
+      "name": "JANK-1512-05 : projectTab() toujours sans renderPage()",
+      "status": "PASS"
+    },
+    {
+      "sec": "JANK-1512",
+      "name": "JANK-1512-05 : toujours pas de smooth scroll",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE",
+      "name": "FREEZE-1512 : identité visuelle, zones et onglets strictement identiques (hors menu retiré)",
+      "status": "PASS"
+    },
+    {
+      "sec": "CONSOLE-1512",
+      "name": "CONSOLE-1512 : 0 erreur JavaScript applicative",
+      "status": "PASS"
+    },
+    {
+      "sec": "ENGINES-1512",
+      "name": "ENGINES-1512 : tous les moteurs métier listés sont byte-identiques entre V2.4.15.1 et V2.4.15.2",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    {
+      "where": "MENU1",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "MENU1",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "MENU1",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "MENU2",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "MENU2",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "MENU2",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "MENU3",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "MENU3",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "MENU3",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "JANK1",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "JANK1",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "JANK1",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "JANK2",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "JANK2",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "JANK2",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "JANK3-50",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "JANK3-50",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "JANK3-50",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "JANK3-150",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "JANK3-150",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "JANK3-150",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "JANK3-300",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "JANK3-300",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "JANK3-300",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "JANK4",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "JANK4",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "JANK4",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "JANK5",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "JANK5",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "JANK5",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FZ-prev",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FZ-prev",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FZ-prev",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FZ-cur",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FZ-cur",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FZ-cur",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    }
+  ]
+}
