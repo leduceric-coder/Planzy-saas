@@ -1,0 +1,532 @@
+{
+  "passed": 64,
+  "failed": [],
+  "results": [
+    {
+      "sec": "ACCUEIL",
+      "name": "ACCUEIL : « À décider » et « À surveiller » ont EXACTEMENT la même largeur",
+      "status": "PASS"
+    },
+    {
+      "sec": "ACCUEIL",
+      "name": "ACCUEIL : « Aujourd’hui » et « Chantiers actifs » se terminent à la même hauteur (§7 — pas de vide résiduel)",
+      "status": "PASS"
+    },
+    {
+      "sec": "ACCUEIL",
+      "name": "ACCUEIL : les deux panneaux démarrent alignés en haut",
+      "status": "PASS"
+    },
+    {
+      "sec": "ACCUEIL",
+      "name": "ACCUEIL : « Cette semaine » aligné sur la largeur utile de la page",
+      "status": "PASS"
+    },
+    {
+      "sec": "ACCUEIL-VIDE",
+      "name": "ACCUEIL-VIDE : un seul chantier actif restant",
+      "status": "PASS"
+    },
+    {
+      "sec": "ACCUEIL-VIDE",
+      "name": "ACCUEIL-VIDE : la liste « Chantiers actifs » occupe la même hauteur que « Aujourd’hui » (aucun rabougrissement)",
+      "status": "PASS"
+    },
+    {
+      "sec": "ACCUEIL-VIDE",
+      "name": "ACCUEIL-VIDE : avec une seule carte, elle est centrée dans l’espace disponible plutôt que collée en haut",
+      "status": "PASS"
+    },
+    {
+      "sec": "CHANTIER",
+      "name": "CHANTIER : la vignette est petite (96px de haut, repère secondaire)",
+      "status": "PASS"
+    },
+    {
+      "sec": "CHANTIER",
+      "name": "CHANTIER : l’illustration du chantier est toujours rendue (identité conservée)",
+      "status": "PASS"
+    },
+    {
+      "sec": "CHANTIER",
+      "name": "CHANTIER : le contenu utile récupère la majorité de la largeur",
+      "status": "PASS"
+    },
+    {
+      "sec": "CHANTIER",
+      "name": "CHANTIER : nom + localisation toujours prioritaires",
+      "status": "PASS"
+    },
+    {
+      "sec": "CHANTIER",
+      "name": "CHANTIER : zone « À traiter » toujours présente (donnée réelle)",
+      "status": "PASS"
+    },
+    {
+      "sec": "CHANTIER",
+      "name": "CHANTIER : zone « Prochaine étape » toujours présente (donnée réelle)",
+      "status": "PASS"
+    },
+    {
+      "sec": "CHANTIER-ETATS",
+      "name": "CHANTIER-ETATS : chantier clôturé — vignette + bandeau lecture seule",
+      "status": "PASS"
+    },
+    {
+      "sec": "CHANTIER-ETATS",
+      "name": "CHANTIER-ETATS : chantier archivé — vignette + bandeau lecture seule",
+      "status": "PASS"
+    },
+    {
+      "sec": "CHANTIER-ETATS",
+      "name": "CHANTIER-ETATS : chantier à configurer — vignette + zone de démarrage",
+      "status": "PASS"
+    },
+    {
+      "sec": "CHANTIER-EQUIPE",
+      "name": "CHANTIER-EQUIPE : les ressources forment une grille multi-colonnes de cartes",
+      "status": "PASS"
+    },
+    {
+      "sec": "CHANTIER-EQUIPE",
+      "name": "CHANTIER-EQUIPE : des cartes ressources sont rendues",
+      "status": "PASS"
+    },
+    {
+      "sec": "CHANTIER-EQUIPE",
+      "name": "CHANTIER-EQUIPE : chaque carte a avatar + mission + état (§2)",
+      "status": "PASS"
+    },
+    {
+      "sec": "CHANTIER-EQUIPE",
+      "name": "CHANTIER-EQUIPE : pas de faux \"Non affecté\" (garde SITE-F4)",
+      "status": "PASS"
+    },
+    {
+      "sec": "CHANTIER-EQUIPE",
+      "name": "CHANTIER-EQUIPE : cliquer une carte ouvre bien la fiche ressource (interaction conservée)",
+      "status": "PASS"
+    },
+    {
+      "sec": "CHANTIER-EQUIPE-VIDE",
+      "name": "CHANTIER-EQUIPE-VIDE : tâche non affectée signalée par une carte dédiée",
+      "status": "PASS"
+    },
+    {
+      "sec": "CHANTIER-EQUIPE-VIDE",
+      "name": "CHANTIER-EQUIPE-VIDE : jamais le libellé « Non affecté » (interdiction produit)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HISTORIQUE",
+      "name": "HISTORIQUE : largeur plafonnée à 820px (mesurée 820px), jamais étirée sur toute la largeur",
+      "status": "PASS"
+    },
+    {
+      "sec": "HISTORIQUE",
+      "name": "HISTORIQUE : le plafond laisse effectivement de la place (conteneur plus large que le panneau)",
+      "status": "PASS"
+    },
+    {
+      "sec": "HISTORIQUE",
+      "name": "HISTORIQUE : les événements réels continuent de s’afficher",
+      "status": "PASS"
+    },
+    {
+      "sec": "HISTORIQUE-ISOLATION",
+      "name": "HISTORIQUE-ISOLATION : aucune fuite inter-chantiers, la refonte visuelle ne touche pas historyProjectId/projectHistory",
+      "status": "PASS"
+    },
+    {
+      "sec": "EQUIPE",
+      "name": "EQUIPE : grille multi-colonnes (scan visuel rapide)",
+      "status": "PASS"
+    },
+    {
+      "sec": "EQUIPE",
+      "name": "EQUIPE : toutes les ressources actives sont rendues en cartes",
+      "status": "PASS"
+    },
+    {
+      "sec": "EQUIPE",
+      "name": "EQUIPE : le composant « Charge des ressources » reste inchangé sous la grille",
+      "status": "PASS"
+    },
+    {
+      "sec": "EQUIPE",
+      "name": "EQUIPE : filtre « Externes » toujours fonctionnel avec les cartes",
+      "status": "PASS"
+    },
+    {
+      "sec": "EQUIPE",
+      "name": "EQUIPE : la vue Archives (non touchée par cette version) reste accessible",
+      "status": "PASS"
+    },
+    {
+      "sec": "DARK",
+      "name": "DARK : vignette de synthèse sans aplat blanc forcé",
+      "status": "PASS"
+    },
+    {
+      "sec": "DARK",
+      "name": "DARK : panneau Aujourd’hui sans aplat blanc forcé",
+      "status": "PASS"
+    },
+    {
+      "sec": "DARK",
+      "name": "DARK : carte ressource (Chantier > Équipe) sans aplat blanc forcé",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 1920px — « today » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 1920px — « project » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 1920px — « project-equipe » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 1920px — « team » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 1440px — « today » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 1440px — « project » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 1440px — « project-equipe » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 1440px — « team » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 1280px — « today » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 1280px — « project » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 1280px — « project-equipe » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 1280px — « team » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 900px — « today » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 900px — « project » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 900px — « project-equipe » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 900px — « team » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 768px — « today » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 768px — « project » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 768px — « project-equipe » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 768px — « team » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 430px — « today » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 430px — « project » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 430px — « project-equipe » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 430px — « team » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 390px — « today » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 390px — « project » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 390px — « project-equipe » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 390px — « team » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "CONSOLE",
+      "name": "CONSOLE : 0 erreur JavaScript applicative",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    {
+      "where": "ACC",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "ACC",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "ACC",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "ACCV",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "ACCV",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "ACCV",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CHK",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CHK",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CHK",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CHKS",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CHKS",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CHKS",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CE",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CE",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CE",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CEV",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CEV",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CEV",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "HIST",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "HIST",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "HIST",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "HISO",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "HISO",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "HISO",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "EQ",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "EQ",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "EQ",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "DARK",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "DARK",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "DARK",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1920",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1920",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1920",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1440",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1440",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1440",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1280",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1280",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1280",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-900",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-900",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-900",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-768",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-768",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-768",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-430",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-430",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-430",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-390",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-390",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-390",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    }
+  ]
+}
