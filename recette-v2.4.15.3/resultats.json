@@ -1,0 +1,221 @@
+{
+  "passed": 21,
+  "failed": [],
+  "results": [
+    {
+      "sec": "POPUP-1513",
+      "name": "POPUP-1513-01 : .more-menu garde position:relative (ancre du popover)",
+      "status": "PASS"
+    },
+    {
+      "sec": "POPUP-1513",
+      "name": "POPUP-1513-01 : le popover apparaît juste sous le bouton ••• (pas détaché ailleurs sur la page)",
+      "status": "PASS"
+    },
+    {
+      "sec": "POPUP-1513",
+      "name": "POPUP-1513-01 : chaque item du menu reçoit réellement le clic à son emplacement visible",
+      "status": "PASS"
+    },
+    {
+      "sec": "POPUP-1513",
+      "name": "POPUP-1513-01 : Modifier + Clôturer proposés pour un chantier actif",
+      "status": "PASS"
+    },
+    {
+      "sec": "POPUP-1513",
+      "name": "POPUP-1513-02 : popover toujours ancré même avec 3 actions",
+      "status": "PASS"
+    },
+    {
+      "sec": "POPUP-1513",
+      "name": "POPUP-1513-02 : les 3 actions sont toutes cliquables (y compris « Supprimer » en bas), aucun recadrage par la carte",
+      "status": "PASS"
+    },
+    {
+      "sec": "POPUP-1513",
+      "name": "POPUP-1513-02 : Modifier/Clôturer/Supprimer proposés (chantier vide)",
+      "status": "PASS"
+    },
+    {
+      "sec": "POPUP-1513",
+      "name": "POPUP-1513-03 : popover ancré et cliquable pour un chantier clôturé",
+      "status": "PASS"
+    },
+    {
+      "sec": "POPUP-1513",
+      "name": "POPUP-1513-03 : Réouvrir/Archiver proposés (chantier clôturé)",
+      "status": "PASS"
+    },
+    {
+      "sec": "POPUP-1513",
+      "name": "POPUP-1513-04 : popover ancré et cliquable pour un chantier archivé",
+      "status": "PASS"
+    },
+    {
+      "sec": "POPUP-1513",
+      "name": "POPUP-1513-04 : Restaurer/Supprimer définitivement proposés (chantier archivé)",
+      "status": "PASS"
+    },
+    {
+      "sec": "POPUP-1513",
+      "name": "POPUP-1513-05 : « Modifier » ouvre réellement l’édition du chantier",
+      "status": "PASS"
+    },
+    {
+      "sec": "POPUP-1513",
+      "name": "POPUP-1513-05 : « Clôturer » ouvre réellement la confirmation",
+      "status": "PASS"
+    },
+    {
+      "sec": "POPUP-1513",
+      "name": "POPUP-1513-06 : popover sans aplat blanc forcé en dark mode",
+      "status": "PASS"
+    },
+    {
+      "sec": "POPUP-1513",
+      "name": "POPUP-1513-07 : menu cliquable à 390px",
+      "status": "PASS"
+    },
+    {
+      "sec": "POPUP-1513",
+      "name": "POPUP-1513-07 : pas de débordement horizontal avec le menu ouvert",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE",
+      "name": "FREEZE-1513 : même nombre de cartes",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE",
+      "name": "FREEZE-1513 : mêmes hauteurs de carte (mise en page inchangée)",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE",
+      "name": "FREEZE-1513 : vignettes inchangées",
+      "status": "PASS"
+    },
+    {
+      "sec": "CONSOLE-1513",
+      "name": "CONSOLE-1513 : 0 erreur JavaScript applicative",
+      "status": "PASS"
+    },
+    {
+      "sec": "ENGINES-1513",
+      "name": "ENGINES-1513 : tous les moteurs / fonctions de rendu listés sont byte-identiques (correctif purement CSS)",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    {
+      "where": "P1",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "P1",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "P1",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "P2",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "P2",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "P2",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "P3",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "P3",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "P3",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "P4",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "P4",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "P4",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "P5",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "P5",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "P5",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "P6",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "P6",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "P6",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "P7",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "P7",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "P7",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FZ-prev",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FZ-prev",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FZ-prev",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FZ-cur",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FZ-cur",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FZ-cur",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    }
+  ]
+}
