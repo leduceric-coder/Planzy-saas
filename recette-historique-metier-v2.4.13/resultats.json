@@ -1,0 +1,886 @@
+{
+  "passed": 106,
+  "failed": [],
+  "results": [
+    {
+      "sec": "STATUS-HIST-01",
+      "name": "STATUS-HIST-01 : eventType = \"task-status\"",
+      "status": "PASS"
+    },
+    {
+      "sec": "STATUS-HIST-01",
+      "name": "STATUS-HIST-01 : taskName mémorisé",
+      "status": "PASS"
+    },
+    {
+      "sec": "STATUS-HIST-01",
+      "name": "STATUS-HIST-01 : fromStatus = todo, toStatus = doing",
+      "status": "PASS"
+    },
+    {
+      "sec": "STATUS-HIST-01",
+      "name": "STATUS-HIST-01 : projectId ET taskId présents (§33)",
+      "status": "PASS"
+    },
+    {
+      "sec": "STATUS-HIST-01",
+      "name": "STATUS-HIST-01 : origin et author conservés",
+      "status": "PASS"
+    },
+    {
+      "sec": "STATUS-HIST-01",
+      "name": "STATUS-HIST-01 : changes[] « Statut : À faire → En cours » (§2)",
+      "status": "PASS"
+    },
+    {
+      "sec": "STATUS-HIST-01",
+      "name": "STATUS-HIST-01 : text legacy conservé pour compatibilité (§3)",
+      "status": "PASS"
+    },
+    {
+      "sec": "STATUS-HIST-02",
+      "name": "STATUS-HIST-02 : titre = nom de la tâche (pas « · commencée »)",
+      "status": "PASS"
+    },
+    {
+      "sec": "STATUS-HIST-02",
+      "name": "STATUS-HIST-02 : transition « À faire → En cours » affichée",
+      "status": "PASS"
+    },
+    {
+      "sec": "STATUS-HIST-02",
+      "name": "STATUS-HIST-02 : le texte legacy n’est plus l’information principale",
+      "status": "PASS"
+    },
+    {
+      "sec": "STATUS-HIST-03",
+      "name": "STATUS-HIST-03 : transition « En cours → À faire »",
+      "status": "PASS"
+    },
+    {
+      "sec": "STATUS-HIST-04",
+      "name": "STATUS-HIST-04 : exactement 3 événements de statut — aucune fusion (§21)",
+      "status": "PASS"
+    },
+    {
+      "sec": "STATUS-HIST-04",
+      "name": "STATUS-HIST-04 : plus récent en haut, séquence complète lisible",
+      "status": "PASS"
+    },
+    {
+      "sec": "STATUS-HIST-04",
+      "name": "STATUS-HIST-04 : même titre, transitions différentes — la répétition devient compréhensible",
+      "status": "PASS"
+    },
+    {
+      "sec": "STATUS-HIST-05",
+      "name": "STATUS-HIST-05 : 0 nouvelle entrée d’historique",
+      "status": "PASS"
+    },
+    {
+      "sec": "STATUS-HIST-05",
+      "name": "STATUS-HIST-05 : 0 snapshot Undo supplémentaire",
+      "status": "PASS"
+    },
+    {
+      "sec": "STATUS-HIST-05",
+      "name": "STATUS-HIST-05 : 0 incident créé",
+      "status": "PASS"
+    },
+    {
+      "sec": "STATUS-HIST-05",
+      "name": "STATUS-HIST-05 : 0 notification / message",
+      "status": "PASS"
+    },
+    {
+      "sec": "STATUS-HIST-05",
+      "name": "STATUS-HIST-05 : aucun statut modifié",
+      "status": "PASS"
+    },
+    {
+      "sec": "STATUS-HIST-06",
+      "name": "STATUS-HIST-06 : la transition vers Terminée est enregistrée",
+      "status": "PASS"
+    },
+    {
+      "sec": "STATUS-HIST-06",
+      "name": "STATUS-HIST-06 : done → done ne produit rien",
+      "status": "PASS"
+    },
+    {
+      "sec": "STATUS-HIST-06",
+      "name": "STATUS-HIST-06 : done → todo refusé, aucune entrée, tâche toujours terminée (§5)",
+      "status": "PASS"
+    },
+    {
+      "sec": "STATUS-HIST-07",
+      "name": "STATUS-HIST-07 : drag réel dispatché sur les handlers de l’app",
+      "status": "PASS"
+    },
+    {
+      "sec": "STATUS-HIST-07",
+      "name": "STATUS-HIST-07 : 1 entrée structurée « À faire → En cours »",
+      "status": "PASS"
+    },
+    {
+      "sec": "STATUS-HIST-07",
+      "name": "STATUS-HIST-07 : origin = kanban conservé (§16)",
+      "status": "PASS"
+    },
+    {
+      "sec": "STATUS-HIST-08",
+      "name": "STATUS-HIST-08 : le drag retour crée bien une nouvelle entrée (§20)",
+      "status": "PASS"
+    },
+    {
+      "sec": "STATUS-HIST-08",
+      "name": "STATUS-HIST-08 : « En cours → À faire »",
+      "status": "PASS"
+    },
+    {
+      "sec": "STATUS-HIST-09",
+      "name": "STATUS-HIST-09 : manual = true, fromField = false",
+      "status": "PASS"
+    },
+    {
+      "sec": "STATUS-HIST-09",
+      "name": "STATUS-HIST-09 : transition structurée exacte",
+      "status": "PASS"
+    },
+    {
+      "sec": "STATUS-HIST-09",
+      "name": "STATUS-HIST-09 : précision secondaire « Statut modifié manuellement » (§18)",
+      "status": "PASS"
+    },
+    {
+      "sec": "STATUS-HIST-09",
+      "name": "STATUS-HIST-09 : aucun faux « sur le terrain »",
+      "status": "PASS"
+    },
+    {
+      "sec": "STATUS-HIST-10",
+      "name": "STATUS-HIST-10 : transition structurée",
+      "status": "PASS"
+    },
+    {
+      "sec": "STATUS-HIST-10",
+      "name": "STATUS-HIST-10 : contexte terrain conservé",
+      "status": "PASS"
+    },
+    {
+      "sec": "STATUS-HIST-10",
+      "name": "STATUS-HIST-10 : auteur = ressource terrain, jamais uniformisé (§15)",
+      "status": "PASS"
+    },
+    {
+      "sec": "STATUS-HIST-10",
+      "name": "STATUS-HIST-10 : « Confirmé sur le terrain » affiché car fromField === true (§17)",
+      "status": "PASS"
+    },
+    {
+      "sec": "TIMESTAMP-01",
+      "name": "TIMESTAMP-01 : date stockée = \"2026-09-11T08:43\" (horodatage complet)",
+      "status": "PASS"
+    },
+    {
+      "sec": "TIMESTAMP-01",
+      "name": "TIMESTAMP-01 : INTERDIT — plus d’heure seule",
+      "status": "PASS"
+    },
+    {
+      "sec": "TIMESTAMP-01",
+      "name": "TIMESTAMP-01 : jour ET heure exploitables par la timeline",
+      "status": "PASS"
+    },
+    {
+      "sec": "TIMESTAMP-01",
+      "name": "TIMESTAMP-01 : les autres points d’écriture (incident) sont eux aussi horodatés complètement (§35)",
+      "status": "PASS"
+    },
+    {
+      "sec": "TIMESTAMP-02",
+      "name": "TIMESTAMP-02 : un seul groupe de journée",
+      "status": "PASS"
+    },
+    {
+      "sec": "TIMESTAMP-02",
+      "name": "TIMESTAMP-02 : libellé « 11 sept. 2026 » issu de la donnée, pas inventé",
+      "status": "PASS"
+    },
+    {
+      "sec": "TIMESTAMP-02",
+      "name": "TIMESTAMP-02 : 3 heures affichées sous la même date",
+      "status": "PASS"
+    },
+    {
+      "sec": "TIMESTAMP-03",
+      "name": "TIMESTAMP-03 : deux journées → deux groupes distincts",
+      "status": "PASS"
+    },
+    {
+      "sec": "TIMESTAMP-04",
+      "name": "TIMESTAMP-04 : les 3 anciennes entrées restent visibles",
+      "status": "PASS"
+    },
+    {
+      "sec": "TIMESTAMP-04",
+      "name": "TIMESTAMP-04 : heure seule et date illisible affichées telles quelles",
+      "status": "PASS"
+    },
+    {
+      "sec": "LEGACY",
+      "name": "LEGACY : aucune transition RECONSTRUITE sur une entrée sans fromStatus (§28/§29)",
+      "status": "PASS"
+    },
+    {
+      "sec": "LEGACY",
+      "name": "LEGACY : le texte legacy reste la vérité affichée",
+      "status": "PASS"
+    },
+    {
+      "sec": "LEGACY",
+      "name": "LEGACY : deuxième entrée legacy intacte",
+      "status": "PASS"
+    },
+    {
+      "sec": "LEGACY",
+      "name": "LEGACY : legacy et structuré cohabitent — seule la nouvelle entrée porte une transition",
+      "status": "PASS"
+    },
+    {
+      "sec": "LEGACY",
+      "name": "LEGACY : les entrées sans jour sont regroupées sous « Date non précisée », jamais rattachées à une date inventée",
+      "status": "PASS"
+    },
+    {
+      "sec": "TASK-DELETED",
+      "name": "TASK-DELETED : le nom mémorisé reste lisible (§27)",
+      "status": "PASS"
+    },
+    {
+      "sec": "TASK-DELETED",
+      "name": "TASK-DELETED : la transition reste lisible",
+      "status": "PASS"
+    },
+    {
+      "sec": "TASK-DELETED",
+      "name": "TASK-DELETED : aucun bouton « Voir la tâche » sur une tâche disparue",
+      "status": "PASS"
+    },
+    {
+      "sec": "AUTRES",
+      "name": "INCIDENT : conservé tel quel, non transformé en statut (§22)",
+      "status": "PASS"
+    },
+    {
+      "sec": "AUTRES",
+      "name": "INCIDENT : date complète + rattachement Keravel",
+      "status": "PASS"
+    },
+    {
+      "sec": "AUTRES",
+      "name": "PHOTO : entrée conservée, non transformée (§55)",
+      "status": "PASS"
+    },
+    {
+      "sec": "AUTRES",
+      "name": "PHOTO : date complète + bon chantier",
+      "status": "PASS"
+    },
+    {
+      "sec": "AUTRES",
+      "name": "SIMULATION : entrée conservée, date complète, moteur Résoudre inchangé (§57)",
+      "status": "PASS"
+    },
+    {
+      "sec": "AUTRES",
+      "name": "CHANGES : les entrées d’édition conservent leurs différences (§23/§53)",
+      "status": "PASS"
+    },
+    {
+      "sec": "AUTRES",
+      "name": "CHANGES : date complète",
+      "status": "PASS"
+    },
+    {
+      "sec": "AUTRES",
+      "name": "CHANGES : taskName renseigné → titre = nom de la tâche (§24)",
+      "status": "PASS"
+    },
+    {
+      "sec": "REPRISE",
+      "name": "REPRISE : les entrées du parcours SAV sont conservées (§56)",
+      "status": "PASS"
+    },
+    {
+      "sec": "REPRISE",
+      "name": "REPRISE : dates complètes",
+      "status": "PASS"
+    },
+    {
+      "sec": "REPRISE",
+      "name": "REPRISE : libellés SAV inchangés",
+      "status": "PASS"
+    },
+    {
+      "sec": "ORDRE",
+      "name": "ORDRE : plus récent en haut, aucun tri par nom / type / statut (§58)",
+      "status": "PASS"
+    },
+    {
+      "sec": "DESIGN",
+      "name": "DESIGN : transition rendue en mode sombre",
+      "status": "PASS"
+    },
+    {
+      "sec": "DESIGN",
+      "name": "DESIGN : les trois statuts d’arrivée sont représentés",
+      "status": "PASS"
+    },
+    {
+      "sec": "DESIGN",
+      "name": "DESIGN : À faire / En cours / Terminée visuellement distincts (§13)",
+      "status": "PASS"
+    },
+    {
+      "sec": "DESIGN",
+      "name": "DESIGN : contraste suffisant (texte ≠ fond)",
+      "status": "PASS"
+    },
+    {
+      "sec": "DESIGN",
+      "name": "DESIGN : l’état de départ reste neutre, seul l’état d’arrivée est affirmé (§12)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 1920px — 3 transitions rendues",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 1920px — aucun débordement, 0 scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 1920px — timeline toujours compacte (85px/événement)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 1440px — 3 transitions rendues",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 1440px — aucun débordement, 0 scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 1440px — timeline toujours compacte (85px/événement)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 1280px — 3 transitions rendues",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 1280px — aucun débordement, 0 scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 1280px — timeline toujours compacte (85px/événement)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 900px — 3 transitions rendues",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 900px — aucun débordement, 0 scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 900px — timeline toujours compacte (85px/événement)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 768px — 3 transitions rendues",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 768px — aucun débordement, 0 scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 768px — timeline toujours compacte (85px/événement)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 430px — 3 transitions rendues",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 430px — aucun débordement, 0 scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 430px — timeline toujours compacte (106px/événement)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 390px — 3 transitions rendues",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 390px — aucun débordement, 0 scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESPONSIVE",
+      "name": "RESPONSIVE : 390px — timeline toujours compacte (106px/événement)",
+      "status": "PASS"
+    },
+    {
+      "sec": "NAVIGATION",
+      "name": "NAVIGATION : aucune fausse affordance sur l’événement ni sur les pastilles de statut",
+      "status": "PASS"
+    },
+    {
+      "sec": "NAVIGATION",
+      "name": "NAVIGATION : seul « Voir la tâche » est cliquable",
+      "status": "PASS"
+    },
+    {
+      "sec": "NAVIGATION",
+      "name": "NAVIGATION : ouvre bien la bonne tâche",
+      "status": "PASS"
+    },
+    {
+      "sec": "NAVIGATION",
+      "name": "NAVIGATION : retour sur l’onglet Historique intact",
+      "status": "PASS"
+    },
+    {
+      "sec": "ISOLATION",
+      "name": "ISOLATION : aucune fuite inter-chantiers sur les événements structurés",
+      "status": "PASS"
+    },
+    {
+      "sec": "ISOLATION",
+      "name": "ISOLATION : entrée globale absente, historiques distincts — SITE-01 fermé",
+      "status": "PASS"
+    },
+    {
+      "sec": "SCHEMA",
+      "name": "SCHEMA : SCHEMA_VERSION inchangé (8)",
+      "status": "PASS"
+    },
+    {
+      "sec": "SCHEMA",
+      "name": "SCHEMA : STORE inchangé",
+      "status": "PASS"
+    },
+    {
+      "sec": "SCHEMA",
+      "name": "SCHEMA : les champs structurés survivent au rechargement, sans migration",
+      "status": "PASS"
+    },
+    {
+      "sec": "SCHEMA",
+      "name": "SCHEMA : app.history reste la collection unique (§73)",
+      "status": "PASS"
+    },
+    {
+      "sec": "COMPARATIF",
+      "name": "COMPARATIF : 3 événements des deux côtés — rien n’a été supprimé",
+      "status": "PASS"
+    },
+    {
+      "sec": "COMPARATIF",
+      "name": "COMPARATIF : V2.4.12.1 n’affichait aucune transition",
+      "status": "PASS"
+    },
+    {
+      "sec": "COMPARATIF",
+      "name": "COMPARATIF : V2.4.13 affiche le nom + la transition sur les 3 (§65)",
+      "status": "PASS"
+    },
+    {
+      "sec": "COMPARATIF",
+      "name": "COMPARATIF : séquence exacte attendue",
+      "status": "PASS"
+    },
+    {
+      "sec": "CONSOLE",
+      "name": "CONSOLE : 0 erreur JavaScript applicative",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    {
+      "where": "S01",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "S01",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "S01",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "S02",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "S02",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "S02",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "S04",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "S04",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "S04",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "S05",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "S05",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "S05",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "S06",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "S06",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "S06",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "S078",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "S078",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "S078",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "S09",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "S09",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "S09",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "S10",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "S10",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "S10",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "T01",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "T01",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "T01",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "T023",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "T023",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "T023",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "LEG",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "LEG",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "LEG",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "DEL",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "DEL",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "DEL",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "AUT",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "AUT",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "AUT",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "REP",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "REP",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "REP",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "ORD",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "ORD",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "ORD",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "DARK",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "DARK",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "DARK",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1920",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1920",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1920",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1440",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1440",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1440",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1280",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1280",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1280",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-900",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-900",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-900",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-768",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-768",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-768",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-430",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-430",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-430",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-390",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-390",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-390",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "NAV",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "NAV",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "NAV",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "ISO",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "ISO",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "ISO",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SCH",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SCH",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SCH",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SCH",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SCH",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SCH",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CMP-before",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CMP-before",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CMP-before",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CMP-after",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CMP-after",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CMP-after",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    }
+  ]
+}
