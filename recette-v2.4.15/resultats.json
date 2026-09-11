@@ -1,0 +1,1037 @@
+{
+  "passed": 105,
+  "failed": [],
+  "results": [
+    {
+      "sec": "UI15-ACC",
+      "name": "UI15-ACC-01 : .today-main-grid porte désormais le habillage carte (fond visible)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-ACC",
+      "name": "UI15-ACC-01 : .today-main-grid a une bordure propre (une seule surface)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-ACC",
+      "name": "UI15-ACC-01 : les colonnes internes (Aujourd’hui/Chantiers actifs) n’ont plus leur propre carte (pas de double empilement)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-ACC",
+      "name": "UI15-ACC-01 : séparateur vertical discret entre les deux colonnes",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-ACC",
+      "name": "UI15-ACC-02 : colonnes égales (579px / 579px)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-ACC",
+      "name": "UI15-ACC-03 : « Aujourd’hui » — aucun space-evenly/flex-grow/min-height artificiel",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-ACC",
+      "name": "UI15-ACC-03 : « Chantiers actifs » — idem",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-ACC",
+      "name": "UI15-ACC-04 : « Cette semaine » borné aux mêmes marges que le cockpit du jour",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-ACC",
+      "name": "UI15-ACC-05 : colonne la plus riche détermine la hauteur, le vide résiduel appartient à la surface commune (pas de petite carte séparée)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-ACC",
+      "name": "UI15-ACC-05 : la surface commune englobe bien la colonne la plus haute",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-CHT",
+      "name": "UI15-CHT-01 : largeur vignette 84px (72-88px attendu)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-CHT",
+      "name": "UI15-CHT-01 : hauteur vignette 60px (52-64px attendu)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-CHT",
+      "name": "UI15-CHT-01 : ratio 1.40 proche de 4:3 (1.33) à 3:2 (1.5)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-CHT",
+      "name": "UI15-CHT-01 : preserveAspectRatio=\"xMidYMid meet\" dans ce contexte précis (pas de recadrage)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-CHT",
+      "name": "UI15-CHT-01 : même illustration source (viewBox art() inchangé) — pas de nouvelle image, juste l’affichage",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-CHT",
+      "name": "UI15-CHT-01 : l’illustration réelle du chantier est bien rendue",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-CHT",
+      "name": "UI15-CHT-01b : ailleurs (Accueil « Chantiers actifs »), art() garde son comportement de recadrage original — seule la vignette cockpit a une variante d’affichage",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-CHT",
+      "name": "UI15-CHT-02 : le cockpit est un conteneur unique .project-cockpit-shell",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-CHT",
+      "name": "UI15-CHT-02 : une seule surface blanche légère (fond + bordure)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-CHT",
+      "name": "UI15-CHT-02 : identité + statut + à traiter + prochaine étape regroupés dans la même surface",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-CHT",
+      "name": "UI15-CHT-03 : les deux zones sont bien à l’intérieur du shell (pas des cartes posées à côté)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-CHT",
+      "name": "UI15-CHT-03 : côte à côte, même ligne",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-CHT",
+      "name": "UI15-CHT-04 : espace cockpit→onglets resserré (10px)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-CHT",
+      "name": "UI15-CHT-04 : à 1920×1080, les onglets sont visibles sans scroll",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-CHT",
+      "name": "UI15-CHT-04 : à 1920×1080, une vraie partie du contenu de l’onglet est visible sans scroll",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-CHT",
+      "name": "UI15-CHT-05 : le message « Aucun point bloquant » est bien affiché",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-CHT",
+      "name": "UI15-CHT-05 : bande compacte (36px de haut), pas une grande carte",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-CHT",
+      "name": "UI15-CHT-05 : nettement plus compacte que la carte « Prochaine étape » voisine — pas de zone vide étirée",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-CHT",
+      "name": "UI15-CHT-06 : pas de débordement horizontal à 390px",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-CHT",
+      "name": "UI15-CHT-06 : vignette toujours petite sur mobile",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-HIST",
+      "name": "UI15-HIST-01 : les événements réels (avec transition de statut) s’affichent toujours",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-HIST",
+      "name": "UI15-HIST-01 : la timeline occupe une partie de la largeur (2fr), pas tout l’écran",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-HIST",
+      "name": "UI15-HIST-01b : aucune fuite inter-chantiers",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-HIST",
+      "name": "UI15-HIST-02 : le compteur du résumé correspond exactement à projectHistory(projectId).length",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-HIST",
+      "name": "UI15-HIST-02 : le nombre de changements de statut correspond exactement aux entrées eventType===\"task-status\"",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-HIST",
+      "name": "UI15-HIST-02b : résumé reste petit avec peu d’événements (201px)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-HIST",
+      "name": "UI15-HIST-03 : aucun mot-clé d’analytique inventée dans le résumé",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-HIST",
+      "name": "UI15-HIST-04 : le résumé passe sous la timeline en une seule colonne",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-HIST",
+      "name": "UI15-HIST-04 : pas de débordement horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-SET",
+      "name": "UI15-SET-01 : .settings-content = 1160px (1100-1180px attendu)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-SET",
+      "name": "UI15-SET-02 : deux sections dans .settings-grid",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-SET",
+      "name": "UI15-SET-02 : Expérience Kanvix et Mode de démonstration sur la même ligne, côte à côte",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-SET",
+      "name": "UI15-SET-03 : « Données & démonstration » occupe toute la largeur du contenu",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-SET",
+      "name": "UI15-SET-03 : nettement plus large qu’une colonne de la première ligne (pleine largeur, pas 50%)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-SET",
+      "name": "UI15-SET-04 : la quasi-totalité des emplacements d’icônes (13/14) utilisent désormais une icône SVG ligne (seul ↺, déjà monochrome, reste en glyphe)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-SET",
+      "name": "UI15-SET-04 : plus aucun emoji coloré dans ces zones",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-SET",
+      "name": "UI15-SET-05 : 900px — pas de débordement",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-SET",
+      "name": "UI15-SET-05 : 900px — une seule colonne",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-SET",
+      "name": "UI15-SET-05 : 390px — pas de débordement",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-SET",
+      "name": "UI15-SET-05 : 390px — une seule colonne",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-SET",
+      "name": "UI15-SET-06 : tous les onclick métier sont toujours présents à l’identique",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-FREEZE",
+      "name": "UI15-FREEZE-01 : même nombre de lignes Gantt (7 → 7)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-FREEZE",
+      "name": "UI15-FREEZE-01 : mêmes classes de lignes (structure DOM identique)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-FREEZE",
+      "name": "UI15-FREEZE-01 : composant Gantt toujours présent, inchangé",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-FREEZE",
+      "name": "UI15-FREEZE-02 : même nombre de cartes et de colonnes",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-FREEZE",
+      "name": "UI15-FREEZE-02 : structure des cartes strictement identique",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-FREEZE",
+      "name": "UI15-FREEZE-02 : « Charge des ressources » toujours présent, inchangé",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-FREEZE",
+      "name": "UI15-FREEZE-03 : même nombre de cartes et de colonnes",
+      "status": "PASS"
+    },
+    {
+      "sec": "UI15-FREEZE",
+      "name": "UI15-FREEZE-03 : structure strictement identique — Chantier>Équipe non touché",
+      "status": "PASS"
+    },
+    {
+      "sec": "DARK-15",
+      "name": "DARK-15 : Accueil — cockpit du jour sans aplat blanc forcé",
+      "status": "PASS"
+    },
+    {
+      "sec": "DARK-15",
+      "name": "DARK-15 : Chantier — cockpit shell sans aplat blanc forcé",
+      "status": "PASS"
+    },
+    {
+      "sec": "DARK-15",
+      "name": "DARK-15 : Historique — résumé d’activité sans aplat blanc forcé",
+      "status": "PASS"
+    },
+    {
+      "sec": "DARK-15",
+      "name": "DARK-15 : Réglages — sections sans aplat blanc forcé",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 1920px — « accueil » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 1920px — « cockpit » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 1920px — « historique » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 1920px — « reglages » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 1600px — « accueil » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 1600px — « cockpit » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 1600px — « historique » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 1600px — « reglages » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 1440px — « accueil » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 1440px — « cockpit » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 1440px — « historique » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 1440px — « reglages » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 1366px — « accueil » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 1366px — « cockpit » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 1366px — « historique » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 1366px — « reglages » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 1280px — « accueil » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 1280px — « cockpit » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 1280px — « historique » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 1280px — « reglages » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 1080px — « accueil » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 1080px — « cockpit » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 1080px — « historique » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 1080px — « reglages » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 900px — « accueil » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 900px — « cockpit » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 900px — « historique » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 900px — « reglages » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 768px — « accueil » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 768px — « cockpit » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 768px — « historique » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 768px — « reglages » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 430px — « accueil » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 430px — « cockpit » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 430px — « historique » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 430px — « reglages » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 390px — « accueil » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 390px — « cockpit » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 390px — « historique » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP-15",
+      "name": "RESP-15 : 390px — « reglages » sans scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "CONSOLE-15",
+      "name": "CONSOLE-15 : 0 erreur JavaScript applicative sur l’ensemble de la recette",
+      "status": "PASS"
+    },
+    {
+      "sec": "ENGINES-15",
+      "name": "ENGINES-15 : tous les moteurs métier listés (§Partie 7 + art/projectVisual) sont byte-identiques entre V2.4.14.1 et V2.4.15",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    {
+      "where": "ACC1",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "ACC1",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "ACC1",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "ACC2",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "ACC2",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "ACC2",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "ACC3",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "ACC3",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "ACC3",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "ACC4",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "ACC4",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "ACC4",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "ACC5",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "ACC5",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "ACC5",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CHT1",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CHT1",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CHT1",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CHT1b",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CHT1b",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CHT1b",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CHT2",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CHT2",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CHT2",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CHT3",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CHT3",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CHT3",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CHT4",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CHT4",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CHT4",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CHT5",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CHT5",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CHT5",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CHT6",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CHT6",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "CHT6",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "HIST1",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "HIST1",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "HIST1",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "HIST1b",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "HIST1b",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "HIST1b",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "HIST2",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "HIST2",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "HIST2",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "HIST2b",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "HIST2b",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "HIST2b",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "HIST3",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "HIST3",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "HIST3",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "HIST4",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "HIST4",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "HIST4",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SET1",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SET1",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SET1",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SET2",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SET2",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SET2",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SET3",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SET3",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SET3",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SET4",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SET4",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SET4",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SET5-900",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SET5-900",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SET5-900",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SET5-390",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SET5-390",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SET5-390",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SET6",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SET6",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SET6",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FZ1-prev",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FZ1-prev",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FZ1-prev",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FZ1-cur",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FZ1-cur",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FZ1-cur",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FZ2-prev",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FZ2-prev",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FZ2-prev",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FZ2-cur",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FZ2-cur",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FZ2-cur",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FZ3-prev",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FZ3-prev",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FZ3-prev",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FZ3-cur",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FZ3-cur",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FZ3-cur",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "DARK",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "DARK",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "DARK",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1920",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1920",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1920",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1600",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1600",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1600",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1440",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1440",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1440",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1366",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1366",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1366",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1280",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1280",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1280",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1080",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1080",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-1080",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-900",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-900",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-900",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-768",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-768",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-768",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-430",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-430",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-430",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-390",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-390",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RESP-390",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    }
+  ]
+}

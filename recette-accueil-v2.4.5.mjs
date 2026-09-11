@@ -70,18 +70,22 @@ for (const [w, h] of [[1920, 1080], [1600, 900], [1440, 900], [1366, 768], [1280
     return { decide: r('.attention-card.decide'), watch: r('.attention-card.watch'), today: r('.actions-panel'), sites: r('.projects-panel') };
   });
   const tag = `${w}x${h}`;
-  // V2.4.14 — harmonisation Accueil : les DEUX vignettes de synthèse sont
-  // désormais de largeur STRICTEMENT ÉGALE (demande explicite), tandis que
-  // la grille principale (Aujourd'hui / Chantiers actifs) reste asymétrique
-  // et "équilibrée" (1.4fr/1fr, Aujourd'hui plus dense reste plus large) —
-  // les deux grilles n'ont donc plus la même colonne de coupure, ce qui est
-  // le comportement INTENTIONNEL. Seules les bornes de page (marge gauche du
-  // premier bloc, marge droite du dernier) doivent encore coïncider.
+  // V2.4.14.1 — .today-main-grid est passé à 1fr/1fr (colonnes strictement
+  // égales, plus d'asymétrie 1.4fr/1fr) : les bornes de page (marge gauche
+  // du premier bloc, marge droite du dernier) coïncident avec .attention-grid.
+  // V2.4.15 — harmonisation finale : Aujourd'hui/Chantiers actifs deviennent
+  // UNE seule surface cohérente (.today-main-grid porte désormais le fond +
+  // la bordure de carte), avec un séparateur vertical DISCRET (bordure 1px)
+  // entre les deux colonnes plutôt qu'un espace (gap:0, pas 14px comme
+  // .attention-grid qui reste deux cartes distinctes) — les deux zones
+  // suivent donc des langages différents mais cohérents : cartes séparées
+  // pour la synthèse, surface unique pour le cockpit du jour.
   ok(Math.abs(rects.decide.left - rects.today.left) <= 1, `${tag}: left(À décider)=left(Aujourd'hui)`, 'align');
   ok(Math.abs(rects.decide.width - rects.watch.width) <= 1, `${tag}: largeur(À décider)=largeur(À surveiller) — vignettes égales`, 'align');
   ok(Math.abs(rects.watch.right - rects.sites.right) <= 1, `${tag}: right(À surveiller)=right(Chantiers actifs)`, 'align');
   const gap1 = Math.round(rects.watch.left - rects.decide.right), gap2 = Math.round(rects.sites.left - rects.today.right);
-  ok(gap1 === 14 && gap2 === 14, `${tag}: gap=14px (attention=${gap1}, today=${gap2})`, 'align');
+  ok(gap1 === 14, `${tag}: gap(attention)=14px (mesuré ${gap1})`, 'align');
+  ok(gap2 === 0, `${tag}: today-main-grid — plus de gap, séparateur en bordure (mesuré ${gap2}px)`, 'align');
   const heights = await ev(p, () => [...document.querySelectorAll('.attention-card')].map((c) => c.getBoundingClientRect().height));
   ok(Math.abs(heights[0] - heights[1]) <= 1, `${tag}: hauteur À décider=À surveiller (${heights.join('/')})`, 'height');
   const tpH = await ev(p, () => [...document.querySelectorAll('.tp-row')].map((c) => c.getBoundingClientRect().height));

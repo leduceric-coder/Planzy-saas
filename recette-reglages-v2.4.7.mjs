@@ -247,7 +247,10 @@ for (const [w, h] of [[1440, 900], [1280, 800], [900, 1000], [768, 1024], [430, 
   }));
   ok(!r.hscroll, `O/P : ${w}px — aucun scroll horizontal`, 'O');
   ok(!r.segOverflow, `P : ${w}px — contrôles segmentés ne débordent pas`, 'P');
-  if (w === 1440) ok(r.contentMax <= 840, 'O : colonne centrale plafonnée (~820px, mesuré ' + r.contentMax + ')', 'O');
+  // V2.4.15 — harmonisation finale : la colonne centrale passe de ~820px à
+  // ~1160px (§Réglages — largeur), pour exploiter le grand écran comme
+  // Accueil/Chantier/Historique plutôt que de laisser un grand vide latéral.
+  if (w === 1440) ok(r.contentMax >= 1100 && r.contentMax <= 1180, 'O : colonne centrale élargie (~1160px, mesuré ' + r.contentMax + ')', 'O');
   if (w === 390) await p.screenshot({ path: SHOTS + 'reglages-mobile-390.png', fullPage: true });
   await ctx.close();
 }
