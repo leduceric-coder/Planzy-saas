@@ -1,0 +1,338 @@
+{
+  "passed": 42,
+  "failed": [],
+  "results": [
+    {
+      "sec": "PLAN-1514",
+      "name": "PLAN-1514-day : le créneau courant est bien 9h",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLAN-1514",
+      "name": "PLAN-1514-day : la vue Jour ne s’ouvre plus figée sur le début de journée (8h)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLAN-1514",
+      "name": "PLAN-1514-day : le créneau courant est bien la 1ère colonne visible (aucune heure passée devant)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLAN-1514",
+      "name": "PLAN-1514-week : la fenêtre de test déborde bien horizontalement (condition du scénario)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLAN-1514",
+      "name": "PLAN-1514-week : la vue ne reste plus au calage historique (Lundi/S1) — elle avance vers la période courante",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLAN-1514",
+      "name": "PLAN-1514-week : la période courante démarre la vue (1ère colonne visible), sans décalage vers le passé",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLAN-1514",
+      "name": "PLAN-1514-month : la fenêtre de test déborde bien horizontalement (condition du scénario)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLAN-1514",
+      "name": "PLAN-1514-month : la vue ne reste plus au calage historique (Lundi/S1) — elle avance vers la période courante",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLAN-1514",
+      "name": "PLAN-1514-month : la période courante démarre la vue (1ère colonne visible), sans décalage vers le passé",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLAN-1514",
+      "name": "PLAN-1514-switch : le clic sur l’onglet « Mois » a bien changé l’échelle",
+      "status": "PASS"
+    },
+    {
+      "sec": "PLAN-1514",
+      "name": "PLAN-1514-switch : cliquer sur un onglet d’échelle (Mois) réaligne bien la vue sur la période courante",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-1514",
+      "name": "KAN-1514-geom : les 3 colonnes ont désormais la même hauteur (align-items:stretch)",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-1514",
+      "name": "KAN-1514-geom : la zone de dépôt de la colonne courte (« Terminé ») couvre bien la hauteur d’une carte basse de « À faire » — le dépôt y est possible",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-1514",
+      "name": "KAN-1514-drop : une pop-up nomme explicitement le nouvel état au dépôt",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-1514",
+      "name": "KAN-1514-drop : le libellé affiché correspond bien à la colonne cible (« En cours »)",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-1514",
+      "name": "KAN-1514-drop : l’action reste annulable (undo réel conservé, pas un simple message)",
+      "status": "PASS"
+    },
+    {
+      "sec": "KAN-1514",
+      "name": "KAN-1514-drop : les autres origines (édition, terrain…) gardent le message générique inchangé",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-1514",
+      "name": "SITE-1514 : le choix initial propose désormais 4 options",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-1514",
+      "name": "SITE-1514 : « Modèle d’entreprise » apparaît comme point d’entrée explicite",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-1514",
+      "name": "SITE-1514 : sans modèle d’entreprise existant, la liste est vide (pas les modèles génériques)",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-1514",
+      "name": "SITE-1514 : un raccourci propose de créer un modèle d’entreprise directement depuis ce point",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-1514",
+      "name": "SITE-1514 : le modèle d’entreprise nouvellement créé apparaît bien dans cette liste dédiée",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-1514",
+      "name": "SITE-1514 : le modèle porte bien le repère « Entreprise »",
+      "status": "PASS"
+    },
+    {
+      "sec": "SITE-1514",
+      "name": "SITE-1514 : « Utiliser un modèle » (générique) continue de montrer les 3 modèles historiques + le nouveau modèle d’entreprise (aucune régression)",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIELD-1514",
+      "name": "FIELD-1514 : au moins une conversation existe pour le scénario",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIELD-1514",
+      "name": "FIELD-1514 : une conversation est bien ouverte (plein écran, onglet Messages)",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIELD-1514",
+      "name": "FIELD-1514 : le bouton Chantier affiche bien la vue chantier",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIELD-1514",
+      "name": "FIELD-1514 : le contenu du chantier est bien visible (pas un écran vide)",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIELD-1514",
+      "name": "FIELD-1514 : la conversation ouverte a bien été refermée (sortie garantie, comme pour le Planning)",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIELD-1514",
+      "name": "FIELD-1514 : retourner sur Messages affiche la LISTE des conversations, plus jamais bloqué sur l’ancienne",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIELD-1514",
+      "name": "FIELD-1514 : la liste des conversations est bien affichée",
+      "status": "PASS"
+    },
+    {
+      "sec": "REWORK-1514",
+      "name": "REWORK-1514 : avant toute reprise, le bouton « Signaler une reprise » est bien proposé (comportement de référence)",
+      "status": "PASS"
+    },
+    {
+      "sec": "REWORK-1514",
+      "name": "REWORK-1514-desktop : le bouton disparaît dès qu’une reprise existe pour cette tâche (fiche Bureau)",
+      "status": "PASS"
+    },
+    {
+      "sec": "REWORK-1514",
+      "name": "REWORK-1514-desktop : le reste de la fiche (menu ···) reste disponible, seul le bouton de reprise est retiré",
+      "status": "PASS"
+    },
+    {
+      "sec": "REWORK-1514",
+      "name": "REWORK-1514-field-control : la liste « À contrôler » du Mode Chantier retire aussi le bouton",
+      "status": "PASS"
+    },
+    {
+      "sec": "REWORK-1514",
+      "name": "REWORK-1514-field-modal : la pop-up tâche du Mode Chantier retire elle aussi le bouton",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-1514",
+      "name": "FREEZE-1514 : même nombre de cartes chantier",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-1514",
+      "name": "FREEZE-1514 : cartes chantier visuellement inchangées",
+      "status": "PASS"
+    },
+    {
+      "sec": "CONSOLE-1514",
+      "name": "CONSOLE-1514 : 0 erreur JavaScript applicative",
+      "status": "PASS"
+    },
+    {
+      "sec": "ENGINES-1514",
+      "name": "ENGINES-1514 : tous les moteurs listés, non concernés par ce round, sont byte-identiques",
+      "status": "PASS"
+    },
+    {
+      "sec": "ENGINES-1514",
+      "name": "ENGINES-1514 : les fonctions volontairement modifiées ce round ont bien changé (pas un no-op silencieux)",
+      "status": "PASS"
+    },
+    {
+      "sec": "ENGINES-1514",
+      "name": "ENGINES-1514 : le nouvel helper hasReworkSignaled est bien présent",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    {
+      "where": "PLAN-day",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "PLAN-day",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "PLAN-day",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "PLAN-week-month",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "PLAN-week-month",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "PLAN-week-month",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "PLAN-switch",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "PLAN-switch",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "PLAN-switch",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "KAN-geom",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "KAN-geom",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "KAN-geom",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "KAN-drop",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "KAN-drop",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "KAN-drop",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SITE-tpl",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SITE-tpl",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SITE-tpl",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FIELD-nav",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FIELD-nav",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FIELD-nav",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "REWORK-desktop",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "REWORK-desktop",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "REWORK-desktop",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FZ-prev",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FZ-prev",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FZ-prev",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FZ-cur",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FZ-cur",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FZ-cur",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    }
+  ]
+}
