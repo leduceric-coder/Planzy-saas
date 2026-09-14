@@ -53,7 +53,16 @@ Le nom (`.g-project button`) et l'état (`.project-health`) sont désormais **é
 
 Nouvelle suite `recette-correctifs-v2.4.15.5.mjs` : **30/30**. Byte-identité de 36 moteurs métier / rendu (dont `gantt`, `kanbanCard`, `kanbanBoard`, `pos`, `dropTask`, `getCurrentWeekRange` — tous inchangés) ; seuls `scale()` et `renderPlanning()` ont changé côté JS (le reste est CSS).
 
-Rejeu complet des suites historiques (repointées sur ce fichier, captures redirigées vers un dossier de travail — aucun fichier suivi par git touché). Point d'attention de ce round : les vues **Semaine** et **Mois** changeant d'ancrage (jour/semaine en cours au lieu de lundi/S1 calendaire), certaines assertions de suites Planning **legacy** qui encodaient l'ancien calage calendaire deviennent mécaniquement obsolètes — elles sont laissées telles quelles (archives) et couvertes par la nouvelle suite active `recette-correctifs-v2.4.15.5.mjs`. Les échecs legacy déjà documentés aux rounds précédents (Accueil pré-V2.4.5, Kanban pré-V2.4.11.3, densité/cockpit pré-V2.4.15) réapparaissent à l'identique, sans lien avec ce round.
+Rejeu complet des **28 suites historiques**, repointées sur `kanvix-next-gen-v2.4.15.5.html` (captures redirigées vers un dossier de travail — **aucun fichier suivi par git touché**).
+
+**Échecs pré-existants, identiques aux rounds précédents (sans lien avec ce round)** : `recette-accueil-v2.4.4.1` (18, legacy pré-V2.4.5), `recette-kanban-badges-v2.4.11.2` (7, legacy pré-V2.4.11.3), `recette-correctif-ui-v2.4.14.1` (3) et `recette-densite-v2.4.14` (interruption) — tous deux issus de la refonte cockpit V2.4.15, vérifiés antérieurs dès le round V2.4.15.4 —, et `recette-chantiers-v2.4.10.2` (1, assertion « 3 choix » devenue obsolète depuis l'ajout du 4ᵉ choix « Modèle d'entreprise » en V2.4.15.4).
+
+**Divergences NOUVELLES, toutes des conséquences ATTENDUES du changement d'ancrage des échelles — aucun bug réel** (les fonctionnalités elles-mêmes sont revérifiées OK) :
+- `recette-correctifs-v2.4.15.4` (6) : 5 assertions `PLAN-1514` encodaient l'ancien mécanisme de **recentrage par défilement** (`scrollLeft > 0`), remplacé ce round par un ancrage **par la plage** (`scrollLeft = 0`, période courante en 1ʳᵉ colonne) — désormais couvertes par la suite active `recette-correctifs-v2.4.15.5.mjs`. La 6ᵉ (`KAN-1514-geom`) est un **artefact de viewport** : la fenêtre glissante amène davantage de tâches dans la colonne (plus haute que le viewport du test), si bien qu'`elementFromPoint` ne peut atteindre le point bas — le correctif Kanban `align-items:stretch` reste vérifié (colonnes de hauteur strictement égale).
+- `recette-correctifs-v2.4.15.1` (2) et `recette-harmonisation-ui-v2.4.15` (2) : « freeze » de la structure Gantt d'une **version antérieure** contre celle-ci — le nombre de lignes diffère car la fenêtre glissante inclut un jeu de tâches différent du calage calendaire. Détection correcte d'un changement **voulu**.
+- `recette-planning-bureau` ×3 (1 chacun) : la baseline « prévu initial » d'une tâche dont le plan d'origine est **entièrement dans le passé** n'est plus tracée dans la vue Semaine (fenêtre partant d'aujourd'hui). La baseline reste tracée pour toute tâche dont le prévu initial tombe dans la fenêtre (vérifié : vues Mois/Année, 2 barres).
+
+Ces suites, spécifiques à leur version, testent correctement leur propre `.html` ; leurs assertions d'ancrage calendaire sont laissées telles quelles (archives) et remplacées par la suite active de ce round.
 
 ## 5. Console
 
