@@ -1,0 +1,254 @@
+{
+  "passed": 30,
+  "failed": [],
+  "results": [
+    {
+      "sec": "JOUR-1515",
+      "name": "JOUR-1515 : la 1ʳᵉ colonne est 10h (heure pleine en cours à 10:15)",
+      "status": "PASS"
+    },
+    {
+      "sec": "JOUR-1515",
+      "name": "JOUR-1515 : le marqueur AUJOURD’HUI est sur la 1ʳᵉ colonne",
+      "status": "PASS"
+    },
+    {
+      "sec": "JOUR-1515",
+      "name": "JOUR-1515 : aucune colonne passée devant (départ à gauche, pas de défilement résiduel)",
+      "status": "PASS"
+    },
+    {
+      "sec": "JOUR-1515",
+      "name": "JOUR-1515 : la fenêtre commence à 10h00, pas à 08h00",
+      "status": "PASS"
+    },
+    {
+      "sec": "JOUR-1515",
+      "name": "JOUR-1515-soir : hors horaires (19h30), la journée entière 08h–18h est présentée (jamais une vue vide)",
+      "status": "PASS"
+    },
+    {
+      "sec": "MOIS-1515",
+      "name": "MOIS-1515 : la semaine en cours est la 1ʳᵉ colonne",
+      "status": "PASS"
+    },
+    {
+      "sec": "MOIS-1515",
+      "name": "MOIS-1515 : le libellé porte le n° de semaine ISO annuel (S38), pas un rang mensuel (S1)",
+      "status": "PASS"
+    },
+    {
+      "sec": "MOIS-1515",
+      "name": "MOIS-1515 : toutes les colonnes suivent le format « S<n° ISO> · <quantième> »",
+      "status": "PASS"
+    },
+    {
+      "sec": "ANNEE-1515",
+      "name": "ANNEE-1515 : la 1ʳᵉ colonne est le mois en cours (sept.)",
+      "status": "PASS"
+    },
+    {
+      "sec": "ANNEE-1515",
+      "name": "ANNEE-1515 : le marqueur AUJOURD’HUI est sur la 1ʳᵉ colonne",
+      "status": "PASS"
+    },
+    {
+      "sec": "ANNEE-1515",
+      "name": "ANNEE-1515 : la dernière colonne est le 12ᵉ mois glissant (août)",
+      "status": "PASS"
+    },
+    {
+      "sec": "ANNEE-1515",
+      "name": "ANNEE-1515 : le mois en cours démarre bien la vue (le passé n’est plus au milieu, sans défilement)",
+      "status": "PASS"
+    },
+    {
+      "sec": "ANNEE-1515",
+      "name": "ANNEE-1515 : le libellé de période reflète la fenêtre glissante (« sept. 2026 – août 2027 »)",
+      "status": "PASS"
+    },
+    {
+      "sec": "SEM-1515",
+      "name": "SEM-1515 : le jour courant est la 1ʳᵉ colonne (pas le lundi de la semaine calendaire)",
+      "status": "PASS"
+    },
+    {
+      "sec": "SEM-1515",
+      "name": "SEM-1515 : la 1ʳᵉ colonne est bien lundi 14 (aujourd’hui)",
+      "status": "PASS"
+    },
+    {
+      "sec": "NAME-1515",
+      "name": "NAME-1515 : la vue Année est bien défilée horizontalement (condition du scénario)",
+      "status": "PASS"
+    },
+    {
+      "sec": "NAME-1515",
+      "name": "NAME-1515 : le nom de chantier reste épinglé à gauche et entièrement lisible (plus de « nce Keravel » rogné)",
+      "status": "PASS"
+    },
+    {
+      "sec": "NAME-1515",
+      "name": "NAME-1515 : l’état (Risque/OK) reste épinglé au vrai bord droit du bandeau",
+      "status": "PASS"
+    },
+    {
+      "sec": "FONT-1515",
+      "name": "FONT-1515 : le nom de chantier fait au moins 15px",
+      "status": "PASS"
+    },
+    {
+      "sec": "FONT-1515",
+      "name": "FONT-1515 : le nom de chantier est plus gros que le libellé de tâche (différenciation)",
+      "status": "PASS"
+    },
+    {
+      "sec": "NAV-1515",
+      "name": "NAV-1515 : « → » avance bien la fenêtre pour chaque échelle",
+      "status": "PASS"
+    },
+    {
+      "sec": "NAV-1515",
+      "name": "NAV-1515 : « ← » revient exactement à la fenêtre de départ",
+      "status": "PASS"
+    },
+    {
+      "sec": "NAV-1515",
+      "name": "NAV-1515 : « Aujourd’hui » recadre la période courante en 1ʳᵉ colonne pour chaque échelle",
+      "status": "PASS"
+    },
+    {
+      "sec": "NAV-1515",
+      "name": "NAV-1515 : le Kanban du Planning reste opérationnel (3 colonnes, cartes présentes)",
+      "status": "PASS"
+    },
+    {
+      "sec": "NAV-1515",
+      "name": "NAV-1515 : le glisser-déposer du Gantt reste fonctionnel (aucune erreur)",
+      "status": "PASS"
+    },
+    {
+      "sec": "CONSOLE-1515",
+      "name": "CONSOLE-1515 : 0 erreur JavaScript applicative",
+      "status": "PASS"
+    },
+    {
+      "sec": "ENGINES-1515",
+      "name": "ENGINES-1515 : moteurs métier + rendu Gantt/Kanban byte-identiques (seul scale() change côté JS)",
+      "status": "PASS"
+    },
+    {
+      "sec": "ENGINES-1515",
+      "name": "ENGINES-1515 : scale() et renderPlanning() ont bien changé (ancrage des échelles + libellé année)",
+      "status": "PASS"
+    },
+    {
+      "sec": "STORE-1515",
+      "name": "STORE-1515 : STORE = \"kanvix-product-8-3\" inchangé",
+      "status": "PASS"
+    },
+    {
+      "sec": "STORE-1515",
+      "name": "STORE-1515 : SCHEMA_VERSION = 8 inchangé",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    {
+      "where": "JOUR",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "JOUR",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "JOUR",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "JOUR-soir",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "JOUR-soir",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "JOUR-soir",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "MOIS",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "MOIS",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "MOIS",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "ANNEE",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "ANNEE",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "ANNEE",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SEM",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SEM",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "SEM",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "NAME",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "NAME",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "NAME",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FONT",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FONT",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "FONT",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "NAV",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "NAV",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "NAV",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    }
+  ]
+}
