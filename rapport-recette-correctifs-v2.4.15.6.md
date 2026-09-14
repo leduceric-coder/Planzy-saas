@@ -54,7 +54,15 @@ L'état est mémorisé **par date** (`app.ui.planningDayFull`), donc il s'annule
 
 Nouvelle suite `recette-correctifs-v2.4.15.6.mjs` : **28/28**. Byte-identité de 40 moteurs / rendus non concernés (dont `pos`, `dropTask`, `kanbanBoard`, `planningTasks`, `renderPlanning`, `setPeriod`, `renderUserMenu`) ; seuls `scale`, `shiftPlanning`, `planningToday` et `gantt` changent. Acquis V2.4.15.5 revérifiés (Semaine sur le jour courant, Mois en n° ISO, nom de chantier épinglé et agrandi).
 
-Rejeu complet des suites historiques : _(complété après le sweep)_.
+Rejeu complet des **30 suites historiques**, repointées sur `kanvix-next-gen-v2.4.15.6.html` (captures **et** résultats redirigés vers un dossier de travail — **0 fichier suivi par git modifié**, la retouche incidente des rounds précédents est donc close).
+
+**Échecs pré-existants, strictement inchangés** : `recette-accueil-v2.4.4.1` (18), `recette-kanban-badges-v2.4.11.2` (7), `recette-chantiers-v2.4.10.2` (1), `recette-densite-v2.4.14` (interruption), `recette-planning-bureau` ×3 (1 chacun), plus les divergences d'ancrage déjà documentées en V2.4.15.5 (`correctif-ui-v2.4.14.1` 3, `correctifs-v2.4.15.1` 2, `correctifs-v2.4.15.4` 6, `harmonisation-ui-v2.4.15` 2).
+
+**Divergences NOUVELLES de ce round — toutes mécaniques et attendues, aucune régression** :
+- **+1 échec identique dans 7 suites** (`correctif-ui-v2.4.14.1`, `correctifs-v2.4.15.1/.2/.3/.4/.5`, `harmonisation-ui-v2.4.15`) : le gel byte-identité de `gantt` (`f8c551d2 → dd1d6eef`). `gantt()` a bien changé **volontairement** ce round, pour calculer la largeur de colonne nécessaire en vue Année (§4). Ces suites attestaient correctement que `gantt` n'avait pas bougé **dans leur propre round** ; elles détectent donc exactement ce qui était voulu ici.
+- **1 assertion devenue obsolète sur demande explicite** : `correctifs-v2.4.15.5 · JOUR-1515-soir` affirmait que « hors horaires (19h30), la journée entière 08h–18h est présentée » — c'est précisément le comportement que ce retour utilisateur demandait de corriger (§1). Remplacée par les assertions `JOUR-1516` de la suite active.
+
+Aucune erreur console applicative sur l'ensemble du rejeu. Comme précédemment, ces suites spécifiques à une version testent correctement leur propre `.html` et sont laissées telles quelles (archives), la suite active de ce round faisant foi.
 
 ## 6. Console
 
