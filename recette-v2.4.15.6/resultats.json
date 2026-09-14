@@ -1,0 +1,268 @@
+{
+  "passed": 28,
+  "failed": [],
+  "results": [
+    {
+      "sec": "JOUR-1516",
+      "name": "JOUR-1516 : à 10h15, la vue démarre à 10h",
+      "status": "PASS"
+    },
+    {
+      "sec": "JOUR-1516",
+      "name": "JOUR-1516 : le marqueur AUJOURD’HUI est sur la 1ʳᵉ colonne",
+      "status": "PASS"
+    },
+    {
+      "sec": "JOUR-1516",
+      "name": "JOUR-1516-soir : à 19h30, la vue démarre à 19h (et non plus à 08h)",
+      "status": "PASS"
+    },
+    {
+      "sec": "JOUR-1516",
+      "name": "JOUR-1516-soir : le repère AUJOURD’HUI est présent dans la fenêtre du soir",
+      "status": "PASS"
+    },
+    {
+      "sec": "JOUR-1516",
+      "name": "JOUR-1516-soir : la fenêtre du soir reste lisible (plusieurs créneaux)",
+      "status": "PASS"
+    },
+    {
+      "sec": "JOUR-1516",
+      "name": "JOUR-1516-nuit : à 23h20, la vue démarre à 23h et s’arrête à minuit",
+      "status": "PASS"
+    },
+    {
+      "sec": "JOUR-1516",
+      "name": "JOUR-1516-aube : avant 08h, la journée de travail complète est proposée",
+      "status": "PASS"
+    },
+    {
+      "sec": "RETOUR-1516",
+      "name": "RETOUR-1516 : un 1ᵉʳ « ← » rouvre le DÉBUT de la journée en cours (heures déjà écoulées accessibles)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RETOUR-1516",
+      "name": "RETOUR-1516 : ce retour révèle bien des tâches supplémentaires (déjà passées aujourd’hui)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RETOUR-1516",
+      "name": "RETOUR-1516 : un 2ᵉ « ← » passe à la veille",
+      "status": "PASS"
+    },
+    {
+      "sec": "RETOUR-1516",
+      "name": "RETOUR-1516 : « Aujourd’hui » revient à la vue « à partir de maintenant »",
+      "status": "PASS"
+    },
+    {
+      "sec": "RETOUR-1516",
+      "name": "RETOUR-1516 : « ← » recule bien la fenêtre en Semaine, Mois et Année (périodes passées consultables)",
+      "status": "PASS"
+    },
+    {
+      "sec": "MENU-1516",
+      "name": "MENU-1516 : le menu est ouvert et déborde bien sur la zone planning (condition du scénario)",
+      "status": "PASS"
+    },
+    {
+      "sec": "MENU-1516",
+      "name": "MENU-1516 : sur toute sa surface au-dessus du planning, c’est le menu qui reçoit le clic (il ne passe plus dessous)",
+      "status": "PASS"
+    },
+    {
+      "sec": "MENU-1516",
+      "name": "MENU-1516 : la barre latérale est empilée au-dessus du Gantt (son contexte n’enferme plus le menu)",
+      "status": "PASS"
+    },
+    {
+      "sec": "MENU-1516",
+      "name": "MENU-1516 : la barre latérale reste sous les modales, tiroirs et toasts (aucune inversion)",
+      "status": "PASS"
+    },
+    {
+      "sec": "ANNEE-1516",
+      "name": "ANNEE-1516 : les colonnes de la vue Année sont élargies au-delà des 94px par défaut",
+      "status": "PASS"
+    },
+    {
+      "sec": "ANNEE-1516",
+      "name": "ANNEE-1516 : plus aucun nom de tâche tronqué dans la vue Année",
+      "status": "PASS"
+    },
+    {
+      "sec": "ANNEE-1516",
+      "name": "ANNEE-1516 : l’ancrage sur le mois en cours (V2.4.15.5) reste acquis",
+      "status": "PASS"
+    },
+    {
+      "sec": "ANNEE-1516",
+      "name": "ANNEE-1516 : Jour / Semaine / Mois conservent la largeur de colonne d’origine (94px)",
+      "status": "PASS"
+    },
+    {
+      "sec": "NONREG-1516",
+      "name": "NONREG-1516 : Semaine démarre toujours sur le jour courant",
+      "status": "PASS"
+    },
+    {
+      "sec": "NONREG-1516",
+      "name": "NONREG-1516 : Mois démarre toujours sur la semaine en cours avec le n° ISO",
+      "status": "PASS"
+    },
+    {
+      "sec": "NONREG-1516",
+      "name": "NONREG-1516 : le nom de chantier reste épinglé et agrandi en vue Année défilée",
+      "status": "PASS"
+    },
+    {
+      "sec": "CONSOLE-1516",
+      "name": "CONSOLE-1516 : 0 erreur JavaScript applicative",
+      "status": "PASS"
+    },
+    {
+      "sec": "ENGINES-1516",
+      "name": "ENGINES-1516 : moteurs métier et rendus non concernés byte-identiques",
+      "status": "PASS"
+    },
+    {
+      "sec": "ENGINES-1516",
+      "name": "ENGINES-1516 : scale/shiftPlanning/planningToday/gantt ont bien changé (fenêtre Jour, retour arrière, largeur Année)",
+      "status": "PASS"
+    },
+    {
+      "sec": "STORE-1516",
+      "name": "STORE-1516 : STORE inchangé",
+      "status": "PASS"
+    },
+    {
+      "sec": "STORE-1516",
+      "name": "STORE-1516 : SCHEMA_VERSION = 8 inchangé",
+      "status": "PASS"
+    }
+  ],
+  "errors": [
+    {
+      "where": "J-matin",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "J-matin",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "J-matin",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "J-soir",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "J-soir",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "J-soir",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "J-nuit",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "J-nuit",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "J-nuit",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "J-aube",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "J-aube",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "J-aube",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RETOUR",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RETOUR",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "RETOUR",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "MENU",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "MENU",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "MENU",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "MENU-Z",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "MENU-Z",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "MENU-Z",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "ANNEE",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "ANNEE",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "ANNEE",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "ANNEE-autres",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "ANNEE-autres",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "ANNEE-autres",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "NONREG",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "NONREG",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "where": "NONREG",
+      "msg": "Failed to load resource: net::ERR_FAILED"
+    }
+  ]
+}
