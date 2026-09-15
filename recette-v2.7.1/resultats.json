@@ -1,0 +1,232 @@
+{
+  "passed": 45,
+  "failed": [],
+  "results": [
+    {
+      "sec": "FIELD271-01",
+      "name": "FIELD271-01 : sélectionner un chantier affiche son écran principal (fieldProjectId = keravel)",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIELD271-02",
+      "name": "FIELD271-02 : depuis l’écran principal d’un chantier, un clic RÉEL sur « Chantier » remonte à « Choisir un chantier » — l’écran change enfin",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIELD271-02",
+      "name": "FIELD271-02 : l’onglet reste « site » — remonter d’un niveau ne quitte pas l’onglet Chantier",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIELD271-05",
+      "name": "FIELD271-05 : sur « Choisir un chantier », un nouveau clic n’a aucun effet parasite — on y est déjà",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIELD271-03",
+      "name": "FIELD271-03 : depuis le Planning mobile, « Chantier » referme la sous-vue et revient au chantier — SANS le désélectionner",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIELD271-04",
+      "name": "FIELD271-04 : depuis Messages, « Chantier » revient au chantier sélectionné — il ne le perd pas",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIELD271-06",
+      "name": "FIELD271-06 : le bouton « Changer » du header reste fonctionnel — clearFieldProject() n’a pas été supprimée",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIELD271-07",
+      "name": "FIELD271-07 : à 390px la barre basse ne bouge pas d’un pixel entre les états, et rien ne déborde",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIELD271-07",
+      "name": "FIELD271-07 : sur le sélecteur, le bouton « Chantier » reste visuellement ACTIF — pas de chevron, pas de nouvelle icône",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIELD271-GEL",
+      "name": "FIELD271-GEL : setFieldTab() est BYTE-IDENTIQUE à V2.7.0 — les retours programmatiques (fin de conversation, fin de reprise) ne changent pas de comportement",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIELD271-GEL",
+      "name": "FIELD271-GEL : clearFieldProject() est byte-identique — le bouton « Changer » n’a pas été réécrit",
+      "status": "PASS"
+    },
+    {
+      "sec": "QUAL271-01",
+      "name": "QUAL271-01 : « Pose des 6 fenêtres » n’a AUCUN contrôle au départ, alors qu’un modèle s’y applique — la seule instance de démonstration reste celle de k-cloisons",
+      "status": "PASS"
+    },
+    {
+      "sec": "QUAL271-02",
+      "name": "QUAL271-02 : passer l’intervention à « en cours » crée son contrôle (moteur V2.7.0 inchangé)",
+      "status": "PASS"
+    },
+    {
+      "sec": "QUAL271-02",
+      "name": "QUAL271-02 : setTaskStatus() retourne une information exploitable, et « completed » est faux pour une transition qui n’est pas une fin",
+      "status": "PASS"
+    },
+    {
+      "sec": "QUAL271-03",
+      "name": "QUAL271-03 : l’intervention est TERMINÉE et son contrôle reste À CONTRÔLER — c’est exactement la distinction que Kanvix doit rendre lisible",
+      "status": "PASS"
+    },
+    {
+      "sec": "QUAL271-03",
+      "name": "QUAL271-03 : setTaskStatus() retourne { completed: true, pendingQualityIds: [1] } — l’information circule sans que le moteur devienne un écran",
+      "status": "PASS"
+    },
+    {
+      "sec": "QUAL271-04",
+      "name": "QUAL271-04 : le retour nomme l’intervention terminée, le nombre de contrôles restants ET le contrôle concerné",
+      "status": "PASS"
+    },
+    {
+      "sec": "QUAL271-05",
+      "name": "QUAL271-05 : deux issues seulement — « Plus tard » et « Contrôler maintenant ». Kanvix propose, il n’impose pas",
+      "status": "PASS"
+    },
+    {
+      "sec": "QUAL271-20",
+      "name": "QUAL271-20 : aucun toast « Tâche mise à jour » simultané — le popup EST le retour principal, il ne partage pas l’attention",
+      "status": "PASS"
+    },
+    {
+      "sec": "QUAL271-06",
+      "name": "QUAL271-06 : « Plus tard » ferme et c’est tout — aucune tentative, aucune reprise, aucun incident, aucun événement qualité",
+      "status": "PASS"
+    },
+    {
+      "sec": "QUAL271-07",
+      "name": "QUAL271-07 : après « Plus tard », le contrôle est visible sur la fiche tâche — il n’a pas disparu avec le popup",
+      "status": "PASS"
+    },
+    {
+      "sec": "QUAL271-08",
+      "name": "QUAL271-08 : le contrôle figure aussi dans « Contrôles à faire » de l’onglet Aujourd’hui (niveau Pilotage)",
+      "status": "PASS"
+    },
+    {
+      "sec": "QUAL271-10",
+      "name": "QUAL271-10 : « Contrôler maintenant » ouvre le contrôle EXISTANT dans le formulaire existant (sidewindow au bureau)",
+      "status": "PASS"
+    },
+    {
+      "sec": "QUAL271-11",
+      "name": "QUAL271-11 : un seul controlFormHTML(), un seul submitControlAttempt(), un seul openControlForm() — V2.7.1 n’a écrit AUCUN second formulaire",
+      "status": "PASS"
+    },
+    {
+      "sec": "QUAL271-12",
+      "name": "QUAL271-12 : sans contrôle applicable, AUCUN popup et le toast historique est conservé — V2.7.1 n’ajoute rien quand il n’y a rien à dire",
+      "status": "PASS"
+    },
+    {
+      "sec": "QUAL271-13",
+      "name": "QUAL271-13 : contrôle bloquant — refus historique, popup « Contrôle qualité requis », et JAMAIS « Intervention terminée »",
+      "status": "PASS"
+    },
+    {
+      "sec": "QUAL271-13",
+      "name": "QUAL271-13 : un refus ne retourne aucun succès — l’information de post-completion ne peut pas être déclenchée à tort",
+      "status": "PASS"
+    },
+    {
+      "sec": "QUAL271-16",
+      "name": "QUAL271-16 : le glissé-déposé Kanban reçoit le même retour qualité, et son toast « Tâche déplacée » ne vient pas s’y superposer",
+      "status": "PASS"
+    },
+    {
+      "sec": "QUAL271-17",
+      "name": "QUAL271-17 : le bouton « Terminer » de la fiche tâche déclenche le même retour qualité",
+      "status": "PASS"
+    },
+    {
+      "sec": "QUAL271-18",
+      "name": "QUAL271-18 : l’éditeur universel affiche le retour qualité APRÈS finalisation de sa transaction — jamais au milieu",
+      "status": "PASS"
+    },
+    {
+      "sec": "QUAL271-19",
+      "name": "QUAL271-19 : un seul ControlInstance par (intervention, modèle) — le retour V2.7.1 n’en crée aucun de plus",
+      "status": "PASS"
+    },
+    {
+      "sec": "QUAL271-CAS3",
+      "name": "QUAL271-CAS3 : avec deux contrôles, le pluriel est juste, les deux sont listés, et l’action devient « Voir les contrôles »",
+      "status": "PASS"
+    },
+    {
+      "sec": "QUAL271-CAS3",
+      "name": "QUAL271-CAS3 : « Voir les contrôles » ouvre la fiche de CETTE intervention — jamais tous les contrôles du chantier",
+      "status": "PASS"
+    },
+    {
+      "sec": "QUAL271-14",
+      "name": "QUAL271-14 : l’artisan termine son intervention, le contrôle reste à faire — et on ne lui propose NI « Contrôler maintenant » NI la moindre checklist",
+      "status": "PASS"
+    },
+    {
+      "sec": "QUAL271-14",
+      "name": "QUAL271-14 : l’artisan garde son retour simple et léger — V2.7.1 n’alourdit pas son écran",
+      "status": "PASS"
+    },
+    {
+      "sec": "QUAL271-15",
+      "name": "QUAL271-15 : contrôle bloquant + artisan — refus, explication seule, un seul bouton « Compris ». Strictement V2.7.0",
+      "status": "PASS"
+    },
+    {
+      "sec": "QUAL271-09",
+      "name": "QUAL271-09 : une intervention SANS contrôle initial, passée à « en cours » puis « terminée », fait apparaître sa ligne dans Mode Chantier › À contrôler",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP271",
+      "name": "RESP271 : à 430, 390 et 360px, aucun débordement horizontal — Mode Chantier, popup de fin d’intervention et formulaire de contrôle inclus",
+      "status": "PASS"
+    },
+    {
+      "sec": "DARK271",
+      "name": "DARK271 : en thème sombre, le popup a un fond sombre et un texte clair — contraste réellement lisible",
+      "status": "PASS"
+    },
+    {
+      "sec": "DARK271",
+      "name": "DARK271 : aucune couleur codée en dur dans le popup — il n’utilise que les variables de thème existantes",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-271",
+      "name": "FREEZE-271 : les 64 moteurs métier et rendus de V2.7.0 sont BYTE-IDENTIQUES — V2.7.1 n’a touché à aucune règle",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-271",
+      "name": "FREEZE-271 : exactement 5 fonctions modifiées (setTaskStatus, les 3 finalisations de l’éditeur, et renderField pour brancher le bouton) et 3 ajoutées — rien de plus",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-271",
+      "name": "FREEZE-271 : renderField() ne diffère que par le gestionnaire du bouton « Chantier » — en le rebranchant sur setFieldTab('site'), la fonction redevient BYTE-IDENTIQUE à V2.7.0. Aucun balisage, aucune icône, aucun libellé n’a changé",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-271",
+      "name": "FREEZE-271 : le bloc de garde qualité de setTaskStatus() (matérialisation + refus bloquant) est BYTE-IDENTIQUE à V2.7.0",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-271",
+      "name": "FREEZE-271 : STORE et SCHEMA_VERSION (11) inchangés — aucune migration en V2.7.1",
+      "status": "PASS"
+    }
+  ],
+  "consoleErrors": []
+}
