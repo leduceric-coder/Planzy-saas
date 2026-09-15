@@ -1,0 +1,327 @@
+{
+  "passed": 64,
+  "failed": [],
+  "results": [
+    {
+      "sec": "UX261-PLAN-01",
+      "name": "UX261-PLAN-01 : la pastille du lot précède le nom de la tâche, dans le DOM et visuellement",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-PLAN-01",
+      "name": "UX261-PLAN-01 : la pastille est centrée verticalement sur le titre (écart 0px)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-PLAN-01",
+      "name": "UX261-PLAN-01 : espacement point / titre lisible (5px)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-PLAN-02",
+      "name": "UX261-PLAN-02 : la couleur de la pastille correspond exactement à taskLot(t).colorKey, pour chaque ligne",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-PLAN-03",
+      "name": "UX261-PLAN-03 : la pastille garde la couleur du LOT (indigo) malgré la surcharge manuelle",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-PLAN-03",
+      "name": "UX261-PLAN-03 : la barre Gantt garde la couleur MANUELLE (rose) — hiérarchie de couleur inchangée",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-PLAN-04",
+      "name": "UX261-PLAN-04 : une tâche sans lot n’affiche AUCUNE pastille (pas de point gris générique)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-PLAN-04",
+      "name": "UX261-PLAN-04 : aucun séparateur « · » orphelin quand le lot est absent",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-PLAN-05",
+      "name": "UX261-PLAN-05 : le NOM du lot reste visible dans la métadonnée de chaque ligne lotée",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-PLAN-05",
+      "name": "UX261-PLAN-05 : la métadonnée se lit « Ressource · Lot » (séparateur présent quand les deux existent)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-PLAN-06",
+      "name": "UX261-PLAN-06 : une seule pastille par ligne — la métadonnée n’en porte plus (lotChip dot:false)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-PLAN-06",
+      "name": "UX261-PLAN-06 : aucune ligne n’affiche deux pastilles visibles",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-PLAN-07",
+      "name": "UX261-PLAN-07 : le Kanban conserve lotChip() avec sa pastille — comportement V2.6.0 par défaut intact",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-PLAN-07",
+      "name": "UX261-PLAN-07 : aucune pastille de titre n’est introduite dans le Kanban (pas de redesign)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-PLAN-08",
+      "name": "UX261-PLAN-08 : aucun titre de tâche rogné en vue Jour / Semaine / Mois / Année",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-PLAN-08",
+      "name": "UX261-PLAN-08 : aucun débordement horizontal du body sur les 4 échelles",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-PLAN-08",
+      "name": "UX261-PLAN-08 : les pastilles sont rendues sur toutes les échelles",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-PLAN-01",
+      "name": "UX261-PLAN-01 : les 3 rendus .g-label de l’application (Gantt principal, vue Jour, aperçu chantier) utilisent tous la nouvelle hiérarchie",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-DRAWER-01",
+      "name": "UX261-DRAWER-01 : personne — écart MESURÉ avant correction = 0px (boutons collés)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-DRAWER-01",
+      "name": "UX261-DRAWER-01 : personne — écart après correction = 12px (cible 10–16px)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-DRAWER-02",
+      "name": "UX261-DRAWER-02 : entreprise — écart MESURÉ avant correction = 0px (boutons collés)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-DRAWER-02",
+      "name": "UX261-DRAWER-02 : entreprise — écart après correction = 12px (cible 10–16px)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-DRAWER-03",
+      "name": "UX261-DRAWER-03 : materiel — écart MESURÉ avant correction = 0px (boutons collés)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-DRAWER-03",
+      "name": "UX261-DRAWER-03 : materiel — écart après correction = 12px (cible 10–16px)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-DRAWER-04",
+      "name": "UX261-DRAWER-04 : à 430px et 390px, les deux boutons restent visibles, accessibles et sans chevauchement",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-DRAWER-04",
+      "name": "UX261-DRAWER-04 : aucun débordement horizontal provoqué par la correction",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-DRAWER-04",
+      "name": "UX261-DRAWER-04 : l’écart reste dans la cible 10–16px en mobile",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-DRAWER-05",
+      "name": "UX261-DRAWER-05 : le menu « ••• » propose toujours Modifier / Archiver / Supprimer",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-DRAWER-05",
+      "name": "UX261-DRAWER-05 : il s’ouvre correctement et reste contenu dans le sidewindow",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-DRAWER-05",
+      "name": "UX261-DRAWER-05 : ses actions restent pleinement fonctionnelles (archiver puis réactiver)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-LOAD-01",
+      "name": "UX261-LOAD-01 : les trois groupes apparaissent dans l’ordre Personnes → Entreprises → Matériel",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-LOAD-01",
+      "name": "UX261-LOAD-01 : UN SEUL tableau, un seul header de jours, une seule toolbar — les groupes ne sont que des séparateurs",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-LOAD-02",
+      "name": "UX261-LOAD-02 : chaque ressource apparaît exactement une fois (10 lignes pour 10 ressources actives)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-LOAD-03",
+      "name": "UX261-LOAD-03 : le compteur de chaque groupe égale le nombre réel de lignes visibles dans ce groupe",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-LOAD-04",
+      "name": "UX261-LOAD-04 : le regroupement porte EXACTEMENT sur les ressources déjà filtrées — le filtre de statut est inchangé",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-LOAD-05",
+      "name": "UX261-LOAD-05 : un groupe sans résultat n’apparaît pas (jamais de « ENTREPRISES · 0 »)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-LOAD-06",
+      "name": "UX261-LOAD-06 : aucun bandeau de groupe quand le filtre ne retient rien",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-LOAD-06",
+      "name": "UX261-LOAD-06 : l’état vide historique est conservé tel quel",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-LOAD-07",
+      "name": "UX261-LOAD-07 : les 50 cellules (getResourceState / getResourceLoad / getMaxConcurrentTasks) sont strictement identiques à V2.6.0",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-LOAD-08",
+      "name": "UX261-LOAD-08 : cliquer une ligne ouvre toujours openResource()",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-LOAD-08",
+      "name": "UX261-LOAD-08 : les lignes restent role=\"button\" et focusables",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-LOAD-08",
+      "name": "UX261-LOAD-08 : les bandeaux de groupe ne sont ni interactifs ni focusables",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-LOAD-09",
+      "name": "UX261-LOAD-09 : « ‹ » et « › » naviguent, et l’aller-retour revient exactement à la semaine de départ",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-LOAD-09",
+      "name": "UX261-LOAD-09 : « Aujourd’hui » recadre bien la semaine en cours",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-LOAD-09",
+      "name": "UX261-LOAD-09 : le regroupement suit la navigation (bandeaux présents sur une autre semaine)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-LOAD-10",
+      "name": "UX261-LOAD-10 : le libellé de groupe est sticky sur la première colonne",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-LOAD-10",
+      "name": "UX261-LOAD-10 : il reste en place et lisible pendant le défilement horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-LOAD-10",
+      "name": "UX261-LOAD-10 : il reste aligné sur la colonne des noms — la grille du tableau est préservée",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-LOAD-10",
+      "name": "UX261-LOAD-10 : le bandeau partage EXACTEMENT la grille des lignes et du header (alignement parfait)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-LOAD-10",
+      "name": "UX261-LOAD-10 : bandeau dense (29px, cible 28–32px) — le tableau reste professionnel",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-LOAD-11",
+      "name": "UX261-LOAD-11 : à 390px, aucun débordement horizontal du body",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-LOAD-11",
+      "name": "UX261-LOAD-11 : le défilement horizontal reste LOCAL au tableau, libellé de groupe compris",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-LOAD-11",
+      "name": "UX261-LOAD-11 : les trois groupes restent rendus en mobile",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-DARK",
+      "name": "UX261-DARK : la pastille du Planning utilise la variante SOMBRE de .lchip-* (teinte éclaircie)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-DARK",
+      "name": "UX261-DARK : le bandeau de groupe reste sobre et lisible en sombre (fond foncé, texte clair)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX261-RESP",
+      "name": "UX261-RESP : aucun débordement horizontal du body sur 8 formats (1920 → 360), Planning, Charge et fiche Ressource inclus",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-261",
+      "name": "FREEZE-261 : les 63 moteurs métier et rendus hors périmètre sont byte-identiques à V2.6.0 — aucune logique métier touchée",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-261",
+      "name": "FREEZE-261 : exactement 2 fonctions modifiées (lotChip, resourceLoadBoard) et 4 helpers de présentation ajoutés",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-261",
+      "name": "FREEZE-261 : lotChip() n’ajoute qu’une option `dot:false` — son comportement par défaut est inchangé",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-261",
+      "name": "FREEZE-261 : planningLotDot() lit taskLot(t).colorKey et JAMAIS taskEffectiveColorKey()",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-261",
+      "name": "FREEZE-261 : resourceLoadGroups() n’effectue AUCUN calcul de charge et ne refiltre rien",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-261",
+      "name": "FREEZE-261 : STORE et SCHEMA_VERSION = 10 inchangés, aucune migration ajoutée",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-261",
+      "name": "FREEZE-261 : migrateState() est byte-identique — aucune migration V2.6.1",
+      "status": "PASS"
+    },
+    {
+      "sec": "CONSOLE-261",
+      "name": "CONSOLE-261 : 0 erreur JavaScript applicative sur l’ensemble de la recette",
+      "status": "PASS"
+    }
+  ],
+  "errors": []
+}
