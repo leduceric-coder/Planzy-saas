@@ -1,0 +1,362 @@
+{
+  "passed": 71,
+  "failed": [],
+  "results": [
+    {
+      "sec": "OP-01",
+      "name": "OP-01 : SCHEMA_VERSION = 12 et STORE reste « kanvix-product-8-3 » — aucune donnée existante n’est perdue",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-02",
+      "name": "OP-02 : migration 11 → 12 strictement additive — operations = [], operationId = null partout, et AUCUNE donnée métier touchée. La démonstration n’est PAS installée chez un utilisateur existant",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-02",
+      "name": "OP-02 : un operationId qui ne désigne aucune opération est effacé par la migration — aucune relation orpheline ne survit",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-03",
+      "name": "OP-03 : une seule opération de démonstration, Keravel / Terrasses / Horizon rattachés, et « Villa du Port » VOLONTAIREMENT indépendante",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-03",
+      "name": "OP-03 : le modèle Operation porte exactement id, name, location, description, createdAt — ni statut, ni cycle de vie, ni liste de chantiers",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-03",
+      "name": "OP-03 : AUCUNE opération ne stocke de liste de chantiers, AUCUN project.parentProjectId — la relation est portée par project.operationId seul et les membres sont TOUJOURS dérivés par filtre (opts.projectIds n’est qu’un paramètre de portée, jamais persisté)",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-04",
+      "name": "OP-04 : une opération se crée avec ses chantiers, et la relation est écrite sur les chantiers choisis",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-05",
+      "name": "OP-05 : deux opérations ne peuvent pas porter le même nom (casse, accents et espaces normalisés)",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-06",
+      "name": "OP-06 : un chantier porte 0 ou 1 operationId — jamais un tableau, jamais deux opérations simultanées",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-06",
+      "name": "OP-06 : un chantier déjà pris par une AUTRE opération est affiché, nommé, et DÉSACTIVÉ — jamais déplacé en silence depuis ce formulaire",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-07",
+      "name": "OP-07 : renommer une opération change son nom, sa localisation et sa description — et RIEN d’autre",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-08",
+      "name": "OP-08 : rattacher un chantier n’écrit QUE project.operationId — aucune tâche, aucun jalon, aucun incident, aucun contrôle, aucune ressource, aucun lot n’est modifié",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-09",
+      "name": "OP-09 : retirer un chantier remet operationId à null et RIEN D’AUTRE — il redevient simplement indépendant",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-10",
+      "name": "OP-10 : depuis la fiche chantier, un chantier se DÉPLACE explicitement d’une opération à l’autre — et « Aucune opération » reste le premier choix",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-10",
+      "name": "OP-10 : le changement d’opération est tracé comme un changement DU CHANTIER, avec l’avant et l’après",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-11",
+      "name": "OP-11 : supprimer une opération de 3 chantiers les CONSERVE tous et les rend indépendants — 0 tâche, 0 contrôle, 0 jalon, 0 photo, 0 ressource supprimés",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-12",
+      "name": "OP-12 : supprimer un chantier membre fait simplement baisser le compteur — l’opération reste, et aucune référence n’est orpheline",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-13",
+      "name": "OP-13 : une opération sans chantier reste valide, affiche un état vide explicite, et n’est jamais auto-supprimée",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-14",
+      "name": "OP-14 : clôturer un chantier membre CONSERVE son rattachement — l’association survit au cycle de vie",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-15",
+      "name": "OP-15 : archiver un chantier membre conserve aussi le rattachement, mais ses tâches sortent du périmètre OPÉRATIONNEL",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-16",
+      "name": "OP-16 : les 4 KPI affichés sont STRICTEMENT dérivés (chantiers, interventions actives, ressources mobilisées, contrôles ouverts) — aucun pourcentage ni score inventé",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-16",
+      "name": "OP-16 : exactement 4 onglets, et AUCUNE entrée de barre latérale ajoutée",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-17",
+      "name": "OP-17 : la santé de l’opération est la PIRE getProjectHealth() de ses chantiers ACTIFS, et vaut « neutral » quand aucun n’est actif",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-18",
+      "name": "OP-18 : les contrôles ouverts de l’opération sont EXACTEMENT ceux que pendingControlsForProject() retourne, chantier par chantier — pure agrégation",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-19",
+      "name": "OP-19 : « Actions nécessaires » ne contient QUE les décisions des chantiers membres — celle de Villa du Port existe mais n’y figure pas",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-20",
+      "name": "OP-20 : même règle pour « À surveiller » — aucune alerte d’un chantier hors opération ne s’y glisse",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-23",
+      "name": "OP-23 : UN SEUL function gantt(), UN SEUL planningTasks(), UN SEUL resourceLoadBoard() — aucun moteur n’a été copié pour les opérations",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-24",
+      "name": "OP-24 : gantt() sur le Planning global produit les mêmes tâches et les mêmes groupes qu’en V2.7.1 — la signature étendue est rétro-compatible",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-25",
+      "name": "OP-25 : gantt(\"keravel\") garde son comportement historique — un seul groupe, celui du chantier",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-21",
+      "name": "OP-21 : le Gantt de l’opération ne contient QUE les tâches de ses chantiers ACTIFS",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-22",
+      "name": "OP-22 : « Villa du Port », indépendante, n’apparaît NULLE PART dans le Gantt de l’opération",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-26",
+      "name": "OP-26 : la pastille et le nom de lot restent présents dans le Gantt d’opération — le rendu V2.6.1 n’est pas reconstruit",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-21",
+      "name": "OP-21 : un filtre Ressource ou Lot resté actif dans le Planning global ne TRONQUE PAS la vue d’opération — elle est explicite sur les trois axes",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-28",
+      "name": "OP-28 : chaque barre macro est DÉRIVÉE de min(task.start) / max(task.end) — aucune donnée de planning n’est stockée sur l’opération, et rien n’y est déplaçable",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-27",
+      "name": "OP-27 : le Gantt d’opération utilise le MÊME dropTask() que le Planning global, et aucun projectId de tâche ne bouge",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-21",
+      "name": "OP-21 : aucune dépendance entre tâches de deux chantiers différents n’existe — l’opération ne crée pas ce lien",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-29",
+      "name": "OP-29 : operationResourceIds() couvre l’intervenant principal ET les ressources complémentaires (matériel compris) — via taskResourceIds()",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-30",
+      "name": "OP-30 : une même ressource mobilisée simultanément sur DEUX chantiers membres produit exactement 1 conflit transversal, avec sa fenêtre de chevauchement",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-30",
+      "name": "OP-30 : chaque paire de tâches n’apparaît qu’UNE fois — A↔B et B↔A sont le même conflit",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-33",
+      "name": "OP-33 : détecter un conflit ne déplace, ne réaffecte et ne supprime RIEN — seules des navigations sont proposées, jamais une résolution automatique",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-31",
+      "name": "OP-31 : deux tâches en conflit DANS LE MÊME chantier ne comptent PAS comme conflit transversal — le moteur ressource, lui, continue de les détecter",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-32",
+      "name": "OP-32 : une entreprise de capacité 2 tenant 2 missions simultanées sur 2 chantiers ne crée AUCUN conflit ; à 3 missions simultanées, le conflit apparaît",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-34",
+      "name": "OP-34 : la charge de l’opération ne liste QUE les ressources mobilisées par ses chantiers actifs",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-35",
+      "name": "OP-35 : une ressource qui travaille AUSSI hors opération ne fait apparaître aucune de ces missions dans la cellule d’opération — le scope descend jusqu’à la cellule, alors que la page Ressources globale les voit bien",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-36",
+      "name": "OP-36 : les indisponibilités sont des données GLOBALES de ressource — elles restent visibles dans la charge de l’opération dès qu’elles touchent une ressource mobilisée",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-37",
+      "name": "OP-37 : Personnes / Entreprises / Matériel restent trois groupes distincts — resourceLoadGroups() est réutilisée telle quelle",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-38",
+      "name": "OP-38 : naviguer dans la charge d’une opération ne déplace NI teamLoadAnchor NI periodAnchor — les états sont séparés",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-39",
+      "name": "OP-39 : tous les jalons des chantiers membres, triés par date — et le jalon de Villa du Port, qui existe pourtant, n’y figure pas",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-39",
+      "name": "OP-39 : V2.8 ne permet PAS de créer un jalon sur l’opération — un jalon appartient à un chantier",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-40",
+      "name": "OP-40 : le jalon d’un chantier clôturé reste consultable et signalé comme tel — mais ses tâches ne participent plus à la charge active",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-41",
+      "name": "OP-41 : sauvegarde → réinitialisation → restauration restitue les opérations ET leurs rattachements à l’identique",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-42",
+      "name": "OP-42 : une sauvegarde V2.7.1 (sans opérations) reste RESTAURABLE — « operations » n’a pas été ajouté à KANVIX_BACKUP_REQUIRED, la migration complète la donnée",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-43",
+      "name": "OP-43 : l’export portable inclut les opérations — un project.operationId exporté sans son opération serait une référence dans le vide",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-44",
+      "name": "OP-44 : un export V2.7 sans opérations s’importe sans erreur — le chantier arrive simplement sans rattachement",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-45",
+      "name": "OP-45 : une opération inconnue est ajoutée, le rattachement du chantier importé la désigne, et l’aperçu l’annonce",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-45",
+      "name": "OP-45 : une opération de même nom et même localisation est RÉUTILISÉE, jamais dupliquée — le chantier importé rejoint l’opération locale",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-46",
+      "name": "OP-46 : même ID mais opération DIFFÉRENTE → un nouvel ID est créé, le chantier importé le suit, l’opération locale garde ses membres, et il reste 0 orphelin",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-47",
+      "name": "OP-47 : « Remplacer tous les chantiers » remplace les opérations (domaine CHANTIER) mais conserve lots, ressources et modèles de contrôle (référentiel ENTREPRISE)",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-48",
+      "name": "OP-48 : un project.operationId inconnu FAIT ÉCHOUER validateImportState(), et des IDs d’opération en double sont refusés",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-49",
+      "name": "OP-49 : le Mode Chantier reste centré sur UN chantier — aucun écran, aucun sélecteur, aucune vue d’opération n’y a été introduit",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-54",
+      "name": "OP-54 : le second clic sur « Chantier » remonte toujours au sélecteur — comportement V2.7.1 strictement identique",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-50",
+      "name": "OP-50 : à 390px, Chantiers → Opérations, Vue d’ensemble, Planning, Ressources et Jalons s’affichent sans AUCUN débordement horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-50",
+      "name": "OP-50 : sur 10 formats de 1920 à 360px, aucune vue d’opération ne déborde horizontalement",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-51",
+      "name": "OP-51 : liste, fiche, KPI, charge et jalons d’opération sont lisibles en thème sombre — fonds sombres, texte clair",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-51",
+      "name": "OP-51 : aucune couleur codée en dur dans les vues d’opération — uniquement les variables de thème existantes",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-52",
+      "name": "OP-52 : la fiche chantier Keravel est inchangée — mêmes onglets, même cockpit, même santé, aucun onglet « Opération » ajouté",
+      "status": "PASS"
+    },
+    {
+      "sec": "OP-53",
+      "name": "OP-53 : « Pose des 6 fenêtres » → Terminer → contrôle créé et retour V2.7.1 affiché à l’identique",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-280",
+      "name": "FREEZE-280 : les 80 moteurs métier de V2.7.1 sont BYTE-IDENTIQUES — dont getProjectHealth, setTaskStatus, submitControlAttempt, createRework, planReflow, evaluateScenario, getResourceSchedulingConflicts, taskResourceIds et tout le Mode Chantier",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-280",
+      "name": "FREEZE-280 : les seules fonctions modifiées appartiennent toutes à la liste explicitement autorisée à évoluer",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-280",
+      "name": "FREEZE-280 : les quatre moteurs étendus gardent leurs paramètres historiques en tête et n’ajoutent qu’un `opts` optionnel en queue — tous les appels existants restent valides",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-280",
+      "name": "FREEZE-280 : STORE strictement inchangé, SCHEMA_VERSION 11 → 12",
+      "status": "PASS"
+    }
+  ],
+  "consoleErrors": []
+}
