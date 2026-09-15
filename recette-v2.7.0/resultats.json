@@ -1,0 +1,372 @@
+{
+  "passed": 73,
+  "failed": [],
+  "results": [
+    {
+      "sec": "QC-01",
+      "name": "QC-01 : SCHEMA_VERSION = 11 et STORE reste « kanvix-product-8-3 » (aucune perte de données existantes)",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-02",
+      "name": "QC-02 : 2 modèles de contrôle livrés en démonstration, tous deux NON bloquants et dotés de points à vérifier",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-03",
+      "name": "QC-03 : exactement 1 contrôle en attente, sur k-cloisons, au statut « À contrôler » et sans tentative",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-04",
+      "name": "QC-04 : migration 10 → 11 strictement additive — 1 tâche(s) correspondent au motif et AUCUN contrôle rétroactif n’est créé",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-05",
+      "name": "QC-05 : migrateState() est idempotente — la repasser ne duplique ni modèle ni contrôle",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-06",
+      "name": "QC-06 : le contrôle COPIE son modèle à la création — renommer le modèle, changer ses points, sa photo ou son caractère bloquant ne réécrit PAS un contrôle existant",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-07",
+      "name": "QC-07 : validateQualityState() est PURE (aucune mutation) et l’état de démonstration est intègre",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-08",
+      "name": "QC-08 : photo.controlId est un rattachement FACULTATIF — aucune photo de démonstration n’est rattachée à un contrôle",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-09",
+      "name": "QC-09 : un modèle désactivé cesse immédiatement de s’appliquer (il ne crée plus de nouveaux contrôles)",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-10",
+      "name": "QC-10 : un modèle sans lot et sans motif s’applique à TOUTES les interventions (lot null = universel)",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-11",
+      "name": "QC-11 : un modèle rattaché à un AUTRE lot que celui de l’intervention ne s’applique pas",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-12",
+      "name": "QC-12 : motif vide = toutes les interventions du lot, et STRICTEMENT aucune en dehors",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-13",
+      "name": "QC-13 : le motif est une RECHERCHE TEXTUELLE normalisée (casse et accents ignorés) — ni regex utilisateur, ni classification",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-14",
+      "name": "QC-14 : changer la PHASE ou la RESSOURCE d’une intervention ne lui applique aucun contrôle — seuls lot et motif de nom comptent",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-15",
+      "name": "QC-15 : ensureTaskControlInstances() est IDEMPOTENTE — appelée trois fois, elle ne crée qu’un seul contrôle",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-16",
+      "name": "QC-16 : passer une intervention à « en cours » matérialise ses contrôles — un contrôle peut devoir être fait PENDANT le travail",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-17",
+      "name": "QC-17 : une transition DIRECTE « à faire » → « terminée » matérialise quand même les contrôles (aucun trou de couverture)",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-18",
+      "name": "QC-18 : AUCUNE écriture directe de `status = \"done\"` sur une tâche (les 4 occurrences visent une décision), et les 4 parcours vers « terminé » — Kanban, fiche tâche, « J’ai terminé » artisan, éditeur universel — passent tous par setTaskStatus()",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-19",
+      "name": "QC-19 : createControlInstance() refuse un doublon sur la clé logique (intervention + modèle)",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-20",
+      "name": "QC-20 : addableControlTemplates() exclut les modèles DÉJÀ instanciés — « + Ajouter un contrôle » ne propose jamais un doublon",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-21",
+      "name": "QC-21 : contrôle NON bloquant — l’intervention peut être « Terminée » alors que son contrôle reste « À contrôler » (TRAVAIL TERMINÉ ≠ TRAVAIL CONTRÔLÉ)",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-22",
+      "name": "QC-22 : contrôle BLOQUANT — « terminer » est refusé et RIEN n’est écrit (ni statut, ni historique, ni point d’annulation)",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-23",
+      "name": "QC-23 : au conducteur, le blocage PROPOSE l’action utile — « Effectuer le contrôle », pas un mur",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-24",
+      "name": "QC-24 : l’artisan NE réalise PAS les contrôles — son « J’ai terminé » est empêché avec une explication, sans bouton de contrôle",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-25",
+      "name": "QC-25 : un contrôle bloquant n’empêche PAS le démarrage d’une intervention suivante — il ne bloque QUE la fin de la sienne",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-26",
+      "name": "QC-26 : un contrôle bloquant ne touche à AUCUN jalon — il ne déplace, ne masque et ne supprime rien",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-27",
+      "name": "QC-27 : ajouter un contrôle BLOQUANT à une intervention DÉJÀ terminée ne la rouvre JAMAIS — le contrôle reste simplement à faire",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-28",
+      "name": "QC-28 : un contrôle SOLDÉ (conforme ou non applicable) libère la fin de l’intervention — rien d’autre ne la libère",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-29",
+      "name": "QC-29 : UN SEUL controlFormHTML() et UN SEUL submitControlAttempt() — aucun parcours bureau/mobile dupliqué",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-30",
+      "name": "QC-30 : « Conforme » exige que TOUS les points soient cochés — un point manquant suffit à refuser",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-31",
+      "name": "QC-31 : « Photo obligatoire » refuse un verdict CONFORME sans photo",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-32",
+      "name": "QC-32 : « Photo obligatoire » vaut aussi pour un verdict NON CONFORME — la preuve du défaut est exigée",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-33",
+      "name": "QC-33 : « Non conforme » exige la description de la non-conformité — un défaut sans description n’est pas exploitable",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-34",
+      "name": "QC-34 : « Non applicable » exige un MOTIF — écarter un contrôle est une décision tracée, jamais un clic anodin",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-35",
+      "name": "QC-35 : la photo est créée par addPhoto() (galerie unique), reçoit un controlId, et le contrôle ne stocke que des photoIds — aucune image dupliquée",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-36",
+      "name": "QC-36 : une photo prise puis le formulaire ANNULÉ ne laisse aucune photo orpheline — le brouillon n’est écrit qu’à la validation",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-37",
+      "name": "QC-37 : attempts[] conserve TOUTES les tentatives (la non-conformité n’est pas effacée) et la racine porte le DERNIER résultat",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-38",
+      "name": "QC-38 : sur 390 et 430px, chaque ligne de checklist et chaque verdict mesure au moins 44px, sans débordement horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-39",
+      "name": "QC-39 : l’événement « quality-control » porte eventType, projectId, taskId, taskName, controlId, controlName, controlStatus, attemptNumber, auteur et date",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-40",
+      "name": "QC-40 : un SEUL journal — app.history. Aucun second historique n’a été créé pour la qualité",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-41",
+      "name": "QC-41 : une NON-CONFORMITÉ ne crée AUCUN incident, AUCUNE reprise, AUCUN message, ne déplace AUCUNE date et ne rouvre AUCUNE tâche — Kanvix détecte et trace, il ne décide pas",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-42",
+      "name": "QC-42 : la suite d’une non-conformité est PROPOSÉE et passe par openReworkForm() — le moteur de reprise existant, jamais une seconde mécanique",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-43",
+      "name": "QC-43 : un événement de RÉFÉRENTIEL (modèle créé/modifié/désactivé) reste global — il n’apparaît dans l’historique d’aucun chantier",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-44",
+      "name": "QC-44 : getProjectClosureStatus() expose openQualityControls / blockingQualityControls, et « prêt à clôturer » exige ZÉRO contrôle ouvert",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-45",
+      "name": "QC-45 : un contrôle NON bloquant laisse « Clôturer quand même » ; un contrôle BLOQUANT le RETIRE et renvoie vers les contrôles — aucun contournement",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-46",
+      "name": "QC-46 : confirmCloseProject() porte sa PROPRE garde — appelée directement, elle refuse tant qu’un contrôle bloquant est ouvert, et n’accepte qu’une fois soldé",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-47",
+      "name": "QC-47 : AUCUN onglet « Qualité » et AUCUNE entrée de barre latérale — le contrôle vit dans le contexte de son intervention",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-47",
+      "name": "QC-47 : l’onglet Aujourd’hui affiche un bloc COMPACT « Contrôles à faire · N » (3 lignes au plus) suivi d’un lien — jamais une liste complète",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-48",
+      "name": "QC-48 : le référentiel « Contrôles qualité » n’apparaît qu’au niveau Pilotage (divulgation progressive), sous Référentiel métier",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-49",
+      "name": "QC-49 : en Mode Chantier, « À contrôler » liste les CONTRÔLES ouverts (et non plus les tâches terminées) — état vide : « Aucun contrôle qualité à réaliser. »",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-49",
+      "name": "QC-49 : la reprise reste accessible en Mode Chantier depuis la popup Tâche — réécrire « À contrôler » DÉPLACE ce point d’entrée, il ne le supprime pas",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-50",
+      "name": "QC-50 : getProjectHealth() est BYTE-IDENTIQUE à V2.6.1 — un contrôle en attente ne dégrade JAMAIS la santé d’un chantier",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-SAV",
+      "name": "SAV-01 : en Mode Chantier, la tâche terminée s’ouvre en POPUP (jamais un tiroir bureau) et propose « Signaler une reprise »",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-SAV",
+      "name": "SAV-02 : le formulaire de reprise ouvert est bien l’EXISTANT (commentaire + photo + planification) — aucun second formulaire n’a été écrit",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-SAV",
+      "name": "SAV-03 : la photo jointe s’affiche dans le brouillon de reprise",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-SAV",
+      "name": "SAV-04 : « Reprise créée » s’affiche avec son impact planning — le conducteur voit la conséquence AVANT de l’appliquer",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-SAV",
+      "name": "SAV-05 : la reprise est créée (task.reworkOfTaskId = k-windows)",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-SAV",
+      "name": "SAV-06 : la tâche d’origine reste TERMINÉE — une reprise ne rouvre jamais le passé",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-SAV",
+      "name": "SAV-07 : la photo est rattachée à la reprise (chantier et tâche corrects)",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-SAV",
+      "name": "SAV-08 : le successeur redirige sa dépendance vers la reprise — la chaîne reste cohérente",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-SAV",
+      "name": "SAV-09 : la replanification passe par le moteur reflow existant et ne déplace AUCUNE tâche terminée",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-SAV",
+      "name": "SAV-10 : « Prévenir l’intervenant » est proposé après la reprise — proposé, jamais envoyé d’office",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-SAV",
+      "name": "SAV-11 : la conversation s’ouvre en Mode Chantier (onglet Messages plein écran), sans tiroir bureau",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-SAV",
+      "name": "SAV-12 : le message est pré-rempli avec le contexte de la reprise, photo jointe au brouillon",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-SAV",
+      "name": "SAV-13 : de retour sur le chantier, la reprise figure dans « Reprises en cours »",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-SAV",
+      "name": "SAV-14 : tout ce parcours de reprise s’est déroulé SANS qu’aucun contrôle ne soit créé, modifié ni validé — la qualité ne s’invite jamais d’elle-même",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-270",
+      "name": "FREEZE-270 : les 56 moteurs métier protégés sont BYTE-IDENTIQUES à V2.6.1 — la qualité n’a réécrit aucun moteur existant",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-270",
+      "name": "FREEZE-270 : setTaskStatus() n’évolue QUE pour matérialiser les contrôles et poser la garde bloquante — aucune autre logique ajoutée",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-DATA",
+      "name": "QC-DATA : la sauvegarde Kanvix emporte modèles ET contrôles, et se relit sans erreur",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-DATA",
+      "name": "QC-DATA : une sauvegarde V2.6 (sans qualité) reste RESTAURABLE — les modèles sont installés et AUCUN contrôle rétroactif n’est créé",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-DATA",
+      "name": "QC-DATA : l’export portable n’est PAS élargi à la qualité — il reste un export de planning",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-DATA",
+      "name": "QC-DATA : « Remplacer tous les chantiers » supprime les CONTRÔLES (et l’annonce), mais CONSERVE les modèles — référentiel d’entreprise, pas contenu de chantier",
+      "status": "PASS"
+    },
+    {
+      "sec": "QC-DATA",
+      "name": "QC-DATA : supprimer un chantier emporte ses contrôles sans laisser d’orphelin, et sans toucher aux modèles",
+      "status": "PASS"
+    }
+  ],
+  "consoleErrors": []
+}
