@@ -1,0 +1,532 @@
+{
+  "passed": 105,
+  "failed": [],
+  "results": [
+    {
+      "sec": "RSC-01",
+      "name": "RSC-01 : STORE reste \"kanvix-product-8-3\"",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-01",
+      "name": "RSC-01 : SCHEMA_VERSION passe de 8 à 9",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-01",
+      "name": "RSC-01 : état chargé en schéma 9 sur le même STORE",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-02",
+      "name": "RSC-02 : app.resourceUnavailabilities existe et porte 2 périodes de démonstration",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-02",
+      "name": "RSC-02 : la baseline de démonstration ne contient AUCUN conflit de planification",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-03",
+      "name": "RSC-03 : 3 ressources matériel de démonstration",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-03",
+      "name": "RSC-03 : capacité du matériel = 1 (jamais deux chantiers au même instant)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-03",
+      "name": "RSC-03 : catégorie stockée en code, affichée en libellé français",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-03",
+      "name": "RSC-03 : référence matériel + prestataire (Externe) présents",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-03",
+      "name": "RSC-03 : aucun compte Artisan / poste métier pour du matériel",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-04",
+      "name": "RSC-04 : task.additionalResourceIds présent (tableau) sur toutes les tâches",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-04",
+      "name": "RSC-04 : au moins une tâche de démonstration mobilise une ressource complémentaire",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-05",
+      "name": "RSC-05 : l’état source est bien un schéma 8 sans les nouveautés V2.5",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-05",
+      "name": "RSC-05 : l’ouverture en V2.5.0 migre l’état 8 → 9",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-05",
+      "name": "RSC-05 : migration NON destructive — aucun compteur métier modifié",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-05",
+      "name": "RSC-05 : la donnée témoin écrite en V8 est toujours présente après migration",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-05",
+      "name": "RSC-05 : les champs V2.5 sont AJOUTÉS avec des valeurs neutres",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-06",
+      "name": "RSC-06 : les indisponibilités de démo sont réalignées dans le futur proche",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-06",
+      "name": "RSC-06 : le réalignement est idempotent (aucune dérive au second passage)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-07",
+      "name": "RSC-07 : taskResourceIds() = intervenant principal puis ressources complémentaires",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-07",
+      "name": "RSC-07 : taskResourceIds() dédoublonne",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-07",
+      "name": "RSC-07 : tâche nulle / non affectée gérées sans exception",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-08",
+      "name": "RSC-08 : une ressource mobilisée UNIQUEMENT en complément est bien vue par getResourceTasks()",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-08",
+      "name": "RSC-08 : l’intervenant principal reste vu par le même moteur",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-09",
+      "name": "RSC-09 : un matériel ne peut JAMAIS être intervenant principal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-10",
+      "name": "RSC-10 : le principal est exclu des complémentaires, la liste est dédoublonnée",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-10",
+      "name": "RSC-10 : une ressource inconnue est écartée (jamais de référence orpheline)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-11",
+      "name": "RSC-11 : aucun moteur « matériel » parallèle dans le source (pas de getEquipment*/app.equipments)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-11",
+      "name": "RSC-11 : les mêmes moteurs centraux répondent pour personne, entreprise et matériel",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-12",
+      "name": "RSC-12 : une ressource utilisée SEULEMENT en complément n’est pas supprimable (archivage proposé)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-12",
+      "name": "RSC-12 : une ressource jamais mobilisée reste supprimable",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-13",
+      "name": "RSC-13 : getResourceUnavailabilitiesInRange / resourceIsUnavailable bornent correctement la période",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-14",
+      "name": "RSC-14 : « journée entière » présente des champs DATE (sans heure)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-14",
+      "name": "RSC-14 : la journée entière est normalisée 00:00 → 23:59",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-15",
+      "name": "RSC-15 : l’état « Indisponible » est neutre/gris — ce n’est PAS une alerte rouge",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-15",
+      "name": "RSC-15 : priorité conflit > indisponible > forte charge > occupé > disponible",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-15",
+      "name": "RSC-15 : une ressource en période d’indisponibilité, sans tâche, est « Indisponible »",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-16",
+      "name": "RSC-16 : getResourceConflicts() conserve son API historique (paires de tâches en surcapacité)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-16",
+      "name": "RSC-16 : une indisponibilité n’est PAS une surcapacité — l’API historique reste silencieuse",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-17",
+      "name": "RSC-17 : getResourceSchedulingConflicts() qualifie le conflit { kind: \"unavailability\" }",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-17",
+      "name": "RSC-17 : une tâche mobilisant une ressource PENDANT son indisponibilité est un CONFLIT",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-17",
+      "name": "RSC-17 : les deux natures de conflit (capacité / indisponibilité) sortent du MÊME moteur",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-18",
+      "name": "RSC-18 : getResourcePeriodState retient le PIRE état de la période",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-19",
+      "name": "RSC-19 : l’avertissement annonce « ⚠ N intervention(s) déjà planifiée(s) »",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-19",
+      "name": "RSC-19 : l’intervention en cause est NOMMÉE (Kanvix explique)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-19",
+      "name": "RSC-19 : deux issues proposées — « Annuler » et « Enregistrer malgré le conflit »",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-19",
+      "name": "RSC-19 : rien n’est enregistré tant que le conducteur n’a pas tranché",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-20",
+      "name": "RSC-20 : « Annuler » n’enregistre rien et referme le sidewindow",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-21",
+      "name": "RSC-21 : « Enregistrer malgré le conflit » enregistre bien l’indisponibilité",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-21",
+      "name": "RSC-21 : AUCUNE tâche déplacée, annulée, restatuée — aucun message, aucune reprise, aucun incident créé",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-21",
+      "name": "RSC-21 : le conflit reste SIGNALÉ après enregistrement (il n’est pas absorbé)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-21",
+      "name": "RSC-21 : l’action reste annulable (snapshot pris)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-22",
+      "name": "RSC-22 : deux indisponibilités ne peuvent pas se chevaucher pour la même ressource (refus net)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-23",
+      "name": "RSC-23 : un conflit d’indisponibilité est expliqué comme tel (et non comme une surcharge)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-24",
+      "name": "RSC-24 : le compteur de problèmes du Planning intègre les conflits d’indisponibilité",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-25",
+      "name": "RSC-25 : evaluateScenario() détecte une tâche SIMULÉE déplacée sur une indisponibilité",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-26",
+      "name": "RSC-26 : l’éditeur AVERTIT quand la période choisie tombe sur une indisponibilité",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-26",
+      "name": "RSC-26 : l’avertissement ne BLOQUE pas l’enregistrement — le conducteur décide",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-27",
+      "name": "RSC-27 : la route INTERNE reste « team » (aucune rupture de lien / d’historique)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-27",
+      "name": "RSC-27 : le titre de la page est « Ressources »",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-27",
+      "name": "RSC-27 : la navigation affiche « Ressources » (plus « Équipe »)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-27",
+      "name": "RSC-27 : l’onglet de la fiche chantier affiche « Ressources »",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-28",
+      "name": "RSC-28 : le filtre famille (Tous / Personnes / Entreprises / Matériel) partitionne exactement les ressources",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-28",
+      "name": "RSC-28 : app.ui.teamKindFilter est un état DÉDIÉ — teamTypeFilter (Interne/Externe) est intact",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-29",
+      "name": "RSC-29 : la fiche matériel s’annonce comme telle",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-29",
+      "name": "RSC-29 : catégorie (libellé français), référence et prestataire affichés",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-29",
+      "name": "RSC-29 : aucun compte Artisan, aucune invitation, aucune messagerie pour du matériel",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-30",
+      "name": "RSC-30 : création d’une indisponibilité avec un motif propre au matériel (fin de location)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-30",
+      "name": "RSC-30 : modification prise en compte et visible dans la fiche",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-30",
+      "name": "RSC-30 : suppression effective — retour à l’état initial",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-30",
+      "name": "RSC-30 : les motifs sont propres à la famille (congé pour une personne, maintenance pour du matériel)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-31",
+      "name": "RSC-31 : le filtre de charge propose « Indisponible »",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-31",
+      "name": "RSC-31 : les cellules indisponibles portent le ton calme (muted), pas une alerte",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-31",
+      "name": "RSC-31 : la cellule est libellée « Indispo. »",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-31",
+      "name": "RSC-31 : l’infobulle explique le motif de l’indisponibilité",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-31",
+      "name": "RSC-31 : filtrer sur « Indisponible » restreint bien le tableau",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-32",
+      "name": "RSC-32 : le matériel n’est PAS proposé comme intervenant principal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-32",
+      "name": "RSC-32 : les ressources complémentaires sont groupées par famille",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-32",
+      "name": "RSC-32 : une intervention mobilise bien PLUSIEURS ressources (1 principal + 2 complémentaires)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-32",
+      "name": "RSC-32 : l’historique trace le champ « Ressources complémentaires » avec avant → après",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-32",
+      "name": "RSC-32 : « Nouvelle tâche » offre EXACTEMENT le même dispositif que l’éditeur universel",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-32",
+      "name": "RSC-32 : la tâche créée mémorise intervenant principal ET ressources complémentaires",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-33",
+      "name": "RSC-33 : le filtre Planning regroupe les ressources par famille",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-33",
+      "name": "RSC-33 : filtrer sur une ressource montre les tâches où elle est MOBILISÉE (même en complément)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-33",
+      "name": "RSC-33 : la mention « +N » apparaît en métadonnée secondaire (jamais en titre)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-33",
+      "name": "RSC-33 : la carte Kanban porte la même mention discrète « +N »",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-33",
+      "name": "RSC-33 : la fiche tâche liste « Ressources » en plus de l’intervenant principal",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-33",
+      "name": "RSC-33 : en Mode Chantier, la tâche annonce « Matériel : … » (je viens avec quoi)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-34",
+      "name": "RSC-34 : la sauvegarde transporte indisponibilités ET ressources complémentaires",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-34",
+      "name": "RSC-34 : resourceUnavailabilities n’est PAS exigée — une sauvegarde V8 reste valide",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-34",
+      "name": "RSC-34 : la sauvegarde s’annonce en schéma 9 / version 2.5.0",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-34",
+      "name": "RSC-34 : une sauvegarde V8 (sans indisponibilités ni matériel) est ACCEPTÉE",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-34",
+      "name": "RSC-34 : l’aperçu d’une sauvegarde V8 n’invente pas une ligne « indisponibilités »",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-34",
+      "name": "RSC-34 : la restauration migre l’état V8 vers le schéma 9 sans rien casser",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-34",
+      "name": "RSC-34 : l’aperçu d’une sauvegarde V2.5 annonce « 2 indisponibilités »",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-35",
+      "name": "RSC-35 : l’import écarte les ressources complémentaires inconnues",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-35",
+      "name": "RSC-35 : 0 référence orpheline après import",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-35",
+      "name": "RSC-35 : les pertes sont COMPTÉES et ANNONCÉES (jamais silencieuses)",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-35",
+      "name": "RSC-35 : ARCHIVER une ressource conserve ses indisponibilités",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-35",
+      "name": "RSC-35 : la confirmation de suppression annonce les périodes emportées",
+      "status": "PASS"
+    },
+    {
+      "sec": "RSC-35",
+      "name": "RSC-35 : SUPPRIMER une ressource supprime ses indisponibilités — aucune période orpheline",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-250",
+      "name": "FREEZE-250 : 47 moteurs hors périmètre byte-identiques à V2.4.15.6",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-250",
+      "name": "FREEZE-250 : les moteurs du périmètre V2.5.0 ont bien évolué",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-250",
+      "name": "FREEZE-250 : un seul moteur par concern (aucune définition dupliquée)",
+      "status": "PASS"
+    },
+    {
+      "sec": "CONSOLE-250",
+      "name": "CONSOLE-250 : 0 erreur JavaScript applicative sur l’ensemble de la recette",
+      "status": "PASS"
+    }
+  ],
+  "errors": []
+}
