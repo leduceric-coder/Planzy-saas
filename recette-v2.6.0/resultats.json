@@ -1,0 +1,662 @@
+{
+  "passed": 131,
+  "failed": [],
+  "results": [
+    {
+      "sec": "LOT-01",
+      "name": "LOT-01 : STORE reste \"kanvix-product-8-3\"",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-01",
+      "name": "LOT-01 : SCHEMA_VERSION passe de 9 à 10",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-01",
+      "name": "LOT-01 : état chargé en schéma 10 sur le même STORE",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-03",
+      "name": "LOT-03 : 9 lots de départ avec des identifiants stables et explicites",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-03",
+      "name": "LOT-03 : les lots sont ordonnés par lot.order (strictement croissant)",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-03",
+      "name": "LOT-03 : tous actifs, chacun avec une couleur distincte",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-03",
+      "name": "LOT-03 : aucune logique métier ne teste un NOM de lot (seuls les ID comptent)",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-02",
+      "name": "LOT-02 : l’état source est bien un schéma 9 sans lots",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-02",
+      "name": "LOT-02 : l’ouverture en V2.6.0 migre l’état 9 → 10",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-02",
+      "name": "LOT-02 : migration NON destructive — compteurs, statuts et dates inchangés",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-02",
+      "name": "LOT-02 : la donnée témoin écrite en V2.5 est toujours présente",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-02",
+      "name": "LOT-02 : un référentiel de départ est ajouté à l’état migré",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-02",
+      "name": "LOT-02 : AUCUNE inférence — toutes les tâches historiques restent lotId = null",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-02",
+      "name": "LOT-02 : app.ui.planningLot initialisé à \"all\"",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-02",
+      "name": "NON-INFÉRENCE : task.phase est intégralement CONSERVÉ (aucun champ supprimé ni renommé)",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-02",
+      "name": "NON-INFÉRENCE : une même PHASE porte des lots DIFFÉRENTS — phase et lot sont bien deux axes distincts",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-04",
+      "name": "RÉFÉRENTIEL : le bloc « Lots / corps d’état » vit dans Réglages",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-04",
+      "name": "RÉFÉRENTIEL : aucune entrée de lots dans la barre latérale (navigation courte)",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-04",
+      "name": "RÉFÉRENTIEL : le bloc annonce le nombre de lots actifs",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-04",
+      "name": "GRAMMAIRE : gérer les lots ouvre un SIDEWINDOW (action), pas une pop-up",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-04",
+      "name": "SIDEWINDOW : titre et sous-titre conformes",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-04",
+      "name": "SIDEWINDOW : les 9 lots sont listés",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-04",
+      "name": "LOT-04 : création d’un lot (nom, couleur, métier indicatif)",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-04",
+      "name": "LOT-04 : le nouveau lot prend le dernier rang",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-04",
+      "name": "LOT-04 : modification du nom et de la couleur",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-04",
+      "name": "LOT-04 : la modification est réellement enregistrée",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-05",
+      "name": "LOT-05 : un doublon de nom (casse/espaces normalisés) est refusé avec un message simple",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-06",
+      "name": "LOT-06 : « Monter » échange bien deux lots",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-06",
+      "name": "LOT-06 : « Descendre » ramène exactement à l’ordre initial",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-06",
+      "name": "LOT-06 : les valeurs order sont RENORMALISÉES après réorganisation (10, 20, 30…)",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-06",
+      "name": "LOT-06 : l’ordre est persisté (conservé au rechargement)",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-07",
+      "name": "LOT-07 : désactiver un lot ne change AUCUNE tâche",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-07",
+      "name": "LOT-07 : le lot disparaît des NOUVELLES sélections",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-07",
+      "name": "LOT-07 : son nom ET sa couleur restent disponibles pour l’historique",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-08",
+      "name": "LOT-08 : un lot désactivé reste proposé à la tâche qui le porte",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-08",
+      "name": "LOT-08 : le lot désactivé est affiché, sélectionné, et clairement suffixé « (inactif) »",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-09",
+      "name": "LOT-09 : seul un lot sans aucune référence est supprimable",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-09",
+      "name": "LOT-09 : un lot utilisé propose la DÉSACTIVATION, jamais une suppression brutale",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-09",
+      "name": "LOT-09 : le lot inutilisé est bien supprimé",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-09",
+      "name": "LOT-09 : lotReferences() compte aussi les étapes de modèles d’entreprise",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-10",
+      "name": "LOT-10 : la tâche créée porte le bon lotId",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-10",
+      "name": "LOT-10 : le champ Lot se place avant l’intervenant principal",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-10",
+      "name": "LOT-10 : le champ est libellé « Lot / corps d’état »",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-10",
+      "name": "LOT-10 : la couleur automatique de la tâche devient celle de son lot",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-10",
+      "name": "LOT-10 : « Automatique utilise la couleur du lot » est expliqué, et nomme le lot choisi",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-11",
+      "name": "LOT-11 : le lot de la tâche est bien modifié",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-11",
+      "name": "LOT-11 : l’historique trace { field: \"Lot\", from, to } avec les LIBELLÉS",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-11",
+      "name": "LOT-11 : un changement de lot seul ne produit qu’UNE ligne de diff (aucun bruit)",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-12",
+      "name": "LOT-12 : « Sans lot » enregistre bien lotId = null",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-12",
+      "name": "LOT-12 : l’historique affiche « Aucun » pour l’absence de lot",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-12",
+      "name": "LOT-12 : sans lot, la tâche retrouve exactement le comportement historique (aucune couleur, aucun marqueur)",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-12",
+      "name": "LOT-12 : « Sans lot » est toujours la première option proposée",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-12",
+      "name": "LOT-12 : tout continue de fonctionner sans lot",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-13",
+      "name": "LOT-13 : taskEffectiveColorKey() renvoie la couleur du lot",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-13",
+      "name": "LOT-13 : la barre Gantt porte tcolor-amber",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-13",
+      "name": "LOT-13 : la carte Kanban porte tcolor-amber — MÊME source, aucun second calcul",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-14",
+      "name": "LOT-14 : la couleur MANUELLE de la tâche gagne toujours sur celle du lot",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-14",
+      "name": "LOT-14 : Gantt et Kanban affichent tous deux le violet",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-15",
+      "name": "LOT-15 : changer la couleur du lot fait immédiatement évoluer ses tâches « auto »",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-15",
+      "name": "LOT-15 : les tâches à couleur manuelle restent INCHANGÉES",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-15",
+      "name": "LOT-15 : la couleur du lot n’est jamais écrite physiquement dans la tâche",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-13",
+      "name": "COULEURS : sur un état métier (retard / attente / terminé), la couleur de lot s’efface — le lot est une IDENTITÉ, pas une gravité",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-16",
+      "name": "LOT-16 : le Planning propose bien TROIS filtres — chantier, ressource, lot",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-16",
+      "name": "LOT-16 : l’option par défaut est « Tous les lots »",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-19",
+      "name": "LOT-19 : « Sans lot » est proposé en fin de liste",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-16",
+      "name": "LOT-16 : filtrer sur Électricité ne retient que les tâches de ce lot",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-18",
+      "name": "LOT-18 : le Gantt affiche exactement les tâches filtrées",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-18",
+      "name": "LOT-18 : le Kanban applique le MÊME filtre que le Gantt (aucune divergence)",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-19",
+      "name": "LOT-19 : « Sans lot » ne retient que les tâches sans lot",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-17",
+      "name": "LOT-17 : chantier + ressource + lot donnent l’intersection EXACTE",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-17",
+      "name": "LOT-17 : casser un seul des trois critères vide le résultat (les filtres se combinent, ils ne se remplacent pas)",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-18",
+      "name": "LOT-18 : aucun refiltrage par lot dans le Kanban — planningTasks() est l’unique point d’entrée",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-20",
+      "name": "LOT-20 : créer un chantier depuis un modèle intégré conserve le lotId de chaque étape",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-20",
+      "name": "LOT-20 : tous les lots du modèle sont repris à l’identique (y compris les étapes sans lot)",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-20",
+      "name": "LOT-20 : aucune tâche créée ne porte un lot inconnu",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-20",
+      "name": "LOT-20 : lotId est défini EXPLICITEMENT dans la donnée du modèle (aucune dérivation depuis le nom)",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-21",
+      "name": "LOT-21 : le modèle d’entreprise copie le lot de chaque tâche source",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-21",
+      "name": "LOT-21 : un chantier créé depuis ce modèle conserve les lots",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-20",
+      "name": "LOT-20 : un lot absent du référentiel donne lotId = null — aucun ID orphelin",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-22",
+      "name": "LOT-22 : une reprise hérite du lot de l’intervention d’origine",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-23",
+      "name": "FICHE TÂCHE : le lot apparaît, toujours NOMMÉ",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-23",
+      "name": "FICHE TÂCHE : une simple ligne de métadonnée, pas un gros bloc",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-23",
+      "name": "LOT-23 : en Mode Chantier, l’intervention ouverte affiche « Lot : … »",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-23",
+      "name": "LOT-23 : la liste principale terrain n’est PAS densifiée par le lot",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-23",
+      "name": "LOT-23 : le workflow terrain reste inchangé",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-24",
+      "name": "LOT-24 : l’expérience Artisan n’offre AUCUNE gestion du référentiel",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-25",
+      "name": "LOT-25 : sur un chantier clôturé, le lot reste VISIBLE",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-25",
+      "name": "LOT-25 : la tâche reste en lecture seule — aucune modification possible",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-26",
+      "name": "LOT-26 : la sauvegarde transporte app.lots ET task.lotId",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-26",
+      "name": "LOT-26 : roundtrip strictement fidèle — le référentiel est restauré à l’identique",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-26",
+      "name": "LOT-26 : task.lotId et companyTemplates[].tasks[].lotId sont restaurés",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-26",
+      "name": "LOT-26 : la sauvegarde s’annonce en schéma 10 / version 2.6.0",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-26",
+      "name": "LOT-26 : l’aperçu de sauvegarde annonce le nombre de lots",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-27",
+      "name": "LOT-27 : KANVIX_BACKUP_REQUIRED n’exige PAS app.lots",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-27",
+      "name": "LOT-27 : une sauvegarde V2.5 (sans lots) est ACCEPTÉE",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-27",
+      "name": "LOT-27 : elle est migrée en schéma 10 — référentiel ajouté, tâches à lotId = null",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-28",
+      "name": "LOT-28 : l’export portable contient lots, task.lotId et les lotId des modèles",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-28",
+      "name": "LOT-28 : l’écran d’export annonce le nombre de lots",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-29",
+      "name": "LOT-29 : un lot entrant dont le NOM existe déjà réutilise le lot local (aucun doublon)",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-29",
+      "name": "LOT-29 : un lot réellement nouveau est ajouté au référentiel",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-29",
+      "name": "LOT-29 : une collision d’ID est REMAPPÉE — le lot local n’est jamais écrasé",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-29",
+      "name": "LOT-29 : un lotId sans référentiel correspondant devient null",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-29",
+      "name": "LOT-29 : les étapes de modèle importées passent par la même résolution",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-29",
+      "name": "LOT-29 : 0 référence orpheline après import",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-29",
+      "name": "LOT-29 : l’aperçu annonce « N lots ajoutés » et « N lots réutilisés » — aucune perte silencieuse",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-30",
+      "name": "LOT-30 : « Remplacer tous les chantiers » ne DÉTRUIT PAS le référentiel local",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-30",
+      "name": "LOT-30 : les lots nécessaires à l’import sont présents et correctement référencés",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-30",
+      "name": "LOT-30 : l’état résultant est valide (chantiers remplacés, référentiel intact)",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-31",
+      "name": "LOT-31 : un task.lotId inconnu fait ÉCHOUER validateImportState",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-31",
+      "name": "LOT-31 : un lotId d’étape de modèle inconnu fait aussi échouer la validation",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-31",
+      "name": "LOT-31 : l’état sain reste valide (aucun faux positif)",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-32",
+      "name": "LOT-32 : à données métier équivalentes, V2.6.0 produit EXACTEMENT les mêmes résultats que V2.5.0 (10 indicateurs : santé, retards, décisions, surveillances, conflits ressources, états)",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-33",
+      "name": "LOT-33 : aucun débordement horizontal du body sur 11 formats (1920 → 360), création/édition de tâche et gestion du référentiel incluses",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-34",
+      "name": "LOT-34 : le référentiel s’affiche correctement en thème sombre",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-34",
+      "name": "LOT-34 : les pastilles de lot utilisent les variantes SOMBRES du système de couleurs (teintes éclaircies)",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-35",
+      "name": "LOT-35 : le NOM du lot est toujours affiché en Gantt et en Kanban — jamais la couleur seule",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-35",
+      "name": "LOT-35 : les pastilles colorées sont décoratives (aria-hidden), l’information est portée par le texte",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-35",
+      "name": "LOT-35 : les boutons « ↑ / ↓ » portent un aria-label explicite",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-35",
+      "name": "LOT-35 : le filtre de lot du Planning est étiqueté",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-04",
+      "name": "NIVEAUX : la gestion du référentiel n’apparaît qu’en Pilotage",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-04",
+      "name": "NIVEAUX : en Essentiel, l’utilisateur VOIT et SÉLECTIONNE quand même le lot d’une tâche",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-04",
+      "name": "NIVEAUX : aucun tableau de bord d’analyse des lots — V2.6 structure, elle n’analyse pas",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-04",
+      "name": "HISTORIQUE : les événements lot-created / lot-disabled / lot-enabled sont tracés",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-04",
+      "name": "HISTORIQUE : un événement de RÉFÉRENTIEL n’apparaît JAMAIS dans l’historique d’un chantier",
+      "status": "PASS"
+    },
+    {
+      "sec": "LOT-04",
+      "name": "HISTORIQUE : app.history reste l’unique collection d’historique",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-260",
+      "name": "FREEZE-260 : les 48 moteurs à protéger sont byte-identiques à V2.5.0 — le lot ne modifie AUCUN résultat métier",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-260",
+      "name": "FREEZE-260 : les fonctions du périmètre V2.6.0 ont bien évolué",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-260",
+      "name": "FREEZE-260 : un seul moteur par concern (aucune définition dupliquée)",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-260",
+      "name": "FREEZE-260 : taskColorClass() lit taskEffectiveColorKey() et JAMAIS t.colorKey — unique source d’affichage",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-260",
+      "name": "FREEZE-260 : ni la barre Gantt ni la carte Kanban ne lisent t.colorKey directement",
+      "status": "PASS"
+    },
+    {
+      "sec": "CONSOLE-260",
+      "name": "CONSOLE-260 : 0 erreur JavaScript applicative sur l’ensemble de la recette",
+      "status": "PASS"
+    }
+  ],
+  "errors": []
+}
