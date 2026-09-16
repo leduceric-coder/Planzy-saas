@@ -1,0 +1,252 @@
+{
+  "passed": 49,
+  "failed": [],
+  "results": [
+    {
+      "sec": "UX281-01",
+      "name": "UX281-01 : SCHEMA_VERSION reste 12 et STORE reste « kanvix-product-8-3 » — V2.8.1 est une passe de présentation, aucune migration",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-02",
+      "name": "UX281-02 : après réinitialisation, opérations, rattachements, tâches, ressources, lots, modèles, contrôles et jalons sont STRICTEMENT identiques à V2.8.0",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-03",
+      "name": "UX281-03 : l’écart RÉEL mesuré entre le badge d’état et le bouton « ••• » est de 12px (≥ 10px attendus)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-03",
+      "name": "UX281-03 : le menu est revenu DANS LE FLUX (position: relative) — absolument positionné via `.site-menu`, il ignorait purement et simplement le `gap` du conteneur",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-04",
+      "name": "UX281-04 : à 390px, badge et menu ne se chevauchent pas, l’écart tient, et rien ne déborde",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-05",
+      "name": "UX281-05 : les quatre onglets forment UNE capsule, avec exactement le fond et le rayon du segmented control du Planning — plus de quatre boutons bordés indépendants",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-05",
+      "name": "UX281-05 : les rôles ARIA (tablist / tab) sont conservés — seule la présentation a changé",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-05",
+      "name": "UX281-05 : les onglets inactifs n’ont plus de bordure — fond transparent, comme ailleurs dans Kanvix",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-06",
+      "name": "UX281-06 : sur les quatre onglets, exactement un `aria-selected=\"true\"` et un seul `.active` — et il correspond toujours à l’onglet demandé",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-07",
+      "name": "UX281-07 : setOperationTab() garde son comportement V2.8.0 — chaque onglet rend bien son contenu",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-08",
+      "name": "UX281-08 : à 390px les quatre onglets restent rendus et atteignables par défilement LOCAL de la capsule — 0 débordement de la page",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-09",
+      "name": "UX281-09 : les trois familles — Actions nécessaires, À surveiller, À contrôler — sont dans la MÊME grille, dans cet ordre",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-09",
+      "name": "UX281-09 : le conflit entre chantiers reste SÉPARÉ des trois colonnes — ce n’est ni une décision, ni une surveillance, ni un contrôle",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-09",
+      "name": "UX281-09 : les quatre KPI restent au-dessus et ne sont pas touchés",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-10",
+      "name": "UX281-10 : à 1440px, les trois colonnes sont réellement côte à côte (trois positions gauche distinctes)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-11",
+      "name": "UX281-11 : les trois compteurs sont EXACTEMENT sum.decisions / sum.warnings / sum.pendingControls — aucune nouvelle source",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-12",
+      "name": "UX281-12 : avec six éléments par famille, chaque colonne n’en montre que TROIS et propose un lien « Voir les N » — jamais dix lignes empilées",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-13",
+      "name": "UX281-13 : vidées, les trois colonnes RESTENT — chacune affiche un état calme (« ✓ Rien à traiter », « ✓ Tout est sous contrôle », « ✓ Tout est contrôlé »), jamais un gros zéro",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-14",
+      "name": "UX281-14 : décision → openDecision(), surveillance → openIssue(), contrôle → openControlForm() — les moteurs historiques, vérifiés par un clic réel",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-15",
+      "name": "UX281-15 : la section Chantiers affiche des VIGNETTES dans une grille — plus aucune ligne horizontale `.op-project`",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-16",
+      "name": "UX281-16 : chaque vignette affiche EXACTEMENT projectVisual() — aucune illustration inventée, aucun SVG dupliqué, aucune image réseau",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-17",
+      "name": "UX281-17 : la vignette porte le nom, la phase, la localisation, la prochaine intervention, la santé et le retard éventuel",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-17",
+      "name": "UX281-17 : un chantier non actif affiche son libellé de cycle de vie (getProjectSummary().displayLabel), pas une santé inventée",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-18",
+      "name": "UX281-18 : cliquer une vignette ouvre la FICHE CHANTIER existante — selectProject(), inchangée",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-19",
+      "name": "UX281-19 : aucun bouton « ••• » dans les vignettes — la vue Opération sert à COMPRENDRE et à OUVRIR ; le rattachement se gère dans « Gérer les chantiers »",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-20",
+      "name": "UX281-20 : (mesure à 1440px ci-dessous)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-20",
+      "name": "UX281-20 : 3 colonnes à 1440px, 2 à 900px, 1 à 390px — et aucun débordement",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-21",
+      "name": "UX281-21 : Aujourd’hui affiche TROIS vignettes, dans l’ordre À décider → À surveiller → À contrôler",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-21",
+      "name": "UX281-21 : « quality » est une VRAIE nature — ni un « watch » détourné, ni un « decide »",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-21",
+      "name": "UX281-21 : l’icône vient de icon() — aucun emoji décoratif ajouté",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-21",
+      "name": "UX281-21 : à 1440px, les trois vignettes sont réellement côte à côte",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-22",
+      "name": "UX281-22 : getTodayPendingControls() est l’union EXACTE de pendingControlsForProject() sur activeProjects() — les règles todo / nonconform / conform / na ne sont pas réécrites",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-22",
+      "name": "UX281-22 : aucun filtre de date — un contrôle ouvert reste à traiter même si l’intervention s’est terminée hier",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-23",
+      "name": "UX281-23 : un contrôle ouvert sur un chantier CLÔTURÉ disparaît de la vignette — il existe toujours, mais le cockpit du jour ne montre que les chantiers actifs",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-24",
+      "name": "UX281-24 : entre un contrôle « à contrôler » et une NON-CONFORMITÉ, c’est la non-conformité qui représente la carte — elle appelle une décision, pas seulement une vérification",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-25",
+      "name": "UX281-25 : sans contrôle ouvert, la carte reste présente, calme : « À contrôler / Tout est contrôlé / ✓ » — même langage que les autres cartes à zéro",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-26",
+      "name": "UX281-26 : la vignette ouvre un POPUP listant les contrôles réellement ouverts, avec contrôle, tâche, chantier et statut",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-27",
+      "name": "UX281-27 : cliquer un contrôle ferme le popup et ouvre le FORMULAIRE EXISTANT en sidewindow, sur le bon contrôle — POPUP pour choisir, SIDEWINDOW pour faire",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-28",
+      "name": "UX281-28 : un seul submitControlAttempt(), un seul openControlForm(), un seul controlFormHTML() — V2.8.1 n’a créé AUCUN moteur qualité parallèle",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-31",
+      "name": "UX281-31 : la ligne résumé du hero reste décisions / actions / surveillances — aucun compteur qualité n’y a été ajouté",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-29",
+      "name": "UX281-29 : fieldAttentionSection() garde EXACTEMENT deux cartes — la troisième vignette est réservée au Bureau, et `.attention-grid` n’a pas été modifiée globalement",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-29",
+      "name": "UX281-29 : la règle de base `.attention-grid` reste « 1fr 1fr » et la mise à trois colonnes est PORTÉE par le modifier `.today-attention-grid` — le Mode Chantier n’est jamais atteint",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-30",
+      "name": "UX281-30 : second clic « Chantier », Messages, Planning mobile et « À contrôler » terrain se comportent exactement comme en V2.8.0",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-32",
+      "name": "UX281-32 : liste Opérations, trois colonnes, vignettes chantier, onglet actif, vignette « À contrôler » et popup qualité sont tous lisibles en thème sombre",
+      "status": "PASS"
+    },
+    {
+      "sec": "UX281-33",
+      "name": "UX281-33 : sur neuf formats de 1920 à 360px — Aujourd’hui, popup qualité, liste Opérations et les quatre onglets — aucun débordement horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-281",
+      "name": "FREEZE-281 : les 75 moteurs métier de V2.8.0 sont BYTE-IDENTIQUES — toute l’architecture Opération, le Planning, les ressources, la qualité, le Mode Chantier et les données",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-281",
+      "name": "FREEZE-281 : 5 fonctions de présentation modifiées (operationCard elle-même n’a pas eu à changer — c’est son menu qui portait le défaut), 5 helpers ajoutés, operationProjectRow() remplacée par operationProjectCard() — rien d’autre",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-281",
+      "name": "FREEZE-281 : attentionCard() n’a fait qu’AJOUTER la nature « quality » — decide et watch conservent leurs résumés et leurs icônes",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-281",
+      "name": "FREEZE-281 : STORE et SCHEMA_VERSION (12) strictement inchangés — aucune migration",
+      "status": "PASS"
+    }
+  ],
+  "consoleErrors": []
+}
