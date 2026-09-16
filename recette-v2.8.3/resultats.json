@@ -1,0 +1,217 @@
+{
+  "passed": 42,
+  "failed": [],
+  "results": [
+    {
+      "sec": "FRISE-01",
+      "name": "FRISE-01 : sans filtre, la frise affiche exactement operationMilestones(), dans son ordre — visibleOperationMilestones() ne fait que lui retirer des lignes",
+      "status": "PASS"
+    },
+    {
+      "sec": "FRISE-02",
+      "name": "FRISE-02 : chaque date vient du moteur, formatée par le fmtDay() existant",
+      "status": "PASS"
+    },
+    {
+      "sec": "FRISE-03",
+      "name": "FRISE-03 : un .op-milestone par jalon — le sélecteur que comptent, lisent et sondent les recettes V2.8.0 est préservé",
+      "status": "PASS"
+    },
+    {
+      "sec": "FRISE-04",
+      "name": "FRISE-04 : afficher la frise n’écrit rien, et filtrer n’écrit que dans app.ui — aucun champ nouveau sur un jalon, aucune donnée métier touchée",
+      "status": "PASS"
+    },
+    {
+      "sec": "FRISE-05",
+      "name": "FRISE-05 : sans les clés de filtre — cas d’une sauvegarde antérieure — la frise retombe sur « Tous » et s’affiche entière : aucune migration nécessaire",
+      "status": "PASS"
+    },
+    {
+      "sec": "FRISE-06",
+      "name": "FRISE-06 : la ligne de temps est CONTINUE de la première à la dernière bulle — segments jointifs, aucun dépassement",
+      "status": "PASS"
+    },
+    {
+      "sec": "FRISE-07",
+      "name": "FRISE-07 : la ligne fait 2px et tranche nettement sur le fond — elle structure, elle ne décore pas",
+      "status": "PASS"
+    },
+    {
+      "sec": "FRISE-08",
+      "name": "FRISE-08 : chaque jalon porte une bulle iconifiée d’au moins 32px, centrée sur sa colonne, toutes alignées sur la ligne",
+      "status": "PASS"
+    },
+    {
+      "sec": "FRISE-09",
+      "name": "FRISE-09 : la date est posée AU-DESSUS de sa bulle — l’œil lit la date puis le repère, puis la carte",
+      "status": "PASS"
+    },
+    {
+      "sec": "FRISE-10",
+      "name": "FRISE-10 : un trait de rappel relie chaque bulle au liseré coloré de sa carte, sur le même axe — le lien visuel est explicite, pas déduit",
+      "status": "PASS"
+    },
+    {
+      "sec": "FRISE-11",
+      "name": "FRISE-11 : les cartes d’une rangée partagent bord haut et largeur — aucune carte ne flotte",
+      "status": "PASS"
+    },
+    {
+      "sec": "FRISE-12",
+      "name": "FRISE-12 : la ligne est PLEINE jusqu’au prochain jalon et POINTILLÉE ensuite — la frise dit d’un coup d’œil où en est l’opération",
+      "status": "PASS"
+    },
+    {
+      "sec": "FRISE-13",
+      "name": "FRISE-13 : chaque carte porte la date, le chantier, le titre du jalon, le STATUT et l’action « Voir » — les cinq informations demandées",
+      "status": "PASS"
+    },
+    {
+      "sec": "FRISE-14",
+      "name": "FRISE-14 : le statut de chaque jalon est recalculable depuis les seuls moteurs existants (isProjectActive, calculateProjectEnd, getProjectTasks) — au moins quatre statuts distincts observés, aucun inventé",
+      "status": "PASS"
+    },
+    {
+      "sec": "FRISE-15",
+      "name": "FRISE-15 : « Menacé » applique la règle DÉJÀ présente dans milestoneImpactNote() — même moteur d’estimation de fin, même comparaison ; aucune règle de menace parallèle",
+      "status": "PASS"
+    },
+    {
+      "sec": "FRISE-16",
+      "name": "FRISE-16 : « N interventions d’ici là » est compté sur getProjectTasks() — c’est une volumétrie réelle, pas un ornement",
+      "status": "PASS"
+    },
+    {
+      "sec": "FRISE-17",
+      "name": "FRISE-17 : bulle et liseré de carte portent toujours la même couleur — et un statut d’alerte prend le pas sur la teinte d’identité du chantier",
+      "status": "PASS"
+    },
+    {
+      "sec": "FRISE-18",
+      "name": "FRISE-18 : un jalon de chantier clôturé porte « Chantier clôturé » DANS sa carte (contrat d’OP-40) et s’efface visuellement",
+      "status": "PASS"
+    },
+    {
+      "sec": "FRISE-19",
+      "name": "FRISE-19 : par défaut aucun filtre n’est actif — la frise montre tous les jalons de l’opération",
+      "status": "PASS"
+    },
+    {
+      "sec": "FRISE-20",
+      "name": "FRISE-20 : « Cette semaine » s’appuie sur getCurrentWeekRange(), l’unique définition de semaine du produit, et « Ce mois » sur le mois calendaire courant",
+      "status": "PASS"
+    },
+    {
+      "sec": "FRISE-21",
+      "name": "FRISE-21 : la légende de chantiers est un vrai filtre — la pastille s’éteint, les jalons disparaissent, et le moteur n’est jamais altéré",
+      "status": "PASS"
+    },
+    {
+      "sec": "FRISE-22",
+      "name": "FRISE-22 : la remise à zéro des filtres restitue la frise entière",
+      "status": "PASS"
+    },
+    {
+      "sec": "FRISE-23",
+      "name": "FRISE-23 : filtrer jusqu’au vide affiche un message DISTINCT, rappelle combien de jalons existent et rend la main — la barre de filtres reste accessible",
+      "status": "PASS"
+    },
+    {
+      "sec": "FRISE-24",
+      "name": "FRISE-24 : sans aucun jalon, l’état vide de V2.8.1 est conservé à l’identique — ni frise vide, ni barre de filtres inutile",
+      "status": "PASS"
+    },
+    {
+      "sec": "FRISE-25",
+      "name": "FRISE-25 : trois tuiles de synthèse, dont un total strictement égal au nombre de jalons affichés",
+      "status": "PASS"
+    },
+    {
+      "sec": "FRISE-26",
+      "name": "FRISE-26 : la répartition par statut totalise exactement les jalons affichés (8) et s’accorde en nombre",
+      "status": "PASS"
+    },
+    {
+      "sec": "FRISE-26",
+      "name": "FRISE-26 : la tuile « Prochain jalon » désigne le premier jalon non passé, et le bandeau d’aide est présent",
+      "status": "PASS"
+    },
+    {
+      "sec": "FRISE-27",
+      "name": "FRISE-27 : aucun des nouveaux bandeaux ne propose de CRÉER un jalon depuis l’opération — un jalon appartient à un chantier (contrat d’OP-39)",
+      "status": "PASS"
+    },
+    {
+      "sec": "FRISE-28",
+      "name": "FRISE-28 : à 1440px la frise est horizontale, occupe 99% de la largeur utile et ne déborde pas",
+      "status": "PASS"
+    },
+    {
+      "sec": "FRISE-28",
+      "name": "FRISE-28 : à 900px la frise est horizontale, occupe 98% de la largeur utile et ne déborde pas",
+      "status": "PASS"
+    },
+    {
+      "sec": "FRISE-29",
+      "name": "FRISE-29 : à 390px la frise est VERTICALE — date à gauche, bulle sur le rail, carte à droite, synthèse empilée, aucun scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "FRISE-30",
+      "name": "FRISE-30 : le rail vertical rejoint exactement chaque bulle, et aucune date n’est tronquée ni cassée en deux lignes",
+      "status": "PASS"
+    },
+    {
+      "sec": "FRISE-31",
+      "name": "FRISE-31 : à 8 jalons la frise passe à la ligne de façon structurée — chaque rangée obtient son rail, aucun segment ne déborde, un seul « prochain » subsiste",
+      "status": "PASS"
+    },
+    {
+      "sec": "FRISE-32",
+      "name": "FRISE-32 : en thème sombre, barre de filtres, frise, cartes, synthèse et bandeau d’aide sont tous sur fond sombre avec un rail et des bulles visibles",
+      "status": "PASS"
+    },
+    {
+      "sec": "FRISE-33",
+      "name": "FRISE-33 : aucune couleur codée en dur dans la frise — uniquement les variables de thème existantes",
+      "status": "PASS"
+    },
+    {
+      "sec": "FRISE-34",
+      "name": "FRISE-34 : la cible du clic est INCHANGÉE (openTask si le jalon porte une tâche, sinon selectProject), et chaque jalon reste un bouton accessible",
+      "status": "PASS"
+    },
+    {
+      "sec": "FRISE-35",
+      "name": "FRISE-35 : clic et touche Entrée ouvrent la fiche du chantier porteur — comportement de V2.8.2 conservé",
+      "status": "PASS"
+    },
+    {
+      "sec": "FRISE-36",
+      "name": "FRISE-36 : cliquer un filtre ou une pastille de légende ne quitte PAS l’opération — les commandes n’empruntent pas le clic du jalon",
+      "status": "PASS"
+    },
+    {
+      "sec": "FRISE-37",
+      "name": "FRISE-37 : les quatre onglets de l’opération répondent et rendent leur contenu — Vue d’ensemble, Planning et Ressources sont intacts après aller-retour",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-283",
+      "name": "FREEZE-283 : les 94 moteurs et rendus de V2.8.2 sont BYTE-IDENTIQUES — dont operationMilestones(), milestoneImpactNote(), calculateProjectEnd(), getCurrentWeekRange() et toute l’architecture Opération",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-283",
+      "name": "FREEZE-283 : operationMilestonesTab() reste la SEULE fonction réécrite ; les dix fonctions ajoutées sont toutes des helpers de la frise",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-283",
+      "name": "FREEZE-283 : STORE et SCHEMA_VERSION (12) strictement inchangés — aucune migration",
+      "status": "PASS"
+    }
+  ],
+  "consoleErrors": []
+}
