@@ -1,0 +1,142 @@
+{
+  "passed": 27,
+  "failed": [],
+  "results": [
+    {
+      "sec": "NEXT-01",
+      "name": "NEXT-01 : un jalon daté dans le futur mais déjà « Atteint » n’est PLUS annoncé comme prochain jalon — la contradiction de V2.8.3.1 est levée",
+      "status": "PASS"
+    },
+    {
+      "sec": "NEXT-02",
+      "name": "NEXT-02 : le jalon atteint est enjambé — le prochain jalon est « Étape B », le premier réellement restant à traiter",
+      "status": "PASS"
+    },
+    {
+      "sec": "NEXT-03",
+      "name": "NEXT-03 : un jalon « Menacé » reste un jalon à traiter — il est bien retenu comme prochain jalon",
+      "status": "PASS"
+    },
+    {
+      "sec": "NEXT-04",
+      "name": "NEXT-04 : un jalon « Dépassé » n’est jamais sélectionné comme prochain — c’est un retard, pas une échéance à venir",
+      "status": "PASS"
+    },
+    {
+      "sec": "NEXT-05",
+      "name": "NEXT-05 : un jalon « Date passée » n’est jamais sélectionné comme prochain",
+      "status": "PASS"
+    },
+    {
+      "sec": "NEXT-06",
+      "name": "NEXT-06 : un jalon futur sur un chantier clôturé reste « Chantier clôturé » et n’est jamais le prochain jalon",
+      "status": "PASS"
+    },
+    {
+      "sec": "NEXT-07",
+      "name": "NEXT-07 : avec « Date passée », « Atteint », « À venir » et « Menacé » côte à côte, le prochain jalon est C — le premier chronologiquement restant à traiter",
+      "status": "PASS"
+    },
+    {
+      "sec": "NEXT-08",
+      "name": "NEXT-08 : sur un chantier portant 1 atteint futur, 2 à venir et 1 date passée, le compteur annonce « 2 jalons à venir » — ni 3, ni 4",
+      "status": "PASS"
+    },
+    {
+      "sec": "NEXT-09",
+      "name": "NEXT-09 : le chantier concerné est celui du prochain jalon RÉEL — Les Terrasses, et non Keravel dont le jalon est déjà atteint",
+      "status": "PASS"
+    },
+    {
+      "sec": "NEXT-10",
+      "name": "NEXT-10 : sans aucun jalon restant, le bandeau dit « Aucun à venir · Aucun jalon restant à traiter » — et non « tous les jalons affichés sont passés », qui serait FAUX puisqu’un jalon futur est déjà atteint",
+      "status": "PASS"
+    },
+    {
+      "sec": "NEXT-11",
+      "name": "NEXT-11 : un jalon sans date n’est jamais désigné comme prochain — il est impossible de le situer — et cela ne produit aucune erreur JavaScript",
+      "status": "PASS"
+    },
+    {
+      "sec": "NEXT-12",
+      "name": "NEXT-12 : masquer un chantier par filtre déplace le prochain jalon sur B — la synthèse travaille bien sur la liste VISIBLE, pas sur toute l’opération",
+      "status": "PASS"
+    },
+    {
+      "sec": "NEXT-13",
+      "name": "NEXT-13 : le prochain jalon est le premier de l’ordre déjà produit par operationMilestones() — operationMilestoneStats() ne recrée aucun tri",
+      "status": "PASS"
+    },
+    {
+      "sec": "NEXT-14",
+      "name": "NEXT-14 : avec un jalon FUTUR déjà atteint, le rail (seg-done / seg-todo, trait plein / pointillé, repère is-next) est STRICTEMENT identique à V2.8.3.1 — la chronologie reste pilotée par la date",
+      "status": "PASS"
+    },
+    {
+      "sec": "NEXT-15",
+      "name": "NEXT-15 : operationMilestoneStats() et isUpcomingMilestone() ne modifient NI app.milestones, NI app.projects, NI app.tasks — et aucune propriété n’est ajoutée",
+      "status": "PASS"
+    },
+    {
+      "sec": "NEXT-16",
+      "name": "NEXT-16 : SCHEMA_VERSION reste à 12 — aucune migration",
+      "status": "PASS"
+    },
+    {
+      "sec": "NEXT-17",
+      "name": "NEXT-17 : STORE reste « kanvix-product-8-3 »",
+      "status": "PASS"
+    },
+    {
+      "sec": "VISUEL",
+      "name": "VISUEL : à 1440px, colonnes, cartes, rail, bulles, squelette DOM COMPLET (classes incluses) et débordement sont STRICTEMENT identiques à V2.8.3.1",
+      "status": "PASS"
+    },
+    {
+      "sec": "VISUEL",
+      "name": "VISUEL : à 1440px, sur les données de démonstration le bandeau de synthèse est lui aussi inchangé — aucun jalon de démonstration n’était concerné par l’incohérence",
+      "status": "PASS"
+    },
+    {
+      "sec": "VISUEL",
+      "name": "VISUEL : à 390px, colonnes, cartes, rail, bulles, squelette DOM COMPLET (classes incluses) et débordement sont STRICTEMENT identiques à V2.8.3.1",
+      "status": "PASS"
+    },
+    {
+      "sec": "VISUEL",
+      "name": "VISUEL : à 390px, sur les données de démonstration le bandeau de synthèse est lui aussi inchangé — aucun jalon de démonstration n’était concerné par l’incohérence",
+      "status": "PASS"
+    },
+    {
+      "sec": "VISUEL",
+      "name": "VISUEL : parcours de captures exécuté sans erreur",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2832",
+      "name": "FREEZE-2832 : les 73 moteurs et rendus de V2.8.3.1 sont BYTE-IDENTIQUES — dont milestoneStatus(), milestoneOpenTasks(), operationMilestonesTab() et toute la frise",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2832",
+      "name": "FREEZE-2832 : operationMilestoneStats() est la SEULE fonction modifiée, isUpcomingMilestone() la seule ajoutée",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2832",
+      "name": "FREEZE-2832 : la feuille de style entière est BYTE-IDENTIQUE — aucune modification visuelle",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2832",
+      "name": "FREEZE-2832 : operationMilestonesTab() continue de calculer nextIdx par la DATE et n’appelle jamais isUpcomingMilestone() — la chronologie et le reste-à-traiter demeurent deux notions séparées",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2832",
+      "name": "FREEZE-2832 : STORE et SCHEMA_VERSION (12) strictement inchangés",
+      "status": "PASS"
+    }
+  ],
+  "consoleErrors": []
+}
