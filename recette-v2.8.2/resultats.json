@@ -1,0 +1,197 @@
+{
+  "passed": 38,
+  "failed": [],
+  "results": [
+    {
+      "sec": "JAL282-01",
+      "name": "JAL282-01 : la timeline liste exactement les jalons de operationMilestones(), dans l’ordre du moteur — aucun tri, aucun filtre, aucun ajout côté rendu",
+      "status": "PASS"
+    },
+    {
+      "sec": "JAL282-02",
+      "name": "JAL282-02 : chaque date affichée est celle du moteur, formatée par le fmtDay() existant",
+      "status": "PASS"
+    },
+    {
+      "sec": "JAL282-03",
+      "name": "JAL282-03 : un .op-milestone par jalon — le sélecteur que comptent, lisent et sondent les recettes V2.8.0 est préservé",
+      "status": "PASS"
+    },
+    {
+      "sec": "JAL282-04",
+      "name": "JAL282-04 : afficher la timeline n’écrit RIEN — aucun champ nouveau sur un jalon, aucun état persisté",
+      "status": "PASS"
+    },
+    {
+      "sec": "JAL282-05",
+      "name": "JAL282-05 : toutes les bulles sont alignées sur la même ligne (y=274.6) et régulièrement espacées (393px) — la succession des dates se lit d’un trait",
+      "status": "PASS"
+    },
+    {
+      "sec": "JAL282-06",
+      "name": "JAL282-06 : le rail est CONTINU — chaque segment reprend exactement là où le précédent s’arrête, sans trou ni recouvrement",
+      "status": "PASS"
+    },
+    {
+      "sec": "JAL282-07",
+      "name": "JAL282-07 : le rail ne dépasse ni avant le premier jalon ni après le dernier — il commence et finit exactement sur une bulle",
+      "status": "PASS"
+    },
+    {
+      "sec": "JAL282-08",
+      "name": "JAL282-08 : le trait du rail se distingue du fond de page (écart de luminance 0.054) — il n’est pas noyé dans --bg-app",
+      "status": "PASS"
+    },
+    {
+      "sec": "JAL282-09",
+      "name": "JAL282-09 : les cartes d’une même rangée partagent le même bord haut et la même largeur — la timeline a un rythme régulier",
+      "status": "PASS"
+    },
+    {
+      "sec": "JAL282-10",
+      "name": "JAL282-10 : UN SEUL jalon porte l’accent — le premier non passé ; sa bulle est la plus grosse et sa date la seule colorée",
+      "status": "PASS"
+    },
+    {
+      "sec": "JAL282-11",
+      "name": "JAL282-11 : la couleur de chaque bulle vient de projectToneClass() — l’unique identité couleur de chantier du produit, aucune palette parallèle",
+      "status": "PASS"
+    },
+    {
+      "sec": "JAL282-12",
+      "name": "JAL282-12 : chaque jalon porte sa date, son chantier, son nom et son lien « Voir » — les quatre informations demandées",
+      "status": "PASS"
+    },
+    {
+      "sec": "JAL282-13",
+      "name": "JAL282-13 : le libellé relatif de chaque jalon est celui que produit daysBetweenKeys() — aucun calcul de dates parallèle",
+      "status": "PASS"
+    },
+    {
+      "sec": "JAL282-14",
+      "name": "JAL282-14 : « Aujourd’hui », « Demain », « Hier », « Dans N jours », « Il y a N jours » — les cinq formulations sont justes",
+      "status": "PASS"
+    },
+    {
+      "sec": "JAL282-15",
+      "name": "JAL282-15 : un jalon passé est atténué, sa bulle devient creuse et il reste étiqueté « Date passée » — la chronologie se lit même sans couleur",
+      "status": "PASS"
+    },
+    {
+      "sec": "JAL282-16",
+      "name": "JAL282-16 : un jalon de chantier clôturé garde son étiquette « Chantier clôturé » DANS la carte (contrat d’OP-40) et n’affiche pas de badge de santé redondant",
+      "status": "PASS"
+    },
+    {
+      "sec": "JAL282-17",
+      "name": "JAL282-17 : la cible du clic est INCHANGÉE (openTask si le jalon porte une tâche, sinon selectProject), et chaque jalon reste un bouton accessible au clavier avec son aria-label",
+      "status": "PASS"
+    },
+    {
+      "sec": "JAL282-18",
+      "name": "JAL282-18 : cliquer un jalon ouvre bien la fiche du chantier porteur",
+      "status": "PASS"
+    },
+    {
+      "sec": "JAL282-19",
+      "name": "JAL282-19 : un jalon prend le focus et s’ouvre à Entrée comme à Espace — le comportement clavier de V2.8.1 est conservé",
+      "status": "PASS"
+    },
+    {
+      "sec": "JAL282-20",
+      "name": "JAL282-20 : à 1440px, les 3 jalons tiennent sur une rangée de 3 colonnes, le rail reste horizontal et rien ne déborde",
+      "status": "PASS"
+    },
+    {
+      "sec": "JAL282-20",
+      "name": "JAL282-20 : à 900px, les 3 jalons tiennent sur une rangée de 3 colonnes, le rail reste horizontal et rien ne déborde",
+      "status": "PASS"
+    },
+    {
+      "sec": "JAL282-21",
+      "name": "JAL282-21 : à 390px la timeline s’empile et le rail bascule à la VERTICALE — repère conservé, aucun scroll horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "JAL282-22",
+      "name": "JAL282-22 : chaque segment vertical rejoint exactement le centre de la bulle suivante, et le dernier jalon n’en traîne aucun",
+      "status": "PASS"
+    },
+    {
+      "sec": "JAL282-23",
+      "name": "JAL282-23 : à 390px, chaque date tient sur UNE ligne (19px) dans sa colonne de 84px",
+      "status": "PASS"
+    },
+    {
+      "sec": "JAL282-24",
+      "name": "JAL282-24 : avec 8 jalons la timeline passe proprement à la ligne — 8 cartes, 2 rangées, aucun débordement",
+      "status": "PASS"
+    },
+    {
+      "sec": "JAL282-24",
+      "name": "JAL282-24 : aucun segment de rail ne dépasse des bords de la grille — chaque rangée obtient son propre rail, sans trait flottant",
+      "status": "PASS"
+    },
+    {
+      "sec": "JAL282-25",
+      "name": "JAL282-25 : l’en-tête annonce le nombre de jalons et l’amplitude de dates, et un seul « prochain » subsiste malgré le volume",
+      "status": "PASS"
+    },
+    {
+      "sec": "JAL282-26",
+      "name": "JAL282-26 : sans jalon, l’état vide de V2.8.1 s’affiche à l’identique — aucun rail vide, aucun squelette",
+      "status": "PASS"
+    },
+    {
+      "sec": "JAL282-27",
+      "name": "JAL282-27 : les quatre onglets de l’opération répondent, un seul est sélectionné à la fois et chacun rend bien son contenu — Vue d’ensemble, Planning et Ressources sont intacts",
+      "status": "PASS"
+    },
+    {
+      "sec": "JAL282-28",
+      "name": "JAL282-28 : sept bascules d’onglet enchaînées laissent la timeline intacte — la navigation existante n’a pas bougé",
+      "status": "PASS"
+    },
+    {
+      "sec": "JAL282-29",
+      "name": "JAL282-29 : en thème sombre, les cartes sont sur fond sombre, le texte est clair, et le rail comme les bulles restent visibles",
+      "status": "PASS"
+    },
+    {
+      "sec": "JAL282-29",
+      "name": "JAL282-29 : aucune couleur codée en dur dans la timeline — uniquement les variables de thème existantes",
+      "status": "PASS"
+    },
+    {
+      "sec": "JAL282-30",
+      "name": "JAL282-30 : parcours de captures exécuté sans erreur",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-282",
+      "name": "FREEZE-282 : les 89 moteurs et rendus de V2.8.1 sont BYTE-IDENTIQUES — dont operationMilestones(), toute l’architecture Opération, le Planning, la qualité et le Mode Chantier",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-282",
+      "name": "FREEZE-282 : operationMilestonesTab() est la SEULE fonction réécrite, milestoneRelativeLabel() la seule ajoutée",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-282",
+      "name": "FREEZE-282 : operationMilestones() — la source et le tri des jalons — est byte-identique à V2.8.1",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-282",
+      "name": "FREEZE-282 : aucune règle CSS de l’ancienne liste n’a été laissée derrière",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-282",
+      "name": "FREEZE-282 : STORE et SCHEMA_VERSION (12) strictement inchangés — aucune migration",
+      "status": "PASS"
+    }
+  ],
+  "consoleErrors": []
+}
