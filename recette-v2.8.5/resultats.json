@@ -1,0 +1,277 @@
+{
+  "passed": 54,
+  "failed": [],
+  "results": [
+    {
+      "sec": "DTC-01",
+      "name": "DTC-01 : une ligne de création par groupe de chantier visible (3 pour 3 groupes), à l’intérieur du Gantt",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-01",
+      "name": "DTC-01 : la ligne emprunte la grille du Gantt — ses cellules sont alignées au pixel près sur celles des tâches",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-02",
+      "name": "DTC-02 : la ligne porte « + Ajouter une tâche », un indice discret, le curseur crosshair et une hauteur d’outil (34px)",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-03",
+      "name": "DTC-03 : un groupe replié perd sa ligne de création — les autres la conservent",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-04",
+      "name": "DTC-04 : un chantier clôturé n’offre aucune création graphique — les gardes existantes sont respectées",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-05",
+      "name": "DTC-05 : en niveau Essentiel, aucune création graphique — elle suit la même règle que le glisser-déposer avancé",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-06",
+      "name": "DTC-06 : en vue Jour, une sélection de 5 créneaux donne exactement 2 h 30 (150 min) — début et fin sur des créneaux de 30 minutes",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-07",
+      "name": "DTC-07 : un départ au milieu d’un créneau est ramené au créneau — le snap est de 30 minutes",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-08",
+      "name": "DTC-08 : dessiner de droite à gauche produit exactement la même période — la sélection est normalisée",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-09",
+      "name": "DTC-09 : en vue Semaine, une sélection sur un seul jour donne 08:00 → 17:00 sur ce jour — relâcher au milieu d’une colonne ne fabrique aucune heure arbitraire",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-10",
+      "name": "DTC-10 : une sélection de trois colonnes donne premier jour 08:00 → dernier jour 17:00, dans les deux sens de geste",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-11",
+      "name": "DTC-11 : en vue Mois, la position DANS la colonne hebdomadaire désigne le jour — mercredi → vendredi, et non la semaine entière",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-50",
+      "name": "DTC-50 : en vue Jour, un geste réel annonce des HEURES dans l'aperçu (« 09:30 → 13:00 ») et préremplit 2026-08-17T09:30 → 2026-08-17T13:00 — calés sur des créneaux de 30 minutes",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-12",
+      "name": "DTC-12 : en vue Année, aucune création graphique — la représentation mensuelle serait trop imprécise pour une intervention réelle",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-13",
+      "name": "DTC-13 : un mouvement inférieur au seuil de 6 px n’ouvre aucun formulaire — un simple clic ne déclenche rien par accident",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-14",
+      "name": "DTC-14 : l’aperçu est visible pendant le geste et sa largeur suit le pointeur (28.5714% → 57.1429%), sans jamais capter la souris",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-15",
+      "name": "DTC-15 : l’aperçu affiche la période sélectionnée et la met à jour — « lun. 17 août → jeu. 20 août »",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-16",
+      "name": "DTC-16 : pendant tout le dessin, app.tasks, app.history et undoHistory sont STRICTEMENT inchangés — aucune mutation métier",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-43",
+      "name": "DTC-43 : l’état du geste ne touche jamais localStorage — c’est un état d’interface, pas une donnée",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-17",
+      "name": "DTC-17 : au relâchement, le formulaire s’ouvre — et aucune tâche n’est encore créée, aucun snapshot pris",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-18",
+      "name": "DTC-18 : le chantier de la ligne est présélectionné dans le formulaire",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-19",
+      "name": "DTC-19 : les dates dessinées sont préremplies — 2026-08-17T08:00 → 2026-08-20T17:00",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-20",
+      "name": "DTC-20 : fermer le formulaire sans valider ne crée aucune tâche, aucun événement d’historique et aucun step Undo",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-21",
+      "name": "DTC-21 : valider crée UNE tâche, sur le bon chantier, aux dates dessinées, en statut todo — par le submit existant, avec son snapshot",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-47",
+      "name": "DTC-47 : le toast « Tâche ajoutée » et l’infobulle du bouton Undo viennent du même actionToast — « Annuler : Tâche ajoutée — Ctrl+Z »",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-22",
+      "name": "DTC-22 : Undo supprime la tâche créée graphiquement",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-48",
+      "name": "DTC-48 : après l’Undo, le bouton Redo est actif et son infobulle nomme la même transaction",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-23",
+      "name": "DTC-23 : Redo restaure la MÊME tâche — même identifiant, mêmes dates, mêmes ressources, même lot, mêmes dépendances",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-24",
+      "name": "DTC-24 : plus de 4 secondes après la création, le toast a disparu mais le bouton ↶ annule toujours la création graphique",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-25",
+      "name": "DTC-25 : openTaskForm() et openTaskForm(pid) sans préremplissage gardent EXACTEMENT leur comportement de V2.8.4.1 — 08:00 → 12:00 du jour",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-26",
+      "name": "DTC-26 / DTC-27 : un filtre Ressource ou Lot actif n’est PAS préaffecté à la tâche — un filtre dit ce qu’on regarde, pas ce qu’on veut affecter",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-28",
+      "name": "DTC-28 : sur un chantier planifié à la semaine, le dessin préremplit la semaine ISO (2026-W34) et la durée (1 semaine(s)) — la sélection graphique n’est pas perdue",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-29",
+      "name": "DTC-29 : Échap pendant le dessin supprime l’aperçu et l’état du geste, n’ouvre aucun formulaire et ne mute rien",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-30",
+      "name": "DTC-30 : un pointercancel annule proprement le geste — aperçu retiré, état vidé, aucun formulaire",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-31",
+      "name": "DTC-31 : un geste débordant à gauche est borné au début de la période affichée — aucune date hors fenêtre",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-32",
+      "name": "DTC-32 : un geste débordant à droite est borné à la fin de la période affichée",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-33",
+      "name": "DTC-33 : une sélection sur un samedi ou un dimanche conserve la date dessinée — aucun saut automatique au lundi, aucune règle métier inventée",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-34",
+      "name": "DTC-34 : les barres de tâches gardent leur drag HTML5 et leur moteur de déplacement — le geste de création ne s’y mêle jamais et n’affiche aucun aperçu",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-35",
+      "name": "DTC-35 : cliquer une barre ouvre toujours la tâche — openTask() est inchangé",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-36",
+      "name": "DTC-36 : drawDeps() fonctionne toujours, et la ligne de création ne porte ni identifiant de tâche ni ancre de dépendance — aucune flèche ne peut la viser",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-37",
+      "name": "DTC-37 : dans le Planning d’Opération, le MÊME composant et le MÊME openTaskForm s’ouvrent sur le bon chantier — aucun code spécifique",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-38",
+      "name": "DTC-38 : pendant une simulation, la création graphique est désactivée — une tâche réellement créée au milieu d’un scénario simulé serait ambiguë",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-39",
+      "name": "DTC-39 : à 390px, le parcours mobile reste l’agenda — aucune création graphique utilisable et aucun débordement",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-40",
+      "name": "DTC-40 : à 768px, le Gantt reste fonctionnel (3 ligne(s) de création) sans débordement horizontal de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-41",
+      "name": "DTC-41 : en thème sombre, l’aperçu et le libellé de la ligne restent lisibles — uniquement des variables du design system",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-42",
+      "name": "DTC-42 : « + Ajouter une tâche » est un vrai bouton, atteignable au clavier, qui ouvre le formulaire CLASSIQUE sans sélection graphique — le dessin n’est jamais le seul chemin",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-44",
+      "name": "DTC-44 : ni la sauvegarde ni localStorage ne contiennent l’état du geste",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-45",
+      "name": "DTC-45 : SCHEMA_VERSION reste à 12 — aucun nouveau champ métier",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-46",
+      "name": "DTC-46 : STORE reste « kanvix-product-8-3 »",
+      "status": "PASS"
+    },
+    {
+      "sec": "DTC-49",
+      "name": "DTC-49 : une création graphique, une modification et un déplacement forment trois transactions distinctes, remontées dans le bon ordre par trois Undo",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-285",
+      "name": "FREEZE-285 : les 64 moteurs de V2.8.4.1 sont BYTE-IDENTIQUES — tout l’Undo/Redo, le déplacement des tâches, le drag HTML5, drawDeps, scale(), pos(), planningTasks(), la Qualité, les Ressources, les Jalons et le Mode Chantier",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-285",
+      "name": "FREEZE-285 : seules gantt() et openTaskForm() sont modifiées, et les onze helpers ajoutés appartiennent tous au draw-to-create",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-285",
+      "name": "FREEZE-285 : le paramètre prefill est optionnel EN QUEUE, les convertisseurs X → temps sont purs, il n’existe qu’UN gantt(), et la ligne de création n’utilise aucun drag HTML5",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-285",
+      "name": "FREEZE-285 : STORE et SCHEMA_VERSION (12) strictement inchangés",
+      "status": "PASS"
+    }
+  ],
+  "consoleErrors": []
+}
