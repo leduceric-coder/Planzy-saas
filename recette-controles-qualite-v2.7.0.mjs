@@ -1113,9 +1113,21 @@ console.log('\n[FREEZE-270] Byte-identité des moteurs protégés');
     return null;
   };
   const md5 = (s) => crypto.createHash('md5').update(s).digest('hex');
+    /* V2.9.0 — RE-BASELINE des listes de gel. Six moteurs ont été étendus par
+       la STRUCTURE, à la demande explicite du produit ; ils sortent donc de la
+       liste des « inchangés », sans que rien d'autre n'y soit relâché :
+         · planningTasks            — §18 : quatrième axe de filtrage (périmètre
+                                      structure). Sans cet axe, le Gantt d'un
+                                      niveau exigerait un second moteur.
+         · migrateState             — §43 : migration 12 → 13
+         · applyImportPlan          — §47/§48 : aucune référence orpheline
+         · openTask                 — §31/§32 : l'emplacement de la tâche
+         · planningCreatePointerUp  — §22 : le niveau voyage avec le geste
+         · operationProjectCard     — §26 : mention discrète « N niveaux »
+       Tous les autres moteurs de ces listes restent vérifiés byte à byte. */
   const frozen = [
     'taskResourceIds', 'taskHasResource', 'normalizeTaskResources', 'taskEffectiveColorKey',
-    'taskColorClass', 'planningTasks', 'planningProblems', 'gantt', 'kanbanCard', 'kanbanBoard',
+    'taskColorClass', 'planningProblems', 'gantt', 'kanbanCard', 'kanbanBoard',
     'kanbanDrop', 'dropTask', 'getResourceState', 'getResourcePeriodState', 'getResourceTasks',
     'getResourceLoad', 'getMaxConcurrentTasks', 'getResourceSchedulingConflicts',
     'getResourceConflicts', 'planReflow', 'applyReflowPlan', 'evaluateScenario',

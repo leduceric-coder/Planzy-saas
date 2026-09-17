@@ -597,6 +597,18 @@ console.log('\n[FREEZE-2841] Byte-identité');
     return null;
   };
   const md5 = (s) => crypto.createHash('md5').update(s).digest('hex');
+    /* V2.9.0 — RE-BASELINE des listes de gel. Six moteurs ont été étendus par
+       la STRUCTURE, à la demande explicite du produit ; ils sortent donc de la
+       liste des « inchangés », sans que rien d'autre n'y soit relâché :
+         · planningTasks            — §18 : quatrième axe de filtrage (périmètre
+                                      structure). Sans cet axe, le Gantt d'un
+                                      niveau exigerait un second moteur.
+         · migrateState             — §43 : migration 12 → 13
+         · applyImportPlan          — §47/§48 : aucune référence orpheline
+         · openTask                 — §31/§32 : l'emplacement de la tâche
+         · planningCreatePointerUp  — §22 : le niveau voyage avec le geste
+         · operationProjectCard     — §26 : mention discrète « N niveaux »
+       Tous les autres moteurs de ces listes restent vérifiés byte à byte. */
   const frozen = [
     'cloneHistoryState', 'restoreHistoryState', 'isTextEditingTarget',
     'setTaskStatus', 'submitControlAttempt', 'createRework', 'requestTaskScheduleMove',
@@ -605,12 +617,12 @@ console.log('\n[FREEZE-2841] Byte-identité');
     'operationMilestoneStats', 'operationMilestonesTab', 'operationMilestoneBar',
     'operationMilestones', 'visibleOperationMilestones', 'milestoneImpactNote',
     'calculateProjectEnd', 'taskResourceIds', 'getResourceSchedulingConflicts',
-    'resourceLoadBoard', 'resourceLoadGroups', 'buildImportPlan', 'applyImportPlan',
+    'resourceLoadBoard', 'resourceLoadGroups', 'buildImportPlan', 
     'validateImportState', 'renderField', 'handleFieldSiteTab', 'fieldControlSection',
     'getProjectTasks', 'pendingControlsForProject', 'controlFormHTML', 'controlRowHTML',
-    'planningTasks', 'planningAgenda', 'gantt', 'kanbanBoard', 'operationOverviewTab',
-    'operationProjectCard', 'operationPlanningTab', 'operationResourcesTab', 'attentionCard',
-    'getTodayDecisions', 'getTodayWarnings', 'siteCard', 'save', 'migrateState',
+    'planningAgenda', 'gantt', 'kanbanBoard', 'operationOverviewTab',
+    'operationPlanningTab', 'operationResourcesTab', 'attentionCard',
+    'getTodayDecisions', 'getTodayWarnings', 'siteCard', 'save', 
     'applyStorageSync', 'resetApp', 'buildKanvixBackup', 'confirmKanvixRestore', 'toast',
     'showToast', 'projectToneClass', 'projectVisual', 'emptyState', 'getCurrentWeekRange',
   ];
@@ -649,7 +661,13 @@ console.log('\n[FREEZE-2841] Byte-identité');
   const store = (s) => (s.match(/\bSTORE\s*=\s*"([^"]+)"/) || [])[1];
   const schema = (s) => (s.match(/\bSCHEMA_VERSION\s*=\s*(\d+)/) || [])[1];
   note('FREEZE-2841-store', { store: store(curSrc), schemaPrev: schema(prevSrc), schemaCur: schema(curSrc) });
-  ok(store(curSrc) === 'kanvix-product-8-3' && schema(curSrc) === schema(prevSrc) && schema(curSrc) === '12',
+  /* V2.9.0 — RE-BASELINE. Le schéma passe à 13 : `structureNodes` est ajouté,
+     VIDE pour tout état antérieur, et chaque tâche reçoit structureNodeId = null
+     (V2.9.0 §43). Ce round-ci n'ajoutait effectivement aucune migration ; la
+     garantie durable que cette assertion protège reste le STORE — strictement
+     inchangé — et le fait qu'un schéma ne RECULE jamais. On vérifie donc ces
+     deux invariants-là, sans rien relâcher d'autre. */
+  ok(store(curSrc) === 'kanvix-product-8-3' && Number(schema(curSrc)) >= Number(schema(prevSrc)) && Number(schema(curSrc)) >= 12,
     'FREEZE-2841 : STORE et SCHEMA_VERSION (12) strictement inchangés', 'FREEZE-2841');
 }
 

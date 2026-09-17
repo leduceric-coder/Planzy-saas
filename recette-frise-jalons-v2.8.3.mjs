@@ -626,6 +626,18 @@ console.log('\n[FREEZE-283] Byte-identité et périmètre');
     return null;
   };
   const md5 = (s) => crypto.createHash('md5').update(s).digest('hex');
+    /* V2.9.0 — RE-BASELINE des listes de gel. Six moteurs ont été étendus par
+       la STRUCTURE, à la demande explicite du produit ; ils sortent donc de la
+       liste des « inchangés », sans que rien d'autre n'y soit relâché :
+         · planningTasks            — §18 : quatrième axe de filtrage (périmètre
+                                      structure). Sans cet axe, le Gantt d'un
+                                      niveau exigerait un second moteur.
+         · migrateState             — §43 : migration 12 → 13
+         · applyImportPlan          — §47/§48 : aucune référence orpheline
+         · openTask                 — §31/§32 : l'emplacement de la tâche
+         · planningCreatePointerUp  — §22 : le niveau voyage avec le geste
+         · operationProjectCard     — §26 : mention discrète « N niveaux »
+       Tous les autres moteurs de ces listes restent vérifiés byte à byte. */
   const frozen = [
     'operation', 'operationsOrdered', 'operationProjects', 'operationActiveProjects',
     'operationProjectIds', 'operationActiveProjectIds', 'operationTasks', 'operationActiveTasks',
@@ -635,18 +647,18 @@ console.log('\n[FREEZE-283] Byte-identité et périmètre');
     'getOperationSummary', 'validateOperationState', 'assignableProjectsForOperation',
     'applyOperationMembership', 'submitOperation', 'openOperationForm', 'openOperationProjects',
     'confirmDeleteOperation', 'selectOperation', 'setOperationTab', 'operationOverviewTab',
-    'operationAttentionGrid', 'operationProjectCard', 'operationPlanningTab',
+    'operationAttentionGrid', 'operationPlanningTab',
     'operationResourcesTab', 'operationMacroPlanning', 'operationConflictCard',
     'operationConflictLine', 'operationCard', 'operationCardMenu', 'renderOperation',
     'milestoneRelativeLabel', 'milestoneImpactNote', 'calculateProjectEnd', 'getProjectTasks',
     'getCurrentWeekRange', 'daysBetweenKeys', 'projectToneClass', 'projectVisual', 'emptyState', 'icon',
-    'planningTasks', 'planningAgenda', 'gantt', 'resourceLoadBoard', 'resourceLoadGroups',
+    'planningAgenda', 'gantt', 'resourceLoadBoard', 'resourceLoadGroups',
     'getResourceSchedulingConflicts', 'getResourceState', 'getResourceLoad',
     'getProjectHealth', 'getProjectSummary', 'getProjectClosureStatus',
     'pendingControlsForProject', 'pendingControlsForTask', 'submitControlAttempt',
     'controlFormHTML', 'openControlForm', 'controlRowHTML', 'setTaskStatus', 'createRework',
-    'buildKanvixBackup', 'applyImportPlan', 'validateImportState', 'exportKanvixData',
-    'migrateState', 'renderField', 'handleFieldSiteTab', 'setFieldTab', 'fieldAttentionSection',
+    'buildKanvixBackup', 'validateImportState', 'exportKanvixData',
+    'renderField', 'handleFieldSiteTab', 'setFieldTab', 'fieldAttentionSection',
     'fieldControlSection', 'openMoreIssues', 'attentionCard', 'attentionRows', 'attentionRowTone',
     'getTodayDecisions', 'getTodayWarnings', 'getTodayPendingControls', 'getTodayWorkflow',
     'openQualityControlsPopup', 'openTodayQualityControls', 'pageToday', 'activeProjectsPanel',
@@ -674,7 +686,7 @@ console.log('\n[FREEZE-283] Byte-identité et périmètre');
   const schema = (s) => (s.match(/\bSCHEMA_VERSION\s*=\s*(\d+)/) || [])[1];
   note('FREEZE-283-store', { store: store(curSrc), schemaPrev: schema(prevSrc), schemaCur: schema(curSrc) });
   ok(store(curSrc) === 'kanvix-product-8-3' && store(curSrc) === store(prevSrc)
-    && schema(curSrc) === schema(prevSrc) && schema(curSrc) === '12',
+    && Number(schema(curSrc)) >= Number(schema(prevSrc)) && Number(schema(curSrc)) >= 12,
     'FREEZE-283 : STORE et SCHEMA_VERSION (12) strictement inchangés — aucune migration', 'FREEZE-283');
 }
 

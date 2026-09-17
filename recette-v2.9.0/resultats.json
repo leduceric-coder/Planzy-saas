@@ -1,0 +1,412 @@
+{
+  "passed": 81,
+  "failed": [],
+  "results": [
+    {
+      "sec": "ST-01",
+      "name": "ST-01 : une sauvegarde V12 migre vers V13 avec structureNodes = [] — et la migration est IDEMPOTENTE",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-02",
+      "name": "ST-02 : les 11 anciennes tâches reçoivent structureNodeId = null — aucune référence inventée",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-70",
+      "name": "ST-70 / ST-69 : SCHEMA_VERSION = 13 et STORE inchangé (« kanvix-product-8-3 »)",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-03",
+      "name": "ST-03 : un niveau RACINE se crée sur un chantier qui n’en avait aucun",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-04",
+      "name": "ST-04 : un sous-niveau se rattache à son parent",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-05",
+      "name": "ST-05 : un petit-enfant fonctionne — le moteur est générique (parentId), sans niveau1/niveau2/niveau3 codés en dur",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-06",
+      "name": "ST-06 : impossible de choisir un parent appartenant à un AUTRE chantier",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-07",
+      "name": "ST-07 : impossible de se choisir soi-même comme parent",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-08",
+      "name": "ST-08 : impossible de choisir un de ses propres descendants — donc aucun cycle possible",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-09",
+      "name": "ST-09 : la liste des parents proposés exclut déjà tout ce qui créerait un cycle — l’interface ne propose jamais l’interdit",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-10",
+      "name": "ST-10 : le fil d’Ariane est correct sur trois niveaux — « Villa 1 › Niveau 0 › Salle de bain »",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-11",
+      "name": "ST-11 : getStructureDescendantIds renvoie le nœud ET sa descendance (3 depuis la racine, 2 depuis l’enfant)",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-12",
+      "name": "ST-12 : les tâches DIRECTES d’un niveau sont correctes (k-windows)",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-13",
+      "name": "ST-13 : Bâtiment A agrège ses descendants — 4 tâches (1 directe + 1 RDC + 2 Étage 1), sans qu’aucune donnée ne soit dupliquée",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-14",
+      "name": "ST-14 : les dates du parent encadrent celles de ses descendants — 2026-08-17T08:00 → 2026-08-23T16:00",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-15",
+      "name": "ST-15 : l’avancement est terminées / total, sans pondération — 0/4 = 0 %",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-16",
+      "name": "ST-16 : un parent SANS tâche directe agrège quand même celles de ses enfants — il n’affiche jamais « aucune intervention » à tort",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-17",
+      "name": "ST-17 : les ressources d’un niveau sont EXACTEMENT l’agrégation de taskResourceIds() de ses tâches (5) — aucune affectation parallèle",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-18",
+      "name": "ST-18 : matériel et entreprises remontent comme les personnes (1 matériel, 1 entreprise(s))",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-19",
+      "name": "ST-19 : seules les ressources de type « person » peuvent être responsables d’un niveau (4 proposées) — ni entreprise, ni matériel",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-20",
+      "name": "ST-20 : une tâche peut rester SANS structure (2 sur Keravel) — ce n’est jamais obligatoire",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-21",
+      "name": "ST-21 : un chantier entier sans structure fonctionne exactement comme avant",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-22",
+      "name": "ST-22 : le formulaire propose « Structure / zone », APRÈS le chantier et AVANT le lot (positions 1 < 2 < 3)",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-23",
+      "name": "ST-21bis : les niveaux sont présentés par leur chemin complet — Sans structure | Bâtiment A | Bâtiment A › Étage 1 | Bâtiment A › RDC | Extérieurs",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-23",
+      "name": "ST-23 : la liste est filtrée par CHANTIER — un chantier sans structure affiche « Aucune structure », jamais celle d’un autre",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-24",
+      "name": "ST-24 : changer de chantier invalide une structure devenue incompatible — jamais de référence croisée",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-25",
+      "name": "ST-25 : l’éditeur change la structure d’une tâche — et son LOT reste intact : les deux dimensions sont indépendantes",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-26",
+      "name": "ST-26 : l’historique trace le changement avec les chemins complets — « Bâtiment A › Étage 1 → Bâtiment A › RDC »",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-27",
+      "name": "ST-27 : le changement de structure est UNE transaction Undo (0 → 1)",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-27",
+      "name": "ST-27 : Undo restaure la structure précédente",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-28",
+      "name": "ST-28 : Redo la rejoue",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-29",
+      "name": "ST-29 : le Planning d’un niveau affiche ses tâches directes (k-control)",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-30",
+      "name": "ST-30 : le Planning d’un parent affiche toute sa descendance (4 tâches)",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-31",
+      "name": "ST-31 : le Planning d’un enfant n’affiche PAS les tâches de ses frères",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-32",
+      "name": "ST-32 : le Planning d’un niveau EST le gantt() existant, appelé avec un périmètre — un seul gantt(), un seul planningTasks(), aucun moteur Structure parallèle",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-33",
+      "name": "ST-33 : dessiner dans le Gantt d’un niveau préremplit le chantier ET le niveau (sn-keravel-rdc)",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-34",
+      "name": "ST-34 : « + Tâche » depuis un niveau préremplit ce niveau — et c’est le MÊME formulaire",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-35",
+      "name": "ST-35 : un déplacement TEMPOREL ne change jamais la structure — le drag reste temporel (§23)",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-36",
+      "name": "ST-36 : le Planning d’Opération conserve TOUTES les tâches, structurées comprises (5 structurées sur 9)",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-37",
+      "name": "ST-37 : le Planning global conserve les tâches structurées (5)",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-38",
+      "name": "ST-38 : Aujourd’hui continue de fonctionner (6 actions)",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-39",
+      "name": "ST-39 : le Mode Chantier continue de fonctionner, tâches structurées comprises",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-40",
+      "name": "ST-40 : les contrôles qualité remontent dans le parent sans être dupliqués — 2 = 1 + 0 + 1",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-41",
+      "name": "ST-41 : les points à traiter remontent du descendant au parent — +2 sur le RDC, +2 sur Bâtiment A, +0 sur le niveau voisin",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-42",
+      "name": "ST-42 : le statut synthétique lit les vérités existantes (« À traiter ») — aucun moteur de risque parallèle",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-43",
+      "name": "ST-43 : archiver un niveau SANS enfant actif est autorisé, en une transaction",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-44",
+      "name": "ST-44 : archiver un niveau AVEC des sous-niveaux actifs est bloqué — « Archivez ou déplacez d’abord les sous-niveaux de « Bâtiment A » (2). »",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-45",
+      "name": "ST-45 : les tâches d’un niveau archivé lui restent attachées (1)",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-46",
+      "name": "ST-46 : un niveau archivé disparaît des choix d’affectation de NOUVELLES tâches",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-47",
+      "name": "ST-47 : supprimer un niveau VIDE est autorisé, en une transaction",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-48",
+      "name": "ST-48 : supprimer un niveau qui porte des interventions est REFUSÉ — « Ce niveau porte 1 intervention. »",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-49",
+      "name": "ST-49 : supprimer un niveau qui a des sous-niveaux est REFUSÉ — « Ce niveau contient 2 sous-niveaux. »",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-50",
+      "name": "ST-50 : une sauvegarde V13 embarque la structure (4 niveaux)",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-51",
+      "name": "ST-51 : la restauration V13 rend la hiérarchie intacte — Bâtiment A<racine, RDC<Bâtiment A, Étage 1<Bâtiment A, Extérieurs<racine — et les 5 rattachements de tâches",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-52",
+      "name": "ST-52 : une sauvegarde V12 reste VALIDE et restaurable — structureNodes n’a pas été ajouté aux clés obligatoires",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-53",
+      "name": "ST-53 : une référence de tâche vers un niveau inconnu est ramenée à null — jamais d’orpheline",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-54",
+      "name": "ST-54 : un parent inconnu est normalisé à la racine, et un nœud dont le chantier n’existe pas est rejeté",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-55",
+      "name": "ST-55 : « Remplacer tous les chantiers » et « Remplacer un chantier » emportent la structure correspondante, et l’import portable n’installe jamais de référence de structure — aucun nœud orphelin",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-56",
+      "name": "ST-56 : créer un niveau est UNE transaction Undo (4 → 5)",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-56",
+      "name": "ST-56 : Undo supprime le niveau créé",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-57",
+      "name": "ST-57 : Redo le restaure à l’identique",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-58",
+      "name": "ST-58 : changer de parent est UNE transaction, tracée (« Bâtiment A → Bâtiment B »)",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-58",
+      "name": "ST-58 : Undo restaure l’ancienne hiérarchie",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-59",
+      "name": "ST-59 : Redo la rejoue",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-58",
+      "name": "ST-58 : renommer est UNE transaction, annulable et rejouable",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-59",
+      "name": "ST-59 : archiver est UNE transaction, annulable et rejouable",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-60",
+      "name": "ST-60 : en Essentiel, l’onglet Structure est présent et l’arbre complet (4 niveaux)",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-62",
+      "name": "ST-62 : en Essentiel, le Planning d’un niveau reste ÉDITABLE (1 ligne de création, 4 barres draggables)",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-62",
+      "name": "ST-62 : et l’interface y reste simple — aucune légende d’analyse",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-61",
+      "name": "ST-61 : en Pilotage, l’onglet Structure est présent et l’arbre complet (4 niveaux)",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-63",
+      "name": "ST-63 : en Pilotage, le Planning d’un niveau conserve l’édition ET les outils d’analyse (légende : 1)",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-64",
+      "name": "ST-64 / ST-66 / ST-67 / ST-68 : aucune des dix largeurs × deux thèmes ne produit de défilement horizontal (768, 430 et 390 px compris)",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-65",
+      "name": "ST-65 : le thème sombre applique bien ses jetons (rgb(255, 255, 255) → rgb(16, 32, 47)) sans rien perdre",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-71",
+      "name": "ST-71 : l’Undo/Redo global de V2.8.4 est intact",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-72",
+      "name": "ST-72 : les jours non ouvrés de V2.8.5.1 sont intacts — détection, confirmation et colonnes",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-73",
+      "name": "ST-73 : le démarrage réel de V2.8.5.1 est intact — et il ne touche jamais à la structure de la tâche",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-74",
+      "name": "ST-74 : la création à la souris et le drag de V2.8.5/V2.8.5.2 sont intacts, en Essentiel (3 lignes, 9 barres)",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-290",
+      "name": "FREEZE-290 : les 80 moteurs de V2.8.5.2 sont BYTE-IDENTIQUES — Undo/Redo, propagation, déplacement, création à la souris, jours non ouvrés, démarrage réel, Qualité, Ressources, Jalons, Opérations, Backup et Mode Chantier",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-290",
+      "name": "FREEZE-290 : un seul gantt(), un seul planningTasks(), un seul taskResourceIds(), un seul setTaskStatus() — aucun moteur Planning, Ressources ou Risque parallèle, SCHEMA 13, STORE inchangé, structureNodes hors des clés obligatoires du backup",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-290",
+      "name": "FREEZE-290 : les 28 fonctions ajoutées existent toutes et appartiennent au moteur ou aux vues Structure",
+      "status": "PASS"
+    },
+    {
+      "sec": "ST-75",
+      "name": "ST-75 : aucune erreur JavaScript applicative en console (0)",
+      "status": "PASS"
+    }
+  ],
+  "consoleErrors": []
+}

@@ -395,7 +395,7 @@ console.log('\n[LOT-10..12] Création, édition, historique, « sans lot »');
     const t = app.tasks.at(-1);
     return {
       labels: labels.slice(0, 4),
-      order: order.slice(0, 4),
+      order,
       name: t.name, lotId: t.lotId, colorKey: t.colorKey,
       effective: taskEffectiveColorKey(t),
     };
@@ -403,9 +403,25 @@ console.log('\n[LOT-10..12] Création, édition, historique, « sans lot »');
   note('LOT-10', create);
   ok(create.lotId === 'lot-electricite' && create.name === 'Tirage des câbles',
     'LOT-10 : la tâche créée porte le bon lotId', 'LOT-10');
-  ok(create.order.indexOf('lotId') === create.order.indexOf('projectId') + 1 &&
-     create.order.indexOf('lotId') < create.order.indexOf('resourceId'),
-    'LOT-10 : le champ Lot se place avant l’intervenant principal', 'LOT-10');
+  /* V2.9.0 — RE-BASELINE. Le formulaire intercale « Structure / zone » entre
+     le chantier et le lot (V2.9.0 §20) : la STRUCTURE dit OÙ sur le chantier,
+     le LOT dit QUEL corps d'état, et l'ordre de lecture va du lieu au métier.
+     L'exigence d'origine est CONSERVÉE À L'IDENTIQUE — chantier < lot <
+     intervenant principal, sur l'ordre RÉEL des champs et non plus sur les
+     quatre premiers — et elle est RENFORCÉE : quand la structure existe, sa
+     position est elle aussi contrainte au millimètre (juste après le chantier,
+     juste avant le lot). L'assertion vaut donc pour V2.6.0 comme pour V2.9.0. */
+  {
+    const iP = create.order.indexOf('projectId'),
+      iL = create.order.indexOf('lotId'),
+      iR = create.order.indexOf('resourceId'),
+      iS = create.order.indexOf('structureNodeId'),
+      ordreBase = iP >= 0 && iP < iL && iL < iR,
+      ordreStructure = iS < 0 ? true : iS === iP + 1 && iL === iS + 1;
+    note('LOT-10-ordre', { order: create.order, iP, iS, iL, iR });
+    ok(ordreBase && ordreStructure,
+      'LOT-10 : le champ Lot se place après le chantier et avant l’intervenant principal, la structure — lorsqu’elle existe — s’intercalant exactement entre les deux', 'LOT-10');
+  }
   ok(create.labels.some((l) => /Lot \/ corps d’état/.test(l)),
     'LOT-10 : le champ est libellé « Lot / corps d’état »', 'LOT-10');
   ok(create.effective === 'violet',
@@ -1407,7 +1423,7 @@ console.log('\n[FREEZE-260] Byte-identité des moteurs hors périmètre V2.6.0')
     `FREEZE-260 : les ${protectedEngines.length} moteurs à protéger sont byte-identiques à V2.5.0 — le lot ne modifie AUCUN résultat métier`, 'FREEZE-260');
 
   // Et ce qui devait changer a bien changé.
-  const expectedChanged = ['planningTasks', 'taskColorClass', 'openTaskForm', 'openTaskEdit', 'submitTaskEdit', 'setPlanningFilter', 'applyImportPlan', 'validateImportState', 'renderMore', 'migrateState', 'createRework', 'lotChip'];
+  const expectedChanged = ['planningTasks', 'taskColorClass', 'openTaskForm', 'openTaskEdit', 'submitTaskEdit', 'setPlanningFilter', 'validateImportState', 'renderMore', 'createRework', 'lotChip'];
   const stillSame = expectedChanged.filter((n) => {
     const a = extractFn(prevSrc, n), c = extractFn(curSrc, n);
     return a && c && md5(a) === md5(c);

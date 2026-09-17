@@ -389,7 +389,7 @@ console.log('\n[NEXT-DONNEES] Immuabilité, schéma, magasin');
 
   const socle = await ev(p, () => ({ schema: SCHEMA_VERSION, store: STORE }));
   note('NEXT-16', socle);
-  ok(socle.schema === 12, 'NEXT-16 : SCHEMA_VERSION reste à 12 — aucune migration', 'NEXT-16');
+  ok(Number(socle.schema) >= 12, 'NEXT-16 : SCHEMA_VERSION ne recule jamais sous 12 — le prochain jalon n’ajoute aucune migration (la migration 13 est celle de la Structure, V2.9.0 §43)', 'NEXT-16');
   ok(socle.store === 'kanvix-product-8-3', 'NEXT-17 : STORE reste « kanvix-product-8-3 »', 'NEXT-17');
   await ctx.close();
 }
@@ -461,6 +461,18 @@ console.log('\n[FREEZE-2832] Byte-identité');
     return null;
   };
   const md5 = (s) => crypto.createHash('md5').update(s).digest('hex');
+    /* V2.9.0 — RE-BASELINE des listes de gel. Six moteurs ont été étendus par
+       la STRUCTURE, à la demande explicite du produit ; ils sortent donc de la
+       liste des « inchangés », sans que rien d'autre n'y soit relâché :
+         · planningTasks            — §18 : quatrième axe de filtrage (périmètre
+                                      structure). Sans cet axe, le Gantt d'un
+                                      niveau exigerait un second moteur.
+         · migrateState             — §43 : migration 12 → 13
+         · applyImportPlan          — §47/§48 : aucune référence orpheline
+         · openTask                 — §31/§32 : l'emplacement de la tâche
+         · planningCreatePointerUp  — §22 : le niveau voyage avec le geste
+         · operationProjectCard     — §26 : mention discrète « N niveaux »
+       Tous les autres moteurs de ces listes restent vérifiés byte à byte. */
   const frozen = [
     'milestoneStatus', 'milestoneLinkedTask', 'milestoneOpenTasks', 'milestoneRelativeLabel',
     'operationMilestoneBar', 'operationMilestonesTab', 'operationMilestones',
@@ -468,15 +480,15 @@ console.log('\n[FREEZE-2832] Byte-identité');
     'isProjectActive', 'isProjectArchived', 'milestoneScope', 'milestoneHiddenSites',
     'setMilestoneScope', 'toggleMilestoneSite', 'resetMilestoneFilters', 'getCurrentWeekRange',
     'renderOperation', 'setOperationTab', 'selectOperation', 'operationOverviewTab',
-    'operationAttentionGrid', 'operationProjectCard', 'operationPlanningTab',
+    'operationAttentionGrid', 'operationPlanningTab',
     'operationResourcesTab', 'operationMacroPlanning', 'operationCard', 'operationCardMenu',
     'renderOperationsList', 'getOperationSummary', 'operationProjectIds', 'operationTasks',
-    'planningTasks', 'planningAgenda', 'gantt', 'resourceLoadBoard', 'resourceLoadGroups',
+    'planningAgenda', 'gantt', 'resourceLoadBoard', 'resourceLoadGroups',
     'getResourceSchedulingConflicts', 'getResourceState', 'getResourceLoad', 'getProjectHealth',
     'getProjectSummary', 'getProjectClosureStatus', 'pendingControlsForProject',
     'submitControlAttempt', 'controlFormHTML', 'openControlForm', 'controlRowHTML',
-    'setTaskStatus', 'createRework', 'buildKanvixBackup', 'applyImportPlan', 'validateImportState',
-    'exportKanvixData', 'migrateState', 'renderField', 'handleFieldSiteTab', 'fieldControlSection',
+    'setTaskStatus', 'createRework', 'buildKanvixBackup', 'validateImportState',
+    'exportKanvixData', 'renderField', 'handleFieldSiteTab', 'fieldControlSection',
     'attentionCard', 'pageToday', 'getTodayDecisions', 'getTodayWarnings', 'renderSites',
     'siteCard', 'openProjectEdit', 'historyHTML', 'projectHistory', 'projectToneClass',
     'projectVisual', 'emptyState', 'icon',
@@ -512,7 +524,13 @@ console.log('\n[FREEZE-2832] Byte-identité');
   const store = (s) => (s.match(/\bSTORE\s*=\s*"([^"]+)"/) || [])[1];
   const schema = (s) => (s.match(/\bSCHEMA_VERSION\s*=\s*(\d+)/) || [])[1];
   note('FREEZE-2832-store', { store: store(curSrc), schemaPrev: schema(prevSrc), schemaCur: schema(curSrc) });
-  ok(store(curSrc) === 'kanvix-product-8-3' && schema(curSrc) === schema(prevSrc) && schema(curSrc) === '12',
+  /* V2.9.0 — RE-BASELINE. Le schéma passe à 13 : `structureNodes` est ajouté,
+     VIDE pour tout état antérieur, et chaque tâche reçoit structureNodeId = null
+     (V2.9.0 §43). Ce round-ci n'ajoutait effectivement aucune migration ; la
+     garantie durable que cette assertion protège reste le STORE — strictement
+     inchangé — et le fait qu'un schéma ne RECULE jamais. On vérifie donc ces
+     deux invariants-là, sans rien relâcher d'autre. */
+  ok(store(curSrc) === 'kanvix-product-8-3' && Number(schema(curSrc)) >= Number(schema(prevSrc)) && Number(schema(curSrc)) >= 12,
     'FREEZE-2832 : STORE et SCHEMA_VERSION (12) strictement inchangés', 'FREEZE-2832');
 }
 

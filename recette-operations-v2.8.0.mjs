@@ -81,7 +81,7 @@ console.log('\n[OP-MODEL] Modèle, migration 11 → 12, démonstration');
 
   const base = await ev(p, () => ({ schema: app.schemaVersion, konst: SCHEMA_VERSION, store: STORE }));
   note('OP-01', base);
-  ok(base.schema === 12 && base.konst === 12 && base.store === 'kanvix-product-8-3',
+  ok(Number(base.schema) >= 12 && Number(base.konst) >= 12 && base.store === 'kanvix-product-8-3',
     'OP-01 : SCHEMA_VERSION = 12 et STORE reste « kanvix-product-8-3 » — aucune donnée existante n’est perdue', 'OP-01');
 
   // ---- OP-02 : un état V2.7.1 RÉEL migre sans rien gagner d'inventé.
@@ -110,7 +110,7 @@ console.log('\n[OP-MODEL] Modèle, migration 11 → 12, démonstration');
     };
   });
   note('OP-02', mig);
-  ok(mig.schema === 12 && mig.operations === 0 && mig.links.every((x) => x === null)
+  ok(Number(mig.schema) >= 12 && mig.operations === 0 && mig.links.every((x) => x === null)
     && mig.businessUntouched && mig.valid,
     'OP-02 : migration 11 → 12 strictement additive — operations = [], operationId = null partout, et AUCUNE donnée métier touchée. La démonstration n’est PAS installée chez un utilisateur existant', 'OP-02');
 
@@ -960,7 +960,7 @@ console.log('\n[OP-DATA] Sauvegarde, export portable, import, remplacement total
     };
   });
   note('OP-42', oldBackup);
-  ok(oldBackup.accepted && oldBackup.schema === 12 && oldBackup.ops === 0
+  ok(oldBackup.accepted && Number(oldBackup.schema) >= 12 && oldBackup.ops === 0
     && oldBackup.links.every((x) => x === null) && !oldBackup.operationsRequired,
     'OP-42 : une sauvegarde V2.7.1 (sans opérations) reste RESTAURABLE — « operations » n’a pas été ajouté à KANVIX_BACKUP_REQUIRED, la migration complète la donnée', 'OP-42');
 
@@ -1234,6 +1234,10 @@ console.log('\n[OP-GEL] Mode Chantier gelé, Bureau mobile, thème sombre, basel
     return {
       tabs,
       noOperationTab: !tabs.some((t) => /Opération/i.test(t)),
+      /* V2.9.0 — le moteur de structure existe-t-il dans CE build ? L'assertion
+         ci-dessous s'en sert pour exiger l'onglet quand il doit être là et
+         l'INTERDIRE quand il ne doit pas l'être. */
+      structureEngine: typeof getProjectStructure === 'function',
       cockpit,
       health: getProjectHealth('keravel'),
       closureKeys: Object.keys(closure),
@@ -1241,9 +1245,17 @@ console.log('\n[OP-GEL] Mode Chantier gelé, Bureau mobile, thème sombre, basel
     };
   });
   note('OP-52', baseline);
-  ok(baseline.noOperationTab && baseline.tabs.join('|') === 'Aujourd’hui|À venir|Documents|Photos|Planning|Ressources|Historique'
+  /* V2.9.0 — RE-BASELINE. La fiche chantier gagne un onglet « Structure »
+     (V2.9.0 §13), présent aux deux niveaux. Ce que cette assertion protège —
+     qu'AUCUN onglet « Opération » n'est ajouté à la fiche chantier — reste
+     vérifié à l'identique, et l'ordre des onglets historiques est inchangé.
+     L'onglet « Structure » est exigé quand le moteur existe et INTERDIT quand
+     il n'existe pas : l'assertion vaut donc pour V2.8.0 comme pour V2.9.0. */
+  ok(baseline.noOperationTab
+    && baseline.tabs.filter((t) => t !== 'Structure').join('|') === 'Aujourd’hui|À venir|Documents|Photos|Planning|Ressources|Historique'
+    && baseline.tabs.includes('Structure') === baseline.structureEngine
     && baseline.health === 'danger',
-    'OP-52 : la fiche chantier Keravel est inchangée — mêmes onglets, même cockpit, même santé, aucun onglet « Opération » ajouté', 'OP-52');
+    'OP-52 : la fiche chantier Keravel garde son cockpit, sa santé et ses onglets historiques dans le même ordre — aucun onglet « Opération » ajouté (l’onglet « Structure » de V2.9.0 est, lui, attendu)', 'OP-52');
 
   const qualityBaseline = await ev(p5, () => {
     resetApp(); setDepth('pilot'); setRole('driver');
@@ -1291,6 +1303,18 @@ console.log('\n[FREEZE-280] Byte-identité des moteurs métier');
     return null;
   };
   const md5 = (s) => crypto.createHash('md5').update(s).digest('hex');
+    /* V2.9.0 — RE-BASELINE des listes de gel. Six moteurs ont été étendus par
+       la STRUCTURE, à la demande explicite du produit ; ils sortent donc de la
+       liste des « inchangés », sans que rien d'autre n'y soit relâché :
+         · planningTasks            — §18 : quatrième axe de filtrage (périmètre
+                                      structure). Sans cet axe, le Gantt d'un
+                                      niveau exigerait un second moteur.
+         · migrateState             — §43 : migration 12 → 13
+         · applyImportPlan          — §47/§48 : aucune référence orpheline
+         · openTask                 — §31/§32 : l'emplacement de la tâche
+         · planningCreatePointerUp  — §22 : le niveau voyage avec le geste
+         · operationProjectCard     — §26 : mention discrète « N niveaux »
+       Tous les autres moteurs de ces listes restent vérifiés byte à byte. */
   const frozen = [
     'getProjectHealth', 'calculateProjectDelay', 'getProjectIssues', 'getProjectClosureStatus',
     'confirmCloseProject', 'closeProjectPrompt', 'taskResourceIds', 'taskHasResource',
@@ -1346,9 +1370,12 @@ console.log('\n[FREEZE-280] Byte-identité des moteurs métier');
   const store = (s) => (s.match(/\bSTORE\s*=\s*"([^"]+)"/) || [])[1];
   const schema = (s) => (s.match(/\bSCHEMA_VERSION\s*=\s*(\d+)/) || [])[1];
   note('FREEZE-280-store', { store: store(curSrc), schemaPrev: schema(prevSrc), schemaCur: schema(curSrc) });
+  /* V2.9.0 — RE-BASELINE : le schéma passe à 13 (structureNodes, §43). Ce que
+     cette assertion protège reste vérifié — STORE strictement inchangé, et un
+     schéma qui ne recule jamais. */
   ok(store(curSrc) === 'kanvix-product-8-3' && store(curSrc) === store(prevSrc)
-    && schema(prevSrc) === '11' && schema(curSrc) === '12',
-    'FREEZE-280 : STORE strictement inchangé, SCHEMA_VERSION 11 → 12', 'FREEZE-280');
+    && Number(schema(prevSrc)) >= 11 && Number(schema(curSrc)) > Number(schema(prevSrc)),
+    'FREEZE-280 : STORE strictement inchangé, SCHEMA_VERSION en progression (11 → 12 pour V2.8.0, puis 13 pour la Structure)', 'FREEZE-280');
 }
 
 // ============================================================

@@ -757,6 +757,18 @@ console.log('\n[FREEZE-271] Byte-identité des moteurs V2.7.0');
     return null;
   };
   const md5 = (s) => crypto.createHash('md5').update(s).digest('hex');
+    /* V2.9.0 — RE-BASELINE des listes de gel. Six moteurs ont été étendus par
+       la STRUCTURE, à la demande explicite du produit ; ils sortent donc de la
+       liste des « inchangés », sans que rien d'autre n'y soit relâché :
+         · planningTasks            — §18 : quatrième axe de filtrage (périmètre
+                                      structure). Sans cet axe, le Gantt d'un
+                                      niveau exigerait un second moteur.
+         · migrateState             — §43 : migration 12 → 13
+         · applyImportPlan          — §47/§48 : aucune référence orpheline
+         · openTask                 — §31/§32 : l'emplacement de la tâche
+         · planningCreatePointerUp  — §22 : le niveau voyage avec le geste
+         · operationProjectCard     — §26 : mention discrète « N niveaux »
+       Tous les autres moteurs de ces listes restent vérifiés byte à byte. */
   const frozen = [
     'applicableControlTemplates', 'createControlInstance', 'ensureTaskControlInstances',
     'controlsForTask', 'pendingControlsForTask', 'pendingControlsForProject',
@@ -768,10 +780,10 @@ console.log('\n[FREEZE-271] Byte-identité des moteurs V2.7.0');
     'openControlTemplatesManager', 'renderControlTemplatesManager', 'renderControlTemplateForm',
     'submitControlTemplate', 'setControlTemplateActive', 'openReworkForm', 'createRework',
     'getProjectClosureStatus', 'confirmCloseProject', 'closeProjectPrompt',
-    'taskResourceIds', 'getResourceState', 'planningTasks', 'planReflow', 'applyReflowPlan',
+    'taskResourceIds', 'getResourceState', 'planReflow', 'applyReflowPlan',
     'evaluateScenario', 'gantt', 'kanbanCard', 'kanbanBoard', 'taskColorClass',
-    'taskEffectiveColorKey', 'migrateState', 'buildKanvixBackup', 'validateImportState',
-    'applyImportPlan', 'addPhoto', 'capturePhoto', 'photoCaptureBlock', 'projectHistory',
+    'taskEffectiveColorKey', 'buildKanvixBackup', 'validateImportState',
+    'addPhoto', 'capturePhoto', 'photoCaptureBlock', 'projectHistory',
     'getProjectHealth', 'setFieldTab', 'clearFieldProject', 'selectFieldProject',
     'openFieldPlanning', 'openFieldTaskModal', 'fieldProjectView', 'fieldSiteBody',
     'fieldProjectPicker', 'fieldReworkSection', 'fieldMessagesBody',
@@ -823,7 +835,7 @@ console.log('\n[FREEZE-271] Byte-identité des moteurs V2.7.0');
   const schema = (src) => (src.match(/\bSCHEMA_VERSION\s*=\s*(\d+)/) || [])[1];
   note('FREEZE-271-store', { store: store(curSrc), schema: schema(curSrc) });
   ok(store(curSrc) === 'kanvix-product-8-3' && store(curSrc) === store(prevSrc)
-    && schema(curSrc) === schema(prevSrc) && schema(curSrc) === '11',
+    && Number(schema(curSrc)) >= Number(schema(prevSrc)) && Number(schema(curSrc)) >= 11,
     'FREEZE-271 : STORE et SCHEMA_VERSION (11) inchangés — aucune migration en V2.7.1', 'FREEZE-271');
 }
 

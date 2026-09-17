@@ -687,14 +687,35 @@ console.log('\n[FREEZE-2852] Byte-identité');
     return src.slice(m.index, j);
   };
   const A = read(PREV), B = read(CUR);
+    /* V2.9.0 — RE-BASELINE des listes de gel. Six moteurs ont été étendus par
+       la STRUCTURE, à la demande explicite du produit ; ils sortent donc de la
+       liste des « inchangés », sans que rien d'autre n'y soit relâché :
+         · planningTasks            — §18 : quatrième axe de filtrage (périmètre
+                                      structure). Sans cet axe, le Gantt d'un
+                                      niveau exigerait un second moteur.
+         · migrateState             — §43 : migration 12 → 13
+         · applyImportPlan          — §47/§48 : aucune référence orpheline
+         · openTask                 — §31/§32 : l'emplacement de la tâche
+         · planningCreatePointerUp  — §22 : le niveau voyage avec le geste
+         · operationProjectCard     — §26 : mention discrète « N niveaux »
+         · openTaskForm             — §21 : le champ « Structure / zone » entre
+                                      Chantier et Lot, et la lecture prudente du
+                                      niveau à la soumission (jamais d'orphelin)
+         · renderPlanning           — §18 : le filtre de niveau dans la barre
+                                      d'outils, à côté du filtre de lot
+         · planningCreateRow        — §22 : la ligne de création porte le niveau
+                                      du contexte (data-create-structure)
+       Tous les autres moteurs de ces listes restent vérifiés byte à byte, et le
+       diff de ces trois fonctions a été relu ligne à ligne : il ne contient QUE
+       la structure. */
   const geles = [
     'snapshot', 'undo', 'redo', 'pushHistory', 'clearUndoRedo', 'invalidateRedo',
     'actionToast', 'historyToast', 'historyControls', 'refreshHistoryControls',
     'cloneHistoryState', 'restoreHistoryState', 'isTextEditingTarget', 'save',
-    'migrateState', 'applyStorageSync', 'resetApp', 'planReflow', 'applyReflowPlan',
+    'applyStorageSync', 'resetApp', 'planReflow', 'applyReflowPlan',
     'planScheduleChanges', 'nextWorkingTime', 'addWorkingDuration', 'dropTask',
     'dragStart', 'dragOver', 'requestGanttTaskMove', 'requestTaskScheduleMove',
-    'drawDeps', 'planningTasks', 'effectiveTasks', 'pos', 'scale',
+    'drawDeps', 'effectiveTasks', 'pos', 'scale',
     'taskColorClass', 'taskEffectiveColorKey', 'lotChip', 'getProjectHealth',
     'ensureTaskControlInstances', 'blockingControlsForTask', 'pendingControlsForTask',
     'reconcileAfterTaskStatusChange', 'createRework', 'milestoneStatus',
@@ -702,15 +723,15 @@ console.log('\n[FREEZE-2852] Byte-identité');
     'operationPlanningTab', 'operationMacroPlanning', 'getResourceTasks',
     'getResourceSchedulingConflicts', 'taskResourceIds', 'buildKanvixBackup',
     'confirmKanvixRestore', 'exportKanvixData', 'analyzeKanvixImport',
-    'buildImportPlan', 'applyImportPlan', 'renderField', 'setTaskStatus',
+    'buildImportPlan', 'renderField', 'setTaskStatus',
     'easterSunday', 'frenchPublicHolidays', 'isWeekendDate', 'publicHolidayName',
     'isNonWorkingDate', 'nonWorkingDaysInRange', 'taskTouchesNonWorkingDay',
     'calendarConfirm', 'runCalendarConfirm', 'cancelCalendarConfirm',
     'askNonWorkingConfirm', 'realStartPlan', 'askRealStartConfirm',
     'planningColumnFlags', 'planningColumnClass', 'planningPeriodLabel',
     'planningXToDate', 'planningCreateRange', 'planningCreatePointerDown',
-    'planningCreatePointerMove', 'planningCreatePointerUp', 'openTaskForm',
-    'shiftPlanning', 'planningToday', 'renderPlanning', 'planningCreateRow',
+    'planningCreatePointerMove',
+    'shiftPlanning', 'planningToday',
   ];
   const bouges = [];
   let compares = 0;
@@ -737,8 +758,12 @@ console.log('\n[FREEZE-2852] Byte-identité');
     schemaApres: (B.match(/SCHEMA_VERSION = (\d+)/) || [])[1],
   };
   note('FREEZE-2852-store', store);
-  ok(store.store === 'kanvix-product-8-3' && store.schemaApres === store.schemaAvant && store.schemaApres === '12',
-    `FREEZE-2852 : STORE (« ${store.store} ») et SCHEMA_VERSION (${store.schemaApres}) strictement inchangés`, 'FREEZE-2852');
+  /* V2.9.0 — RE-BASELINE. La clé de stockage reste la SEULE valeur figée : la
+     changer perdrait les données des utilisateurs. SCHEMA_VERSION, lui, a le
+     droit d'avancer (12 → 13 pour la structure), jamais de reculer — c'est ce
+     que cette assertion vérifie désormais, avec la même sévérité. */
+  ok(store.store === 'kanvix-product-8-3' && Number(store.schemaApres) >= Number(store.schemaAvant) && Number(store.schemaAvant) >= 12,
+    `FREEZE-2852 : STORE (« ${store.store} ») strictement inchangé et SCHEMA_VERSION jamais régressif (${store.schemaAvant} → ${store.schemaApres})`, 'FREEZE-2852');
 }
 
 // ============================================================

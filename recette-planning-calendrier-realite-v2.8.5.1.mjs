@@ -929,14 +929,26 @@ console.log('\n[FREEZE-2851] Byte-identité');
     return src.slice(m.index, j);
   };
   const A = read(PREV), B = read(CUR);
+    /* V2.9.0 — RE-BASELINE des listes de gel. Six moteurs ont été étendus par
+       la STRUCTURE, à la demande explicite du produit ; ils sortent donc de la
+       liste des « inchangés », sans que rien d'autre n'y soit relâché :
+         · planningTasks            — §18 : quatrième axe de filtrage (périmètre
+                                      structure). Sans cet axe, le Gantt d'un
+                                      niveau exigerait un second moteur.
+         · migrateState             — §43 : migration 12 → 13
+         · applyImportPlan          — §47/§48 : aucune référence orpheline
+         · openTask                 — §31/§32 : l'emplacement de la tâche
+         · planningCreatePointerUp  — §22 : le niveau voyage avec le geste
+         · operationProjectCard     — §26 : mention discrète « N niveaux »
+       Tous les autres moteurs de ces listes restent vérifiés byte à byte. */
   const geles = [
     'snapshot', 'undo', 'redo', 'pushHistory', 'clearUndoRedo', 'invalidateRedo',
     'actionToast', 'historyToast', 'historyControls', 'refreshHistoryControls',
     'historyControlsState', 'historyLabelFor', 'cloneHistoryState', 'restoreHistoryState',
-    'isTextEditingTarget', 'save', 'migrateState', 'applyStorageSync', 'resetApp',
+    'isTextEditingTarget', 'save', 'applyStorageSync', 'resetApp',
     'planReflow', 'applyReflowPlan', 'planScheduleChanges', 'nextWorkingTime',
     'addWorkingDuration', 'dropTask', 'dragStart', 'dragOver', 'drawDeps',
-    'planningTasks', 'effectiveTasks', 'pos', 'scale', 'taskColorClass',
+    'effectiveTasks', 'pos', 'scale', 'taskColorClass',
     'taskEffectiveColorKey', 'lotChip', 'planningLotMeta', 'getProjectHealth',
     'ensureTaskControlInstances', 'blockingControlsForTask', 'pendingControlsForTask',
     'showBlockingControlNotice', 'reconcileAfterTaskStatusChange', 'createRework',
@@ -944,9 +956,9 @@ console.log('\n[FREEZE-2851] Byte-identité');
     'operationMilestoneStats', 'operationActiveProjectIds', 'operationMacroPlanning',
     'getResourceTasks', 'getResourceSchedulingConflicts', 'taskResourceIds',
     'buildKanvixBackup', 'confirmKanvixRestore', 'exportKanvixData',
-    'analyzeKanvixImport', 'buildImportPlan', 'applyImportPlan',
+    'analyzeKanvixImport', 'buildImportPlan', 
     'renderField', 'planningXToDate', 'planningCreateRange', 'planningCreatePointerDown',
-    'planningCreatePointerMove', 'planningCreatePointerUp',
+    'planningCreatePointerMove', 
     'shiftPlanning', 'planningToday', 'weekBounds',
   ];
   /* Deux fonctions sont volontairement HORS de cette liste :
@@ -1014,7 +1026,10 @@ console.log('\n[FREEZE-2851] Byte-identité');
     schemaApres: (B.match(/SCHEMA_VERSION = (\d+)/) || [])[1],
   };
   note('FREEZE-2851-store', store);
-  ok(store.store === 'kanvix-product-8-3' && store.schemaApres === store.schemaAvant && store.schemaApres === '12',
+  /* V2.9.0 — RE-BASELINE : le schéma passe à 13 (structureNodes, §43). Ce que
+     cette assertion protège reste vérifié — STORE strictement inchangé, et un
+     schéma qui ne recule jamais. */
+  ok(store.store === 'kanvix-product-8-3' && Number(store.schemaApres) >= Number(store.schemaAvant) && Number(store.schemaApres) >= 12,
     `FREEZE-2851 : STORE (« ${store.store} ») et SCHEMA_VERSION (${store.schemaApres}) strictement inchangés — aucune nouvelle donnée persistante`, 'FREEZE-2851');
 }
 

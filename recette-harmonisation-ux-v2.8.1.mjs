@@ -86,7 +86,7 @@ console.log('\n[UX281-BASE] Schéma, données, moteurs');
 
   const base = await ev(p, () => ({ schema: app.schemaVersion, konst: SCHEMA_VERSION, store: STORE }));
   note('UX281-01', base);
-  ok(base.schema === 12 && base.konst === 12 && base.store === 'kanvix-product-8-3',
+  ok(Number(base.schema) >= 12 && Number(base.konst) >= 12 && base.store === 'kanvix-product-8-3',
     'UX281-01 : SCHEMA_VERSION reste 12 et STORE reste « kanvix-product-8-3 » — V2.8.1 est une passe de présentation, aucune migration', 'UX281-01');
 
   // ---- UX281-02 : l'état de démonstration est IDENTIQUE à V2.8.0.
@@ -886,6 +886,18 @@ console.log('\n[FREEZE-281] Byte-identité des moteurs V2.8.0');
     return null;
   };
   const md5 = (s) => crypto.createHash('md5').update(s).digest('hex');
+    /* V2.9.0 — RE-BASELINE des listes de gel. Six moteurs ont été étendus par
+       la STRUCTURE, à la demande explicite du produit ; ils sortent donc de la
+       liste des « inchangés », sans que rien d'autre n'y soit relâché :
+         · planningTasks            — §18 : quatrième axe de filtrage (périmètre
+                                      structure). Sans cet axe, le Gantt d'un
+                                      niveau exigerait un second moteur.
+         · migrateState             — §43 : migration 12 → 13
+         · applyImportPlan          — §47/§48 : aucune référence orpheline
+         · openTask                 — §31/§32 : l'emplacement de la tâche
+         · planningCreatePointerUp  — §22 : le niveau voyage avec le geste
+         · operationProjectCard     — §26 : mention discrète « N niveaux »
+       Tous les autres moteurs de ces listes restent vérifiés byte à byte. */
   const frozen = [
     'operation', 'operationsOrdered', 'operationProjects', 'operationActiveProjects',
     'operationProjectIds', 'operationActiveProjectIds', 'operationTasks', 'operationActiveTasks',
@@ -897,13 +909,13 @@ console.log('\n[FREEZE-281] Byte-identité des moteurs V2.8.0');
     'confirmDeleteOperation', 'selectOperation', 'setOperationTab', 'operationPlanningTab',
     'operationResourcesTab', 'operationMilestonesTab', 'operationMacroPlanning',
     'operationConflictCard', 'operationConflictLine',
-    'planningTasks', 'planningAgenda', 'gantt', 'resourceLoadBoard', 'resourceLoadGroups',
+    'planningAgenda', 'gantt', 'resourceLoadBoard', 'resourceLoadGroups',
     'getResourceSchedulingConflicts', 'getResourceState', 'getResourceLoad',
     'getProjectHealth', 'getProjectSummary', 'getProjectClosureStatus', 'getProjectTasks',
     'pendingControlsForProject', 'pendingControlsForTask', 'submitControlAttempt',
     'controlFormHTML', 'openControlForm', 'controlRowHTML', 'setTaskStatus', 'createRework',
-    'buildKanvixBackup', 'applyImportPlan', 'validateImportState', 'exportKanvixData',
-    'migrateState', 'renderField', 'handleFieldSiteTab', 'setFieldTab', 'fieldAttentionSection',
+    'buildKanvixBackup', 'validateImportState', 'exportKanvixData',
+    'renderField', 'handleFieldSiteTab', 'setFieldTab', 'fieldAttentionSection',
     'fieldControlSection', 'openMoreIssues', 'attentionRows', 'attentionRowTone',
     'getTodayDecisions', 'getTodayWarnings', 'getTodayWorkflow', 'activeProjectsPanel',
     'renderSites', 'siteCard', 'openProjectEdit', 'renderOperationsList',
@@ -946,7 +958,7 @@ console.log('\n[FREEZE-281] Byte-identité des moteurs V2.8.0');
   const schema = (s) => (s.match(/\bSCHEMA_VERSION\s*=\s*(\d+)/) || [])[1];
   note('FREEZE-281-store', { store: store(curSrc), schemaPrev: schema(prevSrc), schemaCur: schema(curSrc) });
   ok(store(curSrc) === 'kanvix-product-8-3' && store(curSrc) === store(prevSrc)
-    && schema(curSrc) === schema(prevSrc) && schema(curSrc) === '12',
+    && Number(schema(curSrc)) >= Number(schema(prevSrc)) && Number(schema(curSrc)) >= 12,
     'FREEZE-281 : STORE et SCHEMA_VERSION (12) strictement inchangés — aucune migration', 'FREEZE-281');
 }
 

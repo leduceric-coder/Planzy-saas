@@ -300,7 +300,20 @@ console.log('\n[NR-QC-OFF] Avec la qualité neutralisée, V2.7.0 = V2.6.1');
     const today = document.querySelector('.tab-body, .project-tab-body, main')?.textContent.replace(/\s+/g, ' ').trim();
     const t = app.tasks.find((x) => x.projectId === pid);
     openTask(t.id);
-    const sheet = document.querySelector('#drawerContent').textContent.replace(/\s+/g, ' ').trim();
+    /* V2.9.0 — RE-BASELINE. La fiche d'une tâche affiche désormais son
+       EMPLACEMENT quand elle en a un (V2.9.0 §31/§32) : « Bâtiment A › Étage 1 »
+       sous le nom du chantier. C'est une information nouvelle, voulue, et
+       étrangère à ce que cette assertion mesure — l'absence d'effet de la
+       QUALITÉ quand il n'y a rien à contrôler. On la neutralise donc dans la
+       comparaison, sans rien retirer d'autre : tout le reste de la fiche et de
+       l'onglet Aujourd'hui est toujours comparé caractère par caractère. */
+    const chemin = t.structureNodeId ? structurePath(t.structureNodeId) : '';
+    const sheet = document
+      .querySelector('#drawerContent')
+      .textContent.replace(/\s+/g, ' ')
+      .replace(chemin ? new RegExp(chemin.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g') : /$^/, '')
+      .replace(/\s+/g, ' ')
+      .trim();
     return { today: today?.slice(0, 400), sheet: sheet.slice(0, 400) };
   };
   const ra = await a.p.evaluate(probe);

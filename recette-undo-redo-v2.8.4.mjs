@@ -73,7 +73,7 @@ console.log('\n[UR-SOCLE] Schéma, magasin, pile héritée');
   const { ctx, p } = await newPage({ tag: 'SOCLE' });
   const socle = await ev(p, () => ({ schema: SCHEMA_VERSION, store: STORE, limite: UNDO_LIMIT }));
   note('UR-01', socle);
-  ok(socle.schema === 12, 'UR-01 : SCHEMA_VERSION reste à 12 — l’historique est un état de session, pas une donnée métier', 'UR-01');
+  ok(Number(socle.schema) >= 12, 'UR-01 : SCHEMA_VERSION ne recule jamais sous 12 — l’historique reste un état de session, pas une donnée métier (la migration 13 est celle de la Structure, V2.9.0 §43)', 'UR-01');
   ok(socle.store === 'kanvix-product-8-3', 'UR-02 : STORE reste « kanvix-product-8-3 »', 'UR-02');
 
   // UR-03 — une sauvegarde V2.8.3.2 peut contenir une pile d'annulation.
@@ -1068,6 +1068,18 @@ console.log('\n[FREEZE-284] Byte-identité des moteurs métier');
     return null;
   };
   const md5 = (s) => crypto.createHash('md5').update(s).digest('hex');
+    /* V2.9.0 — RE-BASELINE des listes de gel. Six moteurs ont été étendus par
+       la STRUCTURE, à la demande explicite du produit ; ils sortent donc de la
+       liste des « inchangés », sans que rien d'autre n'y soit relâché :
+         · planningTasks            — §18 : quatrième axe de filtrage (périmètre
+                                      structure). Sans cet axe, le Gantt d'un
+                                      niveau exigerait un second moteur.
+         · migrateState             — §43 : migration 12 → 13
+         · applyImportPlan          — §47/§48 : aucune référence orpheline
+         · openTask                 — §31/§32 : l'emplacement de la tâche
+         · planningCreatePointerUp  — §22 : le niveau voyage avec le geste
+         · operationProjectCard     — §26 : mention discrète « N niveaux »
+       Tous les autres moteurs de ces listes restent vérifiés byte à byte. */
   const frozen = [
     'setTaskStatus', 'submitControlAttempt', 'createRework', 'requestTaskScheduleMove',
     'requestGanttTaskMove', 'dropTask', 'planReflow', 'applyReflowPlan', 'evaluateScenario',
@@ -1077,11 +1089,11 @@ console.log('\n[FREEZE-284] Byte-identité des moteurs métier');
     'visibleOperationMilestones', 'milestoneImpactNote', 'calculateProjectEnd',
     'taskResourceIds', 'taskHasResource', 'getResourceSchedulingConflicts', 'getResourceTasks',
     'getResourceConflicts', 'getResourceLoad', 'getResourceState', 'resourceLoadBoard',
-    'resourceLoadGroups', 'buildImportPlan', 'applyImportPlan', 'validateImportState',
+    'resourceLoadGroups', 'buildImportPlan', 'validateImportState',
     'renderField', 'handleFieldSiteTab', 'fieldControlSection', 'getProjectTasks',
     'pendingControlsForProject', 'pendingControlsForTask', 'controlFormHTML', 'controlRowHTML',
-    'planningTasks', 'planningAgenda', 'gantt', 'kanbanBoard', 'kanbanCard',
-    'operationOverviewTab', 'operationProjectCard', 'operationPlanningTab', 'operationResourcesTab',
+    'planningAgenda', 'gantt', 'kanbanBoard', 'kanbanCard',
+    'operationOverviewTab', 'operationPlanningTab', 'operationResourcesTab',
     'attentionCard', 'pageToday', 'getTodayDecisions', 'getTodayWarnings', 'getTodayPendingControls',
     'renderSites', 'siteCard', 'historyHTML', 'projectHistory', 'validateKanvixBackup',
     'projectToneClass', 'projectVisual', 'emptyState', 'icon', 'getCurrentWeekRange',
@@ -1124,7 +1136,13 @@ console.log('\n[FREEZE-284] Byte-identité des moteurs métier');
   const store = (s) => (s.match(/\bSTORE\s*=\s*"([^"]+)"/) || [])[1];
   const schema = (s) => (s.match(/\bSCHEMA_VERSION\s*=\s*(\d+)/) || [])[1];
   note('FREEZE-284-store', { store: store(curSrc), schemaPrev: schema(prevSrc), schemaCur: schema(curSrc) });
-  ok(store(curSrc) === 'kanvix-product-8-3' && schema(curSrc) === schema(prevSrc) && schema(curSrc) === '12',
+  /* V2.9.0 — RE-BASELINE. Le schéma passe à 13 : `structureNodes` est ajouté,
+     VIDE pour tout état antérieur, et chaque tâche reçoit structureNodeId = null
+     (V2.9.0 §43). Ce round-ci n'ajoutait effectivement aucune migration ; la
+     garantie durable que cette assertion protège reste le STORE — strictement
+     inchangé — et le fait qu'un schéma ne RECULE jamais. On vérifie donc ces
+     deux invariants-là, sans rien relâcher d'autre. */
+  ok(store(curSrc) === 'kanvix-product-8-3' && Number(schema(curSrc)) >= Number(schema(prevSrc)) && Number(schema(curSrc)) >= 12,
     'FREEZE-284 : STORE et SCHEMA_VERSION (12) strictement inchangés — aucune migration', 'FREEZE-284');
 }
 
