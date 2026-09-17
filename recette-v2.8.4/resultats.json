@@ -1,0 +1,317 @@
+{
+  "passed": 62,
+  "failed": [],
+  "results": [
+    {
+      "sec": "UR-01",
+      "name": "UR-01 : SCHEMA_VERSION reste à 12 — l’historique est un état de session, pas une donnée métier",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-02",
+      "name": "UR-02 : STORE reste « kanvix-product-8-3 »",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-03",
+      "name": "UR-03 : une pile d’annulation héritée de V2.8.3.2 est IGNORÉE au chargement — app.undoStack revient à [] et aucune donnée métier n’est perdue",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-04",
+      "name": "UR-04 : après une modification puis Undo, l’état métier est exactement celui d’avant",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-05",
+      "name": "UR-05 : Redo restaure exactement l’état d’après la modification",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-06",
+      "name": "UR-06 : A → B → C, trois Undo ramènent à l’état initial et trois Redo restaurent C — les deux piles s’équilibrent exactement",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-07",
+      "name": "UR-07 : une nouvelle modification après deux Undo SUPPRIME la branche Redo — Redo n’a plus aucun effet",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-08",
+      "name": "UR-08 : après 25 mutations, la pile est plafonnée à 20 (20) — c’est le plus ANCIEN état qui part",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-09",
+      "name": "UR-09 : muter ensuite tâches, ressources additionnelles, dépendances, historique, jalons, contrôles, photos et lots ne modifie PAS le snapshot déjà pris — le clone est profond",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-10",
+      "name": "UR-10 : après une mutation annulable, le toast porte un vrai <button> « Annuler » — accessible au clavier",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-11",
+      "name": "UR-11 : cliquer « Annuler » annule réellement, puis le toast devient « Modification annulée · Rétablir »",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-12",
+      "name": "UR-12 : cliquer « Rétablir » restaure l’état, puis le toast devient « Modification rétablie · Annuler »",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-13",
+      "name": "UR-13 : Ctrl+Z annule la dernière transaction métier",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-14",
+      "name": "UR-14 : Cmd+Z annule (macOS) la dernière transaction métier",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-15",
+      "name": "UR-15 : Ctrl+Maj+Z rétablit la transaction annulée",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-16",
+      "name": "UR-16 : Cmd+Maj+Z rétablit (macOS) la transaction annulée",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-17",
+      "name": "UR-17 : Ctrl+Y rétablit la transaction annulée",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-18",
+      "name": "UR-18 : dans un input, Ctrl+Z reste l’annulation NATIVE du texte — Kanvix n’intercepte rien, l’état métier et les deux piles sont inchangés",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-19",
+      "name": "UR-19 : dans un textarea, Ctrl+Z reste l’annulation NATIVE du texte — Kanvix n’intercepte rien, l’état métier et les deux piles sont inchangés",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-20",
+      "name": "UR-20 : dans un contenteditable, Ctrl+Z reste l’annulation NATIVE du texte — Kanvix n’intercepte rien, l’état métier et les deux piles sont inchangés",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-21",
+      "name": "UR-21 : créer une tâche, l’annuler puis la rétablir redonne le MÊME identifiant — Redo restaure un état, il ne recrée pas la donnée",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-22",
+      "name": "UR-22 : nom, dates et ressources additionnelles reviennent et se rétablissent tous ensemble",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-23",
+      "name": "UR-23 : supprimer une tâche puis Undo restaure la tâche, ses dépendances ET l’historique — Redo rétablit la suppression",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-24",
+      "name": "UR-24 : todo → doing → done s’annule et se rétablit pas à pas, et l’historique suit exactement — aucun événement en double",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-25",
+      "name": "UR-25 : un déplacement passé par le moteur Planning existant s’annule aux dates EXACTES d’avant et se rétablit aux dates exactes d’après",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-26",
+      "name": "UR-26 : une modification qui en impacte trois autres revient en UN SEUL Undo — les quatre tâches et l’événement d’historique ensemble",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-27",
+      "name": "UR-27 : créer une reprise puis Undo la supprime en laissant l’original strictement intact — Redo restitue la MÊME reprise, même identifiant",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-28",
+      "name": "UR-28 : créer un chantier, l’annuler et le rétablir conserve le MÊME projectId",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-29",
+      "name": "UR-29 : supprimer un chantier avec ses tâches, incidents, photos, contrôles et historique revient en UN Undo — tout le groupe est restauré",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-30",
+      "name": "UR-30 : clôturer puis archiver s’annule et se rétablit à chaque étape — le cycle de vie revient exactement en arrière",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-31",
+      "name": "UR-31 : rattacher un chantier à une opération s’annule et se rétablit exactement",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-32",
+      "name": "UR-32 : créer puis modifier une ressource donne DEUX steps distincts, annulables et rétablissables dans l’ordre",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-33",
+      "name": "UR-33 : supprimer une ressource inutilisée emporte ses indisponibilités — Undo restaure les deux ensemble",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-34",
+      "name": "UR-34 : créer, modifier et supprimer une indisponibilité s’annule et se rétablit step par step",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-35",
+      "name": "UR-35 : réordonner puis désactiver un lot produit deux steps — chacun s’annule et se rétablit indépendamment",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-36",
+      "name": "UR-36 : activer ou désactiver un modèle de contrôle s’annule et se rétablit",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-37",
+      "name": "UR-37 : un contrôle qualité — statut, tentative, photo, photoIds et historique — revient et se rétablit comme UN SEUL bloc",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-38",
+      "name": "UR-38 : un document puis une photo donnent deux steps, annulables et rétablissables dans l’ordre",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-39",
+      "name": "UR-39 : un import complet est UN SEUL step — Undo restitue l’état exact d’avant, Redo l’état exact d’après",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-40",
+      "name": "UR-40 : un import invalide laisse `app`, undoHistory ET redoHistory strictement identiques — aucune branche Redo n’est perdue sur un import finalement annulé",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-41",
+      "name": "UR-41 : appliquer un scénario modifie plusieurs tâches et revient en UN SEUL Undo — Redo le réapplique à l’identique",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-42",
+      "name": "UR-42 : l’événement d’historique créé par une mutation disparaît à l’Undo et revient À L’IDENTIQUE au Redo — jamais en double",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-43",
+      "name": "UR-43 : après 5+ modifications, la sauvegarde Kanvix porte state.undoStack = [] et aucune pile Redo — l’historique ne sort jamais du navigateur",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-44",
+      "name": "UR-44 : après 10 mutations, localStorage contient undoStack = [] et aucun redoStack, alors que la pile de session en compte bien 10",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-45",
+      "name": "UR-45 : après rechargement, les données métier sont bien là mais les deux piles sont vides — l’historique est volontairement SESSION-LOCAL",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-46",
+      "name": "UR-46 : restaurer une sauvegarde vide les deux piles — le monde métier vient d’être remplacé, un Undo hérité serait dangereux",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-47",
+      "name": "UR-47 : réinitialiser l’application vide les deux piles",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-48",
+      "name": "UR-48 : à la synchronisation, l’onglet adopte la vérité métier de l’autre, CONSERVE son rôle et sa page, et vide ses deux piles — un Undo local écraserait sinon la modification de l’autre onglet",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-49",
+      "name": "UR-49 : une action non annulable qui modifie `app` INVALIDE la branche Redo — après elle, le monde a changé et l’ancienne branche ne peut plus être rétablie sans risque",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-50",
+      "name": "UR-50 : le toast d’une action non annulable ne porte AUCUN bouton « Annuler » — impossible d’annuler par erreur une action antérieure",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-50",
+      "name": "UR-50 : après une action undoable A suivie d’une action sans snapshot B, le toast de B ne propose plus « Annuler » — le bouton ne peut plus annuler A par erreur",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-51",
+      "name": "UR-51 : l’envoi d’un message ne prend AUCUN snapshot — aucun Undo ne prétend « rappeler » un message — et il invalide la branche Redo",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-52",
+      "name": "UR-52 : invitations, relances et désactivation de compte n’utilisent plus actionToast(), ne prennent aucun snapshot et invalident toutes la branche Redo",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-53",
+      "name": "UR-53 : déplacer une tâche sur sa position ACTUELLE ne crée aucun step fantôme — les gardes de no-op existantes sont conservées",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-54",
+      "name": "UR-54 : à 390px, le toast reste dans l’écran, « Annuler » puis « Rétablir » fonctionnent, et rien ne déborde",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-55",
+      "name": "UR-55 : en Mode Chantier, un changement de statut passé par le workflow terrain existant s’annule et se rétablit — la navigation terrain est inchangée",
+      "status": "PASS"
+    },
+    {
+      "sec": "UR-56",
+      "name": "UR-56 : la frise Jalons de V2.8.3.2 — jalons, statuts, synthèse, squelette DOM, dimensions et rail — est STRICTEMENT inchangée",
+      "status": "PASS"
+    },
+    {
+      "sec": "DARK",
+      "name": "DARK : en thème sombre, le toast Undo reste lisible et son bouton « Rétablir » contraste avec le fond",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-284",
+      "name": "FREEZE-284 : les 67 moteurs métier de V2.8.3.2 sont BYTE-IDENTIQUES — Planning, Jalons, Qualité, Ressources, Conflits, Opérations, Simulation, Reflow, Reprise et Mode Chantier. Undo/Redo ENVELOPPE les mutations, il ne les remplace pas",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-284",
+      "name": "FREEZE-284 : les huit helpers Undo/Redo sont ajoutés, et toute fonction modifiée appartient à la liste explicitement autorisée",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-284",
+      "name": "FREEZE-284 : les deux piles vivent HORS de `app`, la limite est de 20, app.redoStack n’existe pas et app.undoStack n’est plus qu’un champ legacy remis à []",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-284",
+      "name": "FREEZE-284 : STORE et SCHEMA_VERSION (12) strictement inchangés — aucune migration",
+      "status": "PASS"
+    }
+  ],
+  "consoleErrors": []
+}
