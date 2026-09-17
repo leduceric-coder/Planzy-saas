@@ -174,6 +174,9 @@ console.log('\n[KAN-1514] Kanban — zone de dépôt élargie (colonnes de même
     card.dispatchEvent(new DragEvent('dragstart', { bubbles: true, cancelable: true, dataTransfer: dt }));
     col.dispatchEvent(new DragEvent('dragover', { bubbles: true, cancelable: true, dataTransfer: dt }));
     col.dispatchEvent(new DragEvent('drop', { bubbles: true, cancelable: true, dataTransfer: dt }));
+    /* V2.8.5.2 — RE-BASELINE : le dépôt demande confirmation quand il vaut
+       démarrage réel (V2.8.5.1 §7). Le toast testé ci-dessous reste le MÊME. */
+    if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     return { name };
   });
   await p.waitForTimeout(150);
@@ -182,7 +185,10 @@ console.log('\n[KAN-1514] Kanban — zone de dépôt élargie (colonnes de même
   ok(/^Tâche déplacée · /.test(toastText), 'KAN-1514-drop : une pop-up nomme explicitement le nouvel état au dépôt', 'KAN-1514');
   ok(toastText.includes('En cours'), 'KAN-1514-drop : le libellé affiché correspond bien à la colonne cible (« En cours »)', 'KAN-1514');
   ok(toastText.includes('Annuler'), 'KAN-1514-drop : l’action reste annulable (undo réel conservé, pas un simple message)', 'KAN-1514');
-  const otherToast = await ev(p, () => { setTaskStatus(app.tasks.find((t) => t.status === 'todo').id, 'doing', 'task'); return document.querySelector('#toast')?.textContent || ''; });
+  const otherToast = await ev(p, () => { setTaskStatus(app.tasks.find((t) => t.status === 'todo').id, 'doing', 'task');
+    /* V2.8.5.2 — RE-BASELINE : confirmation de démarrage réel (V2.8.5.1 §7). */
+    if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
+    return document.querySelector('#toast')?.textContent || ''; });
   ok(otherToast === 'Tâche mise à jour · Annuler', 'KAN-1514-drop : les autres origines (édition, terrain…) gardent le message générique inchangé', 'KAN-1514');
   await ctx.close();
 }
@@ -380,11 +386,21 @@ console.log('\n[ENGINES-1514] Byte-identité des moteurs métier (V2.4.15.3 → 
   const md5 = (s) => crypto.createHash('md5').update(s).digest('hex');
   // Inchangées ce round : moteurs métier non touchés par les 5 correctifs.
   const engines = [
-    'planReflow', 'applyReflowPlan', 'kanbanDrop', 'dropTask', 'requestTaskScheduleMove',
+    /* V2.8.5.2 — RE-BASELINE des listes de gel. Ces listes comparent le fichier
+       COURANT à la version précédente de LEUR round. Quatre moteurs ont depuis
+       été modifiés à la demande explicite du produit ; ils sortent donc de la
+       liste des « inchangés », sans que rien d'autre n'y soit relâché :
+         · setTaskStatus            — V2.8.5.1 §7  : démarrage réel
+         · requestTaskScheduleMove  — V2.8.5.1 §5  : confirmation jour non ouvré
+         · gantt                    — V2.8.5.1 §4 (colonnes non ouvrées)
+                                      et V2.8.5.2 §3 (édition hors niveau)
+         · renderPlanning           — V2.8.5.1 §6  : libellé de période partagé
+       Tous les autres moteurs de la liste restent vérifiés byte à byte. */
+    'planReflow', 'applyReflowPlan', 'kanbanDrop', 'dropTask', 
     'scenarioOptions', 'evaluateScenario', 'applySimulation', 'historyProjectId', 'projectHistory',
     'historyStamp', 'historyGroups', 'buildKanvixBackup', 'confirmKanvixRestore', 'validateKanvixBackup',
     'reopenProject', 'archiveProjectPrompt', 'restoreProject', 'confirmCloseProject',
-    'gantt', 'kanbanCard', 'getProjectSummary', 'art', 'projectVisual', 'projectCardMenu',
+    'kanbanCard', 'getProjectSummary', 'art', 'projectVisual', 'projectCardMenu',
     'getResourceState', 'getResourcePeriodState', 'getResourceLoad', 'getMaxConcurrentTasks',
     'getResourceWeekDays', 'siteCard', 'toggleDrawerMenu', 'closeDrawerMenu',
     'getTaskPredecessors', 'getTaskSuccessors', 'createRework', 'allProjectTemplates', 'createTemplateFromWizard',

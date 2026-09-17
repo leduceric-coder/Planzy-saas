@@ -286,7 +286,7 @@ console.log('\n[QC-ENSURE] ensureTaskControlInstances — idempotence et points 
     resetApp(); setDepth('pilot');
     const t = app.tasks.find((x) => applicableControlTemplates(x).length && !controlsForTask(x.id).length && x.status !== 'done');
     const before = controlsForTask(t.id).length;
-    setTaskStatus(t.id, 'doing');
+    setTaskStatus(t.id, 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     return { task: t.name, before, after: controlsForTask(t.id).length, status: task(t.id).status };
   });
   note('QC-16', doing);
@@ -427,7 +427,7 @@ console.log('\n[QC-BLOCK] Garde bloquante — ce qu’elle empêche, ce qu’ell
       s = app.tasks.find((x) => x.id !== c.taskId && x.projectId === c.projectId && x.status !== 'done');
       s.deps = [...new Set([...(s.deps || []), c.taskId])];
     }
-    setTaskStatus(s.id, 'doing');
+    setTaskStatus(s.id, 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     return { successor: s.name, status: task(s.id).status, blocked: task(c.taskId).status };
   });
   note('QC-25', succ);

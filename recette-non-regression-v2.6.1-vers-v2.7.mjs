@@ -111,7 +111,7 @@ console.log('\n[NR-TASK] Tâches, statuts, dépendances, reprises');
 
 await compare('NR-05', 'démarrer puis terminer une intervention SANS contrôle donne le même état et le même historique', () => {
   const t = app.tasks.find((x) => x.status === 'todo' && !/cloison/i.test(x.name) && !/fenêtre/i.test(x.name));
-  setTaskStatus(t.id, 'doing');
+  setTaskStatus(t.id, 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
   setTaskStatus(t.id, 'done');
   return {
     status: task(t.id).status,

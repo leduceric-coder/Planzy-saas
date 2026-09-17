@@ -46,6 +46,12 @@ const realDrag = (p, taskName, targetStatus) => ev(p, ({ n, st }) => {
   card.dispatchEvent(new DragEvent('dragstart', { bubbles: true, cancelable: true, dataTransfer: dt }));
   col.dispatchEvent(new DragEvent('dragover', { bubbles: true, cancelable: true, dataTransfer: dt }));
   col.dispatchEvent(new DragEvent('drop', { bubbles: true, cancelable: true, dataTransfer: dt }));
+  /* V2.8.5.2 — RE-BASELINE. Depuis V2.8.5.1 (§7), déposer une carte dans
+     « En cours » alors que l'horaire prévu s'écarte de plus de 5 minutes de
+     l'heure réelle ouvre une confirmation de DÉMARRAGE RÉEL avant toute
+     mutation. Le geste utilisateur comporte donc désormais cette confirmation ;
+     les assertions de badges et de colonnes qui suivent sont INCHANGÉES. */
+  if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
   return { ok: true, transferred: dt.getData('text/plain') };
 }, { n: taskName, st: targetStatus });
 
@@ -138,7 +144,7 @@ console.log('\n[BADGE-03] B → En cours : reste SOUS IMPACT');
   await setupScenario(p);
   const before = await readCards(p);
   ok(before['Tache B aval'].col === 'todo', 'BADGE-03 : B est initialement dans « À faire »', 'BADGE-03');
-  await ev(p, () => { setTaskStatus('tB', 'doing', 'test'); renderPage(); });
+  await ev(p, () => { setTaskStatus('tB', 'doing', 'test'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); renderPage(); });
   await p.waitForTimeout(200);
   const after = await readCards(p);
   note('BADGE-03', after['Tache B aval']);
@@ -462,7 +468,7 @@ console.log('\n[BADGE-19] Tableau électrique démarré → À SUIVRE');
   ok(before['Tableau électrique'].col === 'todo', 'BADGE-19 : départ en « À faire »', 'BADGE-19');
   ok(before['Tableau électrique'].attention && before['Tableau électrique'].labels.includes('À TRAITER'), 'BADGE-19 : À faire → À TRAITER', 'BADGE-19');
   // Passage À faire → En cours via le moteur de statut existant (non modifié).
-  await ev(p, () => { setTaskStatus('k-electric', 'doing', 'test'); renderPage(); });
+  await ev(p, () => { setTaskStatus('k-electric', 'doing', 'test'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); renderPage(); });
   await p.waitForTimeout(220);
   const after = await readCards(p);
   note('BADGE-19', after['Tableau électrique']);
@@ -483,7 +489,7 @@ console.log('\n[BADGE-20] Conséquence pure « À faire → En cours »');
   await p.waitForTimeout(250);
   const before = await readCards(p);
   ok(before['Peinture étage 1'] && before['Peinture étage 1'].impacted && !before['Peinture étage 1'].attention, 'BADGE-20 : « Peinture étage 1 » (conséquence pure) → SOUS IMPACT', 'BADGE-20');
-  await ev(p, () => { setTaskStatus('k-paint', 'doing', 'test'); renderPage(); });
+  await ev(p, () => { setTaskStatus('k-paint', 'doing', 'test'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); renderPage(); });
   await p.waitForTimeout(220);
   const after = await readCards(p);
   note('BADGE-20', after['Peinture étage 1']);
@@ -583,7 +589,7 @@ console.log('\n[KAN-CTX-C] Incident propre sur une tâche impactée en cours');
 {
   const { ctx, p } = await newPage(1440, 1100, 'CTXC');
   await setupScenario(p);
-  await ev(p, () => { setTaskStatus('tB', 'doing', 'test'); renderPage(); });
+  await ev(p, () => { setTaskStatus('tB', 'doing', 'test'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); renderPage(); });
   await p.waitForTimeout(220);
   const impacted = await readCards(p);
   ok(impacted['Tache B aval'].impacted && !impacted['Tache B aval'].follow, 'KAN-CTX-C : B doing sans incident propre → SOUS IMPACT (jamais À SUIVRE)', 'KAN-CTX-C');

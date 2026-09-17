@@ -476,7 +476,7 @@ console.log('\n[UIUR-PAGES] Présence par page, responsive, Mode Chantier, sombr
     resetApp(); setRole('driver'); setDepth('pilot');
     enterFieldMode(); selectFieldProject('keravel');
     const t = app.tasks.find((x) => x.status === 'todo');
-    setTaskStatus(t.id, 'doing', 'field');
+    setTaskStatus(t.id, 'doing', 'field'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     const out = { controls: document.querySelectorAll('.history-controls').length,
       bottom: document.querySelectorAll('.field-bottom-nav button, .field-nav button').length,
       toast: document.querySelector('#toast').textContent,

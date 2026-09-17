@@ -400,7 +400,7 @@ try {
   const tpid = await ev(pB, (id) => task(id).projectId, tid);
   await ev(pA, (pid) => selectFieldProject(pid), tpid);
   await pA.waitForTimeout(200);
-  await ev(pB, (id) => setTaskStatus(id, 'doing'), tid);
+  await ev(pB, (id) => { setTaskStatus(id, 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); }, tid);
   await pA.waitForTimeout(500);
   const started = await ev(pA, (id) => {
     const row = [...document.querySelectorAll('.field-task')].find((x) => x.getAttribute('onclick')?.includes(id));

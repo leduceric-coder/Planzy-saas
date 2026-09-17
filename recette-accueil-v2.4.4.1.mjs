@@ -716,7 +716,7 @@ try {
   await pA.waitForTimeout(200);
   const tid = await ev(pB, () => getArtisanTodayTasks('thomas')[0]?.id);
   ok(!!tid, 'une tâche artisan du jour existe (onglet B)', 'field-sync');
-  await ev(pB, (id) => setTaskStatus(id, 'doing'), tid);
+  await ev(pB, (id) => { setTaskStatus(id, 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); }, tid);
   await pA.waitForTimeout(400);
   const rowTextA = await ev(pA, (id) => document.querySelector(`.tp-row[onclick*="${id}"]`)?.textContent || '', tid);
   ok(rowTextA.includes('Démarrée à'), 'onglet A (Accueil): confirmation "Démarrée à HH:MM" visible sans F5', 'field-sync');
@@ -745,7 +745,7 @@ try {
   await pA.waitForTimeout(200);
   await ev(pB, () => {
     kanbanDragStart({ currentTarget: { classList: { add(){} } }, dataTransfer: { setData(){}, getData(){ return 'k-control'; } } }, 'k-control');
-    kanbanDrop({ preventDefault(){}, currentTarget: { classList: { remove(){} } }, dataTransfer: { getData(){ return 'k-control'; } } }, 'doing');
+    kanbanDrop({ preventDefault(){}, currentTarget: { classList: { remove(){} } }, dataTransfer: { getData(){ return 'k-control'; } } }, 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
   });
   await pA.waitForTimeout(400);
   const rowTextA = await ev(pA, () => document.querySelector('.tp-row[onclick*="k-control"]')?.textContent || '');

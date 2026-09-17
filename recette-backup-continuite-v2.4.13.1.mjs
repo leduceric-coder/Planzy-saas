@@ -86,9 +86,9 @@ const RICH = `
   setDepth('pilot');
   app.settings.appearance = 'dark';
   task('k-electric').status = 'todo'; save();
-  setTaskStatus('k-electric', 'doing', 'task');
+  setTaskStatus('k-electric', 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
   setTaskStatus('k-electric', 'todo', 'task');
-  setTaskStatus('k-electric', 'doing', 'kanban');
+  setTaskStatus('k-electric', 'doing', 'kanban'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
   const i = app.issues.find((x) => x.projectId === 'keravel' && x.status !== 'resolved');
   setIssueStatus(i.id, 'resolved');
   app.history.push(

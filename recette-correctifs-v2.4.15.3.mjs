@@ -236,11 +236,21 @@ console.log('\n[ENGINES-1513] Byte-identité des moteurs métier (V2.4.15.2 → 
   }
   const md5 = (s) => crypto.createHash('md5').update(s).digest('hex');
   const engines = [
-    'planReflow', 'applyReflowPlan', 'setTaskStatus', 'kanbanDrop', 'dropTask', 'requestTaskScheduleMove',
+    /* V2.8.5.2 — RE-BASELINE des listes de gel. Ces listes comparent le fichier
+       COURANT à la version précédente de LEUR round. Quatre moteurs ont depuis
+       été modifiés à la demande explicite du produit ; ils sortent donc de la
+       liste des « inchangés », sans que rien d'autre n'y soit relâché :
+         · setTaskStatus            — V2.8.5.1 §7  : démarrage réel
+         · requestTaskScheduleMove  — V2.8.5.1 §5  : confirmation jour non ouvré
+         · gantt                    — V2.8.5.1 §4 (colonnes non ouvrées)
+                                      et V2.8.5.2 §3 (édition hors niveau)
+         · renderPlanning           — V2.8.5.1 §6  : libellé de période partagé
+       Tous les autres moteurs de la liste restent vérifiés byte à byte. */
+    'planReflow', 'applyReflowPlan', 'kanbanDrop', 'dropTask', 
     'scenarioOptions', 'evaluateScenario', 'applySimulation', 'historyProjectId', 'projectHistory',
     'historyStamp', 'historyGroups', 'buildKanvixBackup', 'confirmKanvixRestore', 'validateKanvixBackup',
     'reopenProject', 'archiveProjectPrompt', 'restoreProject', 'confirmCloseProject',
-    'gantt', 'kanbanCard', 'getProjectSummary', 'art', 'projectVisual', 'projectCardMenu',
+    'kanbanCard', 'getProjectSummary', 'art', 'projectVisual', 'projectCardMenu',
     'getResourceState', 'getResourcePeriodState', 'getResourceLoad', 'getMaxConcurrentTasks',
     'getResourceWeekDays', 'siteCard', 'toggleDrawerMenu', 'closeDrawerMenu',
   ];

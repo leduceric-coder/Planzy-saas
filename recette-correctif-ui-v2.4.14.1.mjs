@@ -263,7 +263,7 @@ console.log('\n[CHT-141-04] Les 5 variantes du cockpit se rendent sans l’ancie
 console.log('\n[CHT-141-05] Historique — largeur relevée (950-1150px), toujours alignée à gauche');
 {
   const { ctx, p } = await newPage(1600, 1000, 'CHT5');
-  await reset(p, "task('k-electric').status='todo';save();setTaskStatus('k-electric','doing','task');app.ui.projectId='keravel';go('project');openProjectTab('keravel','Historique');");
+  await reset(p, "task('k-electric').status='todo';save();setTaskStatus('k-electric','doing','task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();app.ui.projectId='keravel';go('project');openProjectTab('keravel','Historique');");
   await p.waitForTimeout(280);
   const r = await ev(p, () => {
     const panel = document.querySelector('.history-panel').getBoundingClientRect();
@@ -284,9 +284,9 @@ console.log('\n[CHT-141-06] Historique — isolation par chantier toujours garan
   const r = await ev(p, () => {
     resetApp(); setDepth('pilot');
     task('k-electric').status = 'todo'; save();
-    setTaskStatus('k-electric', 'doing', 'task');
+    setTaskStatus('k-electric', 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     const v = app.tasks.find((t) => t.projectId === 'villa');
-    setTaskStatus(v.id, 'doing', 'task');
+    setTaskStatus(v.id, 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     const k = projectTabContent('Historique', 'keravel');
     const vh = projectTabContent('Historique', 'villa');
     return { keravelHasVilla: k.includes(v.name), villaHasKeravel: vh.includes('Tableau électrique'), identical: k === vh };
@@ -482,11 +482,21 @@ console.log('\n[ENGINES-141] Byte-identité des moteurs métier (V2.4.14 → V2.
   }
   const md5 = (s) => crypto.createHash('md5').update(s).digest('hex');
   const engines = [
-    'planReflow', 'applyReflowPlan', 'setTaskStatus', 'kanbanDrop', 'dropTask', 'requestTaskScheduleMove',
+    /* V2.8.5.2 — RE-BASELINE des listes de gel. Ces listes comparent le fichier
+       COURANT à la version précédente de LEUR round. Quatre moteurs ont depuis
+       été modifiés à la demande explicite du produit ; ils sortent donc de la
+       liste des « inchangés », sans que rien d'autre n'y soit relâché :
+         · setTaskStatus            — V2.8.5.1 §7  : démarrage réel
+         · requestTaskScheduleMove  — V2.8.5.1 §5  : confirmation jour non ouvré
+         · gantt                    — V2.8.5.1 §4 (colonnes non ouvrées)
+                                      et V2.8.5.2 §3 (édition hors niveau)
+         · renderPlanning           — V2.8.5.1 §6  : libellé de période partagé
+       Tous les autres moteurs de la liste restent vérifiés byte à byte. */
+    'planReflow', 'applyReflowPlan', 'kanbanDrop', 'dropTask', 
     'scenarioOptions', 'evaluateScenario', 'applySimulation', 'historyProjectId', 'projectHistory',
     'historyStamp', 'historyGroups', 'buildKanvixBackup', 'confirmKanvixRestore', 'validateKanvixBackup',
     'reopenProject', 'archiveProjectPrompt', 'restoreProject', 'confirmCloseProject',
-    'gantt', 'kanbanCard', 'getProjectSummary',
+    'kanbanCard', 'getProjectSummary',
   ];
   let allIdentical = true;
   for (const name of engines) {

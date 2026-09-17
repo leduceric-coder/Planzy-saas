@@ -271,7 +271,7 @@ console.log('\n[UI15-CHT-06] Mobile 390 — vignette non dominante, shell lisibl
 console.log('\n[UI15-HIST-01] Timeline intacte (logique gelée, aucune régression)');
 {
   const { ctx, p } = await newPage(1600, 1000, 'HIST1');
-  await reset(p, "task('k-electric').status='todo';save();setTaskStatus('k-electric','doing','task');app.ui.projectId='keravel';go('project');openProjectTab('keravel','Historique');");
+  await reset(p, "task('k-electric').status='todo';save();setTaskStatus('k-electric','doing','task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();app.ui.projectId='keravel';go('project');openProjectTab('keravel','Historique');");
   await p.waitForTimeout(280);
   const r = await ev(p, () => {
     const panel = document.querySelector('.history-panel').getBoundingClientRect();
@@ -291,9 +291,9 @@ console.log('\n[UI15-HIST-01b] Isolation par chantier toujours garantie (SITE-01
   const r = await ev(p, () => {
     resetApp(); setDepth('pilot');
     task('k-electric').status = 'todo'; save();
-    setTaskStatus('k-electric', 'doing', 'task');
+    setTaskStatus('k-electric', 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     const v = app.tasks.find((t) => t.projectId === 'villa');
-    setTaskStatus(v.id, 'doing', 'task');
+    setTaskStatus(v.id, 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     const k = projectTabContent('Historique', 'keravel');
     const vh = projectTabContent('Historique', 'villa');
     return { keravelHasVilla: k.includes(v.name), villaHasKeravel: vh.includes('Tableau électrique') };
@@ -309,7 +309,7 @@ console.log('\n[UI15-HIST-02] Résumé calculé uniquement depuis projectHistory
   const r = await ev(p, () => {
     resetApp(); setDepth('pilot');
     task('k-electric').status = 'todo'; save();
-    setTaskStatus('k-electric', 'doing', 'task');
+    setTaskStatus('k-electric', 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     task('k-window1') && setTaskStatus('k-window1', 'done', 'task');
     let entries = projectHistory('keravel');
     let manualStatusChanges = entries.filter((h) => h.eventType === 'task-status').length;
@@ -327,7 +327,7 @@ console.log('\n[UI15-HIST-02] Résumé calculé uniquement depuis projectHistory
 console.log('\n[UI15-HIST-02b] Résumé compact avec peu d’événements (pas une grande carte vide)');
 {
   const { ctx, p } = await newPage(1600, 1000, 'HIST2b');
-  await reset(p, "task('k-electric').status='todo';save();setTaskStatus('k-electric','doing','task');app.ui.projectId='keravel';go('project');openProjectTab('keravel','Historique');");
+  await reset(p, "task('k-electric').status='todo';save();setTaskStatus('k-electric','doing','task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();app.ui.projectId='keravel';go('project');openProjectTab('keravel','Historique');");
   await p.waitForTimeout(280);
   const r = await ev(p, () => {
     const el = document.querySelector('.history-summary').getBoundingClientRect();
@@ -341,7 +341,7 @@ console.log('\n[UI15-HIST-02b] Résumé compact avec peu d’événements (pas u
 console.log('\n[UI15-HIST-03] Aucune analytique inventée (pas de performance/score/tendance/%)');
 {
   const { ctx, p } = await newPage(1600, 1000, 'HIST3');
-  await reset(p, "task('k-electric').status='todo';save();setTaskStatus('k-electric','doing','task');app.ui.projectId='keravel';go('project');openProjectTab('keravel','Historique');");
+  await reset(p, "task('k-electric').status='todo';save();setTaskStatus('k-electric','doing','task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();app.ui.projectId='keravel';go('project');openProjectTab('keravel','Historique');");
   await p.waitForTimeout(280);
   const r = await ev(p, () => {
     const text = document.querySelector('.history-summary').textContent;
@@ -355,7 +355,7 @@ console.log('\n[UI15-HIST-03] Aucune analytique inventée (pas de performance/sc
 console.log('\n[UI15-HIST-04] Mobile <1000px — résumé passe sous la timeline (une colonne)');
 {
   const { ctx, p } = await newPage(390, 900, 'HIST4');
-  await reset(p, "task('k-electric').status='todo';save();setTaskStatus('k-electric','doing','task');app.ui.projectId='keravel';go('project');openProjectTab('keravel','Historique');");
+  await reset(p, "task('k-electric').status='todo';save();setTaskStatus('k-electric','doing','task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();app.ui.projectId='keravel';go('project');openProjectTab('keravel','Historique');");
   await p.waitForTimeout(280);
   const r = await ev(p, () => {
     const panel = document.querySelector('.history-panel').getBoundingClientRect();
@@ -645,11 +645,21 @@ console.log('\n[ENGINES-15] Byte-identité des moteurs métier (V2.4.14.1 → V2
   }
   const md5 = (s) => crypto.createHash('md5').update(s).digest('hex');
   const engines = [
-    'planReflow', 'applyReflowPlan', 'setTaskStatus', 'kanbanDrop', 'dropTask', 'requestTaskScheduleMove',
+    /* V2.8.5.2 — RE-BASELINE des listes de gel. Ces listes comparent le fichier
+       COURANT à la version précédente de LEUR round. Quatre moteurs ont depuis
+       été modifiés à la demande explicite du produit ; ils sortent donc de la
+       liste des « inchangés », sans que rien d'autre n'y soit relâché :
+         · setTaskStatus            — V2.8.5.1 §7  : démarrage réel
+         · requestTaskScheduleMove  — V2.8.5.1 §5  : confirmation jour non ouvré
+         · gantt                    — V2.8.5.1 §4 (colonnes non ouvrées)
+                                      et V2.8.5.2 §3 (édition hors niveau)
+         · renderPlanning           — V2.8.5.1 §6  : libellé de période partagé
+       Tous les autres moteurs de la liste restent vérifiés byte à byte. */
+    'planReflow', 'applyReflowPlan', 'kanbanDrop', 'dropTask', 
     'scenarioOptions', 'evaluateScenario', 'applySimulation', 'historyProjectId', 'projectHistory',
     'historyStamp', 'historyGroups', 'buildKanvixBackup', 'confirmKanvixRestore', 'validateKanvixBackup',
     'reopenProject', 'archiveProjectPrompt', 'restoreProject', 'confirmCloseProject',
-    'gantt', 'kanbanCard', 'getProjectSummary',
+    'kanbanCard', 'getProjectSummary',
     // Au-delà de la liste officielle §Partie 7 : art()/projectVisual() sont
     // explicitement protégées par la demande (§Chantier — Vignette).
     'art', 'projectVisual',

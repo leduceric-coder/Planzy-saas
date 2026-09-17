@@ -208,7 +208,7 @@ console.log('\n[HISTORIQUE] Largeur de lecture confortable (§2/§4)');
   const { ctx, p } = await newPage(1600, 1000, 'HIST');
   await reset(p, `
     task('k-electric').status = 'todo'; save();
-    setTaskStatus('k-electric', 'doing', 'task');
+    setTaskStatus('k-electric', 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     app.ui.projectId = 'keravel'; go('project'); openProjectTab('keravel', 'Historique');
   `);
   await p.waitForTimeout(280);
@@ -230,9 +230,9 @@ console.log('\n[HISTORIQUE-ISOLATION] SITE-01 toujours fermé après la refonte 
   const r = await ev(p, () => {
     resetApp(); setDepth('pilot');
     task('k-electric').status = 'todo'; save();
-    setTaskStatus('k-electric', 'doing', 'task');
+    setTaskStatus('k-electric', 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     const v = app.tasks.find((t) => t.projectId === 'villa');
-    setTaskStatus(v.id, 'doing', 'task');
+    setTaskStatus(v.id, 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     const k = projectTabContent('Historique', 'keravel');
     const vh = projectTabContent('Historique', 'villa');
     return { keravelHasVilla: k.includes(v.name), villaHasKeravel: vh.includes('Tableau électrique'), identical: k === vh };

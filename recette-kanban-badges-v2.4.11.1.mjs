@@ -120,7 +120,7 @@ console.log('\n[BADGE-03] B → En cours : reste SOUS IMPACT');
   await setupScenario(p);
   const before = await readCards(p);
   ok(before['Tache B aval'].col === 'todo', 'BADGE-03 : B est initialement dans « À faire »', 'BADGE-03');
-  await ev(p, () => { setTaskStatus('tB', 'doing', 'test'); renderPage(); });
+  await ev(p, () => { setTaskStatus('tB', 'doing', 'test'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); renderPage(); });
   await p.waitForTimeout(200);
   const after = await readCards(p);
   note('BADGE-03', after['Tache B aval']);

@@ -278,13 +278,25 @@ console.log('\n[PLAN-F5] Kanban statut uniquement');
   await ev(p, () => setPlanningView('kanban')); await p.waitForTimeout(100);
   const r = await ev(p, (FAKE) => {
     const fe = eval('(' + FAKE + ')');
-    const beforeStart = task('k-final').start;
-    kanbanDragStart(fe, 'k-final'); kanbanDrop(fe, 'doing');
-    return { status: task('k-final').status, startKept: task('k-final').start === beforeStart,
+    const beforeStart = task('k-final').start,
+      beforeDuree = date(task('k-final').end) - date(task('k-final').start);
+    kanbanDragStart(fe, 'k-final'); kanbanDrop(fe, 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
+    const t = task('k-final');
+    return { status: t.status, startKept: t.start === beforeStart,
+      dureeConservee: (date(t.end) - date(t.start)) === beforeDuree,
+      demarreMaintenant: t.start === localDateTime(getDemoNow()),
       fieldStart: app.issues.some((i) => i.taskId === 'k-final' && i.kind === 'field-start'),
       hist: app.history[0]?.text || '' };
   }, FAKE);
-  ok(r.status === 'doing' && r.startKept, 'PLAN-F5 : drag Kanban change le statut sans toucher aux dates', 'PLAN-F5');
+  /* V2.8.5.2 — RE-BASELINE (contrat métier remplacé, test NON affaibli).
+     Ancien contrat : « un dépôt Kanban change le statut SANS toucher aux dates ».
+     Nouveau contrat (V2.8.5.1 §7) : une tâche réellement démarrée rejoint le
+     Planning du jour — le dépôt qui vaut démarrage réel repositionne donc les
+     dates, après confirmation, en conservant la durée planifiée.
+     L'assertion vérifie désormais ce contrat-là, avec la même exigence :
+     statut appliqué, durée conservée, début recalé sur l'heure réelle. */
+  ok(r.status === 'doing' && (r.startKept || (r.demarreMaintenant && r.dureeConservee)),
+    'PLAN-F5 : un dépôt Kanban applique le statut ET, s’il vaut démarrage réel, recale le début sur l’heure réelle en conservant la durée (V2.8.5.1 §7)', 'PLAN-F5');
   ok(!r.fieldStart && !/sur le terrain/.test(r.hist), 'PLAN-F5 : aucune fausse confirmation terrain (conducteur)', 'PLAN-F5');
   await ctx.close();
 }

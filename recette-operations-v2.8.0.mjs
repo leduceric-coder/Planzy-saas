@@ -1247,7 +1247,7 @@ console.log('\n[OP-GEL] Mode Chantier gelé, Bureau mobile, thème sombre, basel
 
   const qualityBaseline = await ev(p5, () => {
     resetApp(); setDepth('pilot'); setRole('driver');
-    setTaskStatus('k-windows', 'doing');
+    setTaskStatus('k-windows', 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     closeOverlay('modal');
     const out = setTaskStatus('k-windows', 'done');
     const txt = document.querySelector('#modalContent').textContent;

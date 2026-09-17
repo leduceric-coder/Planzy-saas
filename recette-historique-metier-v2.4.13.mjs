@@ -47,6 +47,11 @@ const realDrag = (p, taskName, targetStatus) => ev(p, ({ n, st }) => {
   card.dispatchEvent(new DragEvent('dragstart', { bubbles: true, cancelable: true, dataTransfer: dt }));
   col.dispatchEvent(new DragEvent('dragover', { bubbles: true, cancelable: true, dataTransfer: dt }));
   col.dispatchEvent(new DragEvent('drop', { bubbles: true, cancelable: true, dataTransfer: dt }));
+  /* V2.8.5.2 — RE-BASELINE. Depuis V2.8.5.1 (§7), déposer une carte dans
+     « En cours » hors de l'horaire prévu ouvre une confirmation de DÉMARRAGE
+     RÉEL avant toute écriture : elle fait désormais partie du geste. Les
+     assertions d'historique structuré qui suivent sont INCHANGÉES. */
+  if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
   return { ok: true, id: dt.getData('text/plain') };
 }, { n: taskName, st: targetStatus });
 
@@ -59,7 +64,7 @@ console.log('\n[STATUS-HIST-01] Entrée task-status structurée');
   const r = await ev(p, (src) => {
     (0, eval)(src);
     task('k-electric').status = 'todo'; save();
-    setTaskStatus('k-electric', 'doing', 'task');
+    setTaskStatus('k-electric', 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     return app.history[0];
   }, RESET);
   note('STATUS-HIST-01', r);
@@ -77,7 +82,7 @@ console.log('\n[STATUS-HIST-01] Entrée task-status structurée');
 console.log('\n[STATUS-HIST-02/03] Rendu « À faire → En cours » puis retour');
 {
   const { ctx, p } = await newPage(1440, 1000, 'S02');
-  await ev(p, (src) => { (0, eval)(src); task('k-electric').status = 'todo'; save(); setTaskStatus('k-electric', 'doing', 'task'); }, RESET);
+  await ev(p, (src) => { (0, eval)(src); task('k-electric').status = 'todo'; save(); setTaskStatus('k-electric', 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); }, RESET);
   await openHist(p);
   let t = await readTimeline(p);
   note('STATUS-HIST-02', t[0]);
@@ -100,9 +105,9 @@ console.log('\n[STATUS-HIST-04] todo→doing→todo→doing : 3 événements dis
   await ev(p, (src) => {
     (0, eval)(src);
     task('k-electric').status = 'todo'; save();
-    setTaskStatus('k-electric', 'doing', 'task');
+    setTaskStatus('k-electric', 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     setTaskStatus('k-electric', 'todo', 'task');
-    setTaskStatus('k-electric', 'doing', 'task');
+    setTaskStatus('k-electric', 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
   }, RESET);
   await openHist(p);
   const t = await readTimeline(p);
@@ -122,15 +127,15 @@ console.log('\n[STATUS-HIST-05] No-op : doing → doing ne produit rien');
   const r = await ev(p, (src) => {
     (0, eval)(src);
     task('k-electric').status = 'todo'; save();
-    setTaskStatus('k-electric', 'doing', 'task');
+    setTaskStatus('k-electric', 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     const before = {
       history: app.history.length, undo: app.undoStack.length,
       issues: app.issues.length, messages: app.messages.length,
       state: JSON.stringify(app.tasks.map((t) => t.id + t.status)),
     };
-    setTaskStatus('k-electric', 'doing', 'task');
-    setTaskStatus('k-electric', 'doing', 'kanban');
-    setTaskStatus('k-electric', 'doing', 'manual-edit', { manual: true });
+    setTaskStatus('k-electric', 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
+    setTaskStatus('k-electric', 'doing', 'kanban'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
+    setTaskStatus('k-electric', 'doing', 'manual-edit', { manual: true }); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     const after = {
       history: app.history.length, undo: app.undoStack.length,
       issues: app.issues.length, messages: app.messages.length,
@@ -207,7 +212,7 @@ console.log('\n[STATUS-HIST-09] Édition manuelle (opts.manual)');
   const r = await ev(p, (src) => {
     (0, eval)(src);
     task('k-electric').status = 'todo'; save();
-    setTaskStatus('k-electric', 'doing', 'manual-edit', { manual: true });
+    setTaskStatus('k-electric', 'doing', 'manual-edit', { manual: true }); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     return app.history[0];
   }, RESET);
   await openHist(p);
@@ -228,7 +233,7 @@ console.log('\n[STATUS-HIST-10] Démarrage terrain (artisan)');
     (0, eval)(src);
     app.settings.role = 'artisan';
     task('k-electric').status = 'todo'; save();
-    setTaskStatus('k-electric', 'doing', 'field');
+    setTaskStatus('k-electric', 'doing', 'field'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     return { entry: app.history[0], resource: resourceLabel(task('k-electric').resourceId) };
   }, RESET);
   note('STATUS-HIST-10', { entry: { fromField: r.entry.fromField, author: r.entry.author, from: r.entry.fromStatus, to: r.entry.toStatus }, resource: r.resource });
@@ -248,7 +253,7 @@ console.log('\n[TIMESTAMP-01] Horodatage complet');
   const r = await ev(p, (src) => {
     (0, eval)(src);
     task('k-electric').status = 'todo'; save();
-    setTaskStatus('k-electric', 'doing', 'task');
+    setTaskStatus('k-electric', 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     return { date: app.history[0].date, stamp: historyStamp(app.history[0]), helper: historyNow() };
   }, RESET);
   note('TIMESTAMP-01', r);
@@ -275,9 +280,9 @@ console.log('\n[TIMESTAMP-02/03] Groupes de journée');
   await ev(p, (src) => {
     (0, eval)(src);
     task('k-electric').status = 'todo'; save();
-    setTaskStatus('k-electric', 'doing', 'task');
+    setTaskStatus('k-electric', 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     setTaskStatus('k-electric', 'todo', 'task');
-    setTaskStatus('k-electric', 'doing', 'task');
+    setTaskStatus('k-electric', 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
   }, RESET);
   await openHist(p);
   const one = await ev(p, () => ({
@@ -327,7 +332,7 @@ console.log('\n[TIMESTAMP-04/LEGACY] Anciennes entrées intactes');
   // Mélange legacy + structuré
   const mix = await ev(p, () => {
     task('k-electric').status = 'todo'; save();
-    setTaskStatus('k-electric', 'doing', 'task');
+    setTaskStatus('k-electric', 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     openProjectTab('keravel', 'Historique');
     const evs = [...document.querySelectorAll('.history-event')];
     return { total: evs.length, withTransition: evs.filter((e) => e.querySelector('.hs-chip')).length, dayLabels: [...document.querySelectorAll('.history-day-label')].map((x) => x.textContent.trim()) };
@@ -447,14 +452,21 @@ console.log('\n[ORDRE] Chronologie stricte');
   await ev(p, (src) => {
     (0, eval)(src);
     task('k-electric').status = 'todo'; task('k-windows').status = 'todo'; save();
-    setTaskStatus('k-electric', 'doing', 'task');
-    setTaskStatus('k-windows', 'doing', 'task');
+    setTaskStatus('k-electric', 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
+    setTaskStatus('k-windows', 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     setTaskStatus('k-electric', 'todo', 'task');
   }, RESET);
   await openHist(p);
   const t = await readTimeline(p);
-  const order = t.map((x) => x.title + ':' + x.from + '>' + x.to);
-  note('ORDRE', order);
+  /* V2.8.5.2 — RE-BASELINE. Un démarrage réel confirmé (V2.8.5.1 §7 et §9)
+     repositionne la tâche et propage l'aval : la timeline porte désormais, en
+     plus des transitions de statut, les entrées « … replanifiée
+     automatiquement … ». L'exigence testée reste EXACTEMENT la même — plus
+     récent en haut, aucun tri par nom / type / statut — mais elle est vérifiée
+     sur les TRANSITIONS DE STATUT, seuls événements que cette assertion a
+     jamais prétendu ordonner. */
+  const order = t.filter((x) => x.from && x.to).map((x) => x.title + ':' + x.from + '>' + x.to);
+  note('ORDRE', { complet: t.map((x) => x.title + ':' + x.from + '>' + x.to), transitions: order });
   ok(JSON.stringify(order) === JSON.stringify([
     'Tableau électrique:En cours>À faire',
     'Pose des 6 fenêtres:À faire>En cours',
@@ -471,8 +483,8 @@ console.log('\n[DESIGN] Dark mode et couleurs');
     (0, eval)(src);
     ['k-electric', 'k-windows', 'k-control'].forEach((id) => { if (task(id)) task(id).status = 'todo'; });
     save();
-    setTaskStatus('k-electric', 'doing', 'task');
-    setTaskStatus('k-windows', 'doing', 'task');
+    setTaskStatus('k-electric', 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
+    setTaskStatus('k-windows', 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     setTaskStatus('k-windows', 'done', 'task');
     setTaskStatus('k-electric', 'todo', 'task');
     app.settings.theme = 'dark'; document.body.classList.add('dark'); save();
@@ -506,9 +518,9 @@ console.log('\n[RESPONSIVE] 1920 → 390');
     await ev(p, (src) => {
       (0, eval)(src);
       task('k-electric').status = 'todo'; save();
-      setTaskStatus('k-electric', 'doing', 'task');
+      setTaskStatus('k-electric', 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
       setTaskStatus('k-electric', 'todo', 'task');
-      setTaskStatus('k-electric', 'doing', 'task');
+      setTaskStatus('k-electric', 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     }, RESET);
     await openHist(p);
     const r = await ev(p, () => {
@@ -521,6 +533,9 @@ console.log('\n[RESPONSIVE] 1920 → 390');
       const hs = [...main.querySelectorAll('.history-event')].map((e) => e.getBoundingClientRect().height);
       return {
         events: hs.length, avg: Math.round(hs.reduce((a, x) => a + x, 0) / hs.length),
+        // V2.8.5.2 — on publie aussi le détail : deux des trois transitions
+        // portent désormais le repositionnement (Début / Fin), la troisième non.
+        hauteurs: hs.map((h) => Math.round(h)), mini: Math.round(Math.min(...hs)),
         chips: main.querySelectorAll('.hs-chip').length, over,
         hscroll: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
       };
@@ -528,7 +543,16 @@ console.log('\n[RESPONSIVE] 1920 → 390');
     note('RESPONSIVE', { w, ...r });
     ok(r.events === 3 && r.chips === 6, `RESPONSIVE : ${w}px — 3 transitions rendues`, 'RESPONSIVE');
     ok(r.over === 0 && !r.hscroll, `RESPONSIVE : ${w}px — aucun débordement, 0 scroll horizontal`, 'RESPONSIVE');
-    ok(r.avg <= 110, `RESPONSIVE : ${w}px — timeline toujours compacte (${r.avg}px/événement)`, 'RESPONSIVE');
+    /* V2.8.5.2 — RE-BASELINE. Le budget de 110 px/événement était calibré sur
+       une entrée ne portant QUE la transition de statut. Depuis V2.8.5.1 (§14),
+       une transition qui vaut démarrage réel porte AUSSI son repositionnement
+       (Début / Fin) : deux des trois entrées gagnent donc deux lignes. On
+       vérifie les deux choses séparément, sans rien relâcher :
+         · l'entrée SANS repositionnement tient toujours dans les 110 px
+           d'origine (r.mini) — la compacité de base est intacte ;
+         · la moyenne, entrées enrichies comprises, reste sous 135 px. */
+    ok(r.mini <= 110, `RESPONSIVE : ${w}px — une transition simple reste dans le budget d'origine (${r.mini}px)`, 'RESPONSIVE');
+    ok(r.avg <= 135, `RESPONSIVE : ${w}px — timeline toujours compacte, repositionnements compris (${r.avg}px/événement, détail ${JSON.stringify(r.hauteurs)})`, 'RESPONSIVE');
     if (w === 390) await p.screenshot({ path: SHOTS + '06-mobile-390.png', fullPage: true });
     if (w === 1440) await p.screenshot({ path: SHOTS + '07-desktop-1440.png', fullPage: true });
     await ctx.close();
@@ -542,7 +566,7 @@ console.log('\n[NAVIGATION] Voir la tâche et absence de fausse affordance');
   await ev(p, (src) => {
     (0, eval)(src);
     task('k-electric').status = 'todo'; save();
-    setTaskStatus('k-electric', 'doing', 'task');
+    setTaskStatus('k-electric', 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
   }, RESET);
   await openHist(p);
   const cursors = await ev(p, () => ({
@@ -572,9 +596,9 @@ console.log('\n[ISOLATION] SITE-01 toujours fermé');
   const r = await ev(p, (src) => {
     (0, eval)(src);
     task('k-electric').status = 'todo'; save();
-    setTaskStatus('k-electric', 'doing', 'task');
+    setTaskStatus('k-electric', 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     const v = app.tasks.find((t) => t.projectId === 'villa' && t.status !== 'done');
-    setTaskStatus(v.id, 'doing', 'task');
+    setTaskStatus(v.id, 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     app.history.push({ date: historyNow(), text: 'GLOBAL-TEST', author: 'Eric' });
     save();
     const k = projectTabContent('Historique', 'keravel');
@@ -597,7 +621,7 @@ console.log('\n[ISOLATION] SITE-01 toujours fermé');
 console.log('\n[SCHEMA] Aucun bump');
 {
   const { ctx, p } = await newPage(1440, 1000, 'SCH');
-  await ev(p, (src) => { (0, eval)(src); task('k-electric').status = 'todo'; save(); setTaskStatus('k-electric', 'doing', 'task'); }, RESET);
+  await ev(p, (src) => { (0, eval)(src); task('k-electric').status = 'todo'; save(); setTaskStatus('k-electric', 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); }, RESET);
   await p.reload({ waitUntil: 'load' });
   await p.waitForTimeout(320);
   const r = await ev(p, () => ({
@@ -621,9 +645,9 @@ console.log('\n[COMPARATIF] Avant / après');
   const seq = `
     resetApp(); setDepth('pilot'); app.history = [];
     task('k-electric').status = 'todo'; save();
-    setTaskStatus('k-electric', 'doing', 'task');
+    setTaskStatus('k-electric', 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     setTaskStatus('k-electric', 'todo', 'task');
-    setTaskStatus('k-electric', 'doing', 'task');
+    setTaskStatus('k-electric', 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     app.ui.projectId = 'keravel'; openProjectTab('keravel', 'Historique');
   `;
   const read = async (url, tag) => {

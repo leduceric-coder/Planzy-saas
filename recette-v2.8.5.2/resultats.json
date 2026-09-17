@@ -1,0 +1,272 @@
+{
+  "passed": 53,
+  "failed": [],
+  "results": [
+    {
+      "sec": "PE-01",
+      "name": "PE-01 : après resetApp(), le niveau est « essential » — c'est bien l'état par défaut du produit qui est testé ici",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-02",
+      "name": "PE-02 : en Essentiel, une tâche active est réellement draggable (9 barres, 63 zones de dépôt)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-02",
+      "name": "PE-02 : et l’interface Essentiel reste SIMPLE — ni barre d’analyse, ni baseline, ni légende, ni chaîne d’impact",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-03",
+      "name": "PE-03 : un VRAI drag souris déplace réellement la tâche (2026-08-17T08:00 → 2026-08-19T08:00) et conserve sa durée",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-04",
+      "name": "PE-04 : le drag pose exactement UN snapshot Undo (0 → 1)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-04",
+      "name": "PE-04 : Undo restaure exactement les dates d’origine",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-05",
+      "name": "PE-05 : Redo rejoue le déplacement à l’identique",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-06",
+      "name": "PE-06 : un VRAI drag vers le samedi ouvre la confirmation et nomme le jour — « sam. 22 août »",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-07",
+      "name": "PE-07 : « Annuler » ne modifie rien — ni dates, ni historique, ni snapshot",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-08",
+      "name": "PE-08 : « Planifier quand même » applique le déplacement (2026-08-22T08:00) en UNE seule transaction Undo",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-09",
+      "name": "PE-09 : en Essentiel, « + Ajouter une tâche » est présent sous chaque chantier actif (3 pour 3)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-10",
+      "name": "PE-10 : la piste de dessin .g-create-track est présente (3) avec le curseur crosshair",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-11",
+      "name": "PE-11 : pendant le geste, l’aperçu en tirets s’affiche — « lun. 17 août → mer. 19 août »",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-11",
+      "name": "PE-11 : le relâchement ouvre le formulaire, et AUCUNE tâche n’est encore créée",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-12",
+      "name": "PE-12 : les dates dessinées sont correctement préremplies — 2026-08-17T08:00 → 2026-08-19T17:00",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-13",
+      "name": "PE-13 : la validation crée UNE tâche en Essentiel (11 → 12), en UNE transaction",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-14",
+      "name": "PE-14 : Undo retire la tâche créée, Redo la restaure à l’identique",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-15",
+      "name": "PE-15 : en Pilotage, le drag fonctionne exactement comme avant — aucune capacité perdue",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-15",
+      "name": "PE-15 : et les outils d’analyse du Pilotage (barre d’analyse, légende) sont toujours là",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-16",
+      "name": "PE-16 : en Pilotage, la création à la souris fonctionne toujours",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-17",
+      "name": "PE-17 : dans une Opération en Essentiel, les tâches restent draggables (9) — aucune logique propre à l’Opération",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-18",
+      "name": "PE-18 : la création à la souris y fonctionne aussi, sur le bon chantier (keravel), sans rien muter avant validation",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-19",
+      "name": "PE-19 : un chantier clôturé reste en lecture seule — ni drag, ni ligne de création",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-20",
+      "name": "PE-20 : une tâche TERMINÉE n’est jamais draggable, quel que soit le niveau",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-21",
+      "name": "PE-21 : en vue Année, aucune création graphique — la représentation mensuelle reste trop imprécise",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-22",
+      "name": "PE-22 : pendant une simulation, la création graphique reste interdite — l’interdiction de V2.8.5 est intacte",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-23",
+      "name": "PE-23 : depuis l’ÉDITEUR UNIVERSEL, passer « À faire → En cours » détecte le démarrage réel — le chemin qui l’ignorait en V2.8.5.1",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-24",
+      "name": "PE-24 : avant confirmation, AUCUNE mutation — ni nom, ni statut, ni dates, ni snapshot, ni historique",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-25",
+      "name": "PE-25 : après confirmation, le début devient MAINTENANT (2026-08-17T14:30) et le statut « En cours »",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-26",
+      "name": "PE-26 : la durée planifiée est conservée — 4 h avant, 4 h après (fin 2026-08-17T18:30)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-27",
+      "name": "PE-27 : la modification du nom saisie dans le même formulaire est conservée",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-27",
+      "name": "PE-27 : nom + statut + dates tiennent dans UNE SEULE transaction Undo (0 → 1)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-31",
+      "name": "PE-31 : la baseline est inchangée (2026-08-18T08:00 → 2026-08-18T12:00)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-27",
+      "name": "PE-27 : UN SEUL Undo restaure ENSEMBLE le nom, le statut et les dates — jamais trois annulations successives",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-28",
+      "name": "PE-28 : UN SEUL Redo rejoue toute la transaction",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-29",
+      "name": "PE-29 : « Annuler » n’a aucun effet, et le formulaire reste ouvert avec la saisie de l’utilisateur — rien n’est perdu",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-30",
+      "name": "PE-30 : un écart de 2 minutes (tolérance 5 min) ne déclenche AUCUNE confirmation depuis l’éditeur",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-32",
+      "name": "PE-32 : démarrage réel ET jour non ouvré tiennent dans UNE seule modale et UNE seule validation — jamais deux confirmations empilées",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-33",
+      "name": "PE-33 : depuis le Kanban, la même confirmation, le même repositionnement, la même durée conservée",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-34",
+      "name": "PE-34 : depuis la fiche tâche, comportement identique",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-35",
+      "name": "PE-35 : depuis le Mode Chantier, comportement identique — les QUATRE chemins partagent la même vérité métier",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-36",
+      "name": "PE-36 : il n’existe qu’UN setTaskStatus, et aucun moteur de statut parallèle",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-37",
+      "name": "PE-37 : il n’existe qu’UN gantt() — l’Opération et le Planning global partagent le même",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-38",
+      "name": "PE-38 : un seul moteur de déplacement — dropTask → requestGanttTaskMove → requestTaskScheduleMove → planReflow/applyReflowPlan",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-39",
+      "name": "PE-39 : un seul moteur de création, un seul calcul de démarrage réel, un seul composant de confirmation",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-39",
+      "name": "PE-39 : le niveau Essentiel/Pilotage n’apparaît plus comme garde d’édition — c’est canEditPlanning qui décide",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2852",
+      "name": "FREEZE-2852 : les 84 moteurs de V2.8.5.1 sont BYTE-IDENTIQUES — tout le calendrier des jours non ouvrés, le démarrage réel, la propagation, le déplacement, la création à la souris, la Qualité, les Ressources, les Jalons, le Backup et le Mode Chantier",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2852",
+      "name": "FREEZE-2852 : exactement quatre fonctions modifiées (gantt, planningCanDrawCreate, submitTaskEdit, closeOverlay) et une ajoutée (clearTaskEditAck) — le périmètre annoncé",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2852",
+      "name": "FREEZE-2852 : STORE (« kanvix-product-8-3 ») et SCHEMA_VERSION (12) strictement inchangés",
+      "status": "PASS"
+    },
+    {
+      "sec": "CAPTURES",
+      "name": "CAPTURES : aucune des dix largeurs × deux niveaux × deux thèmes ne produit de débordement horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "CAPTURES",
+      "name": "CAPTURES : de 768 à 1920 px, l’édition est présente dans les DEUX niveaux (32 combinaisons vérifiées)",
+      "status": "PASS"
+    },
+    {
+      "sec": "CAPTURES",
+      "name": "CAPTURES : le Planning d’Opération porte l’édition dans les deux niveaux",
+      "status": "PASS"
+    },
+    {
+      "sec": "PE-40",
+      "name": "PE-40 : aucune erreur JavaScript applicative en console (0)",
+      "status": "PASS"
+    }
+  ],
+  "consoleErrors": []
+}

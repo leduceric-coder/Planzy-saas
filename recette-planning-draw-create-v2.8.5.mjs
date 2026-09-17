@@ -160,14 +160,28 @@ console.log('\n[DTC-PRESENCE] Quand la ligne apparaît');
   ok(clos.keravel === 0 && !clos.canDraw,
     'DTC-04 : un chantier clôturé n’offre aucune création graphique — les gardes existantes sont respectées', 'DTC-04');
 
+  /* V2.8.5.2 — RE-BASELINE (contrat métier remplacé, test NON affaibli).
+     Ancien contrat : « en Essentiel, aucune création graphique — même règle que
+     le glisser-déposer avancé ». Nouveau contrat (V2.8.5.2 §2) : le niveau
+     Essentiel est un planning SIMPLE, pas un planning en LECTURE SEULE. La
+     différence entre les niveaux porte sur l'ANALYSE (baseline, dépendances,
+     chaîne d'impact), jamais sur les opérations élémentaires d'édition.
+     L'assertion vérifie désormais les deux moitiés de ce contrat : l'édition
+     est DISPONIBLE, et l'interface reste SIMPLE. */
   const essentiel = await ev(p, () => {
-    resetApp(); setDepth('essential'); save(); go('planning');
-    return { rows: document.querySelectorAll('.g-create-row').length,
-      canDraw: planningCanDrawCreate('keravel', { advanced: false, readOnly: false, collapsed: false }) };
+    resetApp(); setDepth('essential'); app.settings.period = 'week'; save(); go('planning');
+    return { niveau: app.settings.level,
+      rows: document.querySelectorAll('.g-create-row').length,
+      draggables: document.querySelectorAll('.g-bar[draggable="true"]').length,
+      canDraw: planningCanDrawCreate('keravel', { canEditPlanning: true, readOnly: false, collapsed: false }),
+      // La simplicité du niveau reste, elle, intacte.
+      analyse: document.querySelectorAll('.analysis-bar').length,
+      baselines: document.querySelectorAll('.baseline').length };
   });
   note('DTC-05', essentiel);
-  ok(essentiel.rows === 0 && !essentiel.canDraw,
-    'DTC-05 : en niveau Essentiel, aucune création graphique — elle suit la même règle que le glisser-déposer avancé', 'DTC-05');
+  ok(essentiel.rows > 0 && essentiel.canDraw && essentiel.draggables > 0
+    && essentiel.analyse === 0 && essentiel.baselines === 0,
+    'DTC-05 : en niveau Essentiel, la création graphique et le déplacement sont DISPONIBLES (V2.8.5.2 §2) — et l’interface y reste simple : ni barre d’analyse, ni baseline', 'DTC-05');
   await ctx.close();
 }
 
@@ -755,16 +769,15 @@ console.log('\n[FREEZE-285] Byte-identité');
     'snapshot', 'undo', 'redo', 'pushHistory', 'clearUndoRedo', 'invalidateRedo', 'actionToast',
     'historyToast', 'historyControls', 'refreshHistoryControls', 'historyControlsState',
     'cloneHistoryState', 'restoreHistoryState', 'isTextEditingTarget',
-    'requestGanttTaskMove', 'requestTaskScheduleMove', 'planReflow', 'applyReflowPlan',
+    'requestGanttTaskMove', 'planReflow', 'applyReflowPlan',
     'dropTask', 'dragStart', 'dragOver', 'drawDeps', 'planningTasks', 'planningAgenda',
-    'planningIsReadOnly', 'scale', 'pos', 'kanbanBoard', 'kanbanCard', 'setTaskStatus',
-    'submitControlAttempt', 'createRework', 'evaluateScenario', 'getProjectHealth',
+    'planningIsReadOnly', 'scale', 'pos', 'kanbanBoard', 'kanbanCard',     'submitControlAttempt', 'createRework', 'evaluateScenario', 'getProjectHealth',
     'getProjectSummary', 'milestoneStatus', 'isUpcomingMilestone', 'operationMilestoneStats',
     'operationMilestonesTab', 'taskResourceIds', 'getResourceSchedulingConflicts',
     'resourceLoadBoard', 'buildImportPlan', 'applyImportPlan', 'validateImportState',
     'buildKanvixBackup', 'confirmKanvixRestore', 'migrateState', 'save', 'applyStorageSync',
     'resetApp', 'renderField', 'handleFieldSiteTab', 'pageToday', 'renderSites', 'siteCard',
-    'submitTaskEdit', 'confirmDeleteTask', 'openTask', 'toggleProject', 'weekBounds',
+    'confirmDeleteTask', 'openTask', 'toggleProject', 'weekBounds',
     'getCurrentWeekRange', 'canEditProject', 'guardEditable',
   ];
   let moved = [], same = 0;
@@ -777,15 +790,21 @@ console.log('\n[FREEZE-285] Byte-identité');
   ok(moved.length === 0,
     `FREEZE-285 : les ${frozen.length} moteurs de V2.8.4.1 sont BYTE-IDENTIQUES — tout l’Undo/Redo, le déplacement des tâches, le drag HTML5, drawDeps, scale(), pos(), planningTasks(), la Qualité, les Ressources, les Jalons et le Mode Chantier`, 'FREEZE-285');
 
-  const attendu = ['gantt', 'openTaskForm'];
+  /* V2.8.5.2 — RE-BASELINE : gantt() a de nouveau changé, cette fois pour
+     détacher l'édition du niveau Essentiel/Pilotage (§3). C'est un périmètre
+     ATTENDU, pas une dérive. */
+  const attendu = ['gantt', 'openTaskForm', 'requestTaskScheduleMove', 'setTaskStatus', 'submitTaskEdit'];
   const changed = attendu.filter((n) => { const a = extract(prevSrc, n), c = extract(curSrc, n); return a && c && md5(a) !== md5(c); });
   const added = ['planningXToDate', 'planningCreateRange', 'planningCanDrawCreate', 'planningCreateRow',
     'planningCreateColumns', 'planningCreatePointerDown', 'planningCreatePointerMove',
     'planningCreateLabel', 'planningCreatePointerUp', 'planningCreateEscape', 'cancelPlanningCreateDrag']
     .filter((n) => !extract(prevSrc, n) && !!extract(curSrc, n));
   note('FREEZE-285-périmètre', { modifiées: changed, ajoutées: added.length });
-  ok(changed.length === 2 && added.length === 11,
-    'FREEZE-285 : seules gantt() et openTaskForm() sont modifiées, et les onze helpers ajoutés appartiennent tous au draw-to-create', 'FREEZE-285');
+  /* V2.8.5.2 — RE-BASELINE : la liste `attendu` compte désormais cinq noms
+     (deux pour V2.8.5, trois pour les correctifs V2.8.5.1 / V2.8.5.2). C'est
+     leur TOTALITÉ qui doit avoir changé : aucune dérive hors de cette liste. */
+  ok(changed.length === attendu.length && added.length === 11,
+    'FREEZE-285 : seules les fonctions attendues sont modifiées — gantt() et openTaskForm() pour V2.8.5, puis requestTaskScheduleMove(), setTaskStatus() et submitTaskEdit() pour les correctifs V2.8.5.1/V2.8.5.2 — et les onze helpers ajoutés appartiennent tous au draw-to-create', 'FREEZE-285');
 
   // Rétro-compatibilité de la signature, et pureté des convertisseurs.
   const sig = /function openTaskForm\(pid = app\.ui\.projectId, editId = "", prefill = null\)/.test(curSrc);

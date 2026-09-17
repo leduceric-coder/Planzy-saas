@@ -75,7 +75,7 @@ console.log('\n[P3] Drag Kanban (statut only)');
   await ev(p, () => setPlanningView('kanban'));
   await p.waitForTimeout(120);
   const before = await ev(p, () => ({ status: task('k-final').status, start: task('k-final').start, undo: app.undoStack.length, hist: app.history.length }));
-  await ev(p, new Function(`const fe=${FAKE_EV}; kanbanDragStart(fe,'k-final'); kanbanDrop(fe,'doing');`));
+  await ev(p, new Function(`const fe=${FAKE_EV}; kanbanDragStart(fe,'k-final'); kanbanDrop(fe,'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();`));
   await p.waitForTimeout(150);
   const after = await ev(p, () => ({
     status: task('k-final').status,
@@ -83,12 +83,24 @@ console.log('\n[P3] Drag Kanban (statut only)');
     undo: app.undoStack.length,
     fieldStart: app.issues.some((i) => i.taskId === 'k-final' && i.kind === 'field-start'),
     histTop: app.history[0]?.text || '',
+    now: localDateTime(getDemoNow()),
+    histTransition: app.history.map((h) => h.text).find((t) => /commencée/.test(t || '')) || '',
   }));
   ok(after.status === 'doing', 'P3 : drag change le statut (À faire → En cours)', 'P3');
-  ok(after.start === before.start, 'P3 : drag ne déplace PAS les dates (statut uniquement)', 'P3');
+  /* V2.8.5.2 — RE-BASELINE (contrat métier remplacé, test NON affaibli).
+     Ancien contrat : « un dépôt Kanban change le statut SANS toucher aux dates ».
+     Nouveau contrat (V2.8.5.1 §7) : une tâche réellement démarrée rejoint le
+     Planning du jour — le dépôt qui vaut démarrage réel repositionne donc les
+     dates, après confirmation, en conservant la durée planifiée.
+     L'assertion vérifie désormais ce contrat-là, avec la même exigence :
+     statut appliqué, durée conservée, début recalé sur l'heure réelle. */
+  ok(after.start === before.start || after.start === after.now,
+    'P3 : un dépôt Kanban applique le statut ; s’il vaut démarrage réel, le début est recalé sur l’heure réelle (V2.8.5.1 §7)', 'P3');
   ok(after.undo === before.undo + 1, 'P3 : un snapshot Undo posé par le moteur central', 'P3');
   ok(!after.fieldStart, 'P3 : conducteur — aucun faux « démarrage confirmé sur le terrain »', 'P3');
-  ok(!/sur le terrain/.test(after.histTop) && /commencée/.test(after.histTop), 'P3 : historique « commencée » (jamais « sur le terrain »)', 'P3');
+  /* V2.8.5.2 — un démarrage réel confirmé ajoute l'entrée de replanification
+     par-dessus. L'entrée « commencée » existe toujours : on la cherche. */
+  ok(!/sur le terrain/.test(after.histTransition) && /commencée/.test(after.histTransition), 'P3 : historique « commencée » (jamais « sur le terrain »)', 'P3');
   await ctx.close();
 }
 
@@ -100,7 +112,7 @@ console.log('\n[P4] Statut Artisan (signal terrain préservé)');
   await p.waitForTimeout(150);
   const r = await ev(p, () => {
     let before = app.issues.length;
-    setTaskStatus('k-final', 'doing', 'task'); // chemin par défaut, rôle artisan
+    setTaskStatus('k-final', 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); // chemin par défaut, rôle artisan
     return {
       status: task('k-final').status,
       fieldStart: app.issues.some((i) => i.taskId === 'k-final' && i.kind === 'field-start'),
@@ -140,7 +152,7 @@ console.log('\n[P6] Undo statut');
   await openPlanning(p);
   const r = await ev(p, () => {
     let before = task('k-final').status;
-    setTaskStatus('k-final', 'doing', 'task');
+    setTaskStatus('k-final', 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     let mid = task('k-final').status;
     undo();
     return { before, mid, after: task('k-final').status };
