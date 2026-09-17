@@ -1,0 +1,197 @@
+{
+  "passed": 38,
+  "failed": [],
+  "results": [
+    {
+      "sec": "UIUR-01",
+      "name": "UIUR-01 : sur le Planning, les commandes ↶ / ↷ précèdent « Exporter PDF » et « + Tâche », séparées par un filet",
+      "status": "PASS"
+    },
+    {
+      "sec": "UIUR-01",
+      "name": "UIUR-01 : ce sont de vrais <button type=\"button\"> à icônes SVG — aucun caractère Unicode en rendu — avec aria-label « Annuler » et « Rétablir »",
+      "status": "PASS"
+    },
+    {
+      "sec": "UIUR-02",
+      "name": "UIUR-02 : à l’état initial les deux boutons sont désactivés, et leur infobulle annonce le raccourci sans nommer d’action",
+      "status": "PASS"
+    },
+    {
+      "sec": "UIUR-03",
+      "name": "UIUR-03 : après une mutation, Undo devient actif et Redo reste désactivé",
+      "status": "PASS"
+    },
+    {
+      "sec": "UIUR-04",
+      "name": "UIUR-04 : l’infobulle Undo nomme l’action et rappelle le raccourci — « Annuler : Tâche modifiée — Ctrl+Z »",
+      "status": "PASS"
+    },
+    {
+      "sec": "UIUR-05",
+      "name": "UIUR-05 : cliquer le bouton ↶ annule réellement la mutation",
+      "status": "PASS"
+    },
+    {
+      "sec": "UIUR-06",
+      "name": "UIUR-06 : après l’Undo, Redo devient actif et son infobulle nomme l’action qui sera rétablie",
+      "status": "PASS"
+    },
+    {
+      "sec": "UIUR-07",
+      "name": "UIUR-07 : cliquer le bouton ↷ restaure la mutation, et Redo redevient désactivé",
+      "status": "PASS"
+    },
+    {
+      "sec": "UIUR-08",
+      "name": "UIUR-08 : trois clics ↶ ramènent à l’état initial et trois clics ↷ restaurent A, B et C — les boutons se désactivent aux extrémités",
+      "status": "PASS"
+    },
+    {
+      "sec": "UIUR-09",
+      "name": "UIUR-09 : les libellés VOYAGENT avec la transition — après avoir annulé « Chantier modifié », Undo propose « Ressource modifiée » et Redo « Chantier modifié »",
+      "status": "PASS"
+    },
+    {
+      "sec": "UIUR-10",
+      "name": "UIUR-10 : une nouvelle mutation après deux Undo désactive Redo et vide redoHistory ET redoLabels",
+      "status": "PASS"
+    },
+    {
+      "sec": "UIUR-11",
+      "name": "UIUR-11 : après 25 mutations, les deux piles Undo sont plafonnées à 20 — état et libellé partent ensemble",
+      "status": "PASS"
+    },
+    {
+      "sec": "UIUR-12",
+      "name": "UIUR-12 : l’invariant undoHistory.length === undoLabels.length et redoHistory.length === redoLabels.length est vérifié aux 34 étapes du scénario",
+      "status": "PASS"
+    },
+    {
+      "sec": "UIUR-13",
+      "name": "UIUR-13 : le toast « Tâche modifiée · Annuler » de V2.8.4 fonctionne exactement comme avant",
+      "status": "PASS"
+    },
+    {
+      "sec": "UIUR-14",
+      "name": "UIUR-14 : plus de 4 secondes après la mutation, le toast a disparu mais le bouton ↶ reste ACTIF et annule bel et bien — le toast n’est plus le seul chemin",
+      "status": "PASS"
+    },
+    {
+      "sec": "UIUR-15",
+      "name": "UIUR-15 : trois actions dont tous les toasts ont expiré restent annulables une par une par la toolbar, dans le bon ordre",
+      "status": "PASS"
+    },
+    {
+      "sec": "UIUR-16",
+      "name": "UIUR-16 : Ctrl+Z fonctionne toujours, et la toolbar se met à jour en conséquence — un seul moteur pour les trois chemins",
+      "status": "PASS"
+    },
+    {
+      "sec": "UIUR-17",
+      "name": "UIUR-17 : dans un champ de saisie, Ctrl+Z reste l’annulation native — l’état métier, les quatre piles et les boutons sont inchangés",
+      "status": "PASS"
+    },
+    {
+      "sec": "UIUR-18",
+      "name": "UIUR-18 : une action externe n’ajoute AUCUN libellé, ne propose aucun faux « Annuler », et désactive le bouton Redo puisqu’elle invalide la branche",
+      "status": "PASS"
+    },
+    {
+      "sec": "UIUR-19",
+      "name": "UIUR-19 : après réinitialisation, les QUATRE piles sont vides et les deux boutons désactivés",
+      "status": "PASS"
+    },
+    {
+      "sec": "UIUR-20",
+      "name": "UIUR-20 : après restauration d’une sauvegarde, les quatre piles sont vides et les deux boutons désactivés",
+      "status": "PASS"
+    },
+    {
+      "sec": "UIUR-21",
+      "name": "UIUR-21 : après adoption d’un état externe par synchronisation, les quatre piles sont vides et les boutons désactivés",
+      "status": "PASS"
+    },
+    {
+      "sec": "UIUR-22",
+      "name": "UIUR-22 : un import réussi porte son propre libellé — « Annuler : Import terminé » — et s’annule puis se rétablit d’un clic",
+      "status": "PASS"
+    },
+    {
+      "sec": "UIUR-23",
+      "name": "UIUR-23 : un import invalide laisse les QUATRE piles — états ET libellés — strictement identiques, branche Redo comprise",
+      "status": "PASS"
+    },
+    {
+      "sec": "UIUR-24",
+      "name": "UIUR-24 → UIUR-28 : les commandes sont présentes sur Planning, Aujourd’hui, Chantiers, Opérations, fiche Opération, fiche Chantier et Ressources — sans débordement horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "UIUR-24",
+      "name": "UIUR-24 : un composant commun historyControls() rend les deux boutons — aucun balisage copié-collé par page",
+      "status": "PASS"
+    },
+    {
+      "sec": "UIUR-29",
+      "name": "UIUR-29 : de 1920 à 390px, les commandes sont présentes et AUCUN format ne déborde horizontalement",
+      "status": "PASS"
+    },
+    {
+      "sec": "UIUR-29",
+      "name": "UIUR-29 : à 390px les commandes restent accessibles et actives, sans gêner les actions principales",
+      "status": "PASS"
+    },
+    {
+      "sec": "UIUR-30",
+      "name": "UIUR-30 : en Mode Chantier les commandes sont absentes — renderField() n’appelle aucun en-tête porteur, l’absence est STRUCTURELLE — et le toast Annuler y reste pleinement fonctionnel",
+      "status": "PASS"
+    },
+    {
+      "sec": "UIUR-31",
+      "name": "UIUR-31 : en thème sombre, le bouton actif est lisible sur fond sombre et le bouton désactivé s’en distingue nettement",
+      "status": "PASS"
+    },
+    {
+      "sec": "UIUR-32",
+      "name": "UIUR-32 : le bouton actif prend le focus et s’active à Entrée ; le bouton désactivé n’est ni focusable ni activable",
+      "status": "PASS"
+    },
+    {
+      "sec": "UIUR-33",
+      "name": "UIUR-33 : rendre ou rafraîchir les commandes ne modifie NI `app`, NI aucune des quatre piles — c’est une pure lecture",
+      "status": "PASS"
+    },
+    {
+      "sec": "UIUR-34",
+      "name": "UIUR-34 : localStorage ne contient aucun libellé ni aucune pile — undoStack legacy reste [] — alors que la pile de session en compte bien 6",
+      "status": "PASS"
+    },
+    {
+      "sec": "UIUR-35",
+      "name": "UIUR-35 : la sauvegarde Kanvix ne transporte aucun libellé d’historique",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2841",
+      "name": "FREEZE-2841 : les 61 fonctions de V2.8.4 sont BYTE-IDENTIQUES — dont cloneHistoryState(), restoreHistoryState(), isTextEditingTarget(), save(), migrateState(), applyStorageSync(), resetApp(), confirmKanvixRestore() et tous les moteurs métier",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2841",
+      "name": "FREEZE-2841 : quatre helpers d’exposition ajoutés, et toute fonction modifiée appartient à la liste autorisée — synchronisation des libellés et de l’UI uniquement",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2841",
+      "name": "FREEZE-2841 : les piles de libellés vivent hors de `app`, il n’existe qu’UN undo() et qu’UN redo(), et les boutons les appellent directement — aucun second moteur",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2841",
+      "name": "FREEZE-2841 : STORE et SCHEMA_VERSION (12) strictement inchangés",
+      "status": "PASS"
+    }
+  ],
+  "consoleErrors": []
+}
