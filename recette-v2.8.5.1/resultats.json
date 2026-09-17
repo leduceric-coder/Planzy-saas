@@ -1,0 +1,387 @@
+{
+  "passed": 76,
+  "failed": [],
+  "results": [
+    {
+      "sec": "PC-01",
+      "name": "PC-01 : le samedi est un jour non ouvré",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-02",
+      "name": "PC-02 : le dimanche est un jour non ouvré",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-03",
+      "name": "PC-03 : un jour ouvré ordinaire n’est ni week-end ni férié — aucun faux positif",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-04",
+      "name": "PC-04 : le 01/01 est reconnu « Jour de l’an » — pour 2026, 2027 ET 2031",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-05",
+      "name": "PC-05 : le 01/05 est reconnu « Fête du Travail » — pour 2026, 2027 ET 2031",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-06",
+      "name": "PC-06 : le 08/05 est reconnu « Victoire 1945 » — pour 2026, 2027 ET 2031",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-07",
+      "name": "PC-07 : le 14/07 est reconnu « Fête nationale » — pour 2026, 2027 ET 2031",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-08",
+      "name": "PC-08 : le 15/08 est reconnu « Assomption » — pour 2026, 2027 ET 2031",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-09",
+      "name": "PC-09 : le 01/11 est reconnu « Toussaint » — pour 2026, 2027 ET 2031",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-10",
+      "name": "PC-10 : le 11/11 est reconnu « Armistice 1918 » — pour 2026, 2027 ET 2031",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-11",
+      "name": "PC-11 : le 25/12 est reconnu « Noël » — pour 2026, 2027 ET 2031",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-12",
+      "name": "PC-12 : « Lundi de Pâques » est calculé dynamiquement — 2026-04-06, 2027-03-29, 2031-04-14",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-13",
+      "name": "PC-13 : « Ascension » est calculé dynamiquement — 2026-05-14, 2027-05-06, 2031-05-22",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-14",
+      "name": "PC-14 : « Lundi de Pentecôte » est calculé dynamiquement — 2026-05-25, 2027-05-17, 2031-06-02",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-15",
+      "name": "PC-15 : créer un samedi demande confirmation et NOMME le jour — « sam. 22 août »",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-16",
+      "name": "PC-16 : créer un dimanche demande confirmation — « dim. 23 août »",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-17",
+      "name": "PC-17 : créer un jour férié demande confirmation et le NOMME — « mer. 11 nov. — Armistice 1918 »",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-18",
+      "name": "PC-18 : une tâche commencée le VENDREDI et finie le SAMEDI déclenche l’avertissement — la détection parcourt toute la période, pas seulement le jour de début",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-19",
+      "name": "PC-19 : « Annuler » ne crée rien, n’écrit aucun historique, ne pose aucun snapshot Undo — et rend la main au formulaire",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-20",
+      "name": "PC-20 : « Planifier quand même » crée la tâche aux dates EXACTES saisies — aucun décalage automatique au lundi",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-21",
+      "name": "PC-21 : la création confirmée est UNE seule transaction Undo (0 → 1) — la confirmation n’en ajoute pas une deuxième",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-22",
+      "name": "PC-22 : un Undo retire la tâche, un Redo la restaure à l’identique — mêmes dates, même identifiant",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-23",
+      "name": "PC-23 : déplacer une tâche vers un samedi demande confirmation — et le glisser-déposer du Gantt passe bien par ce moteur (dropTask → requestGanttTaskMove → requestTaskScheduleMove)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-24",
+      "name": "PC-24 : « Annuler » conserve les dates d’origine (2026-08-17T08:00) — aucun snapshot, aucun historique",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-25",
+      "name": "PC-25 : « Planifier quand même » applique les nouvelles dates, en UNE transaction, durée conservée",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-26",
+      "name": "PC-26 : en thème clair, les colonnes de week-end passent de 5.45 % à 17.29 % d’écart de luminance avec la surface — réellement perceptibles, et ni rouges ni orangées",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-27",
+      "name": "PC-27 : en thème sombre, l’écart RGB avec la surface passe de 4/8/11 à 10/17/22 — visible sans devenir lumineux",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-28",
+      "name": "PC-28 : la colonne du 11 novembre porte l’indicateur « Férié » (info-bulle « Armistice 1918 ») et les deux colonnes de week-end restent distinctes",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-28",
+      "name": "PC-28 : le 15 août 2026 est à la fois samedi ET Assomption — il ne reçoit qu’UN aplat (« holiday »), jamais deux superposés",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-29",
+      "name": "PC-29 : l’onglet Planning porte ← Aujourd’hui → et appelle le MOTEUR GLOBAL (shiftPlanning / planningToday) — aucune navigation spécifique à l’opération",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-29",
+      "name": "PC-29 : « → » avance d’exactement 7 jours en vue Semaine (2026-08-17T00:00 → 2026-08-24T00:00) et le Gantt consolidé se recalcule",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-30",
+      "name": "PC-30 : « ← » recule d’exactement 7 jours (2026-08-24T00:00 → 2026-08-17T00:00)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-31",
+      "name": "PC-31 : la navigation traverse une fin de mois (août → 09) et une fin d’année (→ 2027-01-04) sans se bloquer",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-32",
+      "name": "PC-32 : en vue Mois, « → » avance d’un mois (2026-08 → 2026-09)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-33",
+      "name": "PC-33 : en vue Année, « → » avance d’un an (2026 → 2027)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-34",
+      "name": "PC-34 : « Aujourd’hui » ramène l’ancre au jour courant (2026-08-17) sans quitter l’onglet Planning de l’opération",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-35",
+      "name": "PC-35 : une tâche prévue demain et démarrée aujourd’hui demande confirmation, en nommant l’horaire prévu ET le nouveau",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-35",
+      "name": "PC-35 : tant que l’utilisateur n’a pas confirmé, RIEN n’est écrit — ni statut, ni dates, ni snapshot, ni historique",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-35",
+      "name": "PC-35 : « Annuler » laisse la tâche exactement dans son état précédent",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-35",
+      "name": "PC-35 : la garde précède TOUT effet de bord — une confirmation refusée ne matérialise même pas un contrôle qualité « au passage »",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-36",
+      "name": "PC-36 : après confirmation, le début devient MAINTENANT (2026-08-17T14:30)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-37",
+      "name": "PC-37 : la durée prévue est conservée — 4 h avant, 4 h après ; la fin est calculée (2026-08-17T18:30), jamais forcée à 17:00 ou 18:00",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-41",
+      "name": "PC-41 : le statut est bien « doing »",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-42",
+      "name": "PC-42 : la baseline est INCHANGÉE (2026-08-18T08:00 → 2026-08-18T12:00) — le planning actuel bouge, le plan initial de référence non",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-43",
+      "name": "PC-14bis / §14 : UNE seule entrée d’historique porte le statut ET les dates (Statut, Début, Fin) — pas trois événements indépendants",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-38",
+      "name": "PC-38 : la tâche apparaît immédiatement dans le Planning du JOUR",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-39",
+      "name": "PC-39 : elle apparaît correctement en Planning SEMAINE",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-40",
+      "name": "PC-40 : elle apparaît dans le Planning de l’Opération concernée — même Gantt, même moteur",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-43",
+      "name": "PC-43 : UN SEUL Undo restaure ensemble le statut, le début ET la fin — jamais « Undo 1 = statut, Undo 2 = date »",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-44",
+      "name": "PC-44 : un seul Redo les rejoue tous les trois",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-45",
+      "name": "PC-45 : une tâche prévue 08:00–16:00 démarrée à 14:30 est réalignée à 14:30–22:30 — la durée de 8 h est conservée, c’est la réalité opérationnelle qui prime",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-46",
+      "name": "PC-46 : un écart de 2 minutes (tolérance 5 min) ne déclenche AUCUNE confirmation — le planning est déjà cohérent",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-47",
+      "name": "PC-47 : un démarrage dont la nouvelle plage touche un samedi fusionne les deux messages dans UNE seule modale et UNE seule validation — jamais deux modales empilées",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-48",
+      "name": "PC-48 : une tâche TERMINÉE reste protégée — le démarrage réel ne contourne pas la garde « done » de V2.7",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-49",
+      "name": "PC-49 : la propagation aval du démarrage réel passe par planReflow / applyReflowPlan — un seul moteur, et tout tient dans UNE transaction Undo",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-50",
+      "name": "PC-50 : la création à la souris préremplit toujours le formulaire (2026-08-21T08:00 → 2026-08-23T17:00) — le geste de V2.8.5 est intact",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-51",
+      "name": "PC-51 : AUCUNE alerte pendant le mouvement de souris — l’aperçu s’affiche, rien n’est demandé, rien n’est muté",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-51",
+      "name": "PC-51 : l’aperçu de sélection est en TIRETS — il ne peut plus être confondu avec une barre de tâche réelle",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-51",
+      "name": "PC-51 : c’est bien À LA VALIDATION que l’avertissement apparaît, pas pendant le geste",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-52",
+      "name": "PC-52 : après création, aucun aperçu ne subsiste, aucune sélection temporaire, aucun survol — et la barre se DISTINGUE de la colonne du jour (écart RGB cumulé 23, contre 6 en V2.8.5, où elle s’y fondait et ne laissait voir que son liseré)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-53",
+      "name": "PC-53 : le repère AUJOURD’HUI légitime subsiste — en-tête et créneaux, bordure 2px solid rgb(23, 105, 255)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-54",
+      "name": "PC-54 : une tâche sans lot ne reçoit AUCUNE pastille de couleur — comportement volontaire, inchangé",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-55",
+      "name": "PC-55 : les commandes Undo/Redo globales restent fonctionnelles depuis Aujourd’hui",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-56",
+      "name": "PC-56 : les commandes Undo/Redo globales restent fonctionnelles depuis le Planning",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-57",
+      "name": "PC-57 : le Kanban n’est pas régressé — colonnes et cartes rendues, et une transition cohérente reste directe, sans confirmation inutile",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-58",
+      "name": "PC-58 : la garde Qualité de V2.7 est intacte — un contrôle bloquant non soldé interdit toujours « terminé »",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-59",
+      "name": "PC-59 : le Mode Chantier reste rendu et fonctionnel (Chantier / Messages, 10738 caractères) — et le calendrier n’y introduit aucun Gantt",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2851",
+      "name": "FREEZE-2851 : les 67 moteurs de V2.8.5 sont BYTE-IDENTIQUES — Undo/Redo complet, propagation, glisser-déposer, création souris, Qualité, Ressources, Jalons, Backup et Mode Chantier",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2851",
+      "name": "FREEZE-2851 : renderAIPanel est byte-identique — vérifié par découpe à l’indentation, l’extracteur par accolades dérivant sur ses littéraux de gabarit",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2851",
+      "name": "FREEZE-2851 : les 22 fonctions ajoutées existent toutes et appartiennent au calendrier, à la confirmation ou au démarrage réel",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2851",
+      "name": "FREEZE-2851 : une seule règle de week-end dans tout le fichier, un seul setTaskStatus, un seul gantt(), aucune navigation propre à l’Opération, et la tolérance est une constante nommée",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2851",
+      "name": "FREEZE-2851 : STORE (« kanvix-product-8-3 ») et SCHEMA_VERSION (12) strictement inchangés — aucune nouvelle donnée persistante",
+      "status": "PASS"
+    },
+    {
+      "sec": "MOBILE",
+      "name": "MOBILE-430 : à 430 px, la modale de confirmation ne déborde pas (402 px pour 430 px), ses boutons font au moins 32 px de haut, et la page ne défile pas horizontalement",
+      "status": "PASS"
+    },
+    {
+      "sec": "MOBILE",
+      "name": "MOBILE-390 : à 390 px, la modale de confirmation ne déborde pas (362 px pour 390 px), ses boutons font au moins 32 px de haut, et la page ne défile pas horizontalement",
+      "status": "PASS"
+    },
+    {
+      "sec": "CAPTURES",
+      "name": "CAPTURES : aucune des dix largeurs (1920, 1600, 1440, 1366, 1280, 1080, 900, 768, 430, 390) ne produit de débordement horizontal de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "PC-60",
+      "name": "PC-60 : aucune erreur JavaScript en console (0)",
+      "status": "PASS"
+    }
+  ],
+  "consoleErrors": []
+}
