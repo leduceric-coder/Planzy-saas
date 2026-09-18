@@ -1,0 +1,357 @@
+{
+  "passed": 70,
+  "failed": [],
+  "results": [
+    {
+      "sec": "STR-OP-01",
+      "name": "STR-OP-01 : le menu « … » porte Déplacer et Dupliquer, dans l’ordre demandé, sans rien retirer",
+      "status": "PASS"
+    },
+    {
+      "sec": "STR-OP-01",
+      "name": "STR-OP-01 : un niveau racine devient bien l’enfant du parent choisi",
+      "status": "PASS"
+    },
+    {
+      "sec": "STR-OP-02",
+      "name": "STR-OP-02 : un sous-niveau se déplace sous un autre parent en conservant son ID, son nom et son type",
+      "status": "PASS"
+    },
+    {
+      "sec": "STR-OP-04",
+      "name": "STR-OP-04 : toute la descendance suit — Niveau 3 reste enfant de Niveau 2, Niveau 4 de Niveau 3",
+      "status": "PASS"
+    },
+    {
+      "sec": "STR-OP-05",
+      "name": "STR-OP-05 : les interventions du périmètre sont exactement les mêmes avant et après",
+      "status": "PASS"
+    },
+    {
+      "sec": "STR-OP-06",
+      "name": "STR-OP-06 : les ressources restent agrégées sur le niveau déplacé (3)",
+      "status": "PASS"
+    },
+    {
+      "sec": "STR-OP-03",
+      "name": "STR-OP-03 : un sous-niveau devient un niveau racine — aucun faux parent technique n’est créé",
+      "status": "PASS"
+    },
+    {
+      "sec": "STR-OP-07",
+      "name": "STR-OP-07 : les agrégats sont recalculés immédiatement et la vue affiche exactement la valeur du moteur (7 interventions)",
+      "status": "PASS"
+    },
+    {
+      "sec": "STR-OP-07",
+      "name": "STR-OP-07 : le niveau d’origine perd bien les interventions parties avec la branche (1 → 0)",
+      "status": "PASS"
+    },
+    {
+      "sec": "STR-OP-08",
+      "name": "STR-OP-08 : un niveau ne peut pas être déplacé dans lui-même — la garde est MÉTIER : l’appel direct à moveStructureNode() est refusé sans rien muter",
+      "status": "PASS"
+    },
+    {
+      "sec": "STR-OP-09",
+      "name": "STR-OP-09 : ni dans un enfant, ni dans un descendant lointain (Niveau 4, trois crans plus bas)",
+      "status": "PASS"
+    },
+    {
+      "sec": "STR-OP-09",
+      "name": "STR-OP-09 : ces destinations sont en outre ABSENTES de la liste proposée",
+      "status": "PASS"
+    },
+    {
+      "sec": "STR-OP-10",
+      "name": "STR-OP-10 : un niveau archivé n’est proposé comme destination ni au déplacement ni à la duplication, et n’est jamais réactivé en silence",
+      "status": "PASS"
+    },
+    {
+      "sec": "STR-OP-11",
+      "name": "STR-OP-11 : un déplacement est UNE opération logique — une transaction d’annulation, une entrée d’historique",
+      "status": "PASS"
+    },
+    {
+      "sec": "STR-OP-11",
+      "name": "STR-OP-11 : Undo replace le niveau exactement où il était, avec toute sa descendance",
+      "status": "PASS"
+    },
+    {
+      "sec": "STR-OP-12",
+      "name": "STR-OP-12 : Redo le remet à sa nouvelle place, descendance comprise",
+      "status": "PASS"
+    },
+    {
+      "sec": "STR-OP-13",
+      "name": "STR-OP-13 : « Déplacer » ouvre une side-window titrée, avec sa liste de destinations",
+      "status": "PASS"
+    },
+    {
+      "sec": "STR-OP-13",
+      "name": "STR-OP-13 : après validation l’utilisateur reste dans l’onglet Structure — aucun retour vers Aujourd’hui",
+      "status": "PASS"
+    },
+    {
+      "sec": "STR-OP-13",
+      "name": "STR-OP-13 : le toast annonce « Niveau déplacé · Annuler » et propose l’annulation, via le moteur Undo existant",
+      "status": "PASS"
+    },
+    {
+      "sec": "STR-OP-14",
+      "name": "STR-OP-14 : le fil d’Ariane suit le déplacement du niveau ouvert (Résidence Keravel › Niveau 2 › Niveau 3 → Résidence Keravel › Bâtiment A › Niveau 3), sans quitter la fiche",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-01",
+      "name": "DUP-01 / DUP-02 : le niveau et ses trois sous-niveaux sont copiés (4 niveaux)",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-03",
+      "name": "DUP-03 : chaque élément dupliqué reçoit un nouvel ID, et tous les IDs du chantier restent uniques",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-04",
+      "name": "DUP-04 : la hiérarchie est reconstruite entre CLONES — aucun parentId ne pointe vers l’arbre source",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-05",
+      "name": "DUP-05 : « Structure seule » ne copie AUCUNE intervention",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-05",
+      "name": "DUP-05 / §21 : les agrégats d’un clone vide sont corrects — la ligne affiche « — », sans erreur",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-01",
+      "name": "DUP-01 : la branche source est intacte après la copie",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-06",
+      "name": "DUP-06 : les trois interventions du périmètre sont copiées (3)",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-07",
+      "name": "DUP-07 : chaque intervention clonée est rattachée au CLONE de son niveau — jamais à l’ancien",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-08",
+      "name": "DUP-08 : l’intervenant principal est conservé",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-09",
+      "name": "DUP-09 : les ressources complémentaires sont conservées à l’identique (la Grue reste la Grue)",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-10",
+      "name": "DUP-10 : les dates et horaires sont conservés — aucun décalage automatique en V2.10.0",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-11",
+      "name": "DUP-11 : lot et couleur sont conservés",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-12",
+      "name": "DUP-12 : la chaîne A → B → C est recréée ENTRE LES CLONES : A2 → B2 → C2",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-13",
+      "name": "DUP-13 : aucune dépendance d’un clone ne pointe vers une intervention de la source",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-13",
+      "name": "DUP-13 : la dépendance vers une intervention HORS périmètre n’est pas recopiée — choix documenté au rapport",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-03",
+      "name": "DUP-03 : les identifiants restent uniques et les interventions source sont intactes",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-18",
+      "name": "DUP-18 : les agrégats du clone sont immédiatement corrects (3 interventions, 3 ressources)",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-14",
+      "name": "DUP-14 : sans saisie, la copie s’appelle « Niveau 1 - copie »",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-15",
+      "name": "DUP-15 : en cas de collision entre frères, le suffixe s’incrémente — « copie 2 », « copie 3 » — sans jamais créer deux frères homonymes",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-14",
+      "name": "DUP-14 : un nom saisi par l’utilisateur est respecté tel quel",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-16",
+      "name": "DUP-16 : le responsable du niveau source est conservé sur la copie, et sur chacun de ses descendants",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-17",
+      "name": "DUP-17 : le type est conservé, du niveau copié jusqu’au dernier descendant",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-19",
+      "name": "DUP-19 : une duplication complète — quatre niveaux, trois interventions, deux dépendances — est UNE seule opération logique",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-19",
+      "name": "DUP-19 : Undo supprime proprement tout le sous-arbre cloné, toutes les interventions clonées et leurs dépendances — l’état revient au caractère près",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-20",
+      "name": "DUP-20 : Redo recrée l’ensemble à l’identique",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-21",
+      "name": "DUP-21 : la section « Sans structure » est intacte — aucune intervention clonée n’y atterrit par erreur",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-22",
+      "name": "DUP-22 : la sauvegarde restitue exactement la hiérarchie obtenue (13 niveaux, parents compris)",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-22",
+      "name": "DUP-22 : les interventions clonées et leurs rattachements à la NOUVELLE structure sont restitués à l’identique, dépendances comprises",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-22",
+      "name": "DUP-22 : SCHEMA_VERSION reste 13 et STORE inchangé — aucun champ persistant nouveau n’était nécessaire",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-23",
+      "name": "DUP-23 : en sombre, la side-window de duplication hérite des variables de thème — fonds foncés (rgb(16, 32, 47)), texte clair, aucun blanc pur",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-23",
+      "name": "DUP-23 : aucune couleur codée en dur dans la side-window",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-25",
+      "name": "DUP-25 : mobile 430 — aucun débordement, aucun champ coupé, la liste des destinations tient dans la side-window",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-25",
+      "name": "DUP-25 : mobile 430 — les 25 destinations sont une LISTE hiérarchique touchable (40 px par rang), jamais un tableau",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-25",
+      "name": "DUP-25 : mobile 430 — les deux boutons s’atteignent entièrement en faisant défiler le panneau, et rien ne passe sous la barre inférieure",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-25",
+      "name": "DUP-25 : mobile 430 — la liste des destinations est plafonnée et défile à l’intérieur (25 destinations), au lieu de repousser les boutons indéfiniment",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-24",
+      "name": "DUP-24 : mobile 390 — aucun débordement, aucun champ coupé, la liste des destinations tient dans la side-window",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-24",
+      "name": "DUP-24 : mobile 390 — les 28 destinations sont une LISTE hiérarchique touchable (40 px par rang), jamais un tableau",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-24",
+      "name": "DUP-24 : mobile 390 — les deux boutons s’atteignent entièrement en faisant défiler le panneau, et rien ne passe sous la barre inférieure",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-24",
+      "name": "DUP-24 : mobile 390 — la liste des destinations est plafonnée et défile à l’intérieur (28 destinations), au lieu de repousser les boutons indéfiniment",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-27",
+      "name": "DUP-27 : le menu enrichi reste ancré à son bouton (6 px), dans le viewport, avec ses six entrées — le correctif de V2.9.0.1 n’a pas bougé",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-27",
+      "name": "DUP-27 : sur CHAQUE ligne, les six entrées du menu sont réellement cliquables — aucune n’est rognée par le bloc Structure (menu de 261 px)",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-27",
+      "name": "DUP-27 : le bloc ne rogne plus rien, et ses coins restent arrondis — l’en-tête porte son propre rayon",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-26",
+      "name": "DUP-26 : la side-window s’ouvre au clavier et place le focus sur son premier champ",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-26",
+      "name": "DUP-26 : Échap ferme la side-window et RESTITUE le focus au bouton « … » qui l’avait ouverte",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP",
+      "name": "RESP : aucun débordement horizontal sur 10 largeurs × 2 thèmes, side-window ouverte",
+      "status": "PASS"
+    },
+    {
+      "sec": "RESP",
+      "name": "RESP : la liste des destinations et les deux choix de contenu tiennent dans la side-window à toutes les largeurs",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2100",
+      "name": "FREEZE-2100 : les 123 moteurs de V2.9.1 sont BYTE-IDENTIQUES — tout le Planning (drag & drop, création à la souris, jours non ouvrés, démarrage réel), tout le moteur Structure, les données, les ressources, la qualité, les jalons, l’Opération, l’Undo/Redo et les menus",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-28",
+      "name": "DUP-28 : seules structureNodeMenu() (deux entrées) et structureCompactRow() (le signalement du niveau créé) sont modifiées — le balayage de tout le fichier n’en trouve aucune autre",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-28",
+      "name": "DUP-28 : les 10 fonctions ajoutées existent, SCHEMA 13 / STORE / build inchangés, données de démonstration byte-identiques, un seul gantt(), un seul snapshot(), aucun moteur parallèle, et AUCUN drag & drop de structure (§38)",
+      "status": "PASS"
+    },
+    {
+      "sec": "DUP-28",
+      "name": "DUP-28 : aucune erreur JavaScript applicative en console (0)",
+      "status": "PASS"
+    }
+  ],
+  "consoleErrors": []
+}

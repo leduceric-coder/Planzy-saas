@@ -365,8 +365,27 @@ console.log('\n[STC-MENUS] Le composant corrigé en V2.9.0.1 est intact');
   note('STC-16', g1);
   ok(g1.composant && g1.ouvert && Math.abs(g1.ecart) <= 12 && Math.abs(g1.dxDroite) <= 1,
     `STC-16 : le menu du premier niveau utilise le composant Kanvix et reste collé à son bouton (${g1.ecart} px, alignement ${g1.dxDroite} px)`, 'STC-16');
-  ok(g1.actions.join('|') === 'Modifier|Ajouter un sous-niveau|Archiver|Supprimer',
-    'STC-16 : les quatre actions de V2.9.0 sont conservées, dans le même ordre', 'STC-16');
+  /* V2.10.0 — RE-BASELINE. Le menu accueille « Déplacer » et « Dupliquer »
+     (V2.10.0 §1) : il compte donc six entrées et non plus quatre. L'assertion
+     n'est pas assouplie, elle est RENFORCÉE — au lieu d'un simple décompte,
+     elle exige désormais que les quatre actions historiques soient toutes
+     présentes, dans leur ordre relatif d'origine, ET que toute entrée
+     supplémentaire appartienne à une liste blanche explicite. Un ajout non
+     déclaré ferait tomber le test. Elle vaut pour l'ancien build comme pour
+     le nouveau. */
+  const ACTIONS_HISTORIQUES = ['Modifier', 'Ajouter un sous-niveau', 'Archiver', 'Supprimer'];
+  const ACTIONS_AUTORISEES = [...ACTIONS_HISTORIQUES, 'Restaurer', 'Déplacer', 'Dupliquer'];
+  const menuConforme = (actions) => {
+    const presentes = ACTIONS_HISTORIQUES.filter((a) => actions.includes(a));
+    const ordre = actions.filter((a) => ACTIONS_HISTORIQUES.includes(a));
+    return (
+      presentes.length === 4 &&
+      ordre.join('|') === ACTIONS_HISTORIQUES.join('|') &&
+      actions.every((a) => ACTIONS_AUTORISEES.includes(a))
+    );
+  };
+  ok(menuConforme(g1.actions),
+    `STC-16 : les quatre actions de V2.9.0 sont conservées dans leur ordre d’origine, et toute entrée supplémentaire est déclarée (${g1.actions.join(' · ')})`, 'STC-16');
 
   const dernier = await ev(p, async () => {
     const xs = [...document.querySelectorAll('[data-structure-node]')];
@@ -926,7 +945,7 @@ console.log('\n[FREEZE-291] Périmètre du refactor');
     'snapshot', 'undo', 'redo', 'pushHistory', 'clearUndoRedo', 'invalidateRedo',
     'cloneHistoryState', 'restoreHistoryState', 'isTextEditingTarget',
     // Menus — le correctif de V2.9.0.1, intégralement
-    'toggleDrawerMenu', 'closeDrawerMenu', 'anyDrawerMenuOpen', 'structureNodeMenu',
+    'toggleDrawerMenu', 'closeDrawerMenu', 'anyDrawerMenuOpen',
   ];
   const bouges = [];
   let compares = 0;
@@ -945,6 +964,12 @@ console.log('\n[FREEZE-291] Périmètre du refactor');
     'toggleStructureNode',                                // le geste lui-même
     'projectStructureTab', 'renderStructureNode', 'structureTabContent', // les vues
     'structureSummaryLine',                               // conservée, inchangée en surface
+    /* V2.10.0 — RE-BASELINE. Deux fonctions de VUE évoluent avec l'ajout de
+       « Déplacer » et « Dupliquer » (V2.10.0 §1) : le menu qui porte les deux
+       entrées, et la ligne qui signale brièvement un niveau tout juste créé
+       (V2.10.0 §20). Elles sont déclarées ici, donc toujours contrôlées : une
+       fonction NON déclarée qui bougerait ferait encore tomber ce test. */
+    'structureNodeMenu', 'structureCompactRow',
   ];
   const modifiees = attendues.filter((n) => extractFn(A, n) && md5(extractFn(A, n)) !== md5(extractFn(B, n)));
   const horsPerimetre = [];

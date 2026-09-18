@@ -184,10 +184,29 @@ console.log('\n[UXS-COMPOSANT] Le « … » est bien le composant Kanvix standar
     'UXS-01 : le wrapper .more-menu est bien l’ancêtre POSITIONNÉ du popover — c’est la cause racine du menu qui partait ailleurs', 'UXS-01');
   ok(r.icone && r.texteBrut === '' && !r.iconBtnNu,
     'UXS-02 : le déclencheur affiche l’icône Kanvix icon("more") et non le caractère brut « … » ; plus aucun `icon-btn` orphelin (le sélecteur réel est `.btn.icon-btn`)', 'UXS-02');
-  ok(r.aria.haspopup === 'menu' && r.aria.expanded === 'false' && r.aria.label === 'Actions du niveau' && r.role === 'menu' && r.menuitems === 4,
-    'UXS-02 : accessibilité complète — aria-haspopup="menu", aria-expanded="false", aria-label="Actions du niveau", role="menu" et 4 role="menuitem"', 'UXS-02');
-  ok(r.actions.join('|') === 'Modifier|Ajouter un sous-niveau|Archiver|Supprimer',
-    'UXS-02 : les quatre actions existantes sont conservées à l’identique, dans le même ordre', 'UXS-02');
+  /* V2.10.0 — RE-BASELINE. Le menu accueille « Déplacer » et « Dupliquer »
+     (V2.10.0 §1) : il compte donc six entrées et non plus quatre. L'assertion
+     n'est pas assouplie, elle est RENFORCÉE — au lieu d'un simple décompte,
+     elle exige désormais que les quatre actions historiques soient toutes
+     présentes, dans leur ordre relatif d'origine, ET que toute entrée
+     supplémentaire appartienne à une liste blanche explicite. Un ajout non
+     déclaré ferait tomber le test. Elle vaut pour l'ancien build comme pour
+     le nouveau. */
+  const ACTIONS_HISTORIQUES = ['Modifier', 'Ajouter un sous-niveau', 'Archiver', 'Supprimer'];
+  const ACTIONS_AUTORISEES = [...ACTIONS_HISTORIQUES, 'Restaurer', 'Déplacer', 'Dupliquer'];
+  const menuConforme = (actions) => {
+    const presentes = ACTIONS_HISTORIQUES.filter((a) => actions.includes(a));
+    const ordre = actions.filter((a) => ACTIONS_HISTORIQUES.includes(a));
+    return (
+      presentes.length === 4 &&
+      ordre.join('|') === ACTIONS_HISTORIQUES.join('|') &&
+      actions.every((a) => ACTIONS_AUTORISEES.includes(a))
+    );
+  };
+  ok(r.aria.haspopup === 'menu' && r.aria.expanded === 'false' && r.aria.label === 'Actions du niveau' && r.role === 'menu' && r.menuitems === r.actions.length && r.menuitems >= 4,
+    `UXS-02 : accessibilité complète — aria-haspopup="menu", aria-expanded="false", aria-label="Actions du niveau", role="menu" et un role="menuitem" sur CHACUNE des ${r.menuitems} entrées`, 'UXS-02');
+  ok(menuConforme(r.actions),
+    `UXS-02 : les quatre actions historiques sont conservées dans leur ordre d’origine, et toute entrée supplémentaire est déclarée (${r.actions.join(' · ')})`, 'UXS-02');
 
   /* Le déclencheur Structure est-il rendu EXACTEMENT comme les autres ?
      Attention : getComputedStyle renvoie une déclaration VIVANTE — dès que
@@ -276,11 +295,25 @@ console.log('\n[UXS-EXCLUSIF] Un seul menu à la fois');
   await listeLongue(p, 10);
   const a = await ouvrirMenu(p, 0);
   const apresA = await ev(p, () => document.querySelectorAll('.more-pop.open').length);
-  /* On vise une ligne SUFFISAMMENT BASSE : un popover ouvert recouvre les trois
-     lignes qui le suivent — comportement normal d'un popover, identique à celui
-     des menus Opération, Chantier et Ressource. Un utilisateur cliquerait, lui
-     aussi, sur un bouton qu'il voit. */
-  const bId = await ouvrirMenu(p, 6);
+  /* On vise une ligne QUE LE POPOVER OUVERT NE RECOUVRE PAS : un menu ouvert
+     masque les lignes situées juste en dessous — comportement normal d'un
+     popover, identique à celui des menus Opération, Chantier et Ressource. Le
+     nombre de lignes recouvertes dépend de la HAUTEUR du menu, qui a grandi en
+     V2.10.0 ; on calcule donc la cible au lieu de la coder en dur, et le test
+     reste juste quel que soit le nombre d'entrées. */
+  const bId = await ev(p, () => {
+    const pop = document.querySelector('.more-pop.open').getBoundingClientRect();
+    const rows = [...document.querySelectorAll('[data-structure-node]')];
+    // Libre du popover ET déjà entièrement visible : on ne fait PAS défiler,
+    // car un défilement déplacerait la géométrie qu'on vient de mesurer.
+    const libre = rows.find((r) => {
+      const b = r.querySelector('.more-trigger').getBoundingClientRect();
+      return b.top > pop.bottom + 2 && b.bottom < innerHeight - 4;
+    });
+    return libre ? libre.dataset.structureNode : null;
+  });
+  await p.click(`[data-structure-node="${bId}"] .more-trigger`);
+  await p.waitForTimeout(160);
   const r = await ev(p, ([x, y]) => {
     const q = (id) => document.querySelector(`[data-structure-node="${id}"]`);
     return {
@@ -820,11 +853,31 @@ console.log('\n[FREEZE-2901] Byte-identité V2.9.0 → V2.9.0.1');
     'FREEZE-2901 : les trois fonctions du correctif V2.9.0.1 — structureNodeMenu(), renderStructureNode(), toggleDrawerMenu() — diffèrent bien de V2.9.0', 'FREEZE-2901');
   /* Et le cœur du correctif V2.9.0.1 n'a pas bougé depuis : c'est l'assertion
      qui compte vraiment ici, et elle est plus forte qu'un simple décompte. */
-  const menuIntact = ['toggleDrawerMenu', 'closeDrawerMenu', 'structureNodeMenu']
-    .filter((n) => md5(extractFn(read('kanvix-next-gen-v2.9.0.1.html'), n)) !== md5(extractFn(B, n)));
-  note('FREEZE-2901-menu', { différentesDepuisV2901: menuIntact });
+  /* V2.10.0 — RE-BASELINE. structureNodeMenu() accueille « Déplacer » et
+     « Dupliquer » (V2.10.0 §1) : elle ne peut plus être byte-identique. Elle
+     n'est pas pour autant relâchée — l'assertion ci-dessous vérifie qu'en
+     retirant les DEUX entrées ajoutées, et rien d'autre, elle redevient
+     exactement la fonction d'origine. Le MOTEUR de menu, lui
+     (toggleDrawerMenu, closeDrawerMenu), reste gelé byte à byte. */
+  const sansV2100 = (src) =>
+    src
+      .replace(/\n\s*\/\/ V2\.10\.0[\s\S]*?niveau créé[^\n]*\n/g, '\n')
+      .replace(/\n\s*\/\/ V2\.10\.0[^\n]*\n(\s*\/\/[^\n]*\n)*/g, '\n')
+      .replace(/`<button role="menuitem" onclick="openStructureMove\('\$\{nodeId\}'\)">Déplacer<\/button>` \+\s*/g, '')
+      .replace(/`<button role="menuitem" onclick="openStructureDuplicate\('\$\{nodeId\}'\)">Dupliquer<\/button>` \+\s*/g, '')
+      .replace(/`<div class="more-sep"><\/div>` \+\s*(?=`<button role="menuitem" onclick="closeDrawerMenu\(\);toggleStructureArchive)/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  const REF2901 = read('kanvix-next-gen-v2.9.0.1.html');
+  const menuIntact = ['toggleDrawerMenu', 'closeDrawerMenu']
+    .filter((n) => md5(extractFn(REF2901, n)) !== md5(extractFn(B, n)));
+  const menuNormalise =
+    sansV2100(extractFn(REF2901, 'structureNodeMenu')) === sansV2100(extractFn(B, 'structureNodeMenu'));
+  note('FREEZE-2901-menu', { différentesDepuisV2901: menuIntact, structureNodeMenuIdentiqueHorsAjouts: menuNormalise });
   ok(menuIntact.length === 0,
-    'FREEZE-2901 : le composant de menu corrigé en V2.9.0.1 — toggleDrawerMenu(), closeDrawerMenu(), structureNodeMenu() — est BYTE-IDENTIQUE dans le build testé', 'FREEZE-2901');
+    'FREEZE-2901 : le MOTEUR de menu corrigé en V2.9.0.1 — toggleDrawerMenu(), closeDrawerMenu() — est BYTE-IDENTIQUE dans le build testé', 'FREEZE-2901');
+  ok(menuNormalise,
+    'FREEZE-2901 : structureNodeMenu() ne diffère QUE par les deux entrées ajoutées — ces lignes retirées, elle redevient byte-identique à V2.9.0.1 ; toute autre modification ferait tomber cette assertion', 'FREEZE-2901');
 
   /* Aucun second moteur de menu : toggleDrawerMenu et closeDrawerMenu restent
      uniques, et aucune fonction « structureMenu… » parallèle n'apparaît. */
