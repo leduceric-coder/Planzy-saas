@@ -296,9 +296,12 @@ sur la **Structure**, le formulaire **« Nouveau niveau »**, le formulaire
   actives de la démonstration) ;
 - le responsable existant reste correctement présélectionné (`mathieu`).
 
-Aucune capture nouvelle n'était requise puisqu'aucune évolution visuelle n'a eu
-lieu ; le dossier `recette-v2.11.0.3/` n'a donc pas été créé, conformément au
-§14 de la commande.
+Conformément au §14, **aucune capture nouvelle n'a été produite pour démontrer
+une évolution UI** — il n'y en a pas. Le dossier `recette-v2.11.0.3/` existe
+néanmoins : la recette héritée régénère ses 25 captures de V2.11.0, V2.11.0.1 et
+V2.11.0.2 contre le nouveau build, et y écrit `resultats.json` (les 170
+assertions, machine-lisibles). Ces images sont donc une **preuve de
+non-régression visuelle**, pas la documentation d'un changement.
 
 ---
 
