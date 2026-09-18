@@ -374,7 +374,12 @@ console.log('\n[STC-MENUS] Le composant corrigé en V2.9.0.1 est intact');
      déclaré ferait tomber le test. Elle vaut pour l'ancien build comme pour
      le nouveau. */
   const ACTIONS_HISTORIQUES = ['Modifier', 'Ajouter un sous-niveau', 'Archiver', 'Supprimer'];
-  const ACTIONS_AUTORISEES = [...ACTIONS_HISTORIQUES, 'Restaurer', 'Déplacer', 'Dupliquer'];
+  /* V2.11.0 — RE-POINTAGE par DÉCLARATION, mécanisme prévu par l'assertion
+     elle-même : « Enregistrer comme modèle » (V2.11.0 §11) rejoint la liste
+     des entrées AUTORISÉES. Les quatre actions historiques restent épinglées
+     dans leur ordre d'origine, et une entrée NON déclarée ferait toujours
+     tomber le test. */
+  const ACTIONS_AUTORISEES = [...ACTIONS_HISTORIQUES, 'Restaurer', 'Déplacer', 'Dupliquer', 'Enregistrer comme modèle'];
   const menuConforme = (actions) => {
     const presentes = ACTIONS_HISTORIQUES.filter((a) => actions.includes(a));
     const ordre = actions.filter((a) => ACTIONS_HISTORIQUES.includes(a));
@@ -922,7 +927,9 @@ console.log('\n[FREEZE-291] Périmètre du refactor');
     'openStructureNode', 'closeStructureNode', 'setStructureTab',
     'structureSelect', 'planningStructureSelect', 'projectStructureNote',
     // Données
-    'migrateState', 'save', 'applyStorageSync', 'resetApp', 'buildKanvixBackup',
+    /* V2.11.0 — migrateState porte la migration 13 → 14 : elle quitte les
+       gelés et rejoint le périmètre NOMMÉ ci-dessous. */
+    'save', 'applyStorageSync', 'resetApp', 'buildKanvixBackup',
     'confirmKanvixRestore', 'validateImportState', 'analyzeKanvixImport',
     'buildImportPlan', 'applyImportPlan', 'exportKanvixData',
     // Planning
@@ -970,6 +977,13 @@ console.log('\n[FREEZE-291] Périmètre du refactor');
        (V2.10.0 §20). Elles sont déclarées ici, donc toujours contrôlées : une
        fonction NON déclarée qui bougerait ferait encore tomber ce test. */
     'structureNodeMenu', 'structureCompactRow',
+    /* V2.11.0 — RE-BASELINE. Les modèles de chantier (§34, §11, §26) touchent
+       six fonctions de plus, chacune NOMMÉE ici : la migration 13 → 14, une
+       icône, la branche et les deux étapes du wizard, la rangée de Réglages et
+       la ligne d'aperçu de restauration. Une fonction NON déclarée qui
+       bougerait ferait encore tomber ce test. */
+    'migrateState', 'icon', 'wizardPickMode', 'renderWizard',
+    'showKanvixBackupPreview', 'renderMore',
   ];
   const modifiees = attendues.filter((n) => extractFn(A, n) && md5(extractFn(A, n)) !== md5(extractFn(B, n)));
   const horsPerimetre = [];
@@ -1013,7 +1027,7 @@ console.log('\n[FREEZE-291] Périmètre du refactor');
     `STC-50 : AUCUNE fonction hors du périmètre annoncé n’a changé — le balayage de tout le fichier ne trouve que ${modifiees.length} fonctions modifiées, toutes déclarées`, 'STC-50');
 
   const regles = {
-    schema: /SCHEMA_VERSION = 13/.test(B),
+    schema: /SCHEMA_VERSION = 14/.test(B),
     store: (B.match(/STORE = "([^"]+)"/) || [])[1] === 'kanvix-product-8-3',
     build: (B.match(/KANVIX_APP_BUILD = "([^"]+)"/) || [])[1] === (A.match(/KANVIX_APP_BUILD = "([^"]+)"/) || [])[1],
     initialIdentique:
@@ -1030,7 +1044,7 @@ console.log('\n[FREEZE-291] Périmètre du refactor');
   };
   note('FREEZE-291-règles', regles);
   ok(Object.values(regles).every(Boolean),
-    'STC-50 : SCHEMA 13, STORE et build inchangés, INITIAL_STATE et STRUCTURE_TYPES byte-identiques, un seul gantt(), un seul planningTasks(), un seul toggleDrawerMenu(), aucun moteur Structure parallèle, et plus aucun renderPage() dans toggleStructureNode()', 'STC-50');
+    'STC-50 : SCHEMA passé à 14 (bump V2.11.0), STORE et build inchangés, INITIAL_STATE et STRUCTURE_TYPES byte-identiques, un seul gantt(), un seul planningTasks(), un seul toggleDrawerMenu(), aucun moteur Structure parallèle, et plus aucun renderPage() dans toggleStructureNode()', 'STC-50');
 
   const ajoutees = ['structureTypeIcon', 'structureCollapsed', 'structureCompactRow',
     'structureCompactTree', 'refreshStructureTree', 'structureColHead', 'structureCountsLine',

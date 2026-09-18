@@ -193,7 +193,12 @@ console.log('\n[UXS-COMPOSANT] Le « … » est bien le composant Kanvix standar
      déclaré ferait tomber le test. Elle vaut pour l'ancien build comme pour
      le nouveau. */
   const ACTIONS_HISTORIQUES = ['Modifier', 'Ajouter un sous-niveau', 'Archiver', 'Supprimer'];
-  const ACTIONS_AUTORISEES = [...ACTIONS_HISTORIQUES, 'Restaurer', 'Déplacer', 'Dupliquer'];
+  /* V2.11.0 — RE-POINTAGE par DÉCLARATION, mécanisme prévu par l'assertion
+     elle-même : « Enregistrer comme modèle » (V2.11.0 §11) rejoint la liste
+     des entrées AUTORISÉES. Les quatre actions historiques restent épinglées
+     dans leur ordre d'origine, et une entrée NON déclarée ferait toujours
+     tomber le test. */
+  const ACTIONS_AUTORISEES = [...ACTIONS_HISTORIQUES, 'Restaurer', 'Déplacer', 'Dupliquer', 'Enregistrer comme modèle'];
   const menuConforme = (actions) => {
     const presentes = ACTIONS_HISTORIQUES.filter((a) => actions.includes(a));
     const ordre = actions.filter((a) => ACTIONS_HISTORIQUES.includes(a));
@@ -830,7 +835,10 @@ console.log('\n[FREEZE-2901] Byte-identité V2.9.0 → V2.9.0.1');
      Tout le reste — les 93 autres moteurs, dont l'INTÉGRALITÉ du composant de
      menu corrigé en V2.9.0.1 — reste vérifié byte à byte ici, et la recette
      V2.9.1 les regèle de son côté. Rien n'est relâché. */
-  const rebaseV291 = ['toggleStructureNode', 'projectStructureTab', 'structureTabContent'];
+  /* V2.11.0 — migrateState porte la migration 13 → 14 (les modèles de
+     chantier). Elle rejoint la liste des fonctions RE-BASÉES : déclarée, donc
+     assumée, et toujours vérifiée ailleurs (TPL-07 → TPL-09). */
+  const rebaseV291 = ['toggleStructureNode', 'projectStructureTab', 'structureTabContent', 'migrateState'];
   const bouges = [];
   let compares = 0;
   geles.forEach((n) => {
@@ -890,14 +898,14 @@ console.log('\n[FREEZE-2901] Byte-identité V2.9.0 → V2.9.0.1');
        mot peut légitimement apparaître dans le commentaire qui explique le
        correctif, et ce commentaire n'est pas du code. */
     plusDeMoreWrap: !/class="[^"]*more-wrap/.test(B) && !/\.more-wrap\s*[,{]/.test(B),
-    schema: /SCHEMA_VERSION = 13/.test(B) && /SCHEMA_VERSION = 13/.test(A),
+    schema: /SCHEMA_VERSION = 14/.test(B) && /SCHEMA_VERSION = 13/.test(A),
     store: (B.match(/STORE = "([^"]+)"/) || [])[1] === 'kanvix-product-8-3',
     build: (B.match(/KANVIX_APP_BUILD = "([^"]+)"/) || [])[1] === (A.match(/KANVIX_APP_BUILD = "([^"]+)"/) || [])[1],
     dropUpCSS: /\.more-pop\.drop-up\s*\{/.test(B),
   };
   note('FREEZE-2901-règles', regles);
   ok(Object.values(regles).every(Boolean),
-    'FREEZE-2901 : un seul toggleDrawerMenu(), un seul closeDrawerMenu() (byte-identique), aucun moteur de menu parallèle, plus aucune trace de `more-wrap`, SCHEMA 13 et STORE inchangés', 'FREEZE-2901');
+    'FREEZE-2901 : un seul toggleDrawerMenu(), un seul closeDrawerMenu() (byte-identique), aucun moteur de menu parallèle, plus aucune trace de `more-wrap`, SCHEMA passé à 14 (bump V2.11.0) et STORE inchangé', 'FREEZE-2901');
 
   // Le modèle de données n'a pas bougé d'un octet.
   const modele = {

@@ -135,7 +135,12 @@ console.log('\n[STR-OP] Déplacer un niveau');
     return items;
   });
   note('STR-OP-01-menu', menu);
-  ok(menu.join('|') === 'Modifier|Ajouter un sous-niveau|Déplacer|Dupliquer|Archiver|Supprimer',
+  /* V2.11.0 — RE-POINTAGE. V2.11 insère « Enregistrer comme modèle » entre
+     Dupliquer et Archiver. L'assertion épingle donc SEPT entrées au lieu de
+     six : elle est plus stricte qu'avant, et vérifie toujours exactement ce
+     qu'elle vérifiait — que Déplacer et Dupliquer sont là, dans l'ordre, et
+     que rien n'a été retiré. */
+  ok(menu.join('|') === 'Modifier|Ajouter un sous-niveau|Déplacer|Dupliquer|Enregistrer comme modèle|Archiver|Supprimer',
     'STR-OP-01 : le menu « … » porte Déplacer et Dupliquer, dans l’ordre demandé, sans rien retirer', 'STR-OP-01');
 
   // STR-OP-01 — un niveau RACINE vers un parent
@@ -583,8 +588,8 @@ console.log('\n[DUP] Sauvegarde et restauration');
     `DUP-22 : la sauvegarde restitue exactement la hiérarchie obtenue (${r.restaure.noeuds.length} niveaux, parents compris)`, 'DUP-22');
   ok(JSON.stringify(r.attendu.taches) === JSON.stringify(r.restaure.taches),
     'DUP-22 : les interventions clonées et leurs rattachements à la NOUVELLE structure sont restitués à l’identique, dépendances comprises', 'DUP-22');
-  ok(r.attendu.schema === 13 && r.attendu.store === 'kanvix-product-8-3',
-    'DUP-22 : SCHEMA_VERSION reste 13 et STORE inchangé — aucun champ persistant nouveau n’était nécessaire', 'DUP-22');
+  ok(r.attendu.schema === 14 && r.attendu.store === 'kanvix-product-8-3',
+    'DUP-22 : la duplication n’exige toujours aucun champ persistant à elle ; le schéma vaut 14 (bump introduit par les MODÈLES de V2.11.0, pas par la duplication) et STORE reste « kanvix-product-8-3 »', 'DUP-22');
   await ctx.close();
 }
 
@@ -705,8 +710,8 @@ for (const [w, num, capture] of [[430, 'DUP-25', '05-mobile-430-deplacer.png'], 
     };
   });
   note('DUP-27', menuGeo);
-  ok(menuGeo.ouvert && Math.abs(menuGeo.ecart) <= 12 && Math.abs(menuGeo.dxDroite) <= 1 && menuGeo.hors <= 0 && menuGeo.items === 6,
-    `DUP-27 : le menu enrichi reste ancré à son bouton (${menuGeo.ecart} px), dans le viewport, avec ses six entrées — le correctif de V2.9.0.1 n’a pas bougé`, 'DUP-27');
+  ok(menuGeo.ouvert && Math.abs(menuGeo.ecart) <= 12 && Math.abs(menuGeo.dxDroite) <= 1 && menuGeo.hors <= 0 && menuGeo.items === 7,
+    `DUP-27 : le menu enrichi reste ancré à son bouton (${menuGeo.ecart} px), dans le viewport, avec ses sept entrées — le correctif de V2.9.0.1 n’a pas bougé`, 'DUP-27');
   await ev(p, () => closeDrawerMenu());
   await p.waitForTimeout(120);
   /* Le menu à SIX entrées mesure 261 px contre 175 : retourné vers le haut, il
@@ -904,11 +909,16 @@ console.log('\n[FREEZE-2100] Périmètre du round');
     'confirmDeleteStructure', 'deleteStructureNode', 'openStructureNode',
     'closeStructureNode', 'setStructureTab', 'toggleStructureNode',
     'refreshStructureTree', 'structureCompactTree',
-    'projectStructureTab', 'renderStructureNode', 'structureTabContent',
+    /* V2.11.0 — projectStructureTab reçoit le bouton « Enregistrer comme
+       modèle » au niveau chantier : elle quitte la liste des gelés et rejoint
+       le périmètre NOMMÉ ci-dessous, où elle est vérifiée. */
+    'renderStructureNode', 'structureTabContent',
     'structureUnstructuredBlock', 'structureCompactCockpit', 'unstructuredTaskRow',
     'structureCountsLine', 'toggleAllStructure', 'structureAllExpanded',
     // Données, ressources, qualité, jalons, opérations
-    'migrateState', 'save', 'applyStorageSync', 'resetApp', 'buildKanvixBackup',
+    /* V2.11.0 — migrateState porte la migration 13 → 14 : elle rejoint elle
+       aussi le périmètre NOMMÉ, où son contenu est vérifié (TPL-07 → TPL-09). */
+    'save', 'applyStorageSync', 'resetApp', 'buildKanvixBackup',
     'confirmKanvixRestore', 'validateImportState', 'analyzeKanvixImport',
     'buildImportPlan', 'applyImportPlan', 'exportKanvixData',
     'taskResourceIds', 'getResourceTasks', 'getResourceSchedulingConflicts',
@@ -934,7 +944,14 @@ console.log('\n[FREEZE-2100] Périmètre du round');
   ok(bouges.length === 0,
     `FREEZE-2100 : les ${compares} moteurs de V2.9.1 sont BYTE-IDENTIQUES — tout le Planning (drag & drop, création à la souris, jours non ouvrés, démarrage réel), tout le moteur Structure, les données, les ressources, la qualité, les jalons, l’Opération, l’Undo/Redo et les menus`, 'FREEZE-2100');
 
-  const attendues = ['structureNodeMenu', 'structureCompactRow'];
+  /* V2.11.0 — RE-POINTAGE. Ce gel compare le build courant à V2.9.1. Rejoué
+     sur V2.11.0, le périmètre légitime est celui de V2.10.0 (deux fonctions)
+     PLUS celui de V2.11.0 (les modèles de chantier). Chaque ajout est NOMMÉ :
+     l'assertion reste un gel, elle n'est pas devenue une liste ouverte. */
+  const attendues = ['structureNodeMenu', 'structureCompactRow',
+    // V2.11.0 — modèles de chantier
+    'duplicateStructureNode', 'migrateState', 'icon', 'projectStructureTab',
+    'renderMore', 'renderWizard', 'wizardPickMode', 'showKanvixBackupPreview'];
   const parIndentation = ['renderAIPanel'];
   const horsPerimetre = [];
   const noms = [...new Set([...B.matchAll(/\n\s*function\s+([A-Za-z_$][\w$]*)\s*\(/g)].map((m) => m[1]))];
@@ -946,7 +963,7 @@ console.log('\n[FREEZE-2100] Périmètre du round');
   const indentDiff = parIndentation.filter((n) => blocIndente(A, n) !== blocIndente(B, n));
   note('FREEZE-2100-périmètre', { modifiées: attendues, horsPérimètre: horsPerimetre, indentation: indentDiff });
   ok(horsPerimetre.length === 0 && indentDiff.length === 0,
-    'DUP-28 : seules structureNodeMenu() (deux entrées) et structureCompactRow() (le signalement du niveau créé) sont modifiées — le balayage de tout le fichier n’en trouve aucune autre', 'DUP-28');
+    'DUP-28 : hors du périmètre NOMMÉ de V2.10.0 (structureNodeMenu, structureCompactRow) et de V2.11.0 (duplicateStructureNode déléguée à la primitive, migrateState, icon, projectStructureTab, renderMore, renderWizard, wizardPickMode, showKanvixBackupPreview), le balayage de tout le fichier ne trouve AUCUNE autre fonction modifiée depuis V2.9.1', 'DUP-28');
 
   const ajoutees = ['structureUid', 'structureMoveBlocker', 'moveStructureNode',
     'structureCopyName', 'duplicateStructureNode', 'structureDestinationList',
@@ -954,15 +971,22 @@ console.log('\n[FREEZE-2100] Périmètre du round');
     'structureRememberTrigger'];
   const manquantes = ajoutees.filter((n) => !extractFn(B, n));
   const regles = {
-    schema: /SCHEMA_VERSION = 13/.test(B) && /SCHEMA_VERSION = 13/.test(A),
+    schema: /SCHEMA_VERSION = 14/.test(B) && /SCHEMA_VERSION = 13/.test(A),
     store: (B.match(/STORE = "([^"]+)"/) || [])[1] === 'kanvix-product-8-3',
     build: (B.match(/KANVIX_APP_BUILD = "([^"]+)"/) || [])[1] === (A.match(/KANVIX_APP_BUILD = "([^"]+)"/) || [])[1],
     initialIdentique:
       md5((A.match(/structureNodes: \[[\s\S]*?\],\n\s*tasks: \[/) || [''])[0]) ===
       md5((B.match(/structureNodes: \[[\s\S]*?\],\n\s*tasks: \[/) || [''])[0]),
+    /* V2.11.0 — L'ANCRAGE de cette mesure est corrigé, pas assoupli. « le
+       premier tasks: [ du fichier » n'est plus le tableau de démonstration :
+       les modèles de démonstration en portent un, plus haut. On ancre donc
+       l'extraction sur structureNodes, qui précède immédiatement les tâches,
+       et on vérifie que le bloc extrait est bien substantiel. */
+    tachesDemoExtraites:
+      (B.match(/\n        structureNodes: \[[\s\S]*?\n        \],\n        tasks: \[[\s\S]*?\n        \],\n/) || [''])[0].length > 4000,
     tachesDemoIdentiques:
-      md5((A.match(/\n\s*tasks: \[[\s\S]*?\n        \],/) || [''])[0]) ===
-      md5((B.match(/\n\s*tasks: \[[\s\S]*?\n        \],/) || [''])[0]),
+      md5((A.match(/\n        structureNodes: \[[\s\S]*?\n        \],\n        tasks: \[[\s\S]*?\n        \],\n/) || [''])[0]) ===
+      md5((B.match(/\n        structureNodes: \[[\s\S]*?\n        \],\n        tasks: \[[\s\S]*?\n        \],\n/) || [''])[0]),
     unSeulGantt: (B.match(/function\s+gantt\s*\(/g) || []).length === 1,
     unSeulSnapshot: (B.match(/function\s+snapshot\s*\(/g) || []).length === 1,
     pasDeMoteurParallele: !/function\s+(cloneStructure|structureClone|copyStructureTree|moveNode|structureHistory)\s*\(/.test(B),
@@ -970,7 +994,7 @@ console.log('\n[FREEZE-2100] Périmètre du round');
   };
   note('FREEZE-2100-règles', { manquantes, ...regles });
   ok(manquantes.length === 0 && Object.values(regles).every(Boolean),
-    'DUP-28 : les 10 fonctions ajoutées existent, SCHEMA 13 / STORE / build inchangés, données de démonstration byte-identiques, un seul gantt(), un seul snapshot(), aucun moteur parallèle, et AUCUN drag & drop de structure (§38)', 'DUP-28');
+    'DUP-28 : les 10 fonctions ajoutées par V2.10.0 existent toujours, SCHEMA vaut 14 (bump V2.11.0), STORE et build sont inchangés, les données de démonstration — niveaux ET interventions — sont byte-identiques depuis V2.9.1, un seul gantt(), un seul snapshot(), aucun moteur parallèle, et AUCUN drag & drop de structure (§38)', 'DUP-28');
 }
 
 const appErrs = allErrs.filter((e) => !/net::|Failed to fetch|open-meteo|geopf|nominatim/.test(e.msg));

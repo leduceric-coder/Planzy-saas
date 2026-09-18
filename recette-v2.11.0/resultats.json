@@ -1,0 +1,337 @@
+{
+  "passed": 66,
+  "failed": [],
+  "results": [
+    {
+      "sec": "TPL-01",
+      "name": "TPL-01 : SCHEMA_VERSION passe de 13 à 14 et l’état chargé porte bien la version 14",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-02",
+      "name": "TPL-02 : STORE reste « kanvix-product-8-3 » — le bump de schéma ne change pas la clé de stockage",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-03",
+      "name": "TPL-03 : app.projectTemplates existe et porte les DEUX modèles de démonstration",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-04",
+      "name": "TPL-04 : les deux modèles de démonstration portent la marque seededFor",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-05",
+      "name": "TPL-05 : la démonstration couvre les DEUX portées — un modèle de niveau (rootId posé) et un modèle de chantier entier (forêt, rootId null)",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-06",
+      "name": "TPL-06 : aucune date absolue dans les interventions d’un modèle (0 trouvée(s)) — uniquement des jours relatifs",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-07",
+      "name": "TPL-07 : une sauvegarde V13 devient V14 avec projectTemplates = [] — aucun modèle de démonstration n’est installé rétroactivement, aucune donnée métier touchée",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-08",
+      "name": "TPL-08 : la migration 13 → 14 est IDEMPOTENTE — la rejouer sur un état déjà migré ne change rien",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-09",
+      "name": "TPL-09 : la migration NORMALISE un modèle corrompu — entrées illisibles écartées, parent fantôme et cycle ramenés à la racine, type inconnu neutralisé, rattachement fantôme annulé, offsets négatifs bornés, heure invalide remplacée, dépendance inconnue et auto-dépendance filtrées",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-10",
+      "name": "TPL-10 : le réalignement de la démonstration décale bien les tâches mais ne touche AUCUN modèle — les jours relatifs sont par nature immunisés",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-11",
+      "name": "TPL-11 : la capture d’un niveau retient le niveau ET sa descendance ACTIVE — 3 niveaux, le sous-niveau archivé exclu",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-12",
+      "name": "TPL-12 : ni le sous-niveau archivé ni son intervention n’entrent dans la trame — un modèle décrit ce que l’on refait",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-13",
+      "name": "TPL-13 : les 4 interventions actives sont capturées et chacune reste rattachée à un niveau DU MODÈLE",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-14",
+      "name": "TPL-14 : la capture est une LISTE BLANCHE — ni statut, ni intervenant, ni reprise, ni référence, ni date absolue, ni chantier ne descendent dans une trame",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-15",
+      "name": "TPL-15 : une intervention de modèle porte EXACTEMENT onze champs — identité, rattachement, lot, phase, jours relatifs, heures, dépendances et intervenant SUGGÉRÉ",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-16",
+      "name": "TPL-16 : les écarts sont convertis en JOURS CALENDAIRES depuis le premier jour du périmètre — 0, 2, 5 et 7 jours, le samedi compris",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-17",
+      "name": "TPL-17 : les dépendances internes sont remappées vers les clés DU MODÈLE — aucune ne pointe vers une tâche de chantier",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-18",
+      "name": "TPL-18 : lot, phase, heures de début et de fin et intervenant SUGGÉRÉ sont conservés",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-19",
+      "name": "TPL-19 : la capture d’un CHANTIER ENTIER produit une forêt — aucune racine unique inventée",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-20",
+      "name": "TPL-20 : les interventions sans structure du chantier entrent bien dans la trame, et y restent sans structure",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-21",
+      "name": "TPL-21 : nom vide, doublon de nom (casse ignorée), niveau archivé et chantier inexistant sont refusés avec un message clair — aucun modèle créé",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-22",
+      "name": "TPL-22 : ALLER-RETOUR exact — capturée puis reposée à sa date de référence, la trame redonne les dates de la source au jour et à l’heure près",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-22",
+      "name": "TPL-22 : l’intervention du SAMEDI reste un samedi — aucune trame n’est « corrigée » vers un jour ouvré, ce qui décalerait toutes ses dépendances",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-23",
+      "name": "TPL-23 : reposée 21 jours plus tard, CHAQUE intervention est décalée d’exactement 21 jours (21/21/21/21) — la géométrie de la trame est intacte",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-24",
+      "name": "TPL-24 : TOUS les identifiants posés sont neufs et uniques — aucun ne reprend une clé du modèle ni un identifiant de la structure source",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-25",
+      "name": "TPL-25 : les 3 dépendances de la trame sont reposées ENTRE LES COPIES — aucune ne traverse vers la source, et chaque intervention est rattachée à un niveau réellement créé",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-25",
+      "name": "TPL-25 : aucune reprise n’est reposée — une reprise est un fait de chantier, pas un élément de trame (la source en portait une)",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-26",
+      "name": "TPL-26 : les interventions posées naissent « à faire », sans incident, sans contrôle et sans photo — la source était pourtant terminée et portait un incident critique",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-27",
+      "name": "TPL-27 : en mode « Ne pas affecter », aucune intervention posée ne porte d’intervenant, principal ou complémentaire",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-27",
+      "name": "TPL-27 : la référence de chaque intervention posée est calée sur ses propres dates — pas de retard hérité d’un autre chantier",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-28",
+      "name": "TPL-28 : en mode « intervenants suggérés », une ressource disparue et un lot disparu sont ABANDONNÉS et comptés — jamais de référence orpheline dans une intervention posée",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-28",
+      "name": "TPL-28 : les intervenants suggérés qui existent toujours sont bien repris",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-29",
+      "name": "TPL-29 : modèle absent, chantier absent, emplacement absent et emplacement ARCHIVÉ sont refusés — mêmes gardes que la duplication de V2.10",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-30",
+      "name": "TPL-30 : posée SOUS un niveau existant, la trame s’y greffe par sa seule racine — ses sous-niveaux restent attachés à elle, renommage compris",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-31",
+      "name": "TPL-31 : un modèle de CHANTIER ENTIER pose ses trois niveaux racines côte à côte dans le chantier visé — la forêt reste une forêt",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-32",
+      "name": "TPL-32 : enregistrer un modèle est annulable — un seul « Annuler » le retire",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-33",
+      "name": "TPL-33 : poser une trame (3 niveaux + 4 interventions) s’annule d’UN SEUL geste — jamais niveau par niveau",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-34",
+      "name": "TPL-34 : « Rétablir » repose la trame entière, elle aussi d’un seul geste",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-35",
+      "name": "TPL-35 : créer un chantier depuis un modèle crée le chantier ET toute sa trame, et « Annuler » défait l’ensemble — jamais de chantier vide orphelin",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-36",
+      "name": "TPL-36 : la fenêtre « Modèles de chantier » liste les deux modèles, chacun avec Utiliser, Renommer et Supprimer",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-37",
+      "name": "TPL-37 : renommer refuse le vide, refuse un doublon (casse ignorée), refuse un modèle absent, et accepte un nom valide avec sa description",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-38",
+      "name": "TPL-38 : la suppression passe par une CONFIRMATION explicite avant de retirer le modèle",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-39",
+      "name": "TPL-39 : supprimer un modèle est annulable — « Annuler » le restitue intact",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-40",
+      "name": "TPL-40 : le menu « … » d’un niveau porte « Enregistrer comme modèle » entre Dupliquer et Archiver — les six entrées de V2.10 sont toutes conservées",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-41",
+      "name": "TPL-41 : à sept entrées (299 px) le menu reste ancré à son bouton (2 px, vers le haut), dans le viewport, et AUCUNE entrée n’est rognée — les correctifs de V2.9.0.1 et V2.9.1 tiennent",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-42",
+      "name": "TPL-42 : l’onglet Structure porte aussi « Enregistrer comme modèle » au niveau du CHANTIER ENTIER, à côté de « Ajouter un niveau »",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-43",
+      "name": "TPL-43 : les Réglages portent « Modèles de chantier » SANS retirer « Modèle d’entreprise » — les deux notions coexistent",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-44",
+      "name": "TPL-44 : « Nouveau chantier » propose cinq modes dans cet ordre exact — « Modèle de chantier » rejoint les modes à base de modèle, et AUCUN des quatre modes existants n’est retiré ni renommé",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-45",
+      "name": "TPL-45 : sans aucun modèle, le choix disparaît — proposer une liste vide serait une impasse, pas un choix",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-46",
+      "name": "TPL-46 : le parcours choix → liste → aperçu affiche la trame MESURÉE (4 niveaux, 6 interventions, 5 LIENS de dépendance — les liens, pas les interventions qui en portent) et la fin estimée exacte",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-47",
+      "name": "TPL-47 : le chantier est créé avec sa trame complète (4 niveaux, 6 interventions à faire), démarré à la date choisie, et sa date cible correspond au dernier jour de la trame",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-48",
+      "name": "TPL-48 : la sauvegarde Kanvix emporte les 3 modèles (2 de démonstration + 1 créé) et reste valide en version 14",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-49",
+      "name": "TPL-49 : la restauration rend les 3 modèles à l’identique — la trame créée revient octet pour octet",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-50",
+      "name": "TPL-50 : une sauvegarde V13 — sans la clé projectTemplates — reste PARFAITEMENT valide : elle se restaure, passe en version 14 et repart avec une collection VIDE, sans perdre un seul chantier",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-50",
+      "name": "TPL-50 : la clé reste FACULTATIVE — elle n’a pas été ajoutée à KANVIX_BACKUP_REQUIRED",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-51",
+      "name": "TPL-51 : projectTemplates ne figure PAS dans KANVIX_BACKUP_REQUIRED — exactement comme les lots, la qualité, les opérations et la structure avant lui",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-51",
+      "name": "TPL-51 : l’aperçu de restauration annonce les modèles de chantier contenus dans la sauvegarde",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-52",
+      "name": "TPL-52 : de 1920 à 360 px, la fenêtre des modèles ne provoque aucun défilement horizontal, aucune ligne ne déborde et aucun bouton d’action n’est coupé",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-53",
+      "name": "TPL-53 : en thème sombre la fenêtre des modèles utilise les jetons du produit — fond sombre (30), titre clair (243), contraste franc, aucune couleur codée en dur",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-54",
+      "name": "TPL-54 : « Enregistrer comme modèle » est un vrai bouton, atteignable au clavier comme les autres entrées du menu",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-55",
+      "name": "TPL-55 : la side-window « Enregistrer comme modèle » s’ouvre préremplie au nom du niveau et annonce le périmètre MESURÉ qu’elle va capturer",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2110",
+      "name": "FREEZE-2110 : les 117 moteurs de V2.10.0.1 sont BYTE-IDENTIQUES — tout le Planning, tout le moteur Structure (déplacement et duplication compris, jusqu’à structureUid), la sauvegarde, l’import, les ressources, la qualité, l’Undo/Redo, la navigation, les MODÈLES D’ENTREPRISE préexistants et le réalignement de démonstration",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2110",
+      "name": "FREEZE-2110 : seules les neuf fonctions du périmètre annoncé sont modifiées — le balayage de tout le fichier n’en trouve aucune autre",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2110",
+      "name": "FREEZE-2110 / §34 : il n’existe qu’UNE vérité de clonage — cloneStructureTree(). Elle n’est appelée que DEUX fois dans tout le fichier, par duplicateStructureNode() (V2.10) et applyTemplateToProject() (V2.11) — et par personne d’autre. La duplication a été VIDÉE de son moteur : plus une seule table de correspondance chez elle. Le remapping des parents, des rattachements, des dépendances et des reprises n’apparaît qu’UNE fois dans le fichier. La primitive est PURE (ni app, ni save, ni snapshot, ni render). Aucun second moteur n’a été créé à côté",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2110",
+      "name": "FREEZE-2110 : le style est strictement ADDITIF (le bloc V2.11 retiré, la feuille redevient byte-identique à V2.10.0.1), INITIAL_STATE l’est aussi (le bloc des modèles retiré, il redevient byte-identique), les données de démonstration — niveaux et interventions — sont BYTE-IDENTIQUES, SCHEMA passe bien de 13 à 14, STORE et build sont inchangés, un seul gantt(), un seul snapshot(), aucune pile Undo parallèle, aucun drag & drop de structure",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL",
+      "name": "TPL : aucune erreur JavaScript applicative en console (0)",
+      "status": "PASS"
+    }
+  ],
+  "consoleErrors": []
+}

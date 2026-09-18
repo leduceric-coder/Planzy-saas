@@ -100,7 +100,10 @@ console.log('\n[ST-MIGRATION] V12 → V13');
     'ST-01 : une sauvegarde V12 migre vers V13 avec structureNodes = [] — et la migration est IDEMPOTENTE', 'ST-01');
   ok(r.tachesNull,
     `ST-02 : les ${r.taches} anciennes tâches reçoivent structureNodeId = null — aucune référence inventée`, 'ST-02');
-  ok(r.schema === 13 && r.store === 'kanvix-product-8-3',
+  /* V2.11.0 — RE-POINTAGE : le schéma a avancé à 14 avec les modèles de
+     chantier. La clé de stockage, elle, n'a jamais bougé — c'est ce que cette
+     assertion protège réellement. */
+  ok(r.schema === 14 && r.store === 'kanvix-product-8-3',
     `ST-70 / ST-69 : SCHEMA_VERSION = ${r.schema} et STORE inchangé (« ${r.store} »)`, 'ST-70');
   await ctx.close();
 }
@@ -1001,13 +1004,13 @@ console.log('\n[FREEZE-290] Byte-identité');
     pasDeMoteurStructure:
       !/function\s+(structureGantt|structurePlanningTasks|structureResourcesEngine|structureRiskStatus|structureConflicts|renderStructurePlanning)\s*\(/.test(B),
     pasDeRisquePersiste: !/app\.structureRisks|structureRiskStore/.test(B),
-    schema: /SCHEMA_VERSION = 13/.test(B),
+    schema: /SCHEMA_VERSION = 14/.test(B),
     store: (B.match(/STORE = "([^"]+)"/) || [])[1] === 'kanvix-product-8-3',
     pasDansObligatoires: !/KANVIX_BACKUP_REQUIRED = \[[^\]]*structureNodes/.test(B),
   };
   note('FREEZE-290-règles', regles);
   ok(Object.values(regles).every(Boolean),
-    'FREEZE-290 : un seul gantt(), un seul planningTasks(), un seul taskResourceIds(), un seul setTaskStatus() — aucun moteur Planning, Ressources ou Risque parallèle, SCHEMA 13, STORE inchangé, structureNodes hors des clés obligatoires du backup', 'FREEZE-290');
+    'FREEZE-290 : un seul gantt(), un seul planningTasks(), un seul taskResourceIds(), un seul setTaskStatus() — aucun moteur Planning, Ressources ou Risque parallèle, SCHEMA passé à 14 (bump V2.11.0), STORE inchangé, structureNodes hors des clés obligatoires du backup', 'FREEZE-290');
 
   const ajoutees = ['structureNode', 'getProjectStructure', 'getStructureChildren',
     'getStructureRoots', 'getStructureDescendantIds', 'getStructureAncestors', 'structurePath',

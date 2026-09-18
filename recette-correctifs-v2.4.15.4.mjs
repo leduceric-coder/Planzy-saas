@@ -203,7 +203,13 @@ console.log('\n[SITE-1514] Chantiers — accès direct à « Modèle d’entrepr
   await p.waitForTimeout(150);
   const choices = await ev(p, () => [...document.querySelectorAll('.wiz-choice b')].map((b) => b.textContent.trim()));
   note('SITE-1514-choices', choices);
-  ok(choices.length === 4, 'SITE-1514 : le choix initial propose désormais 4 options', 'SITE-1514');
+  /* V2.11.0 — RE-POINTAGE. Le wizard gagne un cinquième mode, « Modèle de
+     chantier » (§26). Ce que SITE-1514 protège — l'accès DIRECT à « Modèle
+     d'entreprise » depuis le choix initial — est vérifié par l'assertion
+     suivante, inchangée. On épingle donc les cinq libellés dans leur ordre
+     exact : c'est plus strict qu'un simple compte. */
+  ok(choices.join('|') === 'Partir de zéro|Utiliser un modèle|Modèle d’entreprise|Modèle de chantier|Reprendre un chantier en cours',
+    'SITE-1514 : le choix initial propose cinq options dans cet ordre exact — « Modèle de chantier » (V2.11.0) s’ajoute sans déplacer ni renommer les quatre modes existants', 'SITE-1514');
   ok(choices.includes('Modèle d’entreprise'), 'SITE-1514 : « Modèle d’entreprise » apparaît comme point d’entrée explicite', 'SITE-1514');
   await p.click('.wiz-choice:has-text("Modèle d’entreprise")');
   await p.waitForTimeout(150);

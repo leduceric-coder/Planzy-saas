@@ -349,8 +349,12 @@ console.log('\n[REW-DUP] Sauvegarde et restauration');
     'REW-DUP-11 : la sauvegarde restitue toutes les relations — reprises et dépendances — à l’identique', 'REW-DUP-11');
   ok(r.pointeVersClone && r.pointeVersSource === false,
     'REW-DUP-11 : après restauration, B2.reworkOfTaskId désigne toujours A2 — jamais la tâche source', 'REW-DUP-11');
-  ok(r.schema === 13 && r.store === 'kanvix-product-8-3',
-    'REW-DUP-11 : SCHEMA_VERSION reste 13 et STORE inchangé — aucun champ persistant nouveau', 'REW-DUP-11');
+  /* V2.11.0 — RE-POINTAGE. Le correctif de V2.10.0.1 n'exigeait aucun champ
+     persistant, et c'est toujours vrai : le passage à 14 vient des MODÈLES de
+     V2.11.0, pas de la reprise. L'assertion épingle donc la version courante et
+     la clé de stockage, inchangée depuis toujours. */
+  ok(r.schema === 14 && r.store === 'kanvix-product-8-3',
+    'REW-DUP-11 : l’intégrité des reprises n’exige toujours aucun champ persistant à elle ; le schéma vaut 14 (bump introduit par les modèles de chantier de V2.11.0) et STORE reste « kanvix-product-8-3 »', 'REW-DUP-11');
   await ctx.close();
 }
 
@@ -436,8 +440,14 @@ console.log('\n[FREEZE-21001] Périmètre : une seule fonction modifiée');
   };
   const A = read(PREV), B = read(CUR);
 
-  /* §11 — le balayage de TOUT le fichier : une seule fonction doit bouger. */
-  const attendues = ['duplicateStructureNode'];
+  /* §11 — le balayage de TOUT le fichier. Ce gel compare le build courant à
+     V2.10.0. V2.10.0.1 n'y touchait qu'à duplicateStructureNode ; V2.11.0 y
+     ajoute son propre périmètre, NOMMÉ fonction par fonction — l'assertion
+     reste un gel, elle n'est pas devenue une liste ouverte. */
+  const attendues = ['duplicateStructureNode',
+    // V2.11.0 — modèles de chantier
+    'migrateState', 'icon', 'structureNodeMenu', 'projectStructureTab',
+    'renderMore', 'renderWizard', 'wizardPickMode', 'showKanvixBackupPreview'];
   const parIndentation = ['renderAIPanel'];
   const horsPerimetre = [];
   const noms = [...new Set([...B.matchAll(/\n\s*function\s+([A-Za-z_$][\w$]*)\s*\(/g)].map((m) => m[1]))];
@@ -449,13 +459,15 @@ console.log('\n[FREEZE-21001] Périmètre : une seule fonction modifiée');
   const indentDiff = parIndentation.filter((n) => blocIndente(A, n) !== blocIndente(B, n));
   note('FREEZE-21001-périmètre', { modifiées: attendues, horsPérimètre: horsPerimetre, indentation: indentDiff });
   ok(horsPerimetre.length === 0 && indentDiff.length === 0,
-    'FREEZE-21001 : duplicateStructureNode() est la SEULE fonction modifiée du fichier — le balayage complet n’en trouve aucune autre', 'FREEZE-21001');
+    'FREEZE-21001 : hors du périmètre NOMMÉ de V2.10.0.1 (duplicateStructureNode) et de V2.11.0 (migrateState, icon, structureNodeMenu, projectStructureTab, renderMore, renderWizard, wizardPickMode, showKanvixBackupPreview), le balayage complet du fichier ne trouve AUCUNE autre fonction modifiée depuis V2.10.0', 'FREEZE-21001');
 
   /* §11 — les moteurs nommément protégés, un par un. */
   const nommes = [
     // Structure — tout sauf la duplication
     'moveStructureNode', 'structureMoveBlocker', 'openStructureMove', 'openStructureDuplicate',
-    'structureNodeMenu', 'structureCompactRow', 'structureCopyName', 'structureUid',
+    /* V2.11.0 — structureNodeMenu reçoit l'entrée « Enregistrer comme modèle » :
+       elle quitte la liste des gelés et rejoint le périmètre NOMMÉ ci-dessus. */
+    'structureCompactRow', 'structureCopyName', 'structureUid',
     'structureDestinationList', 'structureSourceCard', 'structureRememberTrigger',
     'structureNode', 'getStructureDescendantIds', 'getStructureTasks', 'getStructureChildren',
     'structureParentError', 'structureParentOptions', 'openStructureForm',
@@ -468,7 +480,8 @@ console.log('\n[FREEZE-21001] Périmètre : une seule fonction modifiée');
     'openTaskForm', 'submitTaskEdit', 'planReflow', 'applyReflowPlan', 'renderPlanning',
     'isNonWorkingDate', 'frenchPublicHolidays', 'realStartPlan',
     // Données et transverse
-    'migrateState', 'buildKanvixBackup', 'confirmKanvixRestore', 'applyImportPlan',
+    /* V2.11.0 — migrateState porte la migration 13 → 14 : même traitement. */
+    'buildKanvixBackup', 'confirmKanvixRestore', 'applyImportPlan',
     'validateImportState', 'exportKanvixData', 'save', 'resetApp',
     'taskResourceIds', 'getResourceTasks', 'getResourceSchedulingConflicts',
     'ensureTaskControlInstances', 'pendingControlsForTask', 'getProjectHealth',
@@ -499,45 +512,86 @@ console.log('\n[FREEZE-21001] Périmètre : une seule fonction modifiée');
   };
   const bloc = (src, re) => { const m = src.match(re); return m ? m[0] : null; };
   const cssA = css(A), cssB = css(B);
+  /* V2.11.0 — RE-POINTAGE, PREUVE PLUTÔT QUE SILENCE. V2.10.0.1 n'ajoutait
+     rien au style ni aux données : « byte-identique » suffisait. V2.11.0 ajoute
+     un bloc de style et une collection de démonstration. On ne relâche pas
+     l'assertion : on la rend DÉMONSTRATIVE — le bloc ajouté retiré, la feuille
+     et INITIAL_STATE redeviennent byte-identiques à V2.10.0. Un seul octet
+     modifié ailleurs ferait tomber la mesure. */
+  const sansBlocCSS = (x) => x.replace(/      \/\* ---- V2\.11\.0 — MODÈLES DE CHANTIER[\s\S]*?\n      \/\* Le niveau qui vient d'être créé/, "      /* Le niveau qui vient d'être créé");
+  const sansBlocInitial = (x) => {
+    const i = x.indexOf('        /* ============ V2.11.0 — MODÈLES DE CHANTIER RÉUTILISABLES ==========');
+    const j = x.indexOf('        ],\n        // V2.8 — UNE opération de démonstration.');
+    return i > 0 && j > i ? x.slice(0, i) + x.slice(j + '        ],\n'.length) : 'NON-EXTRAIT';
+  };
   const regles = {
     cssExtraite: !!cssA && !!cssB && cssA.length > 100000,
-    cssIdentique: !!cssA && !!cssB && md5(cssA) === md5(cssB),
-    schema: /SCHEMA_VERSION = 13/.test(B) && /SCHEMA_VERSION = 13/.test(A),
+    cssAdditive: !!cssA && !!cssB && md5(sansBlocCSS(cssB)) === md5(cssA) && cssB.length > cssA.length,
+    schema: /SCHEMA_VERSION = 14/.test(B) && /SCHEMA_VERSION = 13/.test(A),
     store: (B.match(/STORE = "([^"]+)"/) || [])[1] === 'kanvix-product-8-3',
     build: (B.match(/KANVIX_APP_BUILD = "([^"]+)"/) || [])[1] === (A.match(/KANVIX_APP_BUILD = "([^"]+)"/) || [])[1],
     /* Même précaution que pour le CSS : une extraction qui échoue comparerait
        deux chaînes vides et passerait toujours. On exige donc qu'elle ait
        réellement trouvé quelque chose de substantiel. */
     initialExtrait: (bloc(B, /const INITIAL_STATE[\s\S]*?\n      \};/) || '').length > 10000,
-    initialIdentique:
-      md5(bloc(A, /const INITIAL_STATE[\s\S]*?\n      \};/)) ===
-      md5(bloc(B, /const INITIAL_STATE[\s\S]*?\n      \};/)),
-    tachesDemoExtraites: (bloc(B, /\n\s*tasks: \[[\s\S]*?\n        \],/) || '').length > 1000,
+    initialAdditif:
+      sansBlocInitial(bloc(B, /const INITIAL_STATE[\s\S]*?\n      \};/) || '') ===
+      bloc(A, /const INITIAL_STATE[\s\S]*?\n      \};/),
+    /* L'ANCRAGE est corrigé, pas assoupli : « le premier tasks: [ du fichier »
+       n'est plus le tableau de démonstration (les modèles de démonstration en
+       portent un, plus haut). On ancre sur structureNodes, qui le précède. */
+    tachesDemoExtraites: (bloc(B, /\n        structureNodes: \[[\s\S]*?\n        \],\n        tasks: \[[\s\S]*?\n        \],\n/) || '').length > 4000,
     tachesDemoIdentiques:
-      md5(bloc(A, /\n\s*tasks: \[[\s\S]*?\n        \],/)) ===
-      md5(bloc(B, /\n\s*tasks: \[[\s\S]*?\n        \],/)),
-    // le correctif réutilise la table existante, il n'en crée pas une seconde
+      md5(bloc(A, /\n        structureNodes: \[[\s\S]*?\n        \],\n        tasks: \[[\s\S]*?\n        \],\n/)) ===
+      md5(bloc(B, /\n        structureNodes: \[[\s\S]*?\n        \],\n        tasks: \[[\s\S]*?\n        \],\n/)),
+    // V2.11.0 — la table n'a pas été dupliquée : elle a DÉMÉNAGÉ dans la
+    // primitive partagée. Il n'en existe toujours qu'une dans tout le fichier.
     uneSeuleMapTaches: (B.match(/mapTaches = new Map/g) || []).length === 1,
     pasDePileUndoParallele: !/reworkUndo|structureUndoStack|cloneHistory2/.test(B),
   };
   note('FREEZE-21001-règles', { ...regles, octetsCSS: cssA ? cssA.length : 0 });
   ok(Object.values(regles).every(Boolean),
-    'FREEZE-21001 : feuille de style byte-identique (aucun changement UI), SCHEMA 13, STORE et build inchangés, INITIAL_STATE et tâches de démonstration byte-identiques, une seule table mapTaches, aucune pile Undo parallèle', 'FREEZE-21001');
+    'FREEZE-21001 : la feuille de style est strictement ADDITIVE (le bloc V2.11.0 retiré, elle redevient byte-identique à V2.10.0), INITIAL_STATE l’est aussi, les tâches de démonstration sont BYTE-IDENTIQUES, SCHEMA passe à 14, STORE et build sont inchangés, il n’existe toujours qu’UNE table mapTaches dans tout le fichier, et aucune pile Undo parallèle', 'FREEZE-21001');
 
-  /* Le correctif lui-même, isolé : la fonction ne diffère QUE par le remapping
-     de la reprise. Le bloc retiré, elle redevient celle de V2.10.0. */
-  const sansRework = (src) => src
-    .replace(/,?\s*reworkClonees = 0,\s*\n\s*reworkAbandonnees = 0/g, '')
-    .replace(/\/\* V2\.10\.0\.1[\s\S]*?\*\//g, '')
-    .replace(/let reprise = t\.reworkOfTaskId[\s\S]*?\}\s*\n/g, '')
+  /* V2.11.0 — RE-POINTAGE, et RENFORCEMENT.
+     En V2.10.0.1, duplicateStructureNode() PORTAIT le moteur de clonage : on
+     prouvait le correctif en lui retirant son seul bloc « reprise », après quoi
+     elle redevenait byte-identique à V2.10.0.
+     En V2.11.0 le moteur a été SORTI dans la primitive partagée
+     cloneStructureTree() (§34) et la fonction délègue. Le correctif n'a pas
+     disparu : il a DÉMÉNAGÉ — et il sert désormais aussi aux modèles, ce qui
+     rend impossible une divergence entre les deux usages.
+     La preuve devient donc plus forte que l'ancienne :
+       · duplicateStructureNode() n'en porte plus une ligne et délègue ;
+       · le remapping de la reprise n'existe qu'à UN endroit du fichier ;
+       · cet endroit est la primitive, et elle seule ;
+       · ce bloc retiré de la primitive, il ne subsiste AUCUNE mention de
+         reprise dans le reste de son corps (commentaires exclus).
+     Les douze scénarios REW-DUP ci-dessus, eux, sont inchangés : ils mesurent
+     le COMPORTEMENT, et ils passent tous sur le moteur factorisé. */
+  const sansCommentaires = (src) => src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '');
+  const sansRework = (src) => sansCommentaires(src)
+    .replace(/\n\s*reworkClonees = 0,/g, '')
+    .replace(/\n\s*reworkAbandonnees = 0,/g, '')
+    .replace(/let reprise = [\s\S]*?\n          \}\n/g, '')
     .replace(/\n\s*reworkOfTaskId: repriseInterne,/g, '')
-    .replace(/,\s*\n\s*reworkClonees,\s*\n\s*reworkAbandonnees/g, '')
+    .replace(/\n\s*reworkClonees,/g, '')
+    .replace(/\n\s*reworkAbandonnees,/g, '')
     .replace(/\s+/g, ' ')
     .trim();
-  const a = extractFn(A, 'duplicateStructureNode'), c = extractFn(B, 'duplicateStructureNode');
-  note('FREEZE-21001-diff', { identiqueHorsRework: sansRework(a) === sansRework(c) });
-  ok(sansRework(a) === sansRework(c),
-    'FREEZE-21001 : duplicateStructureNode() ne diffère QUE par le remapping de la reprise — ce bloc retiré, elle redevient byte-identique à V2.10.0 ; toute autre modification ferait tomber cette assertion', 'FREEZE-21001');
+  const dup = extractFn(B, 'duplicateStructureNode'), prim = extractFn(B, 'cloneStructureTree');
+  const preuve = {
+    dupDelegue: /cloneStructureTree\(/.test(dup),
+    dupSansReprise: !/reworkOfTaskId|repriseInterne/.test(sansCommentaires(dup)),
+    dupSansTable: !/new Map\(/.test(dup),
+    remapUniqueDansLeFichier: (B.match(/reworkOfTaskId: repriseInterne/g) || []).length === 1
+      && (B.match(/let reprise = /g) || []).length === 1,
+    remapDansLaPrimitive: /reworkOfTaskId: repriseInterne/.test(prim || ''),
+    residuSansReprise: !/rework|reprise/i.test(sansRework(prim || 'x')),
+  };
+  note('FREEZE-21001-diff', preuve);
+  ok(Object.values(preuve).every(Boolean),
+    'FREEZE-21001 : le remapping de la reprise n’existe qu’à UN endroit de tout le fichier — la primitive de clonage partagée cloneStructureTree(). duplicateStructureNode() n’en porte plus une ligne, ne construit plus aucune table de correspondance et délègue ; ce bloc retiré de la primitive, il ne subsiste aucune mention de reprise dans son corps. Une seconde logique de reprise, où que ce soit, ferait tomber cette assertion', 'FREEZE-21001');
 }
 
 const appErrs = allErrs.filter((e) => !/net::|Failed to fetch|open-meteo|geopf|nominatim/.test(e.msg));
