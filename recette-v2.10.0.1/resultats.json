@@ -1,0 +1,157 @@
+{
+  "passed": 30,
+  "failed": [],
+  "results": [
+    {
+      "sec": "REW-DUP-01",
+      "name": "REW-DUP-01 : la reprise clonée désigne la tâche CLONÉE — B2.reworkOfTaskId === A2.id",
+      "status": "PASS"
+    },
+    {
+      "sec": "REW-DUP-01",
+      "name": "REW-DUP-01 : elle ne désigne PAS la tâche source — B2.reworkOfTaskId !== A.id",
+      "status": "PASS"
+    },
+    {
+      "sec": "REW-DUP-02",
+      "name": "REW-DUP-02 : aucune des 5 tâches clonées ne porte un reworkOfTaskId vers une tâche SOURCE — il est soit null, soit un ID cloné",
+      "status": "PASS"
+    },
+    {
+      "sec": "REW-DUP-02",
+      "name": "REW-DUP-02 : le graphe cloné est AUTONOME — aucun structureNodeId, aucune dep, aucun reworkOfTaskId ne pointe vers le graphe source",
+      "status": "PASS"
+    },
+    {
+      "sec": "REW-DUP-05",
+      "name": "REW-DUP-05 : une seconde relation dans le même périmètre est remappée indépendamment — D2 → C2, jamais vers C",
+      "status": "PASS"
+    },
+    {
+      "sec": "REW-DUP-05",
+      "name": "REW-DUP-05 : les deux couples sont bien distincts",
+      "status": "PASS"
+    },
+    {
+      "sec": "REW-DUP-06",
+      "name": "REW-DUP-06 : dépendance ET reprise portées par la même tâche sont remappées toutes les deux, indépendamment — B2.deps = [A2] et B2.reworkOfTaskId = A2",
+      "status": "PASS"
+    },
+    {
+      "sec": "REW-DUP-03",
+      "name": "REW-DUP-03 : une reprise visant une tâche HORS périmètre devient null sur le clone — même philosophie que les dépendances externes de V2.10.0",
+      "status": "PASS"
+    },
+    {
+      "sec": "REW-DUP-03",
+      "name": "REW-DUP-03 : le moteur compte ce qu’il fait — 2 reprises remappées, 1 abandonnée",
+      "status": "PASS"
+    },
+    {
+      "sec": "REW-DUP-04",
+      "name": "REW-DUP-04 : les six tâches SOURCE sont strictement inchangées — nom, reworkOfTaskId, deps et rattachement compris",
+      "status": "PASS"
+    },
+    {
+      "sec": "REW-DUP-04",
+      "name": "REW-DUP-04 : la tâche source garde SA relation vers l’extérieur — seule la copie l’abandonne",
+      "status": "PASS"
+    },
+    {
+      "sec": "REW-DUP-07",
+      "name": "REW-DUP-07 : resourceId, additionalResourceIds et lotId sont conservés À L’IDENTIQUE sur chaque clone — ce sont des référentiels partagés, pas des relations internes",
+      "status": "PASS"
+    },
+    {
+      "sec": "REW-DUP-07",
+      "name": "REW-DUP-07 : aucun référentiel n’a été dupliqué — la grue crane-g01 reste un seul et même matériel",
+      "status": "PASS"
+    },
+    {
+      "sec": "REW-DUP-07",
+      "name": "REW-DUP-07 : dates, statut et couleur restent ceux de V2.10.0 — le correctif ne touche à rien d’autre",
+      "status": "PASS"
+    },
+    {
+      "sec": "REW-DUP-08",
+      "name": "REW-DUP-08 : « Structure seule » ne crée aucune tâche, donc aucune relation de reprise — comportement de V2.10.0 strictement inchangé",
+      "status": "PASS"
+    },
+    {
+      "sec": "REW-DUP-08",
+      "name": "REW-DUP-08 : les deux niveaux sont bien copiés, et les compteurs de reprise sont à zéro",
+      "status": "PASS"
+    },
+    {
+      "sec": "REW-DUP-09",
+      "name": "REW-DUP-09 : la duplication reste UNE seule opération logique, reprises comprises",
+      "status": "PASS"
+    },
+    {
+      "sec": "REW-DUP-09",
+      "name": "REW-DUP-09 : Undo supprime tous les niveaux et toutes les tâches clonées, ne laisse AUCUNE référence de reprise orpheline, et l’état revient au caractère près",
+      "status": "PASS"
+    },
+    {
+      "sec": "REW-DUP-10",
+      "name": "REW-DUP-10 : Redo recrée l’ensemble — la relation de reprise repointe vers la tâche CLONÉE, jamais vers la source",
+      "status": "PASS"
+    },
+    {
+      "sec": "REW-DUP-11",
+      "name": "REW-DUP-11 : la sauvegarde restitue toutes les relations — reprises et dépendances — à l’identique",
+      "status": "PASS"
+    },
+    {
+      "sec": "REW-DUP-11",
+      "name": "REW-DUP-11 : après restauration, B2.reworkOfTaskId désigne toujours A2 — jamais la tâche source",
+      "status": "PASS"
+    },
+    {
+      "sec": "REW-DUP-11",
+      "name": "REW-DUP-11 : SCHEMA_VERSION reste 13 et STORE inchangé — aucun champ persistant nouveau",
+      "status": "PASS"
+    },
+    {
+      "sec": "REW-DUP-12",
+      "name": "REW-DUP-12 : hasReworkSignaled(A2) vaut true, et cette réponse vient de B2 — la reprise CLONÉE, une seule",
+      "status": "PASS"
+    },
+    {
+      "sec": "REW-DUP-12",
+      "name": "REW-DUP-12 : sur la SOURCE, la réponse ne vient toujours que de t-B — le clone ne pollue plus l’état de la tâche d’origine, ce qui était le cas en V2.10.0",
+      "status": "PASS"
+    },
+    {
+      "sec": "REW-DUP-12",
+      "name": "REW-DUP-12 : le second couple se lit lui aussi correctement sur le clone",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21001",
+      "name": "FREEZE-21001 : duplicateStructureNode() est la SEULE fonction modifiée du fichier — le balayage complet n’en trouve aucune autre",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21001",
+      "name": "FREEZE-21001 : les 70 moteurs nommément protégés sont BYTE-IDENTIQUES — toute la Structure hors duplication, le moteur Reprise/SAV, le Planning, les données, les ressources, la qualité, l’Undo/Redo et la navigation",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21001",
+      "name": "FREEZE-21001 : feuille de style byte-identique (aucun changement UI), SCHEMA 13, STORE et build inchangés, INITIAL_STATE et tâches de démonstration byte-identiques, une seule table mapTaches, aucune pile Undo parallèle",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21001",
+      "name": "FREEZE-21001 : duplicateStructureNode() ne diffère QUE par le remapping de la reprise — ce bloc retiré, elle redevient byte-identique à V2.10.0 ; toute autre modification ferait tomber cette assertion",
+      "status": "PASS"
+    },
+    {
+      "sec": "REW-DUP",
+      "name": "REW-DUP : aucune erreur JavaScript applicative en console (0)",
+      "status": "PASS"
+    }
+  ],
+  "consoleErrors": []
+}
