@@ -1,5 +1,21 @@
 // ============================================================
-// KANVIX — Recette « Modèles de chantier réutilisables » (V2.11.0)
+// KANVIX — Recette « Modèles de chantier » (V2.11.0.1)
+//
+//   Cette recette est celle de V2.11.0, REJOUÉE intégralement contre le
+//   correctif V2.11.0.1, PLUS le bloc FIXTPL qui couvre les quatre écarts
+//   corrigés :
+//     1. choisir « Structure seule » / « Structure + interventions » à
+//        l'enregistrement d'un modèle ;
+//     2. conserver les ressources COMPLÉMENTAIRES comme suggestions ;
+//     3. la troncature des noms dans le gestionnaire ;
+//     4. l'accès DIRECT au parcours « Modèle de chantier » depuis le
+//        gestionnaire.
+//   Aucun contrôle de V2.11.0 n'a été retiré. Deux assertions ont été
+//   re-pointées — et renforcées — parce que le format d'une intervention de
+//   modèle et le formulaire de capture ont volontairement évolué.
+//
+// ============================================================
+// (en-tête d'origine V2.11.0)
 //
 //   V2.11.0 ajoute une collection : app.projectTemplates. Un modèle est une
 //   TRAME — une hiérarchie, des interventions, leurs lots, leurs durées et
@@ -19,11 +35,14 @@ import fs from 'fs';
 import crypto from 'crypto';
 const { chromium } = pw;
 const BASE = '/home/user/Planzy-saas/public/poc/';
-const CUR = 'kanvix-next-gen-v2.11.0.html';
+const CUR = 'kanvix-next-gen-v2.11.0.1.html';
+// PREV reste V2.10.0.1 : le gel FREEZE-2110 mesure toujours la même distance,
+// celle du round V2.11.0. PREV_2110 sert au gel PROPRE à ce correctif.
 const PREV = 'kanvix-next-gen-v2.10.0.1.html';
+const PREV_2110 = 'kanvix-next-gen-v2.11.0.html';
 const NOW = '2026-08-17T08:00:00';
 const F = (file = CUR, now = NOW) => 'file://' + BASE + file + '?now=' + now;
-const SHOTS = process.env.KVX_SHOTS || '/home/user/Planzy-saas/recette-v2.11.0/';
+const SHOTS = process.env.KVX_SHOTS || '/home/user/Planzy-saas/recette-v2.11.0.1/';
 if (!fs.existsSync(SHOTS)) fs.mkdirSync(SHOTS, { recursive: true });
 
 const b = await chromium.launch({
@@ -225,12 +244,9 @@ console.log('\n[TPL-CAPTURE] Enregistrer une trame');
   ok(interdits.every((k) => !champs.includes(k)),
     'TPL-14 : la capture est une LISTE BLANCHE — ni statut, ni intervenant, ni reprise, ni référence, ni date absolue, ni chantier ne descendent dans une trame', 'TPL-14');
   /* V2.11.0.1 — RE-POINTAGE. Le format a gagné UN champ, volontairement :
-     suggestedAdditionalResourceIds (les ressources complémentaires suggérées).
-     L'assertion épingle donc douze champs au lieu de onze — elle reste une
-     liste EXACTE, donc plus stricte qu'avant : un treizième champ, quel qu'il
-     soit, la ferait tomber. Ce qu'elle protégeait — qu'aucune donnée
-     opérationnelle ne descende dans une trame — est inchangé, et TPL-14 le
-     vérifie toujours nommément. */
+     suggestedAdditionalResourceIds. L'assertion épingle donc douze champs au
+     lieu de onze — elle reste une liste EXACTE, donc plus stricte qu'avant :
+     un treizième champ, quel qu'il soit, la ferait tomber. */
   ok(champs.join(',') === 'deps,durationDays,endTime,id,lotId,name,offsetDays,phase,startTime,structureNodeId,suggestedAdditionalResourceIds,suggestedResourceId',
     'TPL-15 : une intervention de modèle porte EXACTEMENT douze champs — identité, rattachement, lot, phase, jours relatifs, heures, dépendances, intervenant SUGGÉRÉ et ressources complémentaires SUGGÉRÉES', 'TPL-15');
 
@@ -784,10 +800,10 @@ console.log('\n[TPL-RESP] Largeurs, thème, clavier');
   await p.screenshot({ path: SHOTS + '09-enregistrer-modele.png' });
   note('TPL-55', form);
   /* V2.11.0.1 — RE-POINTAGE. Le formulaire porte désormais le choix de
-     contenu (« Structure seule » / « Structure + interventions ») : deux
-     boutons radio nommés « contenu » s'ajoutent aux deux champs d'origine.
-     L'assertion épingle la liste exacte des QUATRE contrôles — donc plus
-     strictement qu'avant, où elle n'en épinglait que deux. */
+     contenu : deux boutons radio nommés « contenu » s'ajoutent aux deux
+     champs d'origine. L'assertion épingle la liste exacte des quatre
+     contrôles — nom, description et les DEUX radios — donc plus strictement
+     qu'avant. */
   ok(form.ouvert && form.titre === 'ENREGISTRER COMME MODÈLE' && form.champs.join('|') === 'name|description|contenu|contenu'
     && form.valeur === 'Bâtiment A' && /niveau/.test(form.resume),
     'TPL-55 : la side-window « Enregistrer comme modèle » s’ouvre préremplie au nom du niveau, porte le choix de contenu et annonce le périmètre MESURÉ qu’elle va capturer', 'TPL-55');
@@ -984,11 +1000,604 @@ console.log('\n[FREEZE-2110] Périmètre du round et §34');
     'FREEZE-2110 : le style est strictement ADDITIF (le bloc V2.11 retiré, la feuille redevient byte-identique à V2.10.0.1), INITIAL_STATE l’est aussi (le bloc des modèles retiré, il redevient byte-identique), les données de démonstration — niveaux et interventions — sont BYTE-IDENTIQUES, SCHEMA passe bien de 13 à 14, STORE et build sont inchangés, un seul gantt(), un seul snapshot(), aucune pile Undo parallèle, aucun drag & drop de structure', 'FREEZE-2110');
 }
 
+// ============================================================
+// FIXTPL-01 → FIXTPL-09 — CORRECTIF 1 : « Structure seule »
+// ============================================================
+console.log('\n[FIXTPL-CONTENU] Choisir le contenu du modèle');
+{
+  const { ctx, p } = await newPage({ tag: 'FIX-CONTENU' });
+  await decor(p);
+  await ev(p, () => { openProjectTab('keravel', 'Structure'); });
+  await p.waitForTimeout(250);
+  await ev(p, () => openStructureTemplateSave('sn-m'));
+  await p.waitForTimeout(300);
+  const form = await ev(p, () => {
+    const radios = [...document.querySelectorAll('#drawerFormEl [name=contenu]')];
+    return {
+      valeurs: radios.map((r) => r.value),
+      libelles: radios.map((r) => r.closest('label').querySelector('b').textContent.trim()),
+      soustitres: radios.map((r) => r.closest('label').querySelector('small').textContent.trim()),
+      coche: radios.filter((r) => r.checked).map((r) => r.value),
+      resume: $('#templateCaptureSummary .snc-src-txt small').textContent.trim(),
+    };
+  });
+  await p.screenshot({ path: SHOTS + '01-enregistrer-structure-interventions.png' });
+  note('FIXTPL-01', form);
+  ok(form.valeurs.join('|') === 'structure|taches'
+    && form.libelles.join('|') === 'Structure seule|Structure + interventions'
+    && /sans intervention/.test(form.soustitres[0]),
+    'FIXTPL-01 : la side-window « Enregistrer comme modèle » propose les DEUX contenus — « Structure seule » et « Structure + interventions » — chacun avec son explication', 'FIXTPL-01');
+  ok(form.coche.join() === 'taches' && /4 interventions/.test(form.resume),
+    'FIXTPL-02 : « Structure + interventions » est coché par défaut — qui ne touche à rien retrouve exactement le comportement de V2.11.0', 'FIXTPL-02');
+
+  /* §2.3 — l'aperçu suit le choix, SANS re-rendre l'application : ce qui a
+     déjà été saisi dans le formulaire doit survivre au changement. */
+  const vivant = await ev(p, () => {
+    $('#drawerFormEl [name=name]').value = 'Saisie à préserver';
+    const radio = [...document.querySelectorAll('#drawerFormEl [name=contenu]')].find((r) => r.value === 'structure');
+    radio.checked = true;
+    radio.dispatchEvent(new Event('change', { bubbles: true }));
+    const apresStructure = $('#templateCaptureSummary .snc-src-txt small').textContent.trim();
+    const nomApres = $('#drawerFormEl [name=name]').value;
+    const radio2 = [...document.querySelectorAll('#drawerFormEl [name=contenu]')].find((r) => r.value === 'taches');
+    radio2.checked = true;
+    radio2.dispatchEvent(new Event('change', { bubbles: true }));
+    return { apresStructure, nomApres, apresTaches: $('#templateCaptureSummary .snc-src-txt small').textContent.trim() };
+  });
+  await p.screenshot({ path: SHOTS + '02-enregistrer-structure-seule.png' });
+  note('FIXTPL-02-vivant', vivant);
+  ok(/aucune intervention/.test(vivant.apresStructure) && /4 interventions/.test(vivant.apresTaches)
+    && vivant.nomApres === 'Saisie à préserver',
+    'FIXTPL-02 : l’aperçu se met à jour au changement de contenu (« aucune intervention » ⇄ « 4 interventions ») sans re-rendre l’application — le nom déjà saisi est intact', 'FIXTPL-02');
+
+  const cap = await ev(p, () => {
+    const seule = saveProjectTemplateFrom({ projectId: 'keravel', nodeId: 'sn-m', name: 'Zone structure seule', includeTasks: false });
+    const complet = saveProjectTemplateFrom({ projectId: 'keravel', nodeId: 'sn-m', name: 'Zone complète' });
+    const defaut = saveProjectTemplateFrom({ projectId: 'keravel', nodeId: 'sn-m', name: 'Zone par défaut' });
+    const projSeul = saveProjectTemplateFrom({ projectId: 'keravel', name: 'Chantier structure seule', includeTasks: false });
+    const projComplet = saveProjectTemplateFrom({ projectId: 'keravel', name: 'Chantier complet' });
+    const sansStructure = getUnstructuredTasks('keravel').length;
+    const strip = (t) => JSON.stringify(t.tasks.map((x) => ({ ...x, id: null })));
+    return {
+      seule: { n: seule.nodes.length, t: seule.tasks.length, root: seule.rootId, scope: seule.scope },
+      complet: { n: complet.nodes.length, t: complet.tasks.length },
+      defautIdentique: complet.nodes.length === defaut.nodes.length && strip(complet) === strip(defaut),
+      projSeul: { n: projSeul.nodes.length, t: projSeul.tasks.length, root: projSeul.rootId, scope: projSeul.scope,
+        racines: projSeul.nodes.filter((x) => !x.parentId).length },
+      projComplet: { n: projComplet.nodes.length, t: projComplet.tasks.length,
+        orphelines: projComplet.tasks.filter((x) => !x.structureNodeId).length },
+      sansStructure,
+      ids: { seule: seule.id, complet: complet.id, projSeul: projSeul.id },
+    };
+  });
+  note('FIXTPL-03', cap);
+  ok(cap.seule.n === 3 && cap.seule.t === 0 && cap.seule.root === 'tn-1' && cap.seule.scope === 'structure',
+    'FIXTPL-03 : capturer un niveau en « Structure seule » retient les 3 niveaux actifs et ZÉRO intervention, racine comprise', 'FIXTPL-03');
+  ok(cap.complet.n === 3 && cap.complet.t === 4 && cap.defautIdentique,
+    'FIXTPL-04 : « Structure + interventions » conserve exactement le comportement de V2.11.0 — et c’est bien ce que produit l’appel SANS option', 'FIXTPL-04');
+  ok(cap.projSeul.t === 0 && cap.projSeul.scope === 'project' && cap.projSeul.root === null
+    && cap.projSeul.racines >= 2 && cap.projSeul.n === cap.projComplet.n,
+    'FIXTPL-05 : capturer un CHANTIER ENTIER en « Structure seule » retient toute la forêt active et ZÉRO intervention — y compris zéro intervention sans structure', 'FIXTPL-05');
+  ok(cap.sansStructure > 0 && cap.projComplet.orphelines === cap.sansStructure,
+    'FIXTPL-05 : la preuve tient : en « Structure + interventions » ces mêmes interventions sans structure sont bien capturées — elles ne sont donc pas absentes par hasard', 'FIXTPL-05');
+
+  const pose = await ev(p, (id) => {
+    const av = { n: app.structureNodes.length, t: app.tasks.length };
+    const r = insertTemplateIntoProject(id, { projectId: 'villa', parentId: null, rootName: 'Trame nue', startDate: '2026-09-07' });
+    const ap = { n: app.structureNodes.length, t: app.tasks.length };
+    const neufs = app.structureNodes.filter((x) => x.projectId === 'villa');
+    undo();
+    const un = { n: app.structureNodes.length, t: app.tasks.length };
+    redo();
+    const re = { n: app.structureNodes.length, t: app.tasks.length };
+    return { r, av, ap, un, re, niveaux: neufs.map((x) => x.name), datesInventees: neufs.filter((x) => x.start || x.end).length };
+  }, cap.ids.seule);
+  note('FIXTPL-06', pose);
+  ok(typeof pose.r === 'object' && pose.r.niveaux === 3 && pose.r.taches === 0,
+    'FIXTPL-06 : un modèle « Structure seule » s’applique SANS erreur — 3 niveaux, aucune intervention', 'FIXTPL-06');
+  ok(pose.ap.n === pose.av.n + 3 && pose.ap.t === pose.av.t && pose.datesInventees === 0,
+    'FIXTPL-07 : la pose crée tous les niveaux et ZÉRO tâche — et aucune date n’est inventée sur un niveau (un niveau n’a jamais porté de date)', 'FIXTPL-07');
+  ok(pose.un.n === pose.av.n && pose.un.t === pose.av.t,
+    'FIXTPL-08 : « Annuler » défait entièrement la pose d’un modèle structure seule, d’un seul geste', 'FIXTPL-08');
+  ok(pose.re.n === pose.ap.n && pose.re.t === pose.ap.t,
+    'FIXTPL-09 : « Rétablir » la repose, elle aussi d’un seul geste', 'FIXTPL-09');
+
+  /* L'écran d'utilisation d'un modèle sans intervention : ni date, ni choix
+     d'affectation — un choix sans objet n'est pas un choix. */
+  const ecran = await ev(p, (id) => {
+    openTemplateInsert(id);
+    return {
+      resume: $('#drawerFormEl .snc-src-txt small').textContent.trim(),
+      champs: [...document.querySelectorAll('#drawerFormEl [name]')].map((x) => x.name),
+      hint: $('#drawerFormEl .snc-hint').textContent.trim(),
+    };
+  }, cap.ids.seule);
+  await p.waitForTimeout(250);
+  await p.screenshot({ path: SHOTS + '03-modele-structure-seule.png' });
+  note('FIXTPL-06-ecran', ecran);
+  ok(/aucune intervention/.test(ecran.resume) && !ecran.champs.includes('resources')
+    && !ecran.champs.includes('startDate') && /que des niveaux/.test(ecran.hint),
+    'FIXTPL-06 : « Utiliser le modèle » annonce « aucune intervention » et masque le choix d’affectation ET la date de démarrage — un modèle sans intervention n’a ni l’un ni l’autre à proposer', 'FIXTPL-06');
+  await ctx.close();
+}
+
+// ============================================================
+// FIXTPL-10 → FIXTPL-18 — CORRECTIF 2 : ressources complémentaires
+// ============================================================
+console.log('\n[FIXTPL-RESSOURCES] Affectations suggérées');
+{
+  const { ctx, p } = await newPage({ tag: 'FIX-RES' });
+  /* Une intervention volontairement SALE : un doublon, l'intervenant principal
+     glissé dans les compléments, une chaîne vide. La normalisation doit tout
+     ranger, sans jamais toucher à la tâche source. */
+  await ev(p, () => {
+    app.structureNodes.push({ id: 'sn-r', projectId: 'keravel', parentId: null, name: 'Zone ressources',
+      type: 'zone', description: '', responsibleResourceId: null, archived: false, createdAt: '', updatedAt: '' });
+    app.tasks.push({ id: 't-r1', structureNodeId: 'sn-r', projectId: 'keravel', name: 'Pose renforcée',
+      lotId: 'lot-platrerie', resourceId: 'mathieu',
+      additionalResourceIds: ['crane-g01', 'coloris', 'crane-g01', 'mathieu', '', null],
+      phase: 'Second œuvre', start: '2026-08-17T08:00', end: '2026-08-18T17:00', status: 'done',
+      deps: [], reworkOfTaskId: null, colorKey: 'auto',
+      baselineStart: '2026-08-17T08:00', baselineEnd: '2026-08-18T17:00' });
+    save();
+  });
+  await p.waitForTimeout(150);
+  const capt = await ev(p, () => {
+    const avant = JSON.stringify(task('t-r1').additionalResourceIds);
+    const tpl = saveProjectTemplateFrom({ projectId: 'keravel', nodeId: 'sn-r', name: 'Renforts' });
+    return { tpl: JSON.parse(JSON.stringify(tpl.tasks[0])), id: tpl.id,
+      sourceIntacte: JSON.stringify(task('t-r1').additionalResourceIds) === avant };
+  });
+  note('FIXTPL-10', capt);
+  ok(capt.tpl.suggestedResourceId === 'mathieu'
+    && capt.tpl.suggestedAdditionalResourceIds.join('|') === 'crane-g01|coloris'
+    && capt.sourceIntacte,
+    'FIXTPL-10 : la capture enregistre l’intervenant principal ET les ressources complémentaires comme suggestions — dédoublonnées, sans valeur vide, sans le principal, et SANS altérer la tâche source', 'FIXTPL-10');
+
+  const pose = await ev(p, (id) => {
+    const lire = (strat, nom, debut) => {
+      const av = new Set(app.tasks.map((t) => t.id));
+      const r = insertTemplateIntoProject(id, { projectId: 'keravel', parentId: null, rootName: nom, startDate: debut, resourceStrategy: strat });
+      const c = app.tasks.filter((t) => !av.has(t.id))[0];
+      return { r, res: c.resourceId, add: c.additionalResourceIds.slice(),
+        orphelines: (c.resourceId && !resource(c.resourceId) ? 1 : 0) + c.additionalResourceIds.filter((x) => !resource(x)).length,
+        typeRes: c.resourceId ? resource(c.resourceId)?.type : null,
+        typeAdd: c.additionalResourceIds.map((x) => resource(x)?.type) };
+    };
+    return { none: lire('none', 'R none', '2026-09-07'), suggest: lire('suggest', 'R suggest', '2026-09-14') };
+  }, capt.id);
+  note('FIXTPL-11', pose);
+  ok(pose.none.res === null && pose.none.add.length === 0,
+    'FIXTPL-11 : « Ne pas affecter » ⇒ aucun intervenant principal et aucune ressource complémentaire', 'FIXTPL-11');
+  ok(pose.suggest.res === 'mathieu' && pose.suggest.add.join('|') === 'crane-g01|coloris',
+    'FIXTPL-12 : « Reprendre les affectations suggérées » ⇒ l’intervenant principal ET les deux ressources complémentaires sont restaurés (les trois existent encore)', 'FIXTPL-12');
+  ok(pose.suggest.typeAdd.includes('equipment') && pose.suggest.typeAdd.includes('company'),
+    'FIXTPL-17 : une ressource complémentaire peut être du MATÉRIEL comme une ENTREPRISE — Kanvix ne fait aucune différence ici', 'FIXTPL-17');
+  ok(pose.suggest.res !== 'crane-g01' && pose.suggest.typeRes === 'person'
+    && pose.suggest.add.includes('crane-g01'),
+    'FIXTPL-18 : le matériel n’est JAMAIS promu intervenant principal — resourceId reste l’intervenant enregistré comme tel', 'FIXTPL-18');
+  ok(!pose.suggest.add.includes(pose.suggest.res) && !pose.none.add.includes(pose.none.res),
+    'FIXTPL-15 : l’intervenant principal ne figure jamais AUSSI dans les ressources complémentaires', 'FIXTPL-15');
+  ok(new Set(pose.suggest.add).size === pose.suggest.add.length,
+    'FIXTPL-16 : aucun doublon dans les ressources complémentaires posées', 'FIXTPL-16');
+
+  const amputee = await ev(p, (id) => {
+    // Une ressource complémentaire disparaît…
+    app.resources = app.resources.filter((r) => r.id !== 'coloris');
+    const av1 = new Set(app.tasks.map((t) => t.id));
+    const r1 = insertTemplateIntoProject(id, { projectId: 'keravel', parentId: null, rootName: 'R -1', startDate: '2026-09-21', resourceStrategy: 'suggest' });
+    const c1 = app.tasks.filter((t) => !av1.has(t.id))[0];
+    /* On MESURE tout de suite : à cet instant crane-g01 existe encore, et
+       c'est bien à cet instant que la pose a eu lieu. Mesurer après la
+       suppression suivante compterait une orpheline qui n'en est pas une. */
+    const m1 = { abandon: r1.ressourcesAbandonnees, res: c1.resourceId,
+      add: c1.additionalResourceIds.slice(),
+      orphelines: c1.additionalResourceIds.filter((x) => !resource(x)).length };
+    // …puis la seconde disparaît à son tour.
+    app.resources = app.resources.filter((r) => r.id !== 'crane-g01');
+    const av2 = new Set(app.tasks.map((t) => t.id));
+    const r2 = insertTemplateIntoProject(id, { projectId: 'keravel', parentId: null, rootName: 'R -2', startDate: '2026-09-28', resourceStrategy: 'suggest' });
+    const c2 = app.tasks.filter((t) => !av2.has(t.id))[0];
+    const m2 = { abandon: r2.ressourcesAbandonnees, res: c2.resourceId,
+      add: c2.additionalResourceIds.slice(),
+      orphelines: c2.additionalResourceIds.filter((x) => !resource(x)).length };
+    return {
+      une: m1,
+      deux: m2,
+      // La tâche posée AVANT la disparition garde-t-elle une référence morte ?
+      // Non : elle la garde parce qu'elle était valide à la pose. Ce que l'on
+      // vérifie ici, c'est qu'aucune pose n'en CRÉE une.
+      creeApres: c2.additionalResourceIds.filter((x) => !resource(x)).length,
+      noneApres: (() => {
+        const av = new Set(app.tasks.map((t) => t.id));
+        const r = insertTemplateIntoProject(id, { projectId: 'keravel', parentId: null, rootName: 'R none 2', startDate: '2026-10-05', resourceStrategy: 'none' });
+        return r.ressourcesAbandonnees;
+      })(),
+    };
+  }, capt.id);
+  note('FIXTPL-13', amputee);
+  ok(amputee.une.add.join('|') === 'crane-g01' && amputee.une.orphelines === 0
+    && amputee.deux.add.length === 0 && amputee.deux.orphelines === 0 && amputee.deux.res === 'mathieu',
+    'FIXTPL-13 : une ressource complémentaire disparue n’est JAMAIS recopiée — aucune référence orpheline, et celles qui restent sont bien reposées', 'FIXTPL-13');
+  ok(amputee.une.abandon === 1 && amputee.deux.abandon === 2 && amputee.noneApres === 3,
+    `FIXTPL-14 : ressourcesAbandonnees compte les suggestions non reposées, complémentaires comprises — 1 puis 2 quand elles disparaissent l’une après l’autre, et 3 en « Ne pas affecter » (principal + deux compléments). UN seul compteur, pas deux`, 'FIXTPL-14');
+  await p.screenshot({ path: SHOTS + '08-modele-ressources-complementaires.png' });
+
+  /* L'écran : le vocabulaire dit bien « affectations », pas « intervenants ». */
+  const mots = await ev(p, (id) => {
+    openTemplateInsert(id);
+    const picks = [...document.querySelectorAll('#drawerFormEl [name=resources]')].map((r) => ({
+      v: r.value, b: r.closest('label').querySelector('b').textContent.trim(),
+      s: r.closest('label').querySelector('small').textContent.trim(),
+    }));
+    const lbl = [...document.querySelectorAll('#drawerFormEl .snc-field-label')].map((x) => x.textContent.trim());
+    return { picks, lbl };
+  }, capt.id);
+  await p.waitForTimeout(250);
+  await p.screenshot({ path: SHOTS + '04-affectations-suggerees.png' });
+  note('FIXTPL-12-mots', mots);
+  ok(mots.lbl.includes('Affectations')
+    && mots.picks[0].b === 'Ne pas affecter' && /sans affectation/.test(mots.picks[0].s)
+    && mots.picks[1].b === 'Reprendre les affectations suggérées'
+    && /complémentaires/.test(mots.picks[1].s),
+    'FIXTPL-12 : le vocabulaire de l’écran dit la vérité — « Affectations », « Reprendre les affectations suggérées », « Intervenant principal et ressources complémentaires encore disponibles »', 'FIXTPL-12');
+  await ctx.close();
+}
+
+// ============================================================
+// FIXTPL-19 → FIXTPL-22 — Compatibilité et sauvegarde
+// ============================================================
+console.log('\n[FIXTPL-COMPAT] Modèles V2.11.0 et sauvegardes V14');
+{
+  const { ctx, p } = await newPage({ tag: 'FIX-COMPAT' });
+  const vieux = await ev(p, () => {
+    /* Un modèle EXACTEMENT tel que V2.11.0 l'écrivait : onze champs, pas de
+       suggestedAdditionalResourceIds. Il doit traverser la migration intact. */
+    const v2110 = {
+      id: 'ptpl-v2110', name: 'Modèle V2.11.0', description: '', scope: 'structure',
+      sourceName: 'Ancien', createdAt: '2026-08-20T09:00', rootId: 'tn-1',
+      nodes: [{ id: 'tn-1', parentId: null, name: 'Zone', type: 'zone', description: '', responsibleResourceId: null }],
+      tasks: [{ id: 'tt-1', structureNodeId: 'tn-1', name: 'Ancienne', lotId: 'lot-platrerie', phase: '',
+        offsetDays: 0, durationDays: 1, startTime: 'T08:00', endTime: 'T17:00', deps: [], suggestedResourceId: 'mathieu' }],
+    };
+    const etat = structuredClone(app);
+    etat.projectTemplates = [structuredClone(v2110)];
+    const migre = migrateState(etat);
+    const t = migre.projectTemplates[0].tasks[0];
+    // Idempotence : rejouer ne change rien.
+    const deux = migrateState(structuredClone(migre)).projectTemplates[0].tasks[0];
+    return {
+      champ: t.suggestedAdditionalResourceIds, estTableau: Array.isArray(t.suggestedAdditionalResourceIds),
+      principalIntact: t.suggestedResourceId === 'mathieu',
+      resteIntact: t.name === 'Ancienne' && t.offsetDays === 0 && t.durationDays === 1 && t.lotId === 'lot-platrerie',
+      idempotent: JSON.stringify(t) === JSON.stringify(deux),
+      // Une valeur aberrante est elle aussi normalisée.
+      aberrant: (() => {
+        const e2 = structuredClone(app);
+        e2.projectTemplates = [{ ...structuredClone(v2110), id: 'ptpl-sale',
+          tasks: [{ ...v2110.tasks[0], suggestedAdditionalResourceIds: ['a', 'a', '', null, 42, 'mathieu', 'b'] }] }];
+        return migrateState(e2).projectTemplates[0].tasks[0].suggestedAdditionalResourceIds;
+      })(),
+    };
+  });
+  note('FIXTPL-19', vieux);
+  ok(vieux.estTableau && vieux.principalIntact && vieux.resteIntact,
+    'FIXTPL-19 : un modèle enregistré par V2.11.0 — sans suggestedAdditionalResourceIds — se charge sans erreur, et rien d’autre n’est touché', 'FIXTPL-19');
+  ok(vieux.champ.length === 0 && vieux.idempotent && vieux.aberrant.join('|') === 'a|b',
+    'FIXTPL-20 : après migration, suggestedAdditionalResourceIds vaut [] ; la migration est idempotente, et une valeur aberrante (doublons, vide, null, nombre, principal) est normalisée à « a|b »', 'FIXTPL-20');
+
+  const sauv = await ev(p, () => {
+    app.structureNodes.push({ id: 'sn-s', projectId: 'keravel', parentId: null, name: 'Zone sauvegarde',
+      type: 'zone', description: '', responsibleResourceId: null, archived: false, createdAt: '', updatedAt: '' });
+    app.tasks.push({ id: 't-s1', structureNodeId: 'sn-s', projectId: 'keravel', name: 'Avec renforts',
+      lotId: null, resourceId: 'mathieu', additionalResourceIds: ['crane-g01', 'legall'], phase: '',
+      start: '2026-08-17T08:00', end: '2026-08-17T17:00', status: 'todo', deps: [], reworkOfTaskId: null,
+      colorKey: 'auto', baselineStart: '2026-08-17T08:00', baselineEnd: '2026-08-17T17:00' });
+    save();
+    const tpl = saveProjectTemplateFrom({ projectId: 'keravel', nodeId: 'sn-s', name: 'Sauvegarde renforts' });
+    const payload = buildKanvixBackup();
+    const json = JSON.stringify(payload);
+    const attendu = JSON.stringify(projectTemplate(tpl.id));
+    app.projectTemplates = [];
+    save();
+    pendingKanvixBackup = JSON.parse(json);
+    confirmKanvixRestore();
+    const rendu = projectTemplate(tpl.id);
+    return { json, identique: JSON.stringify(rendu) === attendu,
+      suggestions: rendu.tasks[0].suggestedAdditionalResourceIds,
+      dansRequis: KANVIX_BACKUP_REQUIRED.includes('projectTemplates') };
+  });
+  await p.waitForTimeout(200);
+  note('FIXTPL-21', { identique: sauv.identique, suggestions: sauv.suggestions, dansRequis: sauv.dansRequis });
+  ok(sauv.identique && sauv.suggestions.join('|') === 'crane-g01|legall' && sauv.dansRequis === false,
+    'FIXTPL-21 : sauvegarder puis restaurer un modèle porteur de suggestions complémentaires les restitue EXACTEMENT — et projectTemplates n’est toujours pas une clé obligatoire', 'FIXTPL-21');
+
+  const v14 = await ev(p, (json) => {
+    /* Une sauvegarde V14 telle que V2.11.0 la produisait : schéma 14, modèles
+       présents, mais AUCUN suggestedAdditionalResourceIds. */
+    const payload = JSON.parse(json);
+    payload.appVersion = '2.11.0';
+    payload.state.projectTemplates.forEach((t) => t.tasks.forEach((x) => { delete x.suggestedAdditionalResourceIds; }));
+    const check = validateKanvixBackup(payload);
+    pendingKanvixBackup = payload;
+    confirmKanvixRestore();
+    return { valide: check.ok, schema: app.schemaVersion, store: STORE,
+      tpls: app.projectTemplates.length,
+      tous: app.projectTemplates.every((t) => t.tasks.every((x) => Array.isArray(x.suggestedAdditionalResourceIds) && x.suggestedAdditionalResourceIds.length === 0)),
+      chantiers: app.projects.length };
+  }, sauv.json);
+  await p.waitForTimeout(200);
+  note('FIXTPL-22', v14);
+  ok(v14.valide && v14.schema === 14 && v14.store === 'kanvix-product-8-3'
+    && v14.tpls > 0 && v14.tous && v14.chantiers > 0,
+    'FIXTPL-22 : une sauvegarde V14 produite par V2.11.0 reste restaurable — schéma toujours 14, STORE inchangé, tous les modèles normalisés à [], aucun chantier perdu', 'FIXTPL-22');
+  await ctx.close();
+}
+
+// ============================================================
+// FIXTPL-23 → FIXTPL-25 — CORRECTIF 3 : la troncature
+// ============================================================
+console.log('\n[FIXTPL-UX] Gestionnaire : lisibilité des noms');
+{
+  const mesures = [];
+  for (const [w, h] of [[1920, 1080], [1600, 1000], [1440, 900], [1366, 768], [1280, 800], [1080, 800], [900, 800], [768, 1024], [430, 932], [390, 844], [360, 780]]) {
+    const { ctx, p } = await newPage({ w, h, tag: `FIX-UX-${w}` });
+    await ev(p, () => openProjectTemplatesManager());
+    await p.waitForTimeout(250);
+    const m = await ev(p, () => ({
+      panneau: Math.round(document.querySelector('.drawer-panel').getBoundingClientRect().width),
+      scrollH: document.documentElement.scrollWidth > document.documentElement.clientWidth,
+      lignes: [...document.querySelectorAll('.ptpl-row')].map((r) => {
+        const b = r.querySelector('.ptpl-txt b');
+        return { nom: b.textContent, place: Math.round(b.clientWidth), besoin: b.scrollWidth,
+          tronque: b.scrollWidth > b.clientWidth + 1 };
+      }),
+      actionsVisibles: [...document.querySelectorAll('.ptpl-acts .btn')].every((x) => {
+        const rb = x.getBoundingClientRect(), rp = document.querySelector('.drawer-panel').getBoundingClientRect();
+        return rb.width > 0 && rb.left >= rp.left - 1 && rb.right <= rp.right + 1;
+      }),
+    }));
+    if (w === 1600) await p.screenshot({ path: SHOTS + '05-gestionnaire-desktop.png' });
+    if (w === 390) await p.screenshot({ path: SHOTS + '06-gestionnaire-mobile.png' });
+    mesures.push({ w, ...m });
+    await ctx.close();
+  }
+  note('FIXTPL-23', mesures);
+  const desktop = mesures.filter((m) => m.w >= 1366);
+  ok(desktop.every((m) => m.lignes.some((l) => l.nom === 'Étage type — logements' && !l.tronque)),
+    `FIXTPL-23 : de 1366 à 1920 px, « Étage type — logements » s’affiche ENTIER — ${desktop[0].lignes[0].besoin} px nécessaires pour ${desktop[0].lignes[0].place} px disponibles, contre 67 px avant le correctif`, 'FIXTPL-23');
+  ok(desktop.every((m) => m.lignes.some((l) => l.nom === 'Maison individuelle — gros œuvre' && !l.tronque)),
+    'FIXTPL-24 : de 1366 à 1920 px, « Maison individuelle — gros œuvre » — le plus long nom de démonstration — s’affiche ENTIER lui aussi', 'FIXTPL-24');
+  ok(mesures.every((m) => !m.scrollH) && mesures.every((m) => m.actionsVisibles),
+    'FIXTPL-25 : de 1920 à 360 px, aucune largeur ne provoque de défilement horizontal et AUCUN bouton d’action n’est coupé par la fenêtre', 'FIXTPL-25');
+  ok(mesures.filter((m) => m.w <= 430).every((m) => m.lignes.every((l) => !l.tronque)),
+    'FIXTPL-25 : en 430, 390 et 360 px les noms restent eux aussi entiers — la priorité va au nom, comme demandé', 'FIXTPL-25');
+}
+
+// ============================================================
+// FIXTPL-26 → FIXTPL-30 — CORRECTIF 4 : l'accès direct
+// ============================================================
+console.log('\n[FIXTPL-CTA] Accès direct au parcours « Modèle de chantier »');
+{
+  const { ctx, p } = await newPage({ tag: 'FIX-CTA' });
+  const direct = await ev(p, () => {
+    openProjectTemplatesManager();
+    const cta = [...document.querySelectorAll('#drawerContent .drawer-form-actions .btn')].find((b) => /Créer un chantier/.test(b.textContent));
+    cta.click();
+    return {
+      etape: app.ui.wizard.step, mode: app.ui.wizard.mode,
+      choix: [...document.querySelectorAll('.wiz-choice')].length,
+      titre: $('#drawerContent h2').textContent.trim(),
+      liste: [...document.querySelectorAll('.wiz-template b')].map((x) => x.textContent.trim()),
+      drawer: $('#drawer').classList.contains('open'),
+    };
+  });
+  await p.waitForTimeout(250);
+  await p.screenshot({ path: SHOTS + '07-cta-direct-modeles.png' });
+  note('FIXTPL-26', direct);
+  ok(direct.drawer && direct.etape === 'ptpl-select' && direct.mode === 'project-template'
+    && direct.titre === 'Choisir un modèle' && direct.liste.length === 2,
+    'FIXTPL-26 : « Créer un chantier depuis un modèle » ouvre DIRECTEMENT la liste de app.projectTemplates', 'FIXTPL-26');
+  ok(direct.choix === 0,
+    'FIXTPL-27 : l’étape « Comment souhaitez-vous démarrer ? » n’est pas affichée dans ce parcours — la question a déjà été répondue en venant du gestionnaire', 'FIXTPL-27');
+
+  /* Le parcours NORMAL, lui, n'a pas bougé d'un iota. */
+  const normal = await ev(p, () => {
+    closeOverlay('drawer');
+    openProjectCreate();
+    return { choix: [...document.querySelectorAll('.wiz-choice b')].map((x) => x.textContent.trim()),
+      etape: app.ui.wizard.step };
+  });
+  note('FIXTPL-28', normal);
+  ok(normal.etape === 'choice'
+    && normal.choix.join('|') === 'Partir de zéro|Utiliser un modèle|Modèle d’entreprise|Modèle de chantier|Reprendre un chantier en cours',
+    'FIXTPL-28 : « Nouveau chantier » conserve EXACTEMENT ses cinq choix, dans le même ordre — l’accès direct n’a rien retiré au parcours normal', 'FIXTPL-28');
+
+  const anciens = await ev(p, () => {
+    // Les modèles INTÉGRÉS (PROJECT_TEMPLATES) créent toujours un chantier.
+    const av = app.projects.map((x) => x.id);
+    app.ui.wizard = { step: 'template-preview', mode: 'template', data: { templateId: 'second-work', name: 'Via modèle intégré', startDate: '2026-09-07' } };
+    $('#drawerContent').innerHTML = '';
+    createTemplateFromWizard();
+    const p1 = app.projects.find((x) => !av.includes(x.id));
+    const t1 = app.tasks.filter((t) => t.projectId === p1.id).length;
+    // Les modèles d'ENTREPRISE aussi.
+    app.companyTemplates.push({ id: 'ct-test', name: 'Modèle entreprise test', phase: 'Second œuvre',
+      milestone: 'Jalon', companyOwned: true,
+      tasks: [{ key: 'a', name: 'Étape A', lotId: 'lot-peinture', offset: 0, duration: 2 },
+              { key: 'b', name: 'Étape B', lotId: null, offset: 2, duration: 1, deps: ['a'] }] });
+    const av2 = app.projects.map((x) => x.id);
+    app.ui.wizard = { step: 'template-preview', mode: 'company-template', data: { templateId: 'ct-test', name: 'Via modèle entreprise', startDate: '2026-09-07' } };
+    $('#drawerContent').innerHTML = '';
+    createTemplateFromWizard();
+    const p2 = app.projects.find((x) => !av2.includes(x.id));
+    const t2 = app.tasks.filter((t) => t.projectId === p2.id);
+    return { integre: { nom: p1.name, taches: t1, mode: p1.creationMode },
+      entreprise: { nom: p2.name, taches: t2.length, deps: t2.reduce((n, t) => n + t.deps.length, 0) },
+      allTpl: allProjectTemplates().length, byId: !!templateById('second-work') };
+  });
+  note('FIXTPL-29', anciens);
+  ok(anciens.integre.taches === 5 && anciens.integre.mode === 'template' && anciens.byId,
+    'FIXTPL-29 : les modèles INTÉGRÉS (PROJECT_TEMPLATES) restent pleinement fonctionnels — « Second œuvre résidentiel » crée toujours ses 5 étapes', 'FIXTPL-29');
+  ok(anciens.entreprise.taches === 2 && anciens.entreprise.deps === 1 && anciens.allTpl >= 3,
+    'FIXTPL-30 : les modèles d’ENTREPRISE (app.companyTemplates) restent pleinement fonctionnels, dépendances comprises — les trois familles de modèles coexistent', 'FIXTPL-30');
+  await ctx.close();
+}
+
+// ============================================================
+// FREEZE-21101 — Le gel PROPRE à ce correctif (contre V2.11.0)
+// ============================================================
+console.log('\n[FREEZE-21101] Périmètre du correctif et architecture');
+{
+  const read = (f) => fs.readFileSync(BASE + f, 'utf8');
+  const md5 = (x) => crypto.createHash('md5').update(x).digest('hex').slice(0, 8);
+  const extractFn = (src, name) => {
+    const re = new RegExp('\\n\\s*function ' + name + '\\s*\\(');
+    const m = re.exec(src);
+    if (!m) return null;
+    let par = src.indexOf('(', m.index), depth = 0, k = par;
+    for (; k < src.length; k++) {
+      if (src[k] === '(') depth++;
+      else if (src[k] === ')') { depth--; if (!depth) { k++; break; } }
+    }
+    let i = src.indexOf('{', k), d = 0, j = i, s = null, esc = false;
+    for (; j < src.length; j++) {
+      const c = src[j];
+      if (s) { if (esc) { esc = false; continue; } if (c === '\\') { esc = true; continue; } if (c === s) s = null; continue; }
+      if (c === '"' || c === "'" || c === '`') { s = c; continue; }
+      if (c === '/' && src[j + 1] === '/') { j = src.indexOf('\n', j); continue; }
+      if (c === '/' && src[j + 1] === '*') { j = src.indexOf('*/', j) + 1; continue; }
+      if (c === '{') d++;
+      else if (c === '}') { d--; if (!d) { j++; break; } }
+    }
+    return src.slice(m.index, j);
+  };
+  const blocIndente = (src, nom) => {
+    const lignes = src.split('\n');
+    const re = new RegExp('^(\\s*)function\\s+' + nom + '\\s*\\(');
+    for (let i = 0; i < lignes.length; i++) {
+      const m = re.exec(lignes[i]);
+      if (!m) continue;
+      const ind = m[1].length, out = [lignes[i]];
+      for (let j = i + 1; j < lignes.length; j++) {
+        out.push(lignes[j]);
+        if (lignes[j].trim() === '}' && lignes[j].length - lignes[j].trimStart().length === ind) return out.join('\n');
+      }
+    }
+    return null;
+  };
+  const A = read(PREV_2110), B = read(CUR);
+
+  /* Le périmètre RÉEL du correctif, mesuré contre V2.11.0 — ce que le gel
+     FREEZE-2110 (qui mesure contre V2.10.0.1) ne peut pas voir, puisque les
+     fonctions concernées n'existaient pas encore là-bas. */
+  const attendues = [
+    'cloneStructureTree',        // §3 — les affectations suggérées
+    'templateCaptureScope',      // §2 — includeTasks
+    'buildProjectTemplateRecord',// §2 + §3
+    'saveProjectTemplateFrom',   // §2 — transmission du choix
+    'templateCaptureCard',       // §2.3 — l'aperçu
+    'openTemplateSaveForm',      // §2.1 — le choix de contenu
+    'openTemplateInsert',        // §3.5 + §8
+    'migrateState',              // §4 — normalisation du champ facultatif
+    'openProjectTemplatesManager',// §6 — le CTA direct
+  ];
+  const parIndentation = ['renderAIPanel'];
+  const horsPerimetre = [];
+  const noms = [...new Set([...B.matchAll(/\n\s*function\s+([A-Za-z_$][\w$]*)\s*\(/g)].map((m) => m[1]))];
+  noms.forEach((n) => {
+    if (parIndentation.includes(n)) return;
+    const a = extractFn(A, n), c = extractFn(B, n);
+    if (a && c && md5(a) !== md5(c) && !attendues.includes(n)) horsPerimetre.push(n);
+  });
+  const indentDiff = parIndentation.filter((n) => blocIndente(A, n) !== blocIndente(B, n));
+  const manquantes = attendues.filter((n) => md5(extractFn(A, n) || '') === md5(extractFn(B, n) || ''));
+  note('FREEZE-21101-périmètre', { modifiées: attendues, horsPérimètre: horsPerimetre, indentation: indentDiff, nonModifiées: manquantes });
+  ok(horsPerimetre.length === 0 && indentDiff.length === 0,
+    'FREEZE-21101 : hors des NEUF fonctions du périmètre annoncé, le balayage de tout le fichier ne trouve AUCUNE autre fonction modifiée depuis V2.11.0', 'FREEZE-21101');
+  ok(manquantes.length === 0,
+    'FREEZE-21101 : les neuf fonctions annoncées ont réellement changé — aucune modification silencieusement absente', 'FREEZE-21101');
+
+  /* §14 — le gel ARCHITECTURAL. Le correctif étend le moteur, il ne le
+     contourne pas : ni second moteur de clonage, ni seconde pile Undo, ni
+     second moteur de ressources. */
+  const dup = extractFn(B, 'duplicateStructureNode'), prim = extractFn(B, 'cloneStructureTree'),
+    apply = extractFn(B, 'applyTemplateToProject');
+  const arch = {
+    uneSeulePrimitive: (B.match(/function\s+cloneStructureTree\s*\(/g) || []).length === 1,
+    unSeulGantt: (B.match(/function\s+gantt\s*\(/g) || []).length === 1,
+    unSeulSnapshot: (B.match(/function\s+snapshot\s*\(/g) || []).length === 1,
+    appels: (B.match(/= cloneStructureTree\(/g) || []).length,
+    appelants: noms.filter((n) => n !== 'cloneStructureTree' && !parIndentation.includes(n)
+      && /= cloneStructureTree\(/.test(extractFn(B, n) || '')).sort().join('|'),
+    aiPanelNAppellePas: !/cloneStructureTree\(/.test(blocIndente(B, 'renderAIPanel') || ''),
+    dupDelegue: /cloneStructureTree\(/.test(dup) && !/new Map\(/.test(dup),
+    applyDelegue: /cloneStructureTree\(/.test(apply) && !/new Map\(/.test(apply),
+    tablesUniques: (B.match(/mapNoeuds = new Map/g) || []).length === 1 && (B.match(/mapTaches = new Map/g) || []).length === 1,
+    remapDepsUnique: (B.match(/deps: internes\.map/g) || []).length === 1,
+    remapReworkUnique: (B.match(/reworkOfTaskId: repriseInterne/g) || []).length === 1,
+    remapNoeudUnique: (B.match(/structureNodeId: mapNoeuds\.get/g) || []).length === 1,
+    primitivePure: !/\n\s*(app\.(structureNodes|tasks|history)\.|save\(\)|snapshot\(\)|render\(\))/.test(prim || 'x'),
+    pasDeMoteurParallele: !/function\s+(TemplateEngine|cloneTemplateTree|cloneTemplate|structureClone|copyStructureTree|instantiateTemplateTree|applyTemplateTasks)\s*\(/.test(B),
+    pasDePileUndoParallele: !/templateUndoStack|projectTemplateHistory|tplSnapshot|resourceUndoStack/.test(B),
+    /* §3 — UNE seule normalisation des suggestions complémentaires, utilisée
+       par la capture, la migration et la pose. */
+    uneSeuleNormalisation: (B.match(/function\s+templateSuggestedExtras\s*\(/g) || []).length === 1
+      && (B.match(/templateSuggestedExtras\(/g) || []).length === 4,
+    pasDeDragStructure: !/data-structure-node="[^"]*"[^>]*draggable/.test(B),
+  };
+  note('FREEZE-21101-architecture', arch);
+  ok(arch.uneSeulePrimitive && arch.appels === 2 && arch.aiPanelNAppellePas
+    && arch.appelants === 'applyTemplateToProject|duplicateStructureNode',
+    'FIXTPL-31 / FIXTPL-32 : cloneStructureTree() reste l’UNIQUE primitive de clonage, appelée exactement DEUX fois dans tout le fichier, par duplicateStructureNode() et applyTemplateToProject() — et par personne d’autre', 'FIXTPL-32');
+  ok(arch.pasDeMoteurParallele && arch.pasDePileUndoParallele && arch.dupDelegue && arch.applyDelegue
+    && arch.tablesUniques && arch.remapDepsUnique && arch.remapReworkUnique && arch.remapNoeudUnique
+    && arch.primitivePure && arch.pasDeDragStructure,
+    'FIXTPL-33 : aucun second moteur n’a été introduit — les deux appelants délèguent toujours et ne construisent aucune table, le remapping des rattachements, des dépendances et des reprises n’apparaît qu’UNE fois, la primitive reste PURE, et il n’existe ni pile Undo parallèle ni drag & drop de structure', 'FIXTPL-33');
+  ok(arch.uneSeuleNormalisation,
+    'FIXTPL-33 : les ressources complémentaires suggérées ont UNE seule normalisation — templateSuggestedExtras() — partagée par la capture, la migration et la pose ; elle n’a pas créé une seconde logique de clonage', 'FIXTPL-33');
+  ok(arch.unSeulSnapshot, 'FIXTPL-34 : un seul snapshot() dans tout le fichier', 'FIXTPL-34');
+  ok(arch.unSeulGantt, 'FIXTPL-35 : un seul gantt() dans tout le fichier', 'FIXTPL-35');
+
+  /* §4 — pas de bump de schéma : le champ ajouté est FACULTATIF. */
+  const donnees = {
+    store: (B.match(/STORE = "([^"]+)"/) || [])[1],
+    schemaAvant: (A.match(/SCHEMA_VERSION = (\d+)/) || [])[1],
+    schemaApres: (B.match(/SCHEMA_VERSION = (\d+)/) || [])[1],
+    build: (B.match(/KANVIX_APP_BUILD = "([^"]+)"/) || [])[1] === (A.match(/KANVIX_APP_BUILD = "([^"]+)"/) || [])[1],
+    pasDansRequis: !/KANVIX_BACKUP_REQUIRED = \[[^\]]*projectTemplates/.test(B),
+  };
+  note('FREEZE-21101-données', donnees);
+  ok(donnees.store === 'kanvix-product-8-3',
+    'FIXTPL-36 : STORE reste « kanvix-product-8-3 »', 'FIXTPL-36');
+  ok(donnees.schemaApres === '14' && donnees.schemaAvant === '14' && donnees.build && donnees.pasDansRequis,
+    'FIXTPL-37 : SCHEMA_VERSION reste 14 — le champ ajouté est strictement FACULTATIF et normalisé par migrateState(), aucun bump n’est nécessaire ; build inchangé et projectTemplates toujours hors des clés obligatoires du backup', 'FIXTPL-37');
+
+  /* Les données et le style : additifs, et rien d'autre, depuis V2.11.0. */
+  const bloc = (src, re) => (src.match(re) || [''])[0];
+  const demoA = bloc(A, /\n        structureNodes: \[[\s\S]*?\n        \],\n        tasks: \[[\s\S]*?\n        \],\n/);
+  const demoB = bloc(B, /\n        structureNodes: \[[\s\S]*?\n        \],\n        tasks: \[[\s\S]*?\n        \],\n/);
+  const cssA = bloc(A, /<style id="kanvix-css">[\s\S]*?<\/style>/);
+  const cssB = bloc(B, /<style id="kanvix-css">[\s\S]*?<\/style>/);
+  const blocCSS = (x) => x.replace(/      \/\* ---- V2\.11\.0 — MODÈLES DE CHANTIER[\s\S]*?\n      \/\* Le niveau qui vient d'être créé/, "      /* ---- BLOC MODÈLES ----\n      /* Le niveau qui vient d'être créé");
+  const styleDonnees = {
+    demoExtraite: demoA.length > 4000 && demoB.length > 4000,
+    demoIdentique: md5(demoA) === md5(demoB),
+    cssExtraite: cssA.length > 100000 && cssB.length > 100000,
+    // Le SEUL bloc de style touché est celui des modèles : le reste de la
+    // feuille est byte-identique à V2.11.0.
+    cssResteIdentique: md5(blocCSS(cssA)) === md5(blocCSS(cssB)),
+  };
+  note('FREEZE-21101-style', { ...styleDonnees, octetsCSSAvant: cssA.length, octetsCSSApres: cssB.length });
+  ok(Object.values(styleDonnees).every(Boolean),
+    'FREEZE-21101 : les données de démonstration — niveaux ET interventions — restent BYTE-IDENTIQUES, et le seul bloc de style touché est celui des modèles : tout le reste de la feuille est byte-identique à V2.11.0', 'FREEZE-21101');
+}
+
 const appErrs = allErrs.filter((e) => !/net::|Failed to fetch|open-meteo|geopf|nominatim/.test(e.msg));
 console.log('\n' + '='.repeat(60));
 console.log(`RÉSULTAT : ${passed} / ${passed + failed.length}`);
 if (failed.length) { console.log('ÉCHECS :'); failed.forEach((f) => console.log('  ✗ ' + f)); }
-ok(appErrs.length === 0, `TPL : aucune erreur JavaScript applicative en console (${appErrs.length})`, 'TPL');
+ok(appErrs.length === 0, `FIXTPL-38 : aucune erreur JavaScript applicative en console (${appErrs.length})`, 'FIXTPL-38');
 if (appErrs.length) console.log(JSON.stringify(appErrs.slice(0, 10), null, 1));
 console.log(`ERREURS CONSOLE APPLICATIVES : ${appErrs.length}`);
 console.log('='.repeat(60));
