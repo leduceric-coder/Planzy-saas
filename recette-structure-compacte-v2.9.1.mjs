@@ -922,7 +922,12 @@ console.log('\n[FREEZE-291] Périmètre du refactor');
     'getStructureDates', 'getStructureProgress', 'getStructureResources',
     'getStructureIssues', 'getStructureControls', 'getStructureMilestones',
     'getStructureStatus', 'structureParentError', 'structureParentOptions',
-    'openStructureForm', 'structureArchiveBlocker', 'toggleStructureArchive',
+    /* V2.11.0.3 — openStructureForm() ne PORTE plus la règle « responsable de
+       niveau = personne active » : elle la LIT dans
+       structureResponsibleResources(), que la pose d'un modèle lit elle aussi.
+       Une seule ligne change, et elle RETIRE du code plutôt qu'elle n'en
+       ajoute. Elle quitte donc les gelés et rejoint le périmètre NOMMÉ. */
+    'structureArchiveBlocker', 'toggleStructureArchive',
     'structureDeleteBlocker', 'confirmDeleteStructure', 'deleteStructureNode',
     'openStructureNode', 'closeStructureNode', 'setStructureTab',
     'structureSelect', 'planningStructureSelect', 'projectStructureNote',
@@ -986,6 +991,13 @@ console.log('\n[FREEZE-291] Périmètre du refactor');
     'showKanvixBackupPreview', 'renderMore',
   ];
   const modifiees = attendues.filter((n) => extractFn(A, n) && md5(extractFn(A, n)) !== md5(extractFn(B, n)));
+  /* V2.11.0.3 — les fonctions touchées par les rounds SUIVANTS sont tolérées
+     par le BALAYAGE (sinon ce gel signalerait comme dérive ce qu'un correctif
+     ultérieur corrige volontairement), mais la liste reste FERMÉE : une
+     fonction non nommée ferait toujours tomber le test, et le gel propre à
+     chaque round vérifie son périmètre de façon indépendante. */
+  const attenduesRoundsSuivants = ['openStructureForm'];
+  const tolerees = [...attendues, ...attenduesRoundsSuivants];
   const horsPerimetre = [];
   // Toute fonction du fichier qui aurait bougé SANS être annoncée.
   /* Extraction par ACCOLADES, donc mise en défaut par les fonctions dont le
@@ -1013,7 +1025,7 @@ console.log('\n[FREEZE-291] Périmètre du refactor');
   noms.forEach((n) => {
     if (parIndentation.includes(n)) return;
     const a = extractFn(A, n), c = extractFn(B, n);
-    if (a && c && md5(a) !== md5(c) && !attendues.includes(n)) horsPerimetre.push(n);
+    if (a && c && md5(a) !== md5(c) && !tolerees.includes(n)) horsPerimetre.push(n);
   });
   const indentDiff = parIndentation.filter((n) => {
     const a = blocIndente(A, n), c = blocIndente(B, n);

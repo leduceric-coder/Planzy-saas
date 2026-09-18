@@ -449,12 +449,19 @@ console.log('\n[FREEZE-21001] Périmètre : une seule fonction modifiée');
     'migrateState', 'icon', 'structureNodeMenu', 'projectStructureTab',
     'renderMore', 'renderWizard', 'wizardPickMode', 'showKanvixBackupPreview'];
   const parIndentation = ['renderAIPanel'];
+  /* V2.11.0.3 — les fonctions touchées par les rounds SUIVANTS sont tolérées
+     par le BALAYAGE (sinon ce gel signalerait comme dérive ce qu'un correctif
+     ultérieur corrige volontairement), mais la liste reste FERMÉE : une
+     fonction non nommée ferait toujours tomber le test, et le gel propre à
+     chaque round vérifie son périmètre de façon indépendante. */
+  const attenduesRoundsSuivants = ['openStructureForm'];
+  const tolerees = [...attendues, ...attenduesRoundsSuivants];
   const horsPerimetre = [];
   const noms = [...new Set([...B.matchAll(/\n\s*function\s+([A-Za-z_$][\w$]*)\s*\(/g)].map((m) => m[1]))];
   noms.forEach((n) => {
     if (parIndentation.includes(n)) return;
     const a = extractFn(A, n), c = extractFn(B, n);
-    if (a && c && md5(a) !== md5(c) && !attendues.includes(n)) horsPerimetre.push(n);
+    if (a && c && md5(a) !== md5(c) && !tolerees.includes(n)) horsPerimetre.push(n);
   });
   const indentDiff = parIndentation.filter((n) => blocIndente(A, n) !== blocIndente(B, n));
   note('FREEZE-21001-périmètre', { modifiées: attendues, horsPérimètre: horsPerimetre, indentation: indentDiff });
@@ -470,7 +477,12 @@ console.log('\n[FREEZE-21001] Périmètre : une seule fonction modifiée');
     'structureCompactRow', 'structureCopyName', 'structureUid',
     'structureDestinationList', 'structureSourceCard', 'structureRememberTrigger',
     'structureNode', 'getStructureDescendantIds', 'getStructureTasks', 'getStructureChildren',
-    'structureParentError', 'structureParentOptions', 'openStructureForm',
+    'structureParentError', 'structureParentOptions',
+    /* V2.11.0.3 — openStructureForm() ne PORTE plus la règle « responsable de
+       niveau = personne active » : elle la LIT dans
+       structureResponsibleResources(), que la pose d'un modèle lit elle aussi.
+       Une seule ligne change, et elle RETIRE du code plutôt qu'elle n'en
+       ajoute. Elle quitte donc les gelés et rejoint le périmètre NOMMÉ. */
     // Reprise / SAV — §5, formellement interdits
     'hasReworkSignaled', 'createRework', 'openTask', 'setTaskStatus',
     // Planning

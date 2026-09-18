@@ -849,7 +849,10 @@ console.log('\n[FREEZE-2110] Périmètre du round et §34');
     'getStructureTasks', 'getUnstructuredTasks', 'getStructureDates',
     'getStructureProgress', 'getStructureResources', 'getStructureIssues',
     'getStructureControls', 'getStructureMilestones', 'getStructureStatus',
-    'structureParentError', 'structureParentOptions', 'openStructureForm',
+    'structureParentError', 'structureParentOptions',
+    /* V2.11.0.3 — openStructureForm LIT désormais la règle « responsable de
+       niveau » au lieu de la porter : elle quitte la liste des gelés et
+       rejoint le périmètre NOMMÉ, où elle est vérifiée. */
     'structureArchiveBlocker', 'toggleStructureArchive', 'structureDeleteBlocker',
     'confirmDeleteStructure', 'deleteStructureNode', 'openStructureNode',
     'closeStructureNode', 'setStructureTab', 'toggleStructureNode',
@@ -900,18 +903,34 @@ console.log('\n[FREEZE-2110] Périmètre du round et §34');
     'wizardPickMode',         // une branche
     'showKanvixBackupPreview',// une ligne d'aperçu
   ];
+  /* V2.11.0.3 — RE-POINTAGE. Les fonctions touchées par les rounds SUIVANTS
+     sont tolérées par le BALAYAGE — sinon ce gel signalerait comme dérive ce
+     qu'un correctif ultérieur corrige volontairement — mais elles n'entrent
+     PAS dans le contrôle « les fonctions annoncées ont réellement changé »,
+     qui reste strictement celui du round de cette recette. La liste reste
+     FERMÉE : une fonction non nommée ferait toujours tomber le test, et le
+     gel propre à chaque round vérifie son périmètre de façon indépendante. */
+  const attenduesRoundsSuivants = [
+    /* V2.11.0.3 — openStructureForm() ne PORTE plus la règle « responsable de
+       niveau = personne active » : elle la LIT dans
+       structureResponsibleResources(), que la pose d'un modèle lit elle aussi.
+       Une seule ligne change, et elle RETIRE du code plutôt qu'elle n'en
+       ajoute. */
+    'openStructureForm',
+  ];
+  const tolerees = [...attendues, ...attenduesRoundsSuivants];
   const parIndentation = ['renderAIPanel'];
   const horsPerimetre = [];
   const noms = [...new Set([...B.matchAll(/\n\s*function\s+([A-Za-z_$][\w$]*)\s*\(/g)].map((m) => m[1]))];
   noms.forEach((n) => {
     if (parIndentation.includes(n)) return;
     const a = extractFn(A, n), c = extractFn(B, n);
-    if (a && c && md5(a) !== md5(c) && !attendues.includes(n)) horsPerimetre.push(n);
+    if (a && c && md5(a) !== md5(c) && !tolerees.includes(n)) horsPerimetre.push(n);
   });
   const indentDiff = parIndentation.filter((n) => blocIndente(A, n) !== blocIndente(B, n));
   note('FREEZE-2110-périmètre', { modifiées: attendues, horsPérimètre: horsPerimetre, indentation: indentDiff });
   ok(horsPerimetre.length === 0 && indentDiff.length === 0,
-    'FREEZE-2110 : seules les neuf fonctions du périmètre annoncé sont modifiées — le balayage de tout le fichier n’en trouve aucune autre', 'FREEZE-2110');
+    'FREEZE-2110 : seules les fonctions du périmètre NOMMÉ — neuf pour V2.11.0, plus openStructureForm pour V2.11.0.3 — sont modifiées ; le balayage de tout le fichier n’en trouve aucune autre', 'FREEZE-2110');
 
   /* §34 — UNE SEULE VÉRITÉ DE CLONAGE. Deux preuves complémentaires :
      1. duplicateStructureNode ne contient plus AUCUNE table de correspondance

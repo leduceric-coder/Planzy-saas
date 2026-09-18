@@ -794,7 +794,12 @@ console.log('\n[FREEZE-2901] Byte-identité V2.9.0 → V2.9.0.1');
     'getStructureDates', 'getStructureProgress', 'getStructureResources',
     'getStructureIssues', 'getStructureControls', 'getStructureMilestones',
     'getStructureStatus', 'structureParentError', 'structureParentOptions',
-    'openStructureForm', 'structureArchiveBlocker', 'toggleStructureArchive',
+    /* V2.11.0.3 — openStructureForm() ne PORTE plus la règle « responsable de
+       niveau = personne active » : elle la LIT dans
+       structureResponsibleResources(), que la pose d'un modèle lit elle aussi.
+       Une seule ligne change, et elle RETIRE du code plutôt qu'elle n'en
+       ajoute. Elle quitte donc les gelés et rejoint le périmètre NOMMÉ. */
+    'structureArchiveBlocker', 'toggleStructureArchive',
     'structureDeleteBlocker', 'confirmDeleteStructure', 'deleteStructureNode',
     'openStructureNode', 'closeStructureNode', 'setStructureTab', 'toggleStructureNode',
     'structureSummaryLine', 'structureNodeCard', 'projectStructureTab',
@@ -838,7 +843,10 @@ console.log('\n[FREEZE-2901] Byte-identité V2.9.0 → V2.9.0.1');
   /* V2.11.0 — migrateState porte la migration 13 → 14 (les modèles de
      chantier). Elle rejoint la liste des fonctions RE-BASÉES : déclarée, donc
      assumée, et toujours vérifiée ailleurs (TPL-07 → TPL-09). */
-  const rebaseV291 = ['toggleStructureNode', 'projectStructureTab', 'structureTabContent', 'migrateState'];
+  /* V2.11.0.3 — openStructureForm rejoint la liste des fonctions RE-BASÉES
+     par les rounds suivants : déclarée, donc assumée, et vérifiée ailleurs
+     (FIXTPL3-10 et FREEZE-21103). */
+  const rebaseV291 = ['toggleStructureNode', 'projectStructureTab', 'structureTabContent', 'migrateState', 'openStructureForm'];
   const bouges = [];
   let compares = 0;
   geles.forEach((n) => {

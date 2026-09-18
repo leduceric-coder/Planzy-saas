@@ -1,0 +1,862 @@
+{
+  "passed": 171,
+  "failed": [],
+  "results": [
+    {
+      "sec": "TPL-01",
+      "name": "TPL-01 : SCHEMA_VERSION passe de 13 à 14 et l’état chargé porte bien la version 14",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-02",
+      "name": "TPL-02 : STORE reste « kanvix-product-8-3 » — le bump de schéma ne change pas la clé de stockage",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-03",
+      "name": "TPL-03 : app.projectTemplates existe et porte les DEUX modèles de démonstration",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-04",
+      "name": "TPL-04 : les deux modèles de démonstration portent la marque seededFor",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-05",
+      "name": "TPL-05 : la démonstration couvre les DEUX portées — un modèle de niveau (rootId posé) et un modèle de chantier entier (forêt, rootId null)",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-06",
+      "name": "TPL-06 : aucune date absolue dans les interventions d’un modèle (0 trouvée(s)) — uniquement des jours relatifs",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-07",
+      "name": "TPL-07 : une sauvegarde V13 devient V14 avec projectTemplates = [] — aucun modèle de démonstration n’est installé rétroactivement, aucune donnée métier touchée",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-08",
+      "name": "TPL-08 : la migration 13 → 14 est IDEMPOTENTE — la rejouer sur un état déjà migré ne change rien",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-09",
+      "name": "TPL-09 : la migration NORMALISE un modèle corrompu — entrées illisibles écartées, parent fantôme et cycle ramenés à la racine, type inconnu neutralisé, rattachement fantôme annulé, offsets négatifs bornés, heure invalide remplacée, dépendance inconnue et auto-dépendance filtrées",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-10",
+      "name": "TPL-10 : le réalignement de la démonstration décale bien les tâches mais ne touche AUCUN modèle — les jours relatifs sont par nature immunisés",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-11",
+      "name": "TPL-11 : la capture d’un niveau retient le niveau ET sa descendance ACTIVE — 3 niveaux, le sous-niveau archivé exclu",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-12",
+      "name": "TPL-12 : ni le sous-niveau archivé ni son intervention n’entrent dans la trame — un modèle décrit ce que l’on refait",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-13",
+      "name": "TPL-13 : les 4 interventions actives sont capturées et chacune reste rattachée à un niveau DU MODÈLE",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-14",
+      "name": "TPL-14 : la capture est une LISTE BLANCHE — ni statut, ni intervenant, ni reprise, ni référence, ni date absolue, ni chantier ne descendent dans une trame",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-15",
+      "name": "TPL-15 : une intervention de modèle porte EXACTEMENT douze champs — identité, rattachement, lot, phase, jours relatifs, heures, dépendances, intervenant SUGGÉRÉ et ressources complémentaires SUGGÉRÉES",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-16",
+      "name": "TPL-16 : les écarts sont convertis en JOURS CALENDAIRES depuis le premier jour du périmètre — 0, 2, 5 et 7 jours, le samedi compris",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-17",
+      "name": "TPL-17 : les dépendances internes sont remappées vers les clés DU MODÈLE — aucune ne pointe vers une tâche de chantier",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-18",
+      "name": "TPL-18 : lot, phase, heures de début et de fin et intervenant SUGGÉRÉ sont conservés",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-19",
+      "name": "TPL-19 : la capture d’un CHANTIER ENTIER produit une forêt — aucune racine unique inventée",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-20",
+      "name": "TPL-20 : les interventions sans structure du chantier entrent bien dans la trame, et y restent sans structure",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-21",
+      "name": "TPL-21 : nom vide, doublon de nom (casse ignorée), niveau archivé et chantier inexistant sont refusés avec un message clair — aucun modèle créé",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-22",
+      "name": "TPL-22 : ALLER-RETOUR exact — capturée puis reposée à sa date de référence, la trame redonne les dates de la source au jour et à l’heure près",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-22",
+      "name": "TPL-22 : l’intervention du SAMEDI reste un samedi — aucune trame n’est « corrigée » vers un jour ouvré, ce qui décalerait toutes ses dépendances",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-23",
+      "name": "TPL-23 : reposée 21 jours plus tard, CHAQUE intervention est décalée d’exactement 21 jours (21/21/21/21) — la géométrie de la trame est intacte",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-24",
+      "name": "TPL-24 : TOUS les identifiants posés sont neufs et uniques — aucun ne reprend une clé du modèle ni un identifiant de la structure source",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-25",
+      "name": "TPL-25 : les 3 dépendances de la trame sont reposées ENTRE LES COPIES — aucune ne traverse vers la source, et chaque intervention est rattachée à un niveau réellement créé",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-25",
+      "name": "TPL-25 : aucune reprise n’est reposée — une reprise est un fait de chantier, pas un élément de trame (la source en portait une)",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-26",
+      "name": "TPL-26 : les interventions posées naissent « à faire », sans incident, sans contrôle et sans photo — la source était pourtant terminée et portait un incident critique",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-27",
+      "name": "TPL-27 : en mode « Ne pas affecter », aucune intervention posée ne porte d’intervenant, principal ou complémentaire",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-27",
+      "name": "TPL-27 : la référence de chaque intervention posée est calée sur ses propres dates — pas de retard hérité d’un autre chantier",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-28",
+      "name": "TPL-28 : en mode « intervenants suggérés », une ressource disparue et un lot disparu sont ABANDONNÉS et comptés — jamais de référence orpheline dans une intervention posée",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-28",
+      "name": "TPL-28 : les intervenants suggérés qui existent toujours sont bien repris",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-29",
+      "name": "TPL-29 : modèle absent, chantier absent, emplacement absent et emplacement ARCHIVÉ sont refusés — mêmes gardes que la duplication de V2.10",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-30",
+      "name": "TPL-30 : posée SOUS un niveau existant, la trame s’y greffe par sa seule racine — ses sous-niveaux restent attachés à elle, renommage compris",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-31",
+      "name": "TPL-31 : un modèle de CHANTIER ENTIER pose ses trois niveaux racines côte à côte dans le chantier visé — la forêt reste une forêt",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-32",
+      "name": "TPL-32 : enregistrer un modèle est annulable — un seul « Annuler » le retire",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-33",
+      "name": "TPL-33 : poser une trame (3 niveaux + 4 interventions) s’annule d’UN SEUL geste — jamais niveau par niveau",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-34",
+      "name": "TPL-34 : « Rétablir » repose la trame entière, elle aussi d’un seul geste",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-35",
+      "name": "TPL-35 : créer un chantier depuis un modèle crée le chantier ET toute sa trame, et « Annuler » défait l’ensemble — jamais de chantier vide orphelin",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-36",
+      "name": "TPL-36 : la fenêtre « Modèles de chantier » liste les deux modèles, chacun avec Utiliser, Renommer et Supprimer",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-37",
+      "name": "TPL-37 : renommer refuse le vide, refuse un doublon (casse ignorée), refuse un modèle absent, et accepte un nom valide avec sa description",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-38",
+      "name": "TPL-38 : la suppression passe par une CONFIRMATION explicite avant de retirer le modèle",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-39",
+      "name": "TPL-39 : supprimer un modèle est annulable — « Annuler » le restitue intact",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-40",
+      "name": "TPL-40 : le menu « … » d’un niveau porte « Enregistrer comme modèle » entre Dupliquer et Archiver — les six entrées de V2.10 sont toutes conservées",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-41",
+      "name": "TPL-41 : à sept entrées (299 px) le menu reste ancré à son bouton (2 px, vers le haut), dans le viewport, et AUCUNE entrée n’est rognée — les correctifs de V2.9.0.1 et V2.9.1 tiennent",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-42",
+      "name": "TPL-42 : l’onglet Structure porte aussi « Enregistrer comme modèle » au niveau du CHANTIER ENTIER, à côté de « Ajouter un niveau »",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-43",
+      "name": "TPL-43 : les Réglages portent « Modèles de chantier » SANS retirer « Modèle d’entreprise » — les deux notions coexistent",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-44",
+      "name": "TPL-44 : « Nouveau chantier » propose cinq modes dans cet ordre exact — « Modèle de chantier » rejoint les modes à base de modèle, et AUCUN des quatre modes existants n’est retiré ni renommé",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-45",
+      "name": "TPL-45 : sans aucun modèle, le choix disparaît — proposer une liste vide serait une impasse, pas un choix",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-46",
+      "name": "TPL-46 : le parcours choix → liste → aperçu affiche la trame MESURÉE (4 niveaux, 6 interventions, 5 LIENS de dépendance — les liens, pas les interventions qui en portent) et la fin estimée exacte",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-47",
+      "name": "TPL-47 : le chantier est créé avec sa trame complète (4 niveaux, 6 interventions à faire), démarré à la date choisie, et sa date cible correspond au dernier jour de la trame",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-48",
+      "name": "TPL-48 : la sauvegarde Kanvix emporte les 3 modèles (2 de démonstration + 1 créé) et reste valide en version 14",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-49",
+      "name": "TPL-49 : la restauration rend les 3 modèles à l’identique — la trame créée revient octet pour octet",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-50",
+      "name": "TPL-50 : une sauvegarde V13 — sans la clé projectTemplates — reste PARFAITEMENT valide : elle se restaure, passe en version 14 et repart avec une collection VIDE, sans perdre un seul chantier",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-50",
+      "name": "TPL-50 : la clé reste FACULTATIVE — elle n’a pas été ajoutée à KANVIX_BACKUP_REQUIRED",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-51",
+      "name": "TPL-51 : projectTemplates ne figure PAS dans KANVIX_BACKUP_REQUIRED — exactement comme les lots, la qualité, les opérations et la structure avant lui",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-51",
+      "name": "TPL-51 : l’aperçu de restauration annonce les modèles de chantier contenus dans la sauvegarde",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-52",
+      "name": "TPL-52 : de 1920 à 360 px, la fenêtre des modèles ne provoque aucun défilement horizontal, aucune ligne ne déborde et aucun bouton d’action n’est coupé",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-53",
+      "name": "TPL-53 : en thème sombre la fenêtre des modèles utilise les jetons du produit — fond sombre (30), titre clair (243), contraste franc, aucune couleur codée en dur",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-54",
+      "name": "TPL-54 : « Enregistrer comme modèle » est un vrai bouton, atteignable au clavier comme les autres entrées du menu",
+      "status": "PASS"
+    },
+    {
+      "sec": "TPL-55",
+      "name": "TPL-55 : la side-window « Enregistrer comme modèle » s’ouvre préremplie au nom du niveau, porte le choix de contenu et annonce le périmètre MESURÉ qu’elle va capturer",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2110",
+      "name": "FREEZE-2110 : les 116 moteurs de V2.10.0.1 sont BYTE-IDENTIQUES — tout le Planning, tout le moteur Structure (déplacement et duplication compris, jusqu’à structureUid), la sauvegarde, l’import, les ressources, la qualité, l’Undo/Redo, la navigation, les MODÈLES D’ENTREPRISE préexistants et le réalignement de démonstration",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2110",
+      "name": "FREEZE-2110 : seules les neuf fonctions du périmètre annoncé sont modifiées — le balayage de tout le fichier n’en trouve aucune autre",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2110",
+      "name": "FREEZE-2110 / §34 : il n’existe qu’UNE vérité de clonage — cloneStructureTree(). Elle n’est appelée que DEUX fois dans tout le fichier, par duplicateStructureNode() (V2.10) et applyTemplateToProject() (V2.11) — et par personne d’autre. La duplication a été VIDÉE de son moteur : plus une seule table de correspondance chez elle. Le remapping des parents, des rattachements, des dépendances et des reprises n’apparaît qu’UNE fois dans le fichier. La primitive est PURE (ni app, ni save, ni snapshot, ni render). Aucun second moteur n’a été créé à côté",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2110",
+      "name": "FREEZE-2110 : le style est strictement ADDITIF (le bloc V2.11 retiré, la feuille redevient byte-identique à V2.10.0.1), INITIAL_STATE l’est aussi (le bloc des modèles retiré, il redevient byte-identique), les données de démonstration — niveaux et interventions — sont BYTE-IDENTIQUES, SCHEMA passe bien de 13 à 14, STORE et build sont inchangés, un seul gantt(), un seul snapshot(), aucune pile Undo parallèle, aucun drag & drop de structure",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-01",
+      "name": "FIXTPL-01 : la side-window « Enregistrer comme modèle » propose les DEUX contenus — « Structure seule » et « Structure + interventions » — chacun avec son explication",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-02",
+      "name": "FIXTPL-02 : « Structure + interventions » est coché par défaut — qui ne touche à rien retrouve exactement le comportement de V2.11.0",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-02",
+      "name": "FIXTPL-02 : l’aperçu se met à jour au changement de contenu (« aucune intervention » ⇄ « 4 interventions ») sans re-rendre l’application — le nom déjà saisi est intact",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-03",
+      "name": "FIXTPL-03 : capturer un niveau en « Structure seule » retient les 3 niveaux actifs et ZÉRO intervention, racine comprise",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-04",
+      "name": "FIXTPL-04 : « Structure + interventions » conserve exactement le comportement de V2.11.0 — et c’est bien ce que produit l’appel SANS option",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-05",
+      "name": "FIXTPL-05 : capturer un CHANTIER ENTIER en « Structure seule » retient toute la forêt active et ZÉRO intervention — y compris zéro intervention sans structure",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-05",
+      "name": "FIXTPL-05 : la preuve tient : en « Structure + interventions » ces mêmes interventions sans structure sont bien capturées — elles ne sont donc pas absentes par hasard",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-06",
+      "name": "FIXTPL-06 : un modèle « Structure seule » s’applique SANS erreur — 3 niveaux, aucune intervention",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-07",
+      "name": "FIXTPL-07 : la pose crée tous les niveaux et ZÉRO tâche — et aucune date n’est inventée sur un niveau (un niveau n’a jamais porté de date)",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-08",
+      "name": "FIXTPL-08 : « Annuler » défait entièrement la pose d’un modèle structure seule, d’un seul geste",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-09",
+      "name": "FIXTPL-09 : « Rétablir » la repose, elle aussi d’un seul geste",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-06",
+      "name": "FIXTPL-06 : « Utiliser le modèle » annonce « aucune intervention » et masque le choix d’affectation ET la date de démarrage — un modèle sans intervention n’a ni l’un ni l’autre à proposer",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-10",
+      "name": "FIXTPL-10 : la capture enregistre l’intervenant principal ET les ressources complémentaires comme suggestions — dédoublonnées, sans valeur vide, sans le principal, et SANS altérer la tâche source",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-11",
+      "name": "FIXTPL-11 : « Ne pas affecter » ⇒ aucun intervenant principal et aucune ressource complémentaire",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-12",
+      "name": "FIXTPL-12 : « Reprendre les affectations suggérées » ⇒ l’intervenant principal ET les deux ressources complémentaires sont restaurés (les trois existent encore)",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-17",
+      "name": "FIXTPL-17 : une ressource complémentaire peut être du MATÉRIEL comme une ENTREPRISE — Kanvix ne fait aucune différence ici",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-18",
+      "name": "FIXTPL-18 : le matériel n’est JAMAIS promu intervenant principal — resourceId reste l’intervenant enregistré comme tel",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-15",
+      "name": "FIXTPL-15 : l’intervenant principal ne figure jamais AUSSI dans les ressources complémentaires",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-16",
+      "name": "FIXTPL-16 : aucun doublon dans les ressources complémentaires posées",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-13",
+      "name": "FIXTPL-13 : une ressource complémentaire disparue n’est JAMAIS recopiée — aucune référence orpheline, et celles qui restent sont bien reposées",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-14",
+      "name": "FIXTPL-14 : ressourcesAbandonnees compte les suggestions non reposées, complémentaires comprises — 1 puis 2 quand elles disparaissent l’une après l’autre, et 3 en « Ne pas affecter » (principal + deux compléments). UN seul compteur, pas deux",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-12",
+      "name": "FIXTPL-12 : le vocabulaire de l’écran dit la vérité — « Affectations », « Reprendre les affectations suggérées », « Intervenant principal et ressources complémentaires encore disponibles »",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-19",
+      "name": "FIXTPL-19 : un modèle enregistré par V2.11.0 — sans suggestedAdditionalResourceIds — se charge sans erreur, et rien d’autre n’est touché",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-20",
+      "name": "FIXTPL-20 : après migration, suggestedAdditionalResourceIds vaut [] ; la migration est idempotente, et une valeur aberrante (doublons, vide, null, nombre, principal) est normalisée à « a|b »",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-21",
+      "name": "FIXTPL-21 : sauvegarder puis restaurer un modèle porteur de suggestions complémentaires les restitue EXACTEMENT — et projectTemplates n’est toujours pas une clé obligatoire",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-22",
+      "name": "FIXTPL-22 : une sauvegarde V14 produite par V2.11.0 reste restaurable — schéma toujours 14, STORE inchangé, tous les modèles normalisés à [], aucun chantier perdu",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-23",
+      "name": "FIXTPL-23 : de 1366 à 1920 px, « Étage type — logements » s’affiche ENTIER — 308 px nécessaires pour 308 px disponibles, contre 67 px avant le correctif",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-24",
+      "name": "FIXTPL-24 : de 1366 à 1920 px, « Maison individuelle — gros œuvre » — le plus long nom de démonstration — s’affiche ENTIER lui aussi",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-25",
+      "name": "FIXTPL-25 : de 1920 à 360 px, aucune largeur ne provoque de défilement horizontal et AUCUN bouton d’action n’est coupé par la fenêtre",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-25",
+      "name": "FIXTPL-25 : en 430, 390 et 360 px les noms restent eux aussi entiers — la priorité va au nom, comme demandé",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-26",
+      "name": "FIXTPL-26 : « Créer un chantier depuis un modèle » ouvre DIRECTEMENT la liste de app.projectTemplates",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-27",
+      "name": "FIXTPL-27 : l’étape « Comment souhaitez-vous démarrer ? » n’est pas affichée dans ce parcours — la question a déjà été répondue en venant du gestionnaire",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-28",
+      "name": "FIXTPL-28 : « Nouveau chantier » conserve EXACTEMENT ses cinq choix, dans le même ordre — l’accès direct n’a rien retiré au parcours normal",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-29",
+      "name": "FIXTPL-29 : les modèles INTÉGRÉS (PROJECT_TEMPLATES) restent pleinement fonctionnels — « Second œuvre résidentiel » crée toujours ses 5 étapes",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-30",
+      "name": "FIXTPL-30 : les modèles d’ENTREPRISE (app.companyTemplates) restent pleinement fonctionnels, dépendances comprises — les trois familles de modèles coexistent",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21101",
+      "name": "FREEZE-21101 : hors des ONZE fonctions du périmètre NOMMÉ (neuf pour V2.11.0.1, deux pour V2.11.0.2), le balayage de tout le fichier ne trouve AUCUNE autre fonction modifiée depuis V2.11.0",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21101",
+      "name": "FREEZE-21101 : les neuf fonctions annoncées ont réellement changé — aucune modification silencieusement absente",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-32",
+      "name": "FIXTPL-31 / FIXTPL-32 : cloneStructureTree() reste l’UNIQUE primitive de clonage, appelée exactement DEUX fois dans tout le fichier, par duplicateStructureNode() et applyTemplateToProject() — et par personne d’autre",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-33",
+      "name": "FIXTPL-33 : aucun second moteur n’a été introduit — les deux appelants délèguent toujours et ne construisent aucune table, le remapping des rattachements, des dépendances et des reprises n’apparaît qu’UNE fois, la primitive reste PURE, et il n’existe ni pile Undo parallèle ni drag & drop de structure",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-33",
+      "name": "FIXTPL-33 : les ressources complémentaires suggérées ont UNE seule normalisation — templateSuggestedExtras() — partagée par la capture, la migration et la pose ; elle n’a pas créé une seconde logique de clonage",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-34",
+      "name": "FIXTPL-34 : un seul snapshot() dans tout le fichier",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-35",
+      "name": "FIXTPL-35 : un seul gantt() dans tout le fichier",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-36",
+      "name": "FIXTPL-36 : STORE reste « kanvix-product-8-3 »",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL-37",
+      "name": "FIXTPL-37 : SCHEMA_VERSION reste 14 — le champ ajouté est strictement FACULTATIF et normalisé par migrateState(), aucun bump n’est nécessaire ; build inchangé et projectTemplates toujours hors des clés obligatoires du backup",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21101",
+      "name": "FREEZE-21101 : les données de démonstration — niveaux ET interventions — restent BYTE-IDENTIQUES, et le seul bloc de style touché est celui des modèles : tout le reste de la feuille est byte-identique à V2.11.0",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL2-01",
+      "name": "FIXTPL2-01 : un intervenant principal suggéré de type PERSONNE et actif est repris normalement",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL2-02",
+      "name": "FIXTPL2-02 : un intervenant principal suggéré de type ENTREPRISE et actif est repris normalement",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL2-03",
+      "name": "FIXTPL2-03 : un ÉQUIPEMENT suggéré comme intervenant principal n’est JAMAIS affecté comme tel (resourceId = null) et n’est PAS reclassé en renfort — un modèle n’invente pas une affectation qu’il ne contenait pas ; les renforts qu’il déclarait, eux, sont bien posés",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL2-04",
+      "name": "FIXTPL2-04 : une PERSONNE ARCHIVÉE suggérée comme principal n’est pas réaffectée — resourceId reste null",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL2-05",
+      "name": "FIXTPL2-05 : une ENTREPRISE ARCHIVÉE suggérée comme principal n’est pas réaffectée non plus",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL2-06",
+      "name": "FIXTPL2-06 : un ÉQUIPEMENT ACTIF reste parfaitement valide comme ressource COMPLÉMENTAIRE — les deux engins suggérés sont repris",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL2-07",
+      "name": "FIXTPL2-07 : une ressource complémentaire ARCHIVÉE est écartée — personne comme entreprise — sans toucher à l’intervenant principal",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL2-08",
+      "name": "FIXTPL2-08 : une ressource INEXISTANTE, principale ou complémentaire, est écartée — ZÉRO référence orpheline sur l’ensemble des neuf interventions posées",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL2-08",
+      "name": "FIXTPL2-08 : bilan global — aucune ressource archivée réaffectée, aucun engin promu principal, aucun doublon, et le principal n’apparaît jamais aussi en complément",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL2-09",
+      "name": "FIXTPL2-09 : ressourcesAbandonnees vaut 7 en mode « suggest » — engin promu principal (1), personne archivée (1), entreprise archivée (1), compléments archivés (2), complément inconnu (1), principal inconnu (1). UN seul compteur, la convention de V2.11.0.1 est conservée",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL2-09",
+      "name": "FIXTPL2-09 : en mode « Ne pas affecter », aucun principal, aucun complémentaire, et le compteur vaut 16 — soit TOUTES les suggestions du modèle",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL2-10",
+      "name": "FIXTPL2-10 : pour un modèle AVEC interventions, l’aperçu conserve EXACTEMENT le comportement de V2.11.0.1 — date de démarrage, gestion des tâches, affectations, chaîne d’interventions et fin estimée",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL2-10",
+      "name": "FIXTPL2-10 : le vocabulaire dit la vérité — « Affectations » et « Reprendre les affectations suggérées », comme dans « Utiliser le modèle », puisqu’il s’agit bien de l’intervenant principal ET de ses renforts",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL2-11",
+      "name": "FIXTPL2-11 : pour un modèle STRUCTURE SEULE, l’aperçu ne propose NI date de démarrage, NI gestion des tâches, NI affectations, NI fin estimée, NI chaîne d’interventions vide — seulement le nom, la localisation, et une phrase sobre qui dit ce qui va se passer",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL2-13",
+      "name": "FIXTPL2-13 : le décor du piège est bien en place — wizard.data porte encore la date, le mode d’affectation et la granularité saisis sur le modèle précédent",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL2-12",
+      "name": "FIXTPL2-12 : le chantier est créé avec ses 3 niveaux et leur hiérarchie, ZÉRO intervention, ZÉRO jalon artificiel, aucune date posée sur un niveau — et il reste actif, marqué « project-template » et relié à son modèle",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL2-13",
+      "name": "FIXTPL2-13 : startDate et baselineEnd valent NULL, et la granularité retombe sur la valeur par défaut du produit — les valeurs périmées de wizard.data (11/01/2027, « suggest », « week ») n’ont PAS fui dans le chantier créé",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL2-14",
+      "name": "FIXTPL2-14 : « Annuler » supprime le chantier ET toute sa structure d’UN SEUL geste — aucun chantier vide résiduel ; « Rétablir » les recrée, toujours sans tâche et toujours sans date artificielle",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL2-11",
+      "name": "FIXTPL2-11 : à 390 px l’écran « Structure seule » reste propre — aucun défilement horizontal, aucun dépassement de la side-window, aucun bouton coupé",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL2-11",
+      "name": "FIXTPL2-11 : en thème sombre l’écran « Structure seule » garde ses jetons (titre 243 sur fond 37) et la même simplicité",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL2-11",
+      "name": "FIXTPL2-11 : sur 22 combinaisons (11 largeurs de 1920 à 360 px × clair/sombre), les trois écrans — aperçu avec interventions, aperçu structure seule, gestionnaire — ne provoquent AUCUN défilement horizontal, AUCUN dépassement de la side-window et AUCUN bouton coupé",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21102",
+      "name": "FREEZE-21102 : hors des QUATRE fonctions du périmètre NOMMÉ — cloneStructureTree, renderWizard et createProjectFromProjectTemplate pour V2.11.0.2, openStructureForm pour V2.11.0.3 — le balayage de tout le fichier ne trouve AUCUNE autre fonction modifiée depuis V2.11.0.1",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21102",
+      "name": "FREEZE-21102 : les trois fonctions annoncées ont réellement changé, et UNE seule fonction a été ajoutée — canAssignResource(), la lecture de la règle d’assignabilité existante",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21102",
+      "name": "FREEZE-21102 : canAssignResource() ne réécrit AUCUNE règle — elle LIT mainAssignableResources() et assignableResources(), les listes mêmes que proposent les sélecteurs de tâche, sans recopier un seul critère (« archived », « equipment », « status » n’y apparaissent pas). Ces listes, resourceActive() et normalizeTaskResources() sont byte-identiques. Aucun moteur de ressources parallèle, et la règle n’est appelée qu’aux DEUX endroits de la primitive de clonage",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21102",
+      "name": "FREEZE-21102 : cloneStructureTree() reste l’UNIQUE primitive de clonage, appelée exactement DEUX fois dans tout le fichier, par duplicateStructureNode() et applyTemplateToProject() — et par personne d’autre",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21102",
+      "name": "FREEZE-21102 : les deux appelants délèguent toujours et ne construisent aucune table ; mapNoeuds, mapTaches et le remapping des rattachements, des dépendances et des reprises n’apparaissent qu’UNE fois chacun ; la primitive reste PURE",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21102",
+      "name": "FREEZE-21102 : aucune logique de création de structure PARALLÈLE — app.structureNodes.push() n’apparaît qu’à TROIS endroits (la création manuelle d’un niveau et les deux appelants de la primitive). Aucun second moteur de modèles, aucune seconde pile Undo, un seul renderWizard(), un seul wizardPickMode(), un seul createProjectFromProjectTemplate(), un seul snapshot(), un seul gantt(), aucun drag & drop de structure",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21102",
+      "name": "FREEZE-21102 : aucune donnée persistée nouvelle — SCHEMA_VERSION reste 14, STORE reste « kanvix-product-8-3 », build inchangé",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21102",
+      "name": "FREEZE-21102 : migrateState(), buildKanvixBackup(), validateKanvixBackup(), confirmKanvixRestore() et KANVIX_BACKUP_REQUIRED sont BYTE-IDENTIQUES — aucune migration créée, aucun format de sauvegarde touché",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21102",
+      "name": "FREEZE-21102 : INITIAL_STATE est BYTE-IDENTIQUE — aucune donnée de démonstration n’a été modifiée pour « faciliter » les tests, les cas tordus sont créés par la recette. La feuille de style est elle aussi byte-identique : ce correctif ne touche pas au dessin",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL3-01",
+      "name": "FIXTPL3-01 : un responsable suggéré de type PERSONNE et ACTIVE est conservé",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL3-02",
+      "name": "FIXTPL3-02 : un responsable suggéré de type PERSONNE mais ARCHIVÉE est refusé — responsibleResourceId vaut null (avant le correctif, il était réaffecté)",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL3-03",
+      "name": "FIXTPL3-03 : une ENTREPRISE ACTIVE ne peut pas être responsable d’un niveau — responsibleResourceId vaut null (avant le correctif, elle l’était)",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL3-04",
+      "name": "FIXTPL3-04 : un ÉQUIPEMENT ACTIF ne peut pas être responsable d’un niveau — responsibleResourceId vaut null (avant le correctif, il l’était)",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL3-05",
+      "name": "FIXTPL3-05 : un responsable suggéré INCONNU est refusé — responsibleResourceId vaut null",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL3-05",
+      "name": "FIXTPL3-05 : un niveau sans responsable dans le modèle reste sans responsable — aucun n’est inventé",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL3-06",
+      "name": "FIXTPL3-06 : un responsable REFUSÉ n’est jamais recyclé — ni en intervenant principal, ni en ressource complémentaire, ni ailleurs. Il est simplement abandonné",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL3-14",
+      "name": "FIXTPL3-14 : aucune référence responsable ORPHELINE ni INVALIDE dans les six niveaux nouvellement créés — chaque responsable restant est une personne active",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL3-07",
+      "name": "FIXTPL3-07 : en mode « Ne pas affecter », aucun responsable n’est reposé — comportement V2.11.0.2 strictement inchangé",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL3-08",
+      "name": "FIXTPL3-08 : en stratégie « keep », le responsable est copié À L’IDENTIQUE — personne archivée, entreprise, équipement et référence inconnue comprises. Le nouveau contrôle ne s’applique QU’AU chemin « suggest »",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL3-09",
+      "name": "FIXTPL3-09 : duplicateStructureNode() conserve donc EXACTEMENT le comportement de V2.10 — la duplication d’une branche n’est pas une réaffectation",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL3-10",
+      "name": "FIXTPL3-10 : le formulaire « Nouveau / Modifier le niveau » ne propose QUE des personnes actives (eric, mathieu, thomas) — ni la personne archivée, ni l’entreprise, ni l’équipement",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL3-10",
+      "name": "FIXTPL3-10 : UNE SEULE VÉRITÉ — pour CHAQUE ressource du référentiel, le verdict du formulaire et celui de la règle appliquée à la pose sont identiques, et la liste du formulaire est exactement structureResponsibleResources()",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL3-11",
+      "name": "FIXTPL3-11 : la MÊME entreprise est refusée comme responsable du niveau et ACCEPTÉE comme intervenant principal de la tâche — les deux concepts restent bien distincts, et le correctif Structure ne durcit pas les règles des tâches",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL3-12",
+      "name": "FIXTPL3-12 : un ÉQUIPEMENT actif reste disponible comme ressource complémentaire d’une tâche — les règles de V2.5 sont intactes",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL3-13",
+      "name": "FIXTPL3-13 : scénario complet — Thomas responsable, enregistré dans un modèle, PUIS archivé. Le modèle GARDE sa suggestion (un modèle doit rester durable), mais la pose la REFUSE : le niveau créé n’a pas de responsable. La décision est bien prise à la POSE, pas à la capture",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL3-15",
+      "name": "FIXTPL3-15 : « Annuler » défait la pose — niveaux, responsables et intervention — d’UN SEUL geste ; « Rétablir » la repose entièrement",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL3-15",
+      "name": "FIXTPL3-15 : après « Rétablir », chaque responsable reposé est toujours une personne active — la validation n’est pas contournée par la pile Undo",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL3-UI",
+      "name": "FIXTPL3-UI : à 1600 et 390 px, en clair et en sombre, la Structure, le formulaire « Nouveau niveau », le formulaire « Modifier le niveau » et la pose d’un modèle ne provoquent aucun défilement horizontal ni dépassement de la side-window",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL3-UI",
+      "name": "FIXTPL3-UI : le formulaire de niveau est INCHANGÉ — mêmes cinq champs, mêmes cinq options de responsable (« Aucun » + les QUATRE personnes actives de la démonstration : Eric, Mathieu, Marc, Thomas), et le responsable existant reste correctement présélectionné",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21103",
+      "name": "FREEZE-21103 : hors des DEUX fonctions du périmètre annoncé — openStructureForm et cloneStructureTree — le balayage de tout le fichier ne trouve AUCUNE autre fonction modifiée depuis V2.11.0.2",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21103",
+      "name": "FREEZE-21103 : les deux fonctions annoncées ont réellement changé, et DEUX fonctions ont été ajoutées — structureResponsibleResources() et canAssignStructureResponsible()",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21103",
+      "name": "FREEZE-21103 / §3 : il n’existe qu’UNE définition de « responsable de niveau = personne active » — structureResponsibleResources(). AUCUNE fonction manipulant responsibleResourceId ne recopie le critère : openStructureForm() LIT la liste, canAssignStructureResponsible() la lit aussi sans mentionner ni le type ni le statut, et cloneStructureTree() passe par cette garde. Les seules autres occurrences du critère dans le fichier relèvent d’AUTRES notions — les champs « Ressource » du wizard « Reprendre un chantier en cours » et les destinataires d’un message — et sont hors périmètre",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21103",
+      "name": "FREEZE-21103 / §4 : les deux notions ne sont PAS confondues — canAssignResource(), assignableResources(), mainAssignableResources(), resourceActive() et normalizeTaskResources() sont BYTE-IDENTIQUES, la garde Structure n’appelle jamais la règle des tâches, aucun moteur parallèle n’a été créé, et la branche « keep » reste une copie brute du responsable",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21103",
+      "name": "FREEZE-21103 : cloneStructureTree() reste l’UNIQUE primitive de clonage, appelée exactement DEUX fois, par duplicateStructureNode() et applyTemplateToProject() — et ces deux appelants sont eux-mêmes BYTE-IDENTIQUES à V2.11.0.2",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21103",
+      "name": "FREEZE-21103 : aucune nouvelle table de remapping — mapNoeuds, mapTaches et le remapping de parentId, structureNodeId, deps et reworkOfTaskId n’apparaissent qu’UNE fois chacun ; la primitive reste PURE",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21103",
+      "name": "FREEZE-21103 : aucune logique de création de structure parallèle (app.structureNodes.push() à TROIS endroits seulement), aucun moteur parallèle, aucune nouvelle pile Undo, un seul snapshot(), un seul gantt(), aucun drag & drop de structure",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21103",
+      "name": "FREEZE-21103 : aucune donnée persistée nouvelle — SCHEMA_VERSION reste 14, STORE reste « kanvix-product-8-3 », build inchangé",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21103",
+      "name": "FREEZE-21103 : migrateState(), buildKanvixBackup(), validateKanvixBackup(), confirmKanvixRestore(), KANVIX_BACKUP_REQUIRED, buildProjectTemplateRecord() et templateCaptureScope() sont BYTE-IDENTIQUES — la capture continue de mémoriser responsibleResourceId comme SUGGESTION, sans dépendre de l’état des ressources : un modèle reste durable dans le temps",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21103",
+      "name": "FREEZE-21103 / §14 : INITIAL_STATE et la feuille de style sont BYTE-IDENTIQUES — aucune donnée de démonstration touchée, aucune modification visuelle. Les cas tordus sont créés par la recette",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXTPL3",
+      "name": "FIXTPL3 : aucune erreur JavaScript applicative en console (0)",
+      "status": "PASS"
+    }
+  ],
+  "consoleErrors": []
+}
