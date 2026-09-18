@@ -1,0 +1,382 @@
+{
+  "passed": 75,
+  "failed": [],
+  "results": [
+    {
+      "sec": "STC-01",
+      "name": "STC-01 : l’ouverture de l’onglet Structure est inchangée — page « project », onglet « Structure », arbre affiché",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-02",
+      "name": "STC-02 : replier « Bâtiment A » laisse l’utilisateur DANS Structure — c’est précisément ce que V2.9.0.1 ne faisait pas",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-04",
+      "name": "STC-04 : app.ui.page reste « project »",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-05",
+      "name": "STC-05 : le chantier actif est inchangé",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-06",
+      "name": "STC-06 : l’onglet VISIBLE reste Structure — l’onglet actif, le contenu rendu et la mémoire d’onglet concordent",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-07",
+      "name": "STC-07 : aucun scrollTo(0, 0) pendant le repli (0 appel(s) observé(s))",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-07",
+      "name": "STC-07 : la page n’est pas remontée en haut (scrollY = 50)",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-03",
+      "name": "STC-03 : déplier laisse tout autant l’utilisateur dans Structure",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-08",
+      "name": "STC-08 : quatre bascules successives sont parfaitement réversibles — lignes affichées, état replié et aria-expanded reviennent à l’identique",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-02",
+      "name": "STC-02 : archiver et supprimer un niveau ne font pas davantage sortir de Structure — la cause racine (l’onglet non mémorisé) est traitée, pas seulement son symptôme",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-10",
+      "name": "STC-10 : « Tout replier » referme toutes les racines (12 → 7 lignes) et la commande s’inverse",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-09",
+      "name": "STC-09 : « Tout développer » rouvre exactement ce qui était ouvert (7 → 12 lignes)",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-09",
+      "name": "STC-09 : la commande ne fait jamais quitter l’onglet Structure",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-10",
+      "name": "STC-10 : elle ne touche QUE app.ui — aucune entrée d’annulation, aucune entrée d’historique métier",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-11",
+      "name": "STC-11 : l’ordre et la profondeur affichés correspondent EXACTEMENT au parcours parent → enfants des moteurs existants",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-12",
+      "name": "STC-12 : une profondeur de 5 niveaux ne provoque AUCUN débordement horizontal (page -15 px, bloc 0 px)",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-12",
+      "name": "STC-12 : l’indentation est bornée — elle plafonne à 42 px quelle que soit la profondeur",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-13",
+      "name": "STC-13 : cliquer le corps d’une ligne ouvre la fiche du BON niveau",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-14",
+      "name": "STC-14 : le chevron ne fait QUE replier — aucune fiche de niveau ne s’ouvre, et le repli a bien basculé",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-15",
+      "name": "STC-15 : le « … » n’ouvre que son menu — jamais la fiche du niveau",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-16",
+      "name": "STC-16 : le menu du premier niveau utilise le composant Kanvix et reste collé à son bouton (6 px, alignement 0 px)",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-16",
+      "name": "STC-16 : les quatre actions de V2.9.0 sont conservées, dans le même ordre",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-17",
+      "name": "STC-17 : le menu du DERNIER niveau reste entièrement dans le viewport (débordement -44 px)",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-18",
+      "name": "STC-18 : faute de place, il se retourne au-dessus de son bouton en restant ancré (6 px)",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-19",
+      "name": "STC-19 : un seul menu ouvert simultanément — ouvrir le second a fermé le premier",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-20",
+      "name": "STC-20 : Échap ferme le menu et remet aria-expanded à false",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-17",
+      "name": "STC-17 : en mobile 390, le menu du dernier niveau reste dans le viewport (-44 px), ancré à 6 px, et reste un popover — jamais une modale",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-21",
+      "name": "STC-21 : le bloc annonce le compte EXACT donné par getUnstructuredTasks() (2 interventions)",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-22",
+      "name": "STC-22 : chaque intervention est affichée par son NOM (Tableau électrique, Contrôle final) — et non plus réduite à un compteur",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-23",
+      "name": "STC-23 : cliquer une intervention ouvre la BONNE tâche, par le moteur openTask() existant",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-24",
+      "name": "STC-24 : afficher ces interventions n’a modifié AUCUN structureNodeId — elles restent réellement sans niveau",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-24",
+      "name": "STC-24 : elles valent bien null — aucune structure artificielle n’a été créée",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-25",
+      "name": "STC-25 : le compte d’interventions de chaque ligne est EXACTEMENT celui de getStructureProgress()",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-26",
+      "name": "STC-26 : le compte de ressources est exactement celui de getStructureResources()",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-27",
+      "name": "STC-27 : la période est exactement celle de getStructureDates()",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-28",
+      "name": "STC-28 : le responsable affiché est exactement resourceLabel(n.responsibleResourceId)",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-29",
+      "name": "STC-29 : le badge de statut — libellé ET ton — est exactement celui de getStructureStatus()",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-30",
+      "name": "STC-30 : le haut de la fiche est SENSIBLEMENT plus court — cockpit 111 → 60 px (-46 %), hauteur avant les onglets 221 → 169 px",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-30",
+      "name": "STC-30 : aucune carte KPI vide n’est affichée — seules celles qui portent une valeur utile apparaissent",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-30",
+      "name": "STC-30 : les quatre onglets de V2.9.0 sont conservés dans le même ordre",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-30",
+      "name": "STC-30 : le libellé d’un indicateur est en capitales, sa VALEUR ne l’est pas",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-31",
+      "name": "STC-31 : le Résumé liste exactement les interventions de getStructureTasks(), dans l’ordre chronologique",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-31",
+      "name": "STC-31 : elles sont présentées en LIGNES compactes (46 px de haut en moyenne), pas en cartes",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-32",
+      "name": "STC-32 : l’onglet Planning rend bien le gantt() existant (4 barres)",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-33",
+      "name": "STC-33 : l’onglet Ressources reste fonctionnellement inchangé — 5 cartes pour 5 ressources agrégées",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-34",
+      "name": "STC-34 : les sous-niveaux utilisent le MÊME composant compact (2 lignes), plus aucune ancienne vignette",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-35",
+      "name": "STC-35 : « + Tâche » depuis une fiche de niveau préremplit bien structureNodeId sur ce niveau",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-36",
+      "name": "STC-36 : « Modifier » ouvre le formulaire du bon niveau, parent compris",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-37",
+      "name": "STC-37 : « Ajouter un sous-niveau » ouvre une création vierge sous le bon parent",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-38",
+      "name": "STC-38 : archiver puis restaurer un niveau fonctionne toujours, par le moteur existant",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-39",
+      "name": "STC-39 : les garde-fous sont intacts — archivage bloqué si sous-niveaux actifs, suppression refusée si enfants ou interventions, cycle de parent refusé",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-40",
+      "name": "STC-40 : une action = UNE transaction d’annulation et UNE entrée d’historique ; l’annulation rétablit l’état exact",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-41",
+      "name": "STC-41 : mobile 430 — aucun débordement horizontal, ni de la page ni du bloc Structure",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-41",
+      "name": "STC-41 : mobile 430 — chaque niveau tient en 75 px, dans la cible 64–86 px annoncée",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-41",
+      "name": "STC-41 : mobile 430 — la vue est ADAPTÉE, pas rétrécie : les six colonnes cèdent la place à une ligne de méta",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-42",
+      "name": "STC-42 : mobile 390 — aucun débordement horizontal, ni de la page ni du bloc Structure",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-42",
+      "name": "STC-42 : mobile 390 — chaque niveau tient en 75 px, dans la cible 64–86 px annoncée",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-42",
+      "name": "STC-42 : mobile 390 — la vue est ADAPTÉE, pas rétrécie : les six colonnes cèdent la place à une ligne de méta",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-43",
+      "name": "STC-43 : mobile 360 — aucun débordement horizontal, ni de la page ni du bloc Structure",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-43",
+      "name": "STC-43 : mobile 360 — chaque niveau tient en 75 px, dans la cible 64–86 px annoncée",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-43",
+      "name": "STC-43 : mobile 360 — la vue est ADAPTÉE, pas rétrécie : les six colonnes cèdent la place à une ligne de méta",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-45",
+      "name": "STC-45 : en thème sombre, aucun débordement horizontal sur les 11 largeurs",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-46",
+      "name": "STC-46 : aucun débordement horizontal sur 11 largeurs × 2 thèmes (22 combinaisons)",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-46",
+      "name": "STC-46 : le bloc « Sans structure » et ses interventions restent affichés à toutes les largeurs",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-44",
+      "name": "STC-44 : en sombre, le bloc a un fond foncé (rgb(16, 32, 47)) et un texte clair (rgb(238, 244, 249)) — il hérite des variables de thème",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-44",
+      "name": "STC-44 : aucune couleur codée en dur dans toute la section Structure",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-48",
+      "name": "STC-48 : un chantier sans structure reste pleinement utilisable — état vide avec son invitation, onglet conservé, aucun débordement",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-48",
+      "name": "STC-48 : et ses interventions restent visibles dans « Sans structure » (2)",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-49",
+      "name": "STC-49 : une structure de 23 niveaux reste utilisable — aucun débordement, deux bascules complètes en 424 ms, onglet conservé",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-291",
+      "name": "FREEZE-291 : les 103 moteurs de V2.9.0.1 sont BYTE-IDENTIQUES — tout le moteur Structure, le Planning, les données, les ressources, la qualité, les jalons, l’Opération, l’Undo/Redo et le composant de menu corrigé en V2.9.0.1",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-50",
+      "name": "STC-50 : renderAIPanel() est BYTE-IDENTIQUE — vérifiée par découpage à l’indentation, l’extraction par accolades étant mise en défaut par ses littéraux gabarits",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-50",
+      "name": "STC-50 : AUCUNE fonction hors du périmètre annoncé n’a changé — le balayage de tout le fichier ne trouve que 7 fonctions modifiées, toutes déclarées",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-50",
+      "name": "STC-50 : SCHEMA 13, STORE et build inchangés, INITIAL_STATE et STRUCTURE_TYPES byte-identiques, un seul gantt(), un seul planningTasks(), un seul toggleDrawerMenu(), aucun moteur Structure parallèle, et plus aucun renderPage() dans toggleStructureNode()",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-50",
+      "name": "STC-50 : les 13 helpers ajoutés existent tous et relèvent uniquement de la PRÉSENTATION",
+      "status": "PASS"
+    },
+    {
+      "sec": "STC-47",
+      "name": "STC-47 : aucune erreur JavaScript applicative en console (0)",
+      "status": "PASS"
+    }
+  ],
+  "consoleErrors": []
+}

@@ -432,10 +432,21 @@ console.log('\n[ST-PLANNING] Le Gantt existant, filtré');
     `ST-33 : dessiner dans le Gantt d’un niveau préremplit le chantier ET le niveau (${souris.structure})`, 'ST-33');
   await ev(p, () => closeOverlay('drawer'));
 
+  /* V2.9.1 — RE-BASELINE DE SÉLECTEUR. La refonte « Structure compacte » a
+     remplacé les grandes cartes `.sn-card` par des lignes `.snc-row`, et le
+     conteneur `.sn-tree` par `[data-structure-tree]`. Ce qui est TESTÉ ne
+     change pas d'un iota — le nombre de niveaux affichés, leur présence, le
+     bouton qui préremplit le niveau. Les sélecteurs acceptent donc les DEUX
+     écritures : ces assertions valent pour V2.9.0/V2.9.0.1 comme pour V2.9.1,
+     et restent exactement aussi sévères. */
   const bouton = await ev(p, () => {
     openStructureNode('sn-keravel-etage-1');
     setStructureTab('Résumé');
-    document.querySelector('.sn-hero-actions .btn.primary')?.click();
+    // V2.9.1 — le bouton « + Tâche » d'une fiche de niveau vit désormais dans
+    // la barre du haut (.snc-top-actions) et non plus dans le hero. Même
+    // bouton, même handler, même préremplissage : on accepte les deux.
+    (document.querySelector('.sn-hero-actions .btn.primary') ||
+      document.querySelector('.snc-top-actions .btn.primary'))?.click();
     const out = {
       ouvert: !!document.querySelector('#drawer.open'),
       projet: document.querySelector('[name="projectId"]')?.value,
@@ -760,7 +771,7 @@ console.log('\n[ST-NIVEAUX] Essentiel et Pilotage');
     const r = await ev(p, () => ({
       niveau: app.settings.level,
       onglets: [...document.querySelectorAll('.tab')].map((t) => t.textContent),
-      cartes: document.querySelectorAll('.sn-card').length,
+      cartes: document.querySelectorAll('.sn-card, .snc-row[data-structure-node]').length,
       bouton: !!document.querySelector('.sn-top .btn.primary'),
     }));
     note('ST-6' + (court === 'E' ? '0' : '1'), r);
@@ -805,10 +816,12 @@ console.log('\n[ST-RESPONSIVE] Dix largeurs, deux thèmes');
       const { ctx, p } = await newPage({ w, h: Math.max(900, Math.round(w * 0.62)), tag: 'R' + w, dark });
       await ouvrirStructure(p);
       const r = await ev(p, () => ({
-        cartes: document.querySelectorAll('.sn-card').length,
+        cartes: document.querySelectorAll('.sn-card, .snc-row[data-structure-node]').length,
         over: document.documentElement.scrollWidth - document.documentElement.clientWidth,
-        fondCarte: getComputedStyle(document.querySelector('.sn-card')).backgroundColor,
-        lisible: getComputedStyle(document.querySelector('.sn-head b')).color,
+        fondCarte: getComputedStyle(document.querySelector('.sn-card, .snc-block')).backgroundColor,
+        // V2.9.1 — le nom d'un niveau vit dans `.snc-open b` et non plus dans
+        // `.sn-head b`. On mesure la même chose : la couleur du nom affiché.
+        lisible: getComputedStyle(document.querySelector('.sn-head b, .snc-open b')).color,
       }));
       mesures.push({ w, theme: dark ? 'sombre' : 'clair', ...r });
       await shot(p, `w${w}-${dark ? 'sombre' : 'clair'}-structure.png`);

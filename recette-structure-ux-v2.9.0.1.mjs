@@ -476,7 +476,9 @@ console.log('\n[UXS-RETOUR] « ← Structure » ressemble aux autres retours Kan
   await p.waitForTimeout(260);
   const retour = await ev(p, () => ({
     noeudFerme: !app.ui.structureNodeId,
-    arbreVisible: !!document.querySelector('.sn-tree'),
+    // V2.9.1 — le conteneur de l'arbre s'appelle désormais
+    // [data-structure-tree] ; on accepte les deux écritures.
+    arbreVisible: !!document.querySelector('.sn-tree, [data-structure-tree]'),
   }));
   note('UXS-14-navigation', retour);
   ok(retour.noeudFerme && retour.arbreVisible,
@@ -503,7 +505,8 @@ for (const [w, h, capture] of [[430, 900, '03-structure-menu-mobile-430.png'], [
   const extra = await ev(p, async (nid) => {
     const card = document.querySelector(`[data-structure-node="${nid}"]`);
     const btn = card.querySelector('.more-trigger');
-    const st = card.querySelector('.sn-status');
+    // V2.9.1 — le badge de statut d'une ligne s'appelle `.snc-status`.
+    const st = card.querySelector('.sn-status, .snc-status');
     const bb = btn.getBoundingClientRect(), sb = st ? st.getBoundingClientRect() : null;
     const chevauche = sb ? !(bb.right < sb.left || bb.left > sb.right || bb.bottom < sb.top || bb.top > sb.bottom) : false;
     const pop = card.querySelector('.more-pop');
@@ -782,15 +785,29 @@ console.log('\n[FREEZE-2901] Byte-identité V2.9.0 → V2.9.0.1');
     // Le reste du moteur de menu
     'closeDrawerMenu', 'anyDrawerMenuOpen',
   ];
+  /* V2.9.1 — RE-BASELINE. Trois fonctions quittent cette liste, et trois
+     seulement, parce que le refactor « Structure compacte » les réécrit
+     DÉLIBÉRÉMENT :
+       · toggleStructureNode  — V2.9.1 §2 : le repli ne re-rend plus toute la
+                                page, il ne remplace que l'arbre concerné.
+       · projectStructureTab  — V2.9.1 §3/§6 : la vue compacte et le bloc
+                                « Sans structure » qui liste les interventions.
+       · structureTabContent  — V2.9.1 §8 : le Résumé et les Sous-niveaux
+                                passent au composant compact.
+     Tout le reste — les 93 autres moteurs, dont l'INTÉGRALITÉ du composant de
+     menu corrigé en V2.9.0.1 — reste vérifié byte à byte ici, et la recette
+     V2.9.1 les regèle de son côté. Rien n'est relâché. */
+  const rebaseV291 = ['toggleStructureNode', 'projectStructureTab', 'structureTabContent'];
   const bouges = [];
   let compares = 0;
   geles.forEach((n) => {
+    if (rebaseV291.includes(n)) return;
     const a = extractFn(A, n), c = extractFn(B, n);
     if (!a || !c) return;
     compares++;
     if (md5(a) !== md5(c)) bouges.push(`${n} (${md5(a)} → ${md5(c)})`);
   });
-  note('FREEZE-2901', { comparées: compares, bougés: bouges });
+  note('FREEZE-2901', { comparées: compares, bougés: bouges, reBaséesV291: rebaseV291 });
   ok(bouges.length === 0,
     `FREEZE-2901 : les ${compares} moteurs de V2.9.0 sont BYTE-IDENTIQUES — tout le moteur Structure et ses agrégations, le Planning, les données, les ressources, la qualité, les jalons, l’Opération et l’Undo/Redo`, 'FREEZE-2901');
 
@@ -800,7 +817,14 @@ console.log('\n[FREEZE-2901] Byte-identité V2.9.0 → V2.9.0.1');
   const modifiees = attendues.filter((n) => extractFn(A, n) && md5(extractFn(A, n)) !== md5(extractFn(B, n)));
   note('FREEZE-2901-périmètre', { modifiées: modifiees });
   ok(modifiees.length === 3,
-    'FREEZE-2901 : exactement trois fonctions modifiées — structureNodeMenu() et renderStructureNode() pour les deux défauts, toggleDrawerMenu() pour le retournement vertical, mesuré nécessaire', 'FREEZE-2901');
+    'FREEZE-2901 : les trois fonctions du correctif V2.9.0.1 — structureNodeMenu(), renderStructureNode(), toggleDrawerMenu() — diffèrent bien de V2.9.0', 'FREEZE-2901');
+  /* Et le cœur du correctif V2.9.0.1 n'a pas bougé depuis : c'est l'assertion
+     qui compte vraiment ici, et elle est plus forte qu'un simple décompte. */
+  const menuIntact = ['toggleDrawerMenu', 'closeDrawerMenu', 'structureNodeMenu']
+    .filter((n) => md5(extractFn(read('kanvix-next-gen-v2.9.0.1.html'), n)) !== md5(extractFn(B, n)));
+  note('FREEZE-2901-menu', { différentesDepuisV2901: menuIntact });
+  ok(menuIntact.length === 0,
+    'FREEZE-2901 : le composant de menu corrigé en V2.9.0.1 — toggleDrawerMenu(), closeDrawerMenu(), structureNodeMenu() — est BYTE-IDENTIQUE dans le build testé', 'FREEZE-2901');
 
   /* Aucun second moteur de menu : toggleDrawerMenu et closeDrawerMenu restent
      uniques, et aucune fonction « structureMenu… » parallèle n'apparaît. */
