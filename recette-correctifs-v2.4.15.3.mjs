@@ -252,7 +252,7 @@ console.log('\n[ENGINES-1513] Byte-identité des moteurs métier (V2.4.15.2 → 
     'reopenProject', 'archiveProjectPrompt', 'restoreProject', 'confirmCloseProject',
     'kanbanCard', 'getProjectSummary', 'art', 'projectVisual', 'projectCardMenu',
     'getResourceState', 'getResourcePeriodState', 'getResourceLoad', 'getMaxConcurrentTasks',
-    'getResourceWeekDays', 'siteCard', 'toggleDrawerMenu', 'closeDrawerMenu',
+    'getResourceWeekDays', 'siteCard', 'closeDrawerMenu',
   ];
   let allIdentical = true;
   for (const name of engines) {
@@ -262,6 +262,28 @@ console.log('\n[ENGINES-1513] Byte-identité des moteurs métier (V2.4.15.2 → 
     console.log(`  ${identical ? '✓' : '✗'} ${name} : ${a ? md5(a).slice(0, 8) : 'ABSENT'} → ${c ? md5(c).slice(0, 8) : 'ABSENT'}`);
   }
   ok(allIdentical, 'ENGINES-1513 : tous les moteurs / fonctions de rendu listés sont byte-identiques (correctif purement CSS)', 'ENGINES-1513');
+
+  /* V2.9.0.1 — RE-BASELINE. toggleDrawerMenu() a reçu le retournement vertical
+     du popover (V2.9.0.1 §3), et ce n'est pas un confort : mesuré sur une liste
+     Structure longue, le menu du DERNIER niveau sortait de 165 à 169 px sous le
+     bas du viewport, sur les cinq largeurs testées. La fonction quitte donc la
+     liste des « byte-identiques » — mais elle n'est PAS relâchée : l'assertion
+     dédiée ajoutée plus bas vérifie qu'en retirant le seul bloc ajouté, elle
+     redevient BYTE-IDENTIQUE à la version d'origine. closeDrawerMenu(), elle,
+     reste gelée telle quelle et continue d'être vérifiée dans cette liste. */
+  {
+    const sansFlip = (src) => src
+      .replace(/\/\* V2\.9\.0\.1[\s\S]*?\*\//g, '')
+      .replace(/pop\.classList\.remove\("drop-up"\);/g, '')
+      .replace(/let r = btn\.getBoundingClientRect\(\),[\s\S]*?pop\.classList\.add\("drop-up"\);/g, '')
+      .replace(/\s+/g, ' ').trim();
+    const a = extractFn(prevSrc, 'toggleDrawerMenu'), c = extractFn(curSrc, 'toggleDrawerMenu');
+    const identiqueHorsFlip = !!a && !!c && md5(sansFlip(a)) === md5(sansFlip(c));
+    console.log('  (info) [ENGINES-1513] ' + JSON.stringify({ identiqueHorsFlip, brut: [a && md5(a).slice(0, 8), c && md5(c).slice(0, 8)], normalise: [a && md5(sansFlip(a)).slice(0, 8), c && md5(sansFlip(c)).slice(0, 8)] }));
+    ok(identiqueHorsFlip,
+      'ENGINES-1513 : toggleDrawerMenu() ne diffère QUE par le retournement vertical — ce bloc retiré, elle redevient byte-identique à l’origine ; toute autre ligne ajoutée ferait tomber cette assertion', 'ENGINES-1513');
+  }
+
 }
 
 await b.close();

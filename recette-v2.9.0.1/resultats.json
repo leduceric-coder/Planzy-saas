@@ -1,0 +1,297 @@
+{
+  "passed": 58,
+  "failed": [],
+  "results": [
+    {
+      "sec": "UXS-01",
+      "name": "UXS-01 : le bouton d’action d’un niveau utilise le composant Kanvix standard — .more-menu + .btn.more-trigger + .more-pop, et plus aucun `more-wrap` dans le document",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-01",
+      "name": "UXS-01 : le wrapper .more-menu est bien l’ancêtre POSITIONNÉ du popover — c’est la cause racine du menu qui partait ailleurs",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-02",
+      "name": "UXS-02 : le déclencheur affiche l’icône Kanvix icon(\"more\") et non le caractère brut « … » ; plus aucun `icon-btn` orphelin (le sélecteur réel est `.btn.icon-btn`)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-02",
+      "name": "UXS-02 : accessibilité complète — aria-haspopup=\"menu\", aria-expanded=\"false\", aria-label=\"Actions du niveau\", role=\"menu\" et 4 role=\"menuitem\"",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-02",
+      "name": "UXS-02 : les quatre actions existantes sont conservées à l’identique, dans le même ordre",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-02",
+      "name": "UXS-02 : le déclencheur Structure est rendu pixel pour pixel comme celui d’une fiche Ressource — fond, bordure, rayon, taille, marge intérieure, couleur, typo",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-03",
+      "name": "UXS-03 : cliquer sur le menu du PREMIER niveau ouvre le bon .more-pop, et lui seul",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-04",
+      "name": "UXS-04 : le menu est géométriquement collé à son bouton — 6 px d’écart vertical, 0 px d’écart d’alignement à droite",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-04",
+      "name": "UXS-04 : le menu du premier niveau est entièrement dans le viewport",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-04",
+      "name": "UXS-04 : le popover reste en position absolue au-dessus de la carte Structure (z-index 40)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-05",
+      "name": "UXS-05 : le menu du DERNIER niveau reste entièrement dans le viewport (débordement bas -54 px, haut -671 px)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-05",
+      "name": "UXS-05 : ni débordement à droite, ni à gauche",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-06",
+      "name": "UXS-06 : faute de place en dessous, le menu s’est retourné AU-DESSUS de son bouton (classe .drop-up posée par la mesure, pas par une règle fixe)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-06",
+      "name": "UXS-06 : retourné, il reste ancré à son bouton — 6 px d’écart, 0 px d’alignement",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-06",
+      "name": "UXS-06 : l’ancêtre de positionnement est son propre .more-menu (more-menu) — jamais un conteneur de page",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-07",
+      "name": "UXS-07 : un seul .more-pop est ouvert simultanément, avant comme après",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-08",
+      "name": "UXS-08 : ouvrir un second menu ferme le premier, et aria-expanded revient bien à false sur celui qu’on quitte",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-07",
+      "name": "UXS-07 : un clic ailleurs ferme le menu — le listener global existant s’applique, parce que le wrapper est redevenu un .more-menu",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-07",
+      "name": "UXS-07 : Échap ferme le menu et remet tous les aria-expanded à false — comportement Kanvix existant, non réécrit",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-09",
+      "name": "UXS-09 : « Modifier » ouvre le formulaire du BON niveau (Étage 1), pas d’un voisin",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-09",
+      "name": "UXS-09 : cliquer une action referme le menu",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-10",
+      "name": "UXS-10 : « Ajouter un sous-niveau » ouvre une création vierge dont le parent est préréglé sur le BON niveau",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-11",
+      "name": "UXS-11 : Archiver appelle toujours toggleStructureArchive() — une entrée d’historique, une transaction d’annulation, pas deux",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-11",
+      "name": "UXS-11 : le garde-fou d’archivage est intact — un niveau à sous-niveaux actifs reste non archivé, avec son message",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-12",
+      "name": "UXS-12 : les garde-fous de suppression sont intacts — un niveau porteur de tâches ou de sous-niveaux est refusé sans rien muter, un niveau vide reste supprimable",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-13",
+      "name": "UXS-13 : le bouton « ← Structure » porte bien la grammaire `link back-link`",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-13",
+      "name": "UXS-13 : plus aucun cadre ni fond natif (bordure 0px, fond rgba(0, 0, 0, 0))",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-13",
+      "name": "UXS-13 : rendu identique au retour « ← Chantiers » — même couleur, même bordure, même fond, même typographie",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-14",
+      "name": "UXS-14 : le bouton appelle toujours closeStructureNode() — aucune navigation métier modifiée",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-14",
+      "name": "UXS-14 : un vrai clic sur le lien referme la fiche de niveau et ramène à l’arbre",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-15",
+      "name": "UXS-15 : mobile 430 — le popup du dernier niveau est ENTIÈREMENT dans le viewport (bas -207, haut -518, droite -44, gauche -166)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-15",
+      "name": "UXS-15 : mobile 430 — il s’ouvre à proximité immédiate de sa ligne (6 px)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-15",
+      "name": "UXS-15 : mobile 430 — le bouton est EXACTEMENT le déclencheur standard du produit (43×33, marge 8px 13px, rayon 8px), et ne chevauche pas le statut de la ligne",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-15",
+      "name": "UXS-15 : mobile 430 — c’est bien un petit popover contextuel (ni modal, ni sidewindow), ses actions restent touchables (38/38/38/38 px) et la page ne déborde pas",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-16",
+      "name": "UXS-16 : mobile 390 — le popup du dernier niveau est ENTIÈREMENT dans le viewport (bas -206, haut -463, droite -44, gauche -126)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-16",
+      "name": "UXS-16 : mobile 390 — il s’ouvre à proximité immédiate de sa ligne (6 px)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-16",
+      "name": "UXS-16 : mobile 390 — le bouton est EXACTEMENT le déclencheur standard du produit (43×33, marge 8px 13px, rayon 8px), et ne chevauche pas le statut de la ligne",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-16",
+      "name": "UXS-16 : mobile 390 — c’est bien un petit popover contextuel (ni modal, ni sidewindow), ses actions restent touchables (38/38/38/38 px) et la page ne déborde pas",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-17",
+      "name": "UXS-17 : mobile 360 — le popup du dernier niveau est ENTIÈREMENT dans le viewport (bas -207, haut -358, droite -44, gauche -96)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-17",
+      "name": "UXS-17 : mobile 360 — il s’ouvre à proximité immédiate de sa ligne (6 px)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-17",
+      "name": "UXS-17 : mobile 360 — le bouton est EXACTEMENT le déclencheur standard du produit (43×33, marge 8px 13px, rayon 8px), et ne chevauche pas le statut de la ligne",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-17",
+      "name": "UXS-17 : mobile 360 — c’est bien un petit popover contextuel (ni modal, ni sidewindow), ses actions restent touchables (38/38/38/38 px) et la page ne déborde pas",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-18",
+      "name": "UXS-18 : en sombre le popover a un fond foncé (rgb(16, 32, 47)) et un texte clair (rgb(238, 244, 249)) — il hérite des variables de thème, sans règle propre à Structure",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-18",
+      "name": "UXS-18 : aucune couleur codée en dur dans la carte Structure ni dans son menu",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-18",
+      "name": "UXS-18 : en sombre, l’ancrage est identique — le correctif est structurel, pas cosmétique",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-19",
+      "name": "UXS-19 : aucun débordement horizontal de la page Structure sur 11 largeurs × 2 thèmes",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-19",
+      "name": "UXS-19 : sur ces 22 combinaisons, le popup du dernier niveau reste toujours entièrement dans le viewport",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-NONREG",
+      "name": "UXS-NONREG : les quatre menus déjà existants — Chantier, Ressource, Tâche, Opération — sont présents et ouvrables (4/4)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-NONREG",
+      "name": "UXS-NONREG : chacun s’ouvre normalement, un seul à la fois, aria-expanded correct — le moteur partagé n’a pas changé de comportement",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-NONREG",
+      "name": "UXS-NONREG : aucun des quatre ne se retourne — la mesure prouve qu’ils tiennent en dessous, donc la classe .drop-up n’est JAMAIS posée pour eux et leur rendu est celui de V2.9.0",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-NONREG",
+      "name": "UXS-NONREG : leur ancrage est strictement celui de V2.9.0 — même écart au bouton, même alignement à droite, aucun débordement de viewport",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-NONREG",
+      "name": "UXS-NONREG : leurs actions sont intactes (chantier:2, ressource:4, tache:5, operation:3)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-NONREG",
+      "name": "UXS-NONREG : dans une fenêtre basse, le menu Chantier reste lui aussi dans le viewport et ancré (retourné : true) — le mécanisme est générique, pas réservé à Structure",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2901",
+      "name": "FREEZE-2901 : les 97 moteurs de V2.9.0 sont BYTE-IDENTIQUES — tout le moteur Structure et ses agrégations, le Planning, les données, les ressources, la qualité, les jalons, l’Opération et l’Undo/Redo",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2901",
+      "name": "FREEZE-2901 : exactement trois fonctions modifiées — structureNodeMenu() et renderStructureNode() pour les deux défauts, toggleDrawerMenu() pour le retournement vertical, mesuré nécessaire",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2901",
+      "name": "FREEZE-2901 : un seul toggleDrawerMenu(), un seul closeDrawerMenu() (byte-identique), aucun moteur de menu parallèle, plus aucune trace de `more-wrap`, SCHEMA 13 et STORE inchangés",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2901",
+      "name": "FREEZE-2901 : INITIAL_STATE.structureNodes et STRUCTURE_TYPES sont byte-identiques — aucune donnée métier touchée",
+      "status": "PASS"
+    },
+    {
+      "sec": "UXS-20",
+      "name": "UXS-20 : aucune erreur JavaScript applicative en console (0)",
+      "status": "PASS"
+    }
+  ],
+  "consoleErrors": []
+}
