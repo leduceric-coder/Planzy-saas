@@ -459,7 +459,7 @@
     },
     {
       "sec": "FREEZE-2120",
-      "name": "FREEZE-2120 : les 69 moteurs nommément protégés sont BYTE-IDENTIQUES — tout le Planning (positionnement, drag & drop, propagation, jours non ouvrés, démarrage réel), les DÉPENDANCES, la QUALITÉ, les RESSOURCES, la STRUCTURE, le KANBAN, l’UNDO/REDO, la SAUVEGARDE et les MODÈLES",
+      "name": "FREEZE-2120 : les 68 moteurs nommément protégés sont BYTE-IDENTIQUES — tout le Planning (positionnement, drag & drop, propagation, jours non ouvrés, démarrage réel), les DÉPENDANCES, la QUALITÉ, les RESSOURCES, la STRUCTURE, le KANBAN, l’UNDO/REDO, la SAUVEGARDE et les MODÈLES",
       "status": "PASS"
     },
     {

@@ -1,0 +1,207 @@
+{
+  "passed": 40,
+  "failed": [],
+  "results": [
+    {
+      "sec": "FIXPRQ-01",
+      "name": "FIXPRQ-01 : le cas de test est bien celui du bug — « Pose des 6 fenêtres » porte UNE condition bloquante non confirmée et n’est donc pas prête à démarrer",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXPRQ-01",
+      "name": "FIXPRQ-01 : sur V2.12.0, l’éditeur universel CONTOURNE la garde — aucune modale ne s’interpose, l’intervention passe silencieusement « En cours », et aucun démarrage forcé n’est historisé. Le bug est REPRODUIT, pas supposé",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXPRQ-02",
+      "name": "FIXPRQ-02 : sur V2.12.0.1, soumettre le VRAI formulaire de l’éditeur ouvre « Conditions non confirmées » — le nombre, la liste courte avec sa date prévue, le rappel que démarrer ne confirme rien, et les deux actions attendues",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXPRQ-03",
+      "name": "FIXPRQ-03 : pendant la modale, la tâche est STRICTEMENT inchangée — statut, nom, dates, intervenant, dépendances et baseline",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXPRQ-03",
+      "name": "FIXPRQ-03 : et rien d’autre n’a été écrit — aucun snapshot, aucun historique, aucun incident, aucun contrôle matérialisé « au passage »",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXPRQ-04",
+      "name": "FIXPRQ-04 : pendant la modale, AUCUNE condition n’est modifiée — ni son statut, ni sa date de confirmation",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXPRQ-05",
+      "name": "FIXPRQ-05 : « Annuler » laisse TOUT strictement en l’état — aucune mutation métier, aucun snapshot, aucun historique, aucun incident, aucune condition touchée",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXPRQ-05",
+      "name": "FIXPRQ-05 : et aucun accord n’est mémorisé — l’accusé de l’éditeur reste vide après un refus",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXPRQ-06",
+      "name": "FIXPRQ-06 : l’éditeur reste ouvert et l’utilisateur ne perd PAS son formulaire — le nom saisi et le statut choisi sont toujours là",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXPRQ-07",
+      "name": "FIXPRQ-07 : la PREMIÈRE décision demandée est celle des conditions — l’ordre est déterministe",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXPRQ-08",
+      "name": "FIXPRQ-08 : « Démarrer quand même » ne démarre pas — il rend la main à l’éditeur, qui pose ALORS la confirmation calendrier de V2.8.5.1 (§7). Le parcours existant continue de fonctionner",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXPRQ-08",
+      "name": "FIXPRQ-08 : et ENTRE les deux décisions, toujours rien d’écrit — pas de snapshot intermédiaire, pas de statut, pas de nom, pas de date, pas d’historique",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXPRQ-09",
+      "name": "FIXPRQ-09 : après les DEUX confirmations, la tâche passe bien « En cours », et le geste complet est appliqué — nom, intervenant et repositionnement réel compris",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXPRQ-10",
+      "name": "FIXPRQ-10 : les conditions restent STRICTEMENT dans leur état précédent — la livraison reste « à confirmer », aucune confirmedDate n’est renseignée automatiquement",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXPRQ-11",
+      "name": "FIXPRQ-11 : l’historique contient UNE entrée « Intervention démarrée malgré 1 condition non confirmée. » — écrite par le moteur central, pas par l’éditeur",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXPRQ-11",
+      "name": "FIXPRQ-11 : et aucun incident artificiel n’est créé au passage",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXPRQ-11",
+      "name": "FIXPRQ-11 : les deux accusés sont CONSOMMÉS — aucun accord ne survit à la validation",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXPRQ-12",
+      "name": "FIXPRQ-12 : le cas est bien celui d’une condition NON bloquante non satisfaite — elle se surveille, elle n’empêche rien",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXPRQ-12",
+      "name": "FIXPRQ-12 : elle n’ouvre PAS « Conditions non confirmées » depuis l’éditeur — la règle de V2.12.0 est inchangée",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXPRQ-13",
+      "name": "FIXPRQ-13 : quand toutes les conditions bloquantes sont satisfaites, V2.12.0.1 se comporte EXACTEMENT comme V2.12.0 — même modale calendrier, même statut, même nom, même repositionnement, même nombre de snapshots, même historique",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXPRQ-13",
+      "name": "FIXPRQ-13 : et le parcours nominal reste celui du produit — la seule question posée est celle du démarrage réel",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXPRQ-14",
+      "name": "FIXPRQ-14 : modifier le nom, l’intervenant, les dates ET le statut en démarrant malgré une condition ne crée QU’UNE transaction — un seul snapshot, pas un par décision",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXPRQ-14",
+      "name": "FIXPRQ-14 : et UN SEUL Undo restitue le geste ENTIER — ancien nom, ancien intervenant, anciennes dates, ancien statut",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXPRQ-14",
+      "name": "FIXPRQ-14 : les conditions sont restées dans leur état initial de bout en bout — il n’existe aucun Undo propre aux conditions de démarrage",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXPRQ-14",
+      "name": "FIXPRQ-14 : « Rétablir » rejoue le geste entier, lui aussi d’un seul coup",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXPRQ-15",
+      "name": "FIXPRQ-15 : fiche tâche, Kanban, Mode Chantier, Artisan « Je commence » et appel ordinaire se comportent à l’IDENTIQUE sur les deux builds — ce patch ne concerne que l’exception transactionnelle de l’éditeur",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXPRQ-15",
+      "name": "FIXPRQ-15 : et la garde CENTRALE de V2.12.0 reste bien leur moteur — trois chemins l’ouvrent, une tâche prête ne la voit pas",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXPRQ-RESP",
+      "name": "FIXPRQ-RESP : sur 20 combinaisons (10 largeurs de 1920 à 390 px × clair/sombre), l’éditeur, la modale « Conditions non confirmées » ET son enchaînement vers la confirmation calendrier ne provoquent AUCUN défilement horizontal, AUCUN débordement de la modale et AUCUN bouton coupé",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXPRQ-RESP",
+      "name": "FIXPRQ-RESP : à 430 et 390 px, les actions de la modale mesurent EXACTEMENT ce qu’elles mesuraient en V2.12.0 — le minimum tactile est conservé, aucune règle de style n’a été touchée",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21201",
+      "name": "FREEZE-21201 : hors des TROIS fonctions du périmètre annoncé — submitTaskEdit(), confirmPrerequisiteStart() et clearTaskEditAck() — le balayage de tout le fichier ne trouve AUCUNE autre fonction modifiée depuis V2.12.0",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21201",
+      "name": "FREEZE-21201 : les trois fonctions annoncées ont RÉELLEMENT changé — aucun périmètre annoncé pour rien",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21201",
+      "name": "FREEZE-21201 : AUCUNE fonction n’a été ajoutée — ce correctif n’introduit aucun moteur, pas même un helper",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21201",
+      "name": "FREEZE-21201 : les 87 moteurs nommément protégés sont BYTE-IDENTIQUES — dont setTaskStatus() lui-même. La garde centrale n’a PAS été déplacée : elle protège toujours les cinq autres chemins, et la transaction unique de l’éditeur n’a pas été cassée",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21201",
+      "name": "FREEZE-21201 / §4 : l’éditeur INTERROGE taskStartReadiness() et ne recopie AUCUNE règle métier — ni satisfaction, ni état effectif, ni tri, ni priorité — et ne touche jamais app.prerequisites directement. Aucun second moteur de conditions",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21201",
+      "name": "FREEZE-21201 / §9 : la modale est CELLE du produit — une seule définition dans tout le fichier — et l’éditeur ne réécrit pas le fait métier : il TRANSMET la décision au moteur central, qui reste seul à historiser le démarrage forcé",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21201",
+      "name": "FREEZE-21201 / §10 : submitTaskEdit() ne contient toujours QU’UN appel à snapshot(), il n’existe qu’un setTaskStatus() dans tout le fichier, et aucune pile Undo parallèle n’a été créée",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21201",
+      "name": "FREEZE-21201 / §8 : l’accusé est une variable LOCALE au module, jamais rangée dans app, donc jamais persistée ni sauvegardée — et elle est nettoyée avec le formulaire",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21201",
+      "name": "FREEZE-21201 / §20 : la feuille de style, INITIAL_STATE et les référentiels de conditions sont BYTE-IDENTIQUES — ce correctif ne touche ni au dessin, ni aux données de démonstration",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21201",
+      "name": "FREEZE-21201 / §20 : SCHEMA_VERSION reste 15, STORE reste « kanvix-product-8-3 », build inchangé, KANVIX_BACKUP_REQUIRED byte-identique — aucune migration, aucune donnée persistée nouvelle",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXPRQ",
+      "name": "FIXPRQ : aucune erreur JavaScript applicative en console (0)",
+      "status": "PASS"
+    }
+  ],
+  "consoleErrors": []
+}

@@ -852,7 +852,12 @@ console.log('\n[FREEZE-2901] Byte-identité V2.9.0 → V2.9.0.1');
      les « Conditions de démarrage ». Déclarés, donc assumés, et vérifiés un à
      un par FREEZE-2120. Les 86 autres restent gelés byte à byte. */
   const rebaseV291 = ['toggleStructureNode', 'projectStructureTab', 'structureTabContent', 'migrateState', 'openStructureForm',
-    'applyImportPlan', 'exportKanvixData', 'gantt', 'setTaskStatus', 'openTask'];
+    'applyImportPlan', 'exportKanvixData', 'gantt', 'setTaskStatus', 'openTask',
+    /* V2.12.0.1 — submitTaskEdit() reçoit le pré-vol des conditions de démarrage
+       que la garde centrale, posée sous `!silent`, ne pouvait pas atteindre
+       depuis l'éditeur transactionnel. Déclarée, donc assumée, et vérifiée par
+       FREEZE-21201. setTaskStatus() reste, lui, byte-identique. */
+    'submitTaskEdit'];
   const bouges = [];
   let compares = 0;
   geles.forEach((n) => {

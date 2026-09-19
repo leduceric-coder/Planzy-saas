@@ -1144,13 +1144,25 @@ console.log('\n[FREEZE-2120] Périmètre du round et architecture');
     'applyImportPlan',           // le remappage, dans la passe 2 existante
     'impDroppedLines',           // la perte est annoncée
   ];
+  /* V2.12.0.1 — les fonctions touchées par le ROUND SUIVANT sont tolérées par le
+     BALAYAGE — sinon ce gel signalerait comme dérive ce qu'un correctif
+     ultérieur corrige volontairement. La liste reste FERMÉE : une fonction non
+     nommée fait toujours tomber le test, et le contrôle « les 25 fonctions de
+     V2.12.0 ont RÉELLEMENT changé » reste strictement celui de ce round.
+       · submitTaskEdit — reçoit le pré-vol des conditions que la garde centrale,
+         posée sous `!silent`, ne pouvait pas atteindre depuis l'éditeur ;
+       · confirmPrerequisiteStart — rend la décision à l'appelant qui tient déjà
+         une transaction, au lieu de rappeler le moteur lui-même ;
+       · clearTaskEditAck — nettoie le nouvel accusé avec le formulaire. */
+  const attenduesRoundsSuivants = ['submitTaskEdit', 'confirmPrerequisiteStart', 'clearTaskEditAck'];
+  const tolerees = [...attendues, ...attenduesRoundsSuivants];
   const parIndentation = ['renderAIPanel'];
   const horsPerimetre = [];
   const noms = [...new Set([...B.matchAll(/\n\s*function\s+([A-Za-z_$][\w$]*)\s*\(/g)].map((m) => m[1]))];
   noms.forEach((n) => {
     if (parIndentation.includes(n)) return;
     const a = extractFn(A, n), c = extractFn(B, n);
-    if (a && c && md5(a) !== md5(c) && !attendues.includes(n)) horsPerimetre.push(n);
+    if (a && c && md5(a) !== md5(c) && !tolerees.includes(n)) horsPerimetre.push(n);
   });
   const indentDiff = parIndentation.filter((n) => blocIndente(A, n) !== blocIndente(B, n));
   const nonModifiees = attendues.filter((n) => md5(extractFn(A, n) || '') === md5(extractFn(B, n) || ''));
@@ -1185,15 +1197,22 @@ console.log('\n[FREEZE-2120] Périmètre du round et architecture');
     'getTodayActions', 'getTodayWorkflow', 'attentionCard', 'attentionRows',
     'decisionSummary', 'warningSummary', 'priorityScore',
   ];
+  /* V2.12.0.1 — RE-BASELINE, une seule cause NOMMÉE : submitTaskEdit() reçoit le
+     pré-vol des conditions de démarrage. Elle quitte donc le gel, déclarée et
+     assumée, et FREEZE-21201 la vérifie ligne à ligne. setTaskStatus() — la
+     garde CENTRALE, et le vrai sujet de ce gel — reste byte-identique : le
+     correctif ne l'a pas déplacée. */
+  const rebaseV21201 = ['submitTaskEdit'];
   const bouges = [];
   let compares = 0;
   geles.forEach((n) => {
+    if (rebaseV21201.includes(n)) return;
     const a = extractFn(A, n), c = extractFn(B, n);
     if (!a || !c) return;
     compares++;
     if (md5(a) !== md5(c)) bouges.push(`${n} (${md5(a)} → ${md5(c)})`);
   });
-  note('FREEZE-2120-gelés', { comparées: compares, bougés: bouges });
+  note('FREEZE-2120-gelés', { comparées: compares, bougés: bouges, reBaséesV21201: rebaseV21201 });
   ok(compares > 55 && bouges.length === 0,
     `FREEZE-2120 : les ${compares} moteurs nommément protégés sont BYTE-IDENTIQUES — tout le Planning (positionnement, drag & drop, propagation, jours non ouvrés, démarrage réel), les DÉPENDANCES, la QUALITÉ, les RESSOURCES, la STRUCTURE, le KANBAN, l’UNDO/REDO, la SAUVEGARDE et les MODÈLES`, 'FREEZE-2120');
 
@@ -1272,11 +1291,14 @@ console.log('\n[FREEZE-2120] Périmètre du round et architecture');
 }
 
 const appErrs = allErrs.filter((e) => !/net::|Failed to fetch|open-meteo|geopf|nominatim/.test(e.msg));
+/* V2.12.0.1 — l'assertion « zéro erreur console » est posée AVANT le décompte
+   final : le nombre annoncé à l'écran est ainsi EXACTEMENT celui que
+   resultats.json enregistre. */
+ok(appErrs.length === 0, `PRQ : aucune erreur JavaScript applicative en console (${appErrs.length})`, 'PRQ');
+if (appErrs.length) console.log(JSON.stringify(appErrs.slice(0, 10), null, 1));
 console.log('\n' + '='.repeat(60));
 console.log(`RÉSULTAT : ${passed} / ${passed + failed.length}`);
 if (failed.length) { console.log('ÉCHECS :'); failed.forEach((f) => console.log('  ✗ ' + f)); }
-ok(appErrs.length === 0, `PRQ : aucune erreur JavaScript applicative en console (${appErrs.length})`, 'PRQ');
-if (appErrs.length) console.log(JSON.stringify(appErrs.slice(0, 10), null, 1));
 console.log(`ERREURS CONSOLE APPLICATIVES : ${appErrs.length}`);
 console.log('='.repeat(60));
 fs.writeFileSync(SHOTS + 'resultats.json', JSON.stringify({ passed, failed, results, consoleErrors: appErrs }, null, 2));

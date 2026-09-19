@@ -472,7 +472,12 @@ console.log('\n[FREEZE-21001] Périmètre : une seule fonction modifiée');
     'attentionRowTone', 'openMoreIssues', 'showKanvixBackupPreview',
     'exportKanvixData', 'applyImportPlan', 'impDroppedLines',
   ];
-  const tolerees = [...attendues, ...attenduesRoundsSuivants, ...attenduesV2120];
+  /* V2.12.0.1 — les deux fonctions du correctif « éditeur universel », TOLÉRÉES
+     par ce balayage (sinon ce gel signalerait comme dérive ce qu'un round
+     ultérieur corrige volontairement). La liste reste FERMÉE et le contrôle
+     « les fonctions du round ont réellement changé » reste celui de la recette. */
+  const attenduesV21201 = ['submitTaskEdit', 'clearTaskEditAck', 'confirmPrerequisiteStart'];
+  const tolerees = [...attendues, ...attenduesRoundsSuivants, ...attenduesV2120, ...attenduesV21201];
   const horsPerimetre = [];
   const noms = [...new Set([...B.matchAll(/\n\s*function\s+([A-Za-z_$][\w$]*)\s*\(/g)].map((m) => m[1]))];
   noms.forEach((n) => {
@@ -523,16 +528,25 @@ console.log('\n[FREEZE-21001] Périmètre : une seule fonction modifiée');
      ce gel protège. Déclarées, donc assumées, et vérifiées une à une par
      FREEZE-2120 dans recette-conditions-demarrage-v2.12.0.mjs. */
   const rebaseV2120 = ['openTask', 'setTaskStatus', 'gantt', 'applyImportPlan', 'exportKanvixData'];
+  /* V2.12.0.1 — RE-BASELINE, une seule cause NOMMÉE. Le correctif « conditions
+     de démarrage depuis l'éditeur universel » pose dans submitTaskEdit() le
+     pré-vol que la garde centrale ne pouvait pas atteindre (elle est sous
+     `!silent`, et l'éditeur appelle le moteur en mode transactionnel). La
+     fonction quitte donc le gel, déclarée et assumée ; elle est vérifiée ligne
+     à ligne par FREEZE-21201 dans recette-conditions-demarrage-v2.12.0.1.mjs.
+     setTaskStatus(), lui, reste BYTE-IDENTIQUE — la garde centrale n'a pas
+     bougé, et c'est tout l'intérêt du correctif. */
+  const rebaseV21201 = ['submitTaskEdit'];
   const bouges = [];
   let compares = 0;
   nommes.forEach((n) => {
-    if (rebaseV2120.includes(n)) return;
+    if (rebaseV2120.includes(n) || rebaseV21201.includes(n)) return;
     const a = extractFn(A, n), c = extractFn(B, n);
     if (!a || !c) return;
     compares++;
     if (md5(a) !== md5(c)) bouges.push(n);
   });
-  note('FREEZE-21001-moteurs', { comparées: compares, bougés: bouges, reBaséesV2120: rebaseV2120 });
+  note('FREEZE-21001-moteurs', { comparées: compares, bougés: bouges, reBaséesV2120: rebaseV2120, reBaséesV21201: rebaseV21201 });
   ok(bouges.length === 0,
     `FREEZE-21001 : les ${compares} moteurs nommément protégés sont BYTE-IDENTIQUES — toute la Structure hors duplication, le moteur Reprise/SAV, le Planning, les données, les ressources, la qualité, l’Undo/Redo et la navigation`, 'FREEZE-21001');
 
