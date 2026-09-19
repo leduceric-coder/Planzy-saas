@@ -400,7 +400,7 @@ try {
   const tpid = await ev(pB, (id) => task(id).projectId, tid);
   await ev(pA, (pid) => selectFieldProject(pid), tpid);
   await pA.waitForTimeout(200);
-  await ev(pB, (id) => { setTaskStatus(id, 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); }, tid);
+  await ev(pB, (id) => { setTaskStatus(id, 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); }, tid);
   await pA.waitForTimeout(500);
   const started = await ev(pA, (id) => {
     const row = [...document.querySelectorAll('.field-task')].find((x) => x.getAttribute('onclick')?.includes(id));

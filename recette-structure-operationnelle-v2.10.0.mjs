@@ -588,8 +588,9 @@ console.log('\n[DUP] Sauvegarde et restauration');
     `DUP-22 : la sauvegarde restitue exactement la hiérarchie obtenue (${r.restaure.noeuds.length} niveaux, parents compris)`, 'DUP-22');
   ok(JSON.stringify(r.attendu.taches) === JSON.stringify(r.restaure.taches),
     'DUP-22 : les interventions clonées et leurs rattachements à la NOUVELLE structure sont restitués à l’identique, dépendances comprises', 'DUP-22');
-  ok(r.attendu.schema === 14 && r.attendu.store === 'kanvix-product-8-3',
-    'DUP-22 : la duplication n’exige toujours aucun champ persistant à elle ; le schéma vaut 14 (bump introduit par les MODÈLES de V2.11.0, pas par la duplication) et STORE reste « kanvix-product-8-3 »', 'DUP-22');
+  /* V2.12.0 — RE-POINTAGE. Le schéma avance à 15 : « Conditions de démarrage » introduit app.prerequisites, migration 14 → 15 (§28). Ce que cette assertion protège réellement — la CLÉ DE STOCKAGE, qui n'a jamais bougé — est inchangé. */
+  ok(r.attendu.schema === 15 && r.attendu.store === 'kanvix-product-8-3',
+    'DUP-22 : la duplication n’exige toujours aucun champ persistant à elle ; le schéma vaut 15 (bumps introduits par les MODÈLES de V2.11.0 puis les CONDITIONS de V2.12.0, jamais par la duplication) et STORE reste « kanvix-product-8-3 »', 'DUP-22');
   await ctx.close();
 }
 
@@ -937,15 +938,24 @@ console.log('\n[FREEZE-2100] Périmètre du round');
     // Navigation de la fiche chantier (le correctif de V2.9.1)
     'projectTab', 'renderProject', 'selectProject',
   ];
+  /* V2.12.0 — RE-BASELINE, une seule cause NOMMÉE. « Conditions de démarrage »
+     (§12, §14, §16, §20, §23, §30) étend un petit nombre de moteurs centraux —
+     et les étend PLUTÔT QUE de les dupliquer, ce qui est précisément la règle
+     que ces gels protègent. Les fonctions ci-dessous quittent donc le gel,
+     déclarées et assumées ; elles sont vérifiées ligne à ligne par
+     `recette-conditions-demarrage-v2.12.0.mjs` (FREEZE-2120), qui les nomme
+     une à une. TOUT LE RESTE reste gelé byte à byte ici : rien n'est relâché. */
+  const rebaseV2120 = ['gantt', 'setTaskStatus', 'applyImportPlan', 'exportKanvixData', 'openTask'];
   const bouges = [];
   let compares = 0;
   geles.forEach((n) => {
+    if (rebaseV2120.includes(n)) return;
     const a = extractFn(A, n), c = extractFn(B, n);
     if (!a || !c) return;
     compares++;
     if (md5(a) !== md5(c)) bouges.push(`${n} (${md5(a)} → ${md5(c)})`);
   });
-  note('FREEZE-2100', { comparées: compares, bougés: bouges });
+  note('FREEZE-2100', { comparées: compares, bougés: bouges, reBaséesV2120: rebaseV2120 });
   ok(bouges.length === 0,
     `FREEZE-2100 : les ${compares} moteurs de V2.9.1 sont BYTE-IDENTIQUES — tout le Planning (drag & drop, création à la souris, jours non ouvrés, démarrage réel), tout le moteur Structure, les données, les ressources, la qualité, les jalons, l’Opération, l’Undo/Redo et les menus`, 'FREEZE-2100');
 
@@ -964,7 +974,23 @@ console.log('\n[FREEZE-2100] Périmètre du round');
      fonction non nommée ferait toujours tomber le test, et le gel propre à
      chaque round vérifie son périmètre de façon indépendante. */
   const attenduesRoundsSuivants = ['openStructureForm'];
-  const tolerees = [...attendues, ...attenduesRoundsSuivants];
+  /* V2.12.0 — le périmètre NOMMÉ des « Conditions de démarrage », repris
+     verbatim de FREEZE-2120 dans recette-conditions-demarrage-v2.12.0.mjs. Il
+     est TOLÉRÉ par ce balayage — sinon ce gel signalerait comme dérive ce qu'un
+     round ultérieur modifie volontairement — mais la liste reste FERMÉE : une
+     fonction non nommée fait toujours tomber le test, et la recette V2.12.0
+     vérifie de son côté que ces 25 fonctions ont RÉELLEMENT changé, et elles
+     seules. */
+  const attenduesV2120 = [
+    'migrateState', 'alignDemoDates', 'setTaskStatus', 'openTask', 'openFieldTaskModal',
+    'confirmDeleteTask', 'cloneStructureTree', 'collectStructureSource',
+    'duplicateStructureNode', 'applyTemplateToProject', 'buildProjectTemplateRecord',
+    'gantt', 'projectToday', 'projectUpcomingTimeline', 'renderArtisan',
+    'getTodayDecisions', 'getTodayWarnings', 'decisionCard', 'watchCard',
+    'attentionRowTone', 'openMoreIssues', 'showKanvixBackupPreview',
+    'exportKanvixData', 'applyImportPlan', 'impDroppedLines',
+  ];
+  const tolerees = [...attendues, ...attenduesRoundsSuivants, ...attenduesV2120];
   const horsPerimetre = [];
   const noms = [...new Set([...B.matchAll(/\n\s*function\s+([A-Za-z_$][\w$]*)\s*\(/g)].map((m) => m[1]))];
   noms.forEach((n) => {
@@ -983,7 +1009,8 @@ console.log('\n[FREEZE-2100] Périmètre du round');
     'structureRememberTrigger'];
   const manquantes = ajoutees.filter((n) => !extractFn(B, n));
   const regles = {
-    schema: /SCHEMA_VERSION = 14/.test(B) && /SCHEMA_VERSION = 13/.test(A),
+    // V2.12.0 — le schéma avance à 15 (app.prerequisites, §28).
+    schema: /SCHEMA_VERSION = 15/.test(B) && /SCHEMA_VERSION = 13/.test(A),
     store: (B.match(/STORE = "([^"]+)"/) || [])[1] === 'kanvix-product-8-3',
     build: (B.match(/KANVIX_APP_BUILD = "([^"]+)"/) || [])[1] === (A.match(/KANVIX_APP_BUILD = "([^"]+)"/) || [])[1],
     initialIdentique:

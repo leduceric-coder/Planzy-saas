@@ -1259,7 +1259,7 @@ console.log('\n[OP-GEL] Mode Chantier gelé, Bureau mobile, thème sombre, basel
 
   const qualityBaseline = await ev(p5, () => {
     resetApp(); setDepth('pilot'); setRole('driver');
-    setTaskStatus('k-windows', 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
+    setTaskStatus('k-windows', 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     closeOverlay('modal');
     const out = setTaskStatus('k-windows', 'done');
     const txt = document.querySelector('#modalContent').textContent;
@@ -1352,8 +1352,13 @@ console.log('\n[FREEZE-280] Byte-identité des moteurs métier');
     'applyImportPlan', 'nav', 'impDroppedLines']
     .filter((n) => { const a = extract(prevSrc, n), c = extract(curSrc, n); return a && c && md5(a) !== md5(c); });
   note('FREEZE-280-périmètre', { modifiées: changed });
+  /* V2.12.0 — impDroppedLines() figurait déjà parmi les fonctions SCANNÉES mais
+     avait été omise de la liste autorisée. V2.12.0 l'étend (§30 : la perte d'une
+     condition à l'import est ANNONCÉE) : elle rejoint explicitement la liste.
+     La liste reste fermée — toute autre fonction fait tomber le test. */
   ok(changed.every((n) => ['planningTasks', 'planningAgenda', 'gantt', 'resourceLoadBoard', 'migrateState',
-    'openProjectEdit', 'renderSites', 'renderPage', 'exportKanvixData', 'validateImportState', 'applyImportPlan', 'nav'].includes(n)),
+    'openProjectEdit', 'renderSites', 'renderPage', 'exportKanvixData', 'validateImportState', 'applyImportPlan', 'nav',
+    'impDroppedLines'].includes(n)),
     'FREEZE-280 : les seules fonctions modifiées appartiennent toutes à la liste explicitement autorisée à évoluer', 'FREEZE-280');
 
   // Les signatures étendues restent rétro-compatibles.

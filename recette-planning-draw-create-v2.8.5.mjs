@@ -792,13 +792,19 @@ console.log('\n[FREEZE-285] Byte-identité');
     'confirmDeleteTask', 'toggleProject', 'weekBounds',
     'getCurrentWeekRange', 'canEditProject', 'guardEditable',
   ];
+  /* V2.12.0 — RE-BASELINE, une seule cause NOMMÉE : « Conditions de démarrage »
+     étend ces moteurs centraux plutôt que de les dupliquer — la règle même que
+     ce gel protège. Déclarées, donc assumées, et vérifiées une à une par
+     FREEZE-2120 dans recette-conditions-demarrage-v2.12.0.mjs. */
+  const rebaseV2120 = ['confirmDeleteTask'];
   let moved = [], same = 0;
   for (const n of frozen) {
+    if (rebaseV2120.includes(n)) continue;
     const a = extract(prevSrc, n), c = extract(curSrc, n);
     if (a && c && md5(a) === md5(c)) same++;
     else moved.push(`${n} (${a ? md5(a).slice(0, 8) : 'ABSENT'} → ${c ? md5(c).slice(0, 8) : 'ABSENT'})`);
   }
-  note('FREEZE-285', { gelés: same, bougés: moved });
+  note('FREEZE-285', { gelés: same, bougés: moved, reBaséesV2120: rebaseV2120 });
   ok(moved.length === 0,
     `FREEZE-285 : les ${frozen.length} moteurs de V2.8.4.1 sont BYTE-IDENTIQUES — tout l’Undo/Redo, le déplacement des tâches, le drag HTML5, drawDeps, scale(), pos(), planningTasks(), la Qualité, les Ressources, les Jalons et le Mode Chantier`, 'FREEZE-285');
 

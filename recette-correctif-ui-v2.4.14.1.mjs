@@ -263,7 +263,7 @@ console.log('\n[CHT-141-04] Les 5 variantes du cockpit se rendent sans l’ancie
 console.log('\n[CHT-141-05] Historique — largeur relevée (950-1150px), toujours alignée à gauche');
 {
   const { ctx, p } = await newPage(1600, 1000, 'CHT5');
-  await reset(p, "task('k-electric').status='todo';save();setTaskStatus('k-electric','doing','task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();app.ui.projectId='keravel';go('project');openProjectTab('keravel','Historique');");
+  await reset(p, "task('k-electric').status='todo';save();setTaskStatus('k-electric','doing','task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();app.ui.projectId='keravel';go('project');openProjectTab('keravel','Historique');");
   await p.waitForTimeout(280);
   const r = await ev(p, () => {
     const panel = document.querySelector('.history-panel').getBoundingClientRect();
@@ -284,9 +284,9 @@ console.log('\n[CHT-141-06] Historique — isolation par chantier toujours garan
   const r = await ev(p, () => {
     resetApp(); setDepth('pilot');
     task('k-electric').status = 'todo'; save();
-    setTaskStatus('k-electric', 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
+    setTaskStatus('k-electric', 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     const v = app.tasks.find((t) => t.projectId === 'villa');
-    setTaskStatus(v.id, 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
+    setTaskStatus(v.id, 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     const k = projectTabContent('Historique', 'keravel');
     const vh = projectTabContent('Historique', 'villa');
     return { keravelHasVilla: k.includes(v.name), villaHasKeravel: vh.includes('Tableau électrique'), identical: k === vh };

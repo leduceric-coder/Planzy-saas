@@ -846,7 +846,13 @@ console.log('\n[FREEZE-2901] Byte-identité V2.9.0 → V2.9.0.1');
   /* V2.11.0.3 — openStructureForm rejoint la liste des fonctions RE-BASÉES
      par les rounds suivants : déclarée, donc assumée, et vérifiée ailleurs
      (FIXTPL3-10 et FREEZE-21103). */
-  const rebaseV291 = ['toggleStructureNode', 'projectStructureTab', 'structureTabContent', 'migrateState', 'openStructureForm'];
+  /* V2.12.0 — cinq moteurs centraux rejoignent la liste des fonctions
+     RE-BASÉES par les rounds suivants : applyImportPlan, exportKanvixData,
+     gantt, setTaskStatus et openTask, tous étendus — jamais dupliqués — par
+     les « Conditions de démarrage ». Déclarés, donc assumés, et vérifiés un à
+     un par FREEZE-2120. Les 86 autres restent gelés byte à byte. */
+  const rebaseV291 = ['toggleStructureNode', 'projectStructureTab', 'structureTabContent', 'migrateState', 'openStructureForm',
+    'applyImportPlan', 'exportKanvixData', 'gantt', 'setTaskStatus', 'openTask'];
   const bouges = [];
   let compares = 0;
   geles.forEach((n) => {
@@ -906,7 +912,8 @@ console.log('\n[FREEZE-2901] Byte-identité V2.9.0 → V2.9.0.1');
        mot peut légitimement apparaître dans le commentaire qui explique le
        correctif, et ce commentaire n'est pas du code. */
     plusDeMoreWrap: !/class="[^"]*more-wrap/.test(B) && !/\.more-wrap\s*[,{]/.test(B),
-    schema: /SCHEMA_VERSION = 14/.test(B) && /SCHEMA_VERSION = 13/.test(A),
+    // V2.12.0 — le schéma avance à 15 (app.prerequisites, §28).
+    schema: /SCHEMA_VERSION = 15/.test(B) && /SCHEMA_VERSION = 13/.test(A),
     store: (B.match(/STORE = "([^"]+)"/) || [])[1] === 'kanvix-product-8-3',
     build: (B.match(/KANVIX_APP_BUILD = "([^"]+)"/) || [])[1] === (A.match(/KANVIX_APP_BUILD = "([^"]+)"/) || [])[1],
     dropUpCSS: /\.more-pop\.drop-up\s*\{/.test(B),

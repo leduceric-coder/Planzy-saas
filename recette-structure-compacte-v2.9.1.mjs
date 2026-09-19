@@ -959,15 +959,24 @@ console.log('\n[FREEZE-291] Périmètre du refactor');
     // Menus — le correctif de V2.9.0.1, intégralement
     'toggleDrawerMenu', 'closeDrawerMenu', 'anyDrawerMenuOpen',
   ];
+  /* V2.12.0 — RE-BASELINE, une seule cause NOMMÉE. « Conditions de démarrage »
+     (§12, §14, §16, §20, §23, §30) étend un petit nombre de moteurs centraux —
+     et les étend PLUTÔT QUE de les dupliquer, ce qui est précisément la règle
+     que ces gels protègent. Les fonctions ci-dessous quittent donc le gel,
+     déclarées et assumées ; elles sont vérifiées ligne à ligne par
+     `recette-conditions-demarrage-v2.12.0.mjs` (FREEZE-2120), qui les nomme
+     une à une. TOUT LE RESTE reste gelé byte à byte ici : rien n'est relâché. */
+  const rebaseV2120 = ['applyImportPlan', 'exportKanvixData', 'gantt', 'setTaskStatus', 'openTask'];
   const bouges = [];
   let compares = 0;
   geles.forEach((n) => {
+    if (rebaseV2120.includes(n)) return;
     const a = extractFn(A, n), c = extractFn(B, n);
     if (!a || !c) return;
     compares++;
     if (md5(a) !== md5(c)) bouges.push(`${n} (${md5(a)} → ${md5(c)})`);
   });
-  note('FREEZE-291', { comparées: compares, bougés: bouges });
+  note('FREEZE-291', { comparées: compares, bougés: bouges, reBaséesV2120: rebaseV2120 });
   ok(bouges.length === 0,
     `FREEZE-291 : les ${compares} moteurs de V2.9.0.1 sont BYTE-IDENTIQUES — tout le moteur Structure, le Planning, les données, les ressources, la qualité, les jalons, l’Opération, l’Undo/Redo et le composant de menu corrigé en V2.9.0.1`, 'FREEZE-291');
 
@@ -997,7 +1006,23 @@ console.log('\n[FREEZE-291] Périmètre du refactor');
      fonction non nommée ferait toujours tomber le test, et le gel propre à
      chaque round vérifie son périmètre de façon indépendante. */
   const attenduesRoundsSuivants = ['openStructureForm'];
-  const tolerees = [...attendues, ...attenduesRoundsSuivants];
+  /* V2.12.0 — le périmètre NOMMÉ des « Conditions de démarrage », repris
+     verbatim de FREEZE-2120 dans recette-conditions-demarrage-v2.12.0.mjs. Il
+     est TOLÉRÉ par ce balayage — sinon ce gel signalerait comme dérive ce qu'un
+     round ultérieur modifie volontairement — mais la liste reste FERMÉE : une
+     fonction non nommée fait toujours tomber le test, et la recette V2.12.0
+     vérifie de son côté que ces 25 fonctions ont RÉELLEMENT changé, et elles
+     seules. */
+  const attenduesV2120 = [
+    'migrateState', 'alignDemoDates', 'setTaskStatus', 'openTask', 'openFieldTaskModal',
+    'confirmDeleteTask', 'cloneStructureTree', 'collectStructureSource',
+    'duplicateStructureNode', 'applyTemplateToProject', 'buildProjectTemplateRecord',
+    'gantt', 'projectToday', 'projectUpcomingTimeline', 'renderArtisan',
+    'getTodayDecisions', 'getTodayWarnings', 'decisionCard', 'watchCard',
+    'attentionRowTone', 'openMoreIssues', 'showKanvixBackupPreview',
+    'exportKanvixData', 'applyImportPlan', 'impDroppedLines',
+  ];
+  const tolerees = [...attendues, ...attenduesRoundsSuivants, ...attenduesV2120];
   const horsPerimetre = [];
   // Toute fonction du fichier qui aurait bougé SANS être annoncée.
   /* Extraction par ACCOLADES, donc mise en défaut par les fonctions dont le
@@ -1039,7 +1064,8 @@ console.log('\n[FREEZE-291] Périmètre du refactor');
     `STC-50 : AUCUNE fonction hors du périmètre annoncé n’a changé — le balayage de tout le fichier ne trouve que ${modifiees.length} fonctions modifiées, toutes déclarées`, 'STC-50');
 
   const regles = {
-    schema: /SCHEMA_VERSION = 14/.test(B),
+    // V2.12.0 — le schéma avance à 15 (app.prerequisites, §28).
+    schema: /SCHEMA_VERSION = 15/.test(B),
     store: (B.match(/STORE = "([^"]+)"/) || [])[1] === 'kanvix-product-8-3',
     build: (B.match(/KANVIX_APP_BUILD = "([^"]+)"/) || [])[1] === (A.match(/KANVIX_APP_BUILD = "([^"]+)"/) || [])[1],
     initialIdentique:

@@ -1,0 +1,517 @@
+{
+  "passed": 102,
+  "failed": [],
+  "results": [
+    {
+      "sec": "PRQ-01",
+      "name": "PRQ-01 : SCHEMA_VERSION passe de 14 à 15 et l’état chargé porte bien la version 15",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-03",
+      "name": "PRQ-03 : STORE reste « kanvix-product-8-3 » — le bump de schéma ne change pas la clé de stockage",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-01",
+      "name": "PRQ-01 : app.prerequisites existe et porte les quatre conditions de démonstration",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-01",
+      "name": "PRQ-01 : une condition porte EXACTEMENT les treize champs du modèle — ni quantité, ni prix, ni stock, ni bon de livraison (§43)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-01",
+      "name": "PRQ-01 : une sauvegarde V14 devient V15 avec prerequisites = [] — aucune condition de démonstration n’est installée rétroactivement, aucune donnée métier touchée",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-02",
+      "name": "PRQ-02 : la migration 14 → 15 est IDEMPOTENTE — la rejouer sur un état déjà migré ne change rien",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-02",
+      "name": "PRQ-02 : la normalisation ÉCARTE ce qui ne peut pas exister (entrée non objet, sans identifiant, en double, rattachée à une tâche disparue) et RÉPARE le reste sans rien détruire — type et statut inconnus neutralisés, bloquant coercé, chantier réaligné sur celui de la tâche, date illisible effacée, et une date de confirmation sur une condition non confirmée est retirée",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-04",
+      "name": "PRQ-04 : une condition se crée avec son type, son libellé, son fournisseur et sa date prévue — et naît « à confirmer », jamais confirmée d’office",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-12",
+      "name": "PRQ-12 : « Bloquant pour le démarrage » vaut OUI par défaut à la création (§6)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-05",
+      "name": "PRQ-05 : une condition se modifie — type, libellé, caractère bloquant, date, fournisseur",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-06",
+      "name": "PRQ-06 : une condition se supprime",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-04",
+      "name": "PRQ-04 : un libellé vide est refusé, et une condition ne peut pas naître sur une intervention inexistante",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-07",
+      "name": "PRQ-07 : « À confirmer » — aucune date de confirmation, condition non satisfaite",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-08",
+      "name": "PRQ-08 : « Confirmé » pose une date de confirmation et satisfait la condition",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-09",
+      "name": "PRQ-09 : « Bloqué » retire la date de confirmation et ne satisfait rien",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-10",
+      "name": "PRQ-10 : « Non applicable » est une DÉCISION : la condition ne retient plus rien",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-07",
+      "name": "PRQ-07 : repasser à « À confirmer » efface la date de confirmation — elle ne survit jamais à son statut",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-11",
+      "name": "PRQ-11 : « En retard » est un état DÉRIVÉ — une date prévue dépassée le produit à la lecture, mais AUCUNE condition ne porte « late » en base : seuls les quatre statuts persistés existent",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-12",
+      "name": "PRQ-12 : une condition BLOQUANTE non satisfaite rend l’intervention non prête ; taskStartReadiness sépare bien ce qui bloque de ce qui se surveille",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-13",
+      "name": "PRQ-13 : une condition NON BLOQUANTE reste visible et surveillée, mais n’empêche pas le démarrage",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-14",
+      "name": "PRQ-14 : une livraison attendue APRÈS le démarrage de l’intervention est DÉTECTÉE",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-15",
+      "name": "PRQ-15 : et Kanvix ne touche à RIEN — ni la date de la tâche, ni sa fin, ni ses dépendances, ni sa baseline, ni la date de la condition. L’enregistrement n’est pas refusé : l’utilisateur peut parfaitement avoir voulu ce scénario",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-54",
+      "name": "PRQ-54 / PRQ-55 : aucun incident ni contrôle qualité n’est créé automatiquement (§34)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-14",
+      "name": "PRQ-14 : la side-window EXPLIQUE la situation et dit explicitement que le planning n’a pas été modifié",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-16",
+      "name": "PRQ-16 : quand toutes les conditions bloquantes sont satisfaites, le démarrage est NORMAL — aucune confirmation ne s’interpose",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-17",
+      "name": "PRQ-17 : une condition bloquante non confirmée ouvre « Conditions non confirmées » — le nombre, la liste courte et les deux actions attendues",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-18",
+      "name": "PRQ-18 : rien n’est écrit tant que la décision n’est pas prise — la tâche reste dans son état pendant la confirmation",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-18",
+      "name": "PRQ-18 : « Annuler » laisse la tâche STRICTEMENT inchangée",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-19",
+      "name": "PRQ-19 : « Démarrer quand même » fait bien passer l’intervention en cours",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-20",
+      "name": "PRQ-20 : AUCUNE condition n’est confirmée automatiquement par le démarrage forcé — la livraison reste « à confirmer »",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-21",
+      "name": "PRQ-21 : le démarrage forcé est HISTORISÉ, avec le nombre de conditions concernées",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-21",
+      "name": "PRQ-21 : et rien d’autre n’est créé — pas d’incident artificiel (§12)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-22",
+      "name": "PRQ-22 : une intervention TERMINÉE conserve ses conditions dans l’historique métier mais n’émet plus rien — ni décision, ni surveillance, ni signal au planning (§13)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-23",
+      "name": "PRQ-23 : « À décider » remonte la livraison bloquante attendue après le démarrage d’une intervention imminente",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-53",
+      "name": "PRQ-53 : aucun second système d’alertes — les conditions entrent dans les DEUX listes existantes (getTodayDecisions / getTodayWarnings), elles ne créent aucun incident (6 incidents de démonstration inchangés)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-24",
+      "name": "PRQ-24 : une condition située à plusieurs mois ne pollue pas Aujourd’hui — l’horizon opérationnel est respecté",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-24",
+      "name": "PRQ-24 : « À surveiller » remonte une condition bloquante non confirmée sur une intervention prochaine",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-25",
+      "name": "PRQ-25 : une alerte de condition propose « Gérer les conditions » ET « Voir la tâche »",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-25",
+      "name": "PRQ-25 : l’action conduit DIRECTEMENT à la side-window des conditions de la bonne intervention — aucune page intermédiaire",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-26",
+      "name": "PRQ-26 : le Planning porte un signal DISCRET — une métadonnée dans le libellé existant, pas une ligne supplémentaire",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-26",
+      "name": "PRQ-26 : silence quand tout va bien — aucune intervention prête, sans condition, ou porteuse d’une seule condition non bloquante dans les temps n’affiche quoi que ce soit",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-27",
+      "name": "PRQ-27 : le Kanban n’est PAS touché — aucun badge historique (À TRAITER, À SUIVRE, SOUS IMPACT, POINT OUVERT) n’est détourné pour représenter une condition (§17)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-28",
+      "name": "PRQ-28 : en Mode Chantier le CONDUCTEUR voit le compteur, la condition prioritaire, et dispose des trois actions rapides — Confirmer, Bloqué, Gérer",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-28",
+      "name": "PRQ-28 : quand tout est prêt, le Mode Chantier dit « ✓ Conditions prêtes » et rien de plus — il ne devient pas un formulaire administratif",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-28",
+      "name": "PRQ-28 : l’action rapide confirme la condition SANS sortir du Mode Chantier, et la fiche se met à jour sur place",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-29",
+      "name": "PRQ-29 : l’artisan est bien SON rôle, distinct du Mode Chantier du conducteur — isFieldMode() l’exclut",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-29",
+      "name": "PRQ-29 : la conversation reste une conversation — le bloc n’apparaît QUE s’il y a quelque chose à dire, et disparaît dès que tout est confirmé (§13, §16)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-29",
+      "name": "PRQ-29 : l’ARTISAN voit pourquoi l’intervention ne peut pas démarrer, mais ne dispose d’AUCUNE action — lecture seule en V2.12.0 (§18)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-29",
+      "name": "PRQ-29 : « Je commence » côté artisan passe par la MÊME garde centrale — la cinquième porte de démarrage n’a pas d’exception (§12)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-30",
+      "name": "PRQ-30 : sur un chantier CLÔTURÉ, les quatre mutations sont refusées par guardEditable() — aucune exception locale n’a été créée (§19)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-30",
+      "name": "PRQ-30 : les conditions restent CONSULTABLES, la side-window affiche le bandeau lecture seule et ne propose aucune action",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-31",
+      "name": "PRQ-31 : supprimer une intervention supprime ses deux conditions avec elle — AUCUNE condition orpheline ne subsiste",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-32",
+      "name": "PRQ-32 : « Annuler » restitue la tâche ET ses conditions, à l’identique, d’UN SEUL geste — même transaction, un seul snapshot",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-32",
+      "name": "PRQ-32 : « Rétablir » les resupprime, elles aussi d’un seul geste",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-33",
+      "name": "PRQ-33 : la sauvegarde emporte les conditions et les restitue OCTET POUR OCTET",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-33",
+      "name": "PRQ-33 : la clé reste FACULTATIVE (hors KANVIX_BACKUP_REQUIRED) et l’aperçu de restauration l’annonce",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-34",
+      "name": "PRQ-34 : une sauvegarde V14 — sans la clé prerequisites — reste PARFAITEMENT valide : elle se restaure, passe en version 15 avec une collection vide, sans perdre un seul chantier ni une seule tâche",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-35",
+      "name": "PRQ-35 : l’export portable emporte les conditions de démarrage",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-36",
+      "name": "PRQ-36 : un export ANCIEN, sans la clé prerequisites, reste accepté par l’analyse d’import",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-37",
+      "name": "PRQ-37 : à l’import, chaque condition est remappée vers la NOUVELLE tâche — aucune ne pointe vers un identifiant de la base source, aucun identifiant n’est réutilisé, et le chantier reste cohérent avec la tâche",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-38",
+      "name": "PRQ-38 : une condition dont l’intervention n’a pas été importée est ÉCARTÉE — et la perte est ANNONCÉE dans le rapport d’import, jamais silencieuse",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-39",
+      "name": "PRQ-39 : alignDemoDates() décale les conditions de démonstration exactement UNE fois — un second passage sur la même cible ne bouge rien",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-39",
+      "name": "PRQ-39 : les dates prévues et confirmées suivent EXACTEMENT le même décalage que les tâches (15 jours) — une livraison prévue la veille d’une pose le reste",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-39",
+      "name": "PRQ-39 : les MODÈLES de chantier ne sont pas décalés — leurs positions sont relatives et ne vieillissent pas",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-40",
+      "name": "PRQ-40 : dupliquer « Structure seule » ne copie AUCUNE condition — puisqu’aucune intervention n’est copiée. C’est la même règle qui donne les deux comportements",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-41",
+      "name": "PRQ-41 : dupliquer « Structure + interventions » copie les 3 conditions du périmètre",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-42",
+      "name": "PRQ-42 : chaque condition clonée pointe vers la NOUVELLE intervention, porte un identifiant neuf, et aucune ne désigne une tâche source",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-41",
+      "name": "PRQ-41 : une duplication de chantier CONSERVE l’état opérationnel des conditions — ce n’est pas une trame, c’est une copie de terrain",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-43",
+      "name": "PRQ-43 : un modèle « Structure seule » ne contient AUCUNE condition",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-44",
+      "name": "PRQ-44 : un modèle « Structure + interventions » capture les conditions, chacune rattachée à l’identifiant LOCAL de sa tâche dans le modèle",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-45",
+      "name": "PRQ-45 : une condition de modèle porte EXACTEMENT huit champs — ni status, ni confirmedDate, ni projectId, ni expectedDate : aucun état opérationnel du chantier source n’entre dans une trame",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-46",
+      "name": "PRQ-46 : aucune confirmedDate, aucun statut et aucune date ABSOLUE dans un modèle",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-47",
+      "name": "PRQ-47 : la date prévue devient une POSITION RELATIVE au démarrage de l’intervention — 1 jour(s) pour la livraison, -1 pour l’accès. Les valeurs négatives (avant le démarrage) sont autorisées",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-48",
+      "name": "PRQ-48 : à la pose, chaque condition renaît « à confirmer », sans date de confirmation — une condition de modèle est toujours une condition à préparer",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-48",
+      "name": "PRQ-48 : la date prévue est RECALCULÉE depuis la nouvelle date de l’intervention — les écarts d’origine (1 et -1 jours) sont reproduits exactement",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-49",
+      "name": "PRQ-49 : toutes les références sont remappées — chaque condition posée désigne une intervention réellement créée, dans le chantier de destination",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-50",
+      "name": "PRQ-50 : poser un modèle crée niveaux, interventions ET conditions dans UN SEUL geste annulable — « Annuler » puis « Rétablir » les traitent ensemble",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-43",
+      "name": "PRQ-43 : un modèle enregistré par V2.11 — sans la clé prerequisites — reste valide : la migration lui pose une collection vide sans rien toucher d’autre",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-56",
+      "name": "PRQ-56 : le moteur de DÉPENDANCES est intact — ajouter une condition ne crée, ne modifie et ne convertit aucune dépendance (§4 : pas de seconde vérité)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-57",
+      "name": "PRQ-57 : le moteur de CONTRÔLES QUALITÉ est intact — une condition de démarrage n’en crée ni n’en consomme aucun",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-58",
+      "name": "PRQ-58 : le moteur RESSOURCES est intact",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-59",
+      "name": "PRQ-59 : le moteur STRUCTURE est intact — une condition appartient à une TÂCHE, jamais directement à un niveau (§22)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-59",
+      "name": "PRQ-59 : Prerequisite ne porte AUCUN structureNodeId — taskId permet déjà de retrouver le niveau, une seule vérité relationnelle (§22)",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-RESP",
+      "name": "PRQ-RESP : sur 20 combinaisons (10 largeurs de 1920 à 390 px × clair/sombre), la fiche tâche, la side-window des conditions, le formulaire, Aujourd’hui et le Planning ne provoquent AUCUN défilement horizontal, AUCUN dépassement de la side-window et AUCUN bouton coupé",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-RESP",
+      "name": "PRQ-RESP : à 430 et 390 px, toutes les actions d’une condition mesurent au moins 44 px de haut — des cibles tactiles réelles",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-A11Y",
+      "name": "PRQ-A11Y : la side-window reçoit le focus à l’ouverture, toutes les actions sont de vrais boutons atteignables au clavier, et aucune action n’est disponible uniquement au survol",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-A11Y",
+      "name": "PRQ-A11Y : Escape ferme la side-window",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-A11Y",
+      "name": "PRQ-A11Y : le formulaire porte les six champs demandés — type, libellé, bloquant (deux radios), date prévue, fournisseur, commentaire — chacun avec son label",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-SHOTS",
+      "name": "PRQ-SHOTS : les captures attendues sont produites par les tests réels, en clair et en sombre",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2120",
+      "name": "FREEZE-2120 : hors des 25 fonctions du périmètre NOMMÉ, le balayage de tout le fichier ne trouve AUCUNE autre fonction modifiée depuis V2.11.0.3",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2120",
+      "name": "FREEZE-2120 : les fonctions annoncées ont toutes RÉELLEMENT changé — aucune modification silencieusement absente, aucun périmètre annoncé pour rien",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2120",
+      "name": "FREEZE-2120 : les 69 moteurs nommément protégés sont BYTE-IDENTIQUES — tout le Planning (positionnement, drag & drop, propagation, jours non ouvrés, démarrage réel), les DÉPENDANCES, la QUALITÉ, les RESSOURCES, la STRUCTURE, le KANBAN, l’UNDO/REDO, la SAUVEGARDE et les MODÈLES",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2120",
+      "name": "FREEZE-2120 / §26 : cloneStructureTree() reste l’UNIQUE primitive de clonage, appelée exactement DEUX fois dans tout le fichier, par duplicateStructureNode() et applyTemplateToProject()",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2120",
+      "name": "FREEZE-2120 / §26 : les conditions sont reconstruites DANS la primitive, avec la table mapTaches DÉJÀ existante — mapNoeuds et mapTaches n’apparaissent qu’UNE fois chacune, les appelants n’en construisent aucune et se contentent de pousser ce que la primitive a produit",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2120",
+      "name": "FREEZE-2120 : le remappage des dépendances et des reprises n’apparaît toujours qu’UNE fois, et la primitive reste PURE — elle ne touche ni app, ni save, ni snapshot, ni render",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-51",
+      "name": "PRQ-51 / PRQ-52 / PRQ-53 : aucun second moteur de clonage, aucun moteur de prérequis parallèle, aucun moteur d’alertes parallèle, aucune pile Undo parallèle — un seul snapshot(), un seul gantt()",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ-54",
+      "name": "PRQ-54 / PRQ-55 : aucun automatisme caché — les mutations de condition ne replanifient rien et ne créent aucun incident (§34)",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2120",
+      "name": "FREEZE-2120 / §42 : aucune entrée de navigation principale n’a été ajoutée — la fonctionnalité reste CONTEXTUELLE",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2120",
+      "name": "FREEZE-2120 : la feuille de style est strictement ADDITIVE — le bloc V2.12.0 retiré, elle redevient byte-identique à V2.11.0.3",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2120",
+      "name": "FREEZE-2120 : les données de démonstration existantes — niveaux de structure ET interventions — sont BYTE-IDENTIQUES : aucun chantier de démonstration n’a été dégradé pour les besoins de la fonction (§31)",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2120",
+      "name": "FREEZE-2120 : SCHEMA_VERSION passe bien de 14 à 15, STORE reste « kanvix-product-8-3 », build inchangé, et KANVIX_BACKUP_REQUIRED est byte-identique — les anciennes sauvegardes ne sont pas rejetées",
+      "status": "PASS"
+    },
+    {
+      "sec": "PRQ",
+      "name": "PRQ : aucune erreur JavaScript applicative en console (0)",
+      "status": "PASS"
+    }
+  ],
+  "consoleErrors": []
+}

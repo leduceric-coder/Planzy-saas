@@ -120,7 +120,7 @@ console.log('\n[BADGE-03] B → En cours : reste SOUS IMPACT');
   await setupScenario(p);
   const before = await readCards(p);
   ok(before['Tache B aval'].col === 'todo', 'BADGE-03 : B est initialement dans « À faire »', 'BADGE-03');
-  await ev(p, () => { setTaskStatus('tB', 'doing', 'test'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); renderPage(); });
+  await ev(p, () => { setTaskStatus('tB', 'doing', 'test'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); renderPage(); });
   await p.waitForTimeout(200);
   const after = await readCards(p);
   note('BADGE-03', after['Tache B aval']);

@@ -353,8 +353,9 @@ console.log('\n[REW-DUP] Sauvegarde et restauration');
      persistant, et c'est toujours vrai : le passage à 14 vient des MODÈLES de
      V2.11.0, pas de la reprise. L'assertion épingle donc la version courante et
      la clé de stockage, inchangée depuis toujours. */
-  ok(r.schema === 14 && r.store === 'kanvix-product-8-3',
-    'REW-DUP-11 : l’intégrité des reprises n’exige toujours aucun champ persistant à elle ; le schéma vaut 14 (bump introduit par les modèles de chantier de V2.11.0) et STORE reste « kanvix-product-8-3 »', 'REW-DUP-11');
+  /* V2.12.0 — RE-POINTAGE. Le schéma avance à 15 : « Conditions de démarrage » introduit app.prerequisites, migration 14 → 15 (§28). Ce que cette assertion protège réellement — la CLÉ DE STOCKAGE, qui n'a jamais bougé — est inchangé. */
+  ok(r.schema === 15 && r.store === 'kanvix-product-8-3',
+    'REW-DUP-11 : l’intégrité des reprises n’exige toujours aucun champ persistant à elle ; le schéma vaut 15 (bumps des modèles de V2.11.0 puis des conditions de V2.12.0) et STORE reste « kanvix-product-8-3 »', 'REW-DUP-11');
   await ctx.close();
 }
 
@@ -455,7 +456,23 @@ console.log('\n[FREEZE-21001] Périmètre : une seule fonction modifiée');
      fonction non nommée ferait toujours tomber le test, et le gel propre à
      chaque round vérifie son périmètre de façon indépendante. */
   const attenduesRoundsSuivants = ['openStructureForm'];
-  const tolerees = [...attendues, ...attenduesRoundsSuivants];
+  /* V2.12.0 — le périmètre NOMMÉ des « Conditions de démarrage », repris
+     verbatim de FREEZE-2120 dans recette-conditions-demarrage-v2.12.0.mjs. Il
+     est TOLÉRÉ par ce balayage — sinon ce gel signalerait comme dérive ce qu'un
+     round ultérieur modifie volontairement — mais la liste reste FERMÉE : une
+     fonction non nommée fait toujours tomber le test, et la recette V2.12.0
+     vérifie de son côté que ces 25 fonctions ont RÉELLEMENT changé, et elles
+     seules. */
+  const attenduesV2120 = [
+    'migrateState', 'alignDemoDates', 'setTaskStatus', 'openTask', 'openFieldTaskModal',
+    'confirmDeleteTask', 'cloneStructureTree', 'collectStructureSource',
+    'duplicateStructureNode', 'applyTemplateToProject', 'buildProjectTemplateRecord',
+    'gantt', 'projectToday', 'projectUpcomingTimeline', 'renderArtisan',
+    'getTodayDecisions', 'getTodayWarnings', 'decisionCard', 'watchCard',
+    'attentionRowTone', 'openMoreIssues', 'showKanvixBackupPreview',
+    'exportKanvixData', 'applyImportPlan', 'impDroppedLines',
+  ];
+  const tolerees = [...attendues, ...attenduesRoundsSuivants, ...attenduesV2120];
   const horsPerimetre = [];
   const noms = [...new Set([...B.matchAll(/\n\s*function\s+([A-Za-z_$][\w$]*)\s*\(/g)].map((m) => m[1]))];
   noms.forEach((n) => {
@@ -501,15 +518,21 @@ console.log('\n[FREEZE-21001] Périmètre : une seule fonction modifiée');
     'actionToast', 'drawerForm', 'closeOverlay', 'toggleDrawerMenu', 'closeDrawerMenu',
     'projectTab', 'renderProject', 'selectProject', 'renderField',
   ];
+  /* V2.12.0 — RE-BASELINE, une seule cause NOMMÉE : « Conditions de démarrage »
+     étend ces moteurs centraux plutôt que de les dupliquer — la règle même que
+     ce gel protège. Déclarées, donc assumées, et vérifiées une à une par
+     FREEZE-2120 dans recette-conditions-demarrage-v2.12.0.mjs. */
+  const rebaseV2120 = ['openTask', 'setTaskStatus', 'gantt', 'applyImportPlan', 'exportKanvixData'];
   const bouges = [];
   let compares = 0;
   nommes.forEach((n) => {
+    if (rebaseV2120.includes(n)) return;
     const a = extractFn(A, n), c = extractFn(B, n);
     if (!a || !c) return;
     compares++;
     if (md5(a) !== md5(c)) bouges.push(n);
   });
-  note('FREEZE-21001-moteurs', { comparées: compares, bougés: bouges });
+  note('FREEZE-21001-moteurs', { comparées: compares, bougés: bouges, reBaséesV2120: rebaseV2120 });
   ok(bouges.length === 0,
     `FREEZE-21001 : les ${compares} moteurs nommément protégés sont BYTE-IDENTIQUES — toute la Structure hors duplication, le moteur Reprise/SAV, le Planning, les données, les ressources, la qualité, l’Undo/Redo et la navigation`, 'FREEZE-21001');
 
@@ -530,8 +553,37 @@ console.log('\n[FREEZE-21001] Périmètre : une seule fonction modifiée');
      l'assertion : on la rend DÉMONSTRATIVE — le bloc ajouté retiré, la feuille
      et INITIAL_STATE redeviennent byte-identiques à V2.10.0. Un seul octet
      modifié ailleurs ferait tomber la mesure. */
-  const sansBlocCSS = (x) => x.replace(/      \/\* ---- V2\.11\.0 — MODÈLES DE CHANTIER[\s\S]*?\n      \/\* Le niveau qui vient d'être créé/, "      /* Le niveau qui vient d'être créé");
-  const sansBlocInitial = (x) => {
+  /* V2.12.0 — RE-POINTAGE, même discipline qu'en V2.11.0 : PREUVE PLUTÔT QUE
+     SILENCE. V2.12.0 ajoute un bloc de style, quatre conditions de démonstration
+     et une migration 14 → 15. On ne relâche rien : on RETIRE ces blocs, nommés un
+     à un, et ce qui reste doit redevenir byte-identique à la référence. Un seul
+     octet modifié ailleurs ferait toujours tomber la mesure. */
+  const sansV2120CSS = (x) => x.replace(/      \/\* ---- V2\.12\.0 — CONDITIONS DE DÉMARRAGE[\s\S]*?\n      \/\* ---- V2\.11\.0 — MODÈLES DE CHANTIER/, "      /* ---- V2.11.0 — MODÈLES DE CHANTIER");
+  const sansV2120Initial = (x) => {
+    const i = x.indexOf('        /* V2.12.0 — CONDITIONS DE DÉMARRAGE de démonstration.');
+    const j = x.indexOf('        ],\n        /* ============ V2.11.0 — MODÈLES DE CHANTIER');
+    return i > 0 && j > i ? x.slice(0, i) + x.slice(j + '        ],\n'.length) : x;
+  };
+  /* migrateState() reçoit TROIS ajouts V2.12.0, et trois seulement : la
+     migration 14 → 15 elle-même, la normalisation des conditions d'un MODÈLE et
+     la clé `prerequisites` de l'objet modèle. On les retire nommément — si un
+     seul octet avait bougé ailleurs dans cette fonction, la mesure tomberait. */
+  const coupeV2120 = (x, debut, fin) => {
+    const i = x.indexOf(debut); if (i < 0) return x;
+    const j = x.indexOf(fin, i); if (j < 0) return x;
+    return x.slice(0, i) + x.slice(j);
+  };
+  const sansV2120Migration = (x) => {
+    let y = coupeV2120(x,
+      '        /* ---- V2.12.0 — MIGRATION V14 → V15 : LES CONDITIONS DE DÉMARRAGE ---',
+      '        if (!Array.isArray(value.projectTemplates)) value.projectTemplates = [];');
+    y = coupeV2120(y, "            /* V2.12.0 — les conditions d'un modèle.", '            let tKnown');
+    y = coupeV2120(y, '            let prerequisites = (Array.isArray(t.prerequisites)', '            // Une dépendance ne peut viser');
+    return y.replace('\n              prerequisites,\n', '\n');
+  };
+  const sansBlocCSS = (x) => sansV2120CSS(x).replace(/      \/\* ---- V2\.11\.0 — MODÈLES DE CHANTIER[\s\S]*?\n      \/\* Le niveau qui vient d'être créé/, "      /* Le niveau qui vient d'être créé");
+  const sansBlocInitial = (y) => {
+    const x = sansV2120Initial(y);
     const i = x.indexOf('        /* ============ V2.11.0 — MODÈLES DE CHANTIER RÉUTILISABLES ==========');
     const j = x.indexOf('        ],\n        // V2.8 — UNE opération de démonstration.');
     return i > 0 && j > i ? x.slice(0, i) + x.slice(j + '        ],\n'.length) : 'NON-EXTRAIT';
@@ -539,7 +591,8 @@ console.log('\n[FREEZE-21001] Périmètre : une seule fonction modifiée');
   const regles = {
     cssExtraite: !!cssA && !!cssB && cssA.length > 100000,
     cssAdditive: !!cssA && !!cssB && md5(sansBlocCSS(cssB)) === md5(cssA) && cssB.length > cssA.length,
-    schema: /SCHEMA_VERSION = 14/.test(B) && /SCHEMA_VERSION = 13/.test(A),
+    // V2.12.0 — le schéma avance à 15 (app.prerequisites, §28).
+    schema: /SCHEMA_VERSION = 15/.test(B) && /SCHEMA_VERSION = 13/.test(A),
     store: (B.match(/STORE = "([^"]+)"/) || [])[1] === 'kanvix-product-8-3',
     build: (B.match(/KANVIX_APP_BUILD = "([^"]+)"/) || [])[1] === (A.match(/KANVIX_APP_BUILD = "([^"]+)"/) || [])[1],
     /* Même précaution que pour le CSS : une extraction qui échoue comparerait

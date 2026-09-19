@@ -362,6 +362,11 @@ console.log('\n[UX281-GRID] Décider / Surveiller / Contrôler, côte à côte')
     app.decisions = [];
     app.issues = app.issues.filter((i) => i.status !== 'watching');
     app.controlInstances = [];
+    /* V2.12.0 — RE-POINTAGE. Une condition de démarrage non confirmée alimente
+       « Actions nécessaires » (§14). « Vider les trois colonnes » inclut donc
+       désormais les conditions : la prémisse du test est complétée, son exigence
+       — les colonnes RESTENT et affichent un état calme — est inchangée. */
+    app.prerequisites = [];
     selectOperation(OP);
     const cols = [...document.querySelectorAll('.op-attention-col')];
     return {

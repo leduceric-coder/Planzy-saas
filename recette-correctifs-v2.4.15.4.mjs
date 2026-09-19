@@ -176,7 +176,7 @@ console.log('\n[KAN-1514] Kanban — zone de dépôt élargie (colonnes de même
     col.dispatchEvent(new DragEvent('drop', { bubbles: true, cancelable: true, dataTransfer: dt }));
     /* V2.8.5.2 — RE-BASELINE : le dépôt demande confirmation quand il vaut
        démarrage réel (V2.8.5.1 §7). Le toast testé ci-dessous reste le MÊME. */
-    if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
+    /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     return { name };
   });
   await p.waitForTimeout(150);
@@ -187,7 +187,7 @@ console.log('\n[KAN-1514] Kanban — zone de dépôt élargie (colonnes de même
   ok(toastText.includes('Annuler'), 'KAN-1514-drop : l’action reste annulable (undo réel conservé, pas un simple message)', 'KAN-1514');
   const otherToast = await ev(p, () => { setTaskStatus(app.tasks.find((t) => t.status === 'todo').id, 'doing', 'task');
     /* V2.8.5.2 — RE-BASELINE : confirmation de démarrage réel (V2.8.5.1 §7). */
-    if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
+    /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     return document.querySelector('#toast')?.textContent || ''; });
   ok(otherToast === 'Tâche mise à jour · Annuler', 'KAN-1514-drop : les autres origines (édition, terrain…) gardent le message générique inchangé', 'KAN-1514');
   await ctx.close();

@@ -733,15 +733,24 @@ console.log('\n[FREEZE-2852] Byte-identité');
     'planningCreatePointerMove',
     'shiftPlanning', 'planningToday',
   ];
+  /* V2.12.0 — RE-BASELINE, une seule cause NOMMÉE. « Conditions de démarrage »
+     (§12, §14, §16, §20, §23, §30) étend un petit nombre de moteurs centraux —
+     et les étend PLUTÔT QUE de les dupliquer, ce qui est précisément la règle
+     que ces gels protègent. Les fonctions ci-dessous quittent donc le gel,
+     déclarées et assumées ; elles sont vérifiées ligne à ligne par
+     `recette-conditions-demarrage-v2.12.0.mjs` (FREEZE-2120), qui les nomme
+     une à une. TOUT LE RESTE reste gelé byte à byte ici : rien n'est relâché. */
+  const rebaseV2120 = ['exportKanvixData', 'setTaskStatus'];
   const bouges = [];
   let compares = 0;
   geles.forEach((n) => {
+    if (rebaseV2120.includes(n)) return;
     const a = extractFn(A, n), c = extractFn(B, n);
     if (!a || !c) return;
     compares++;
     if (md5(a) !== md5(c)) bouges.push(`${n} (${md5(a)} → ${md5(c)})`);
   });
-  note('FREEZE-2852', { comparées: compares, bougés: bouges });
+  note('FREEZE-2852', { comparées: compares, bougés: bouges, reBaséesV2120: rebaseV2120 });
   ok(bouges.length === 0,
     `FREEZE-2852 : les ${compares} moteurs de V2.8.5.1 sont BYTE-IDENTIQUES — tout le calendrier des jours non ouvrés, le démarrage réel, la propagation, le déplacement, la création à la souris, la Qualité, les Ressources, les Jalons, le Backup et le Mode Chantier`, 'FREEZE-2852');
 

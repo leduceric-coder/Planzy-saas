@@ -75,7 +75,7 @@ console.log('\n[P3] Drag Kanban (statut only)');
   await ev(p, () => setPlanningView('kanban'));
   await p.waitForTimeout(120);
   const before = await ev(p, () => ({ status: task('k-final').status, start: task('k-final').start, undo: app.undoStack.length, hist: app.history.length }));
-  await ev(p, new Function(`const fe=${FAKE_EV}; kanbanDragStart(fe,'k-final'); kanbanDrop(fe,'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();`));
+  await ev(p, new Function(`const fe=${FAKE_EV}; kanbanDragStart(fe,'k-final'); kanbanDrop(fe,'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();`));
   await p.waitForTimeout(150);
   const after = await ev(p, () => ({
     status: task('k-final').status,
@@ -112,7 +112,7 @@ console.log('\n[P4] Statut Artisan (signal terrain préservé)');
   await p.waitForTimeout(150);
   const r = await ev(p, () => {
     let before = app.issues.length;
-    setTaskStatus('k-final', 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); // chemin par défaut, rôle artisan
+    setTaskStatus('k-final', 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); // chemin par défaut, rôle artisan
     return {
       status: task('k-final').status,
       fieldStart: app.issues.some((i) => i.taskId === 'k-final' && i.kind === 'field-start'),
@@ -152,7 +152,7 @@ console.log('\n[P6] Undo statut');
   await openPlanning(p);
   const r = await ev(p, () => {
     let before = task('k-final').status;
-    setTaskStatus('k-final', 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
+    setTaskStatus('k-final', 'doing', 'task'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     let mid = task('k-final').status;
     undo();
     return { before, mid, after: task('k-final').status };

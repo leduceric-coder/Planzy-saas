@@ -78,13 +78,13 @@ console.log('\n[EDIT-01] Modification simple');
   ok(noProjectSelect, 'EDIT-01 : chantier affiché en lecture seule (jamais modifiable)', 'EDIT-01');
   await ev(p, () => { const f = document.querySelector('#taskEditForm'); f.querySelector('[name=name]').value = 'Pose fenêtres étage 1'; f.querySelector('[name=comment]').value = 'Précision du périmètre.'; markTaskEditDirty(); });
   const beforeDates = await ev(p, () => ({ start: task('k-windows').start, liningStart: task('k-lining').start }));
-  await ev(p, () => { submitTaskEdit(); /* V2.8.5.2 — l'éditeur applique le démarrage réel (§6) : on confirme. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
+  await ev(p, () => { submitTaskEdit(); /* V2.8.5.2 — l'éditeur applique le démarrage réel (§6) : on confirme. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     /* V2.8.5.2 — RE-BASELINE. L'éditeur universel applique désormais lui aussi
        le démarrage réel (V2.8.5.1 §7, corrigé en V2.8.5.2 §6) : passer une
        tâche « En cours » hors de son horaire prévu demande confirmation avant
        toute écriture. On confirme, comme l'utilisateur. Les assertions
        d'impact, de statut et d'historique qui suivent sont INCHANGÉES. */
-    if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); });
+    /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); });
   await p.waitForTimeout(200);
   const r = await ev(p, () => ({
     name: task('k-windows').name,
@@ -107,7 +107,7 @@ console.log('\n[EDIT-01] Modification simple');
   // Kanban reflète le nom (sync)
   await ev(p, () => { openTaskEdit('k-windows', 'planning-gantt'); });
   await p.waitForTimeout(100);
-  await ev(p, () => { document.querySelector('#taskEditForm [name=name]').value = 'Pose fenêtres étage 1'; markTaskEditDirty(); submitTaskEdit(); /* V2.8.5.2 — l'éditeur applique le démarrage réel (§6) : on confirme. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); });
+  await ev(p, () => { document.querySelector('#taskEditForm [name=name]').value = 'Pose fenêtres étage 1'; markTaskEditDirty(); submitTaskEdit(); /* V2.8.5.2 — l'éditeur applique le démarrage réel (§6) : on confirme. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); });
   await p.waitForTimeout(150);
   await ev(p, () => setPlanningView('kanban'));
   await p.waitForTimeout(150);
@@ -126,7 +126,7 @@ console.log('\n[EDIT-02] Décalage avec impact');
   await ev(p, () => { task('k-lining').status = 'doing'; save(); });
   await ev(p, () => openTaskEdit('k-windows', 'planning-gantt'));
   await p.waitForTimeout(150);
-  await ev(p, () => { document.querySelector('#taskEditForm [name=end]').value = '2026-08-25T16:30'; markTaskEditDirty(); submitTaskEdit(); /* V2.8.5.2 — l'éditeur applique le démarrage réel (§6) : on confirme. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); });
+  await ev(p, () => { document.querySelector('#taskEditForm [name=end]').value = '2026-08-25T16:30'; markTaskEditDirty(); submitTaskEdit(); /* V2.8.5.2 — l'éditeur applique le démarrage réel (§6) : on confirme. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); });
   await p.waitForTimeout(200);
   const preview = await ev(p, () => ({
     open: document.querySelector('#modal').classList.contains('open'),
@@ -169,7 +169,7 @@ console.log('\n[EDIT-02b] Annuler l\'aperçu');
   const before = await ev(p, () => ({ win: task('k-windows').end, lining: task('k-lining').start, hist: app.history.length }));
   await ev(p, () => openTaskEdit('k-windows', 'planning-gantt'));
   await p.waitForTimeout(120);
-  await ev(p, () => { document.querySelector('#taskEditForm [name=end]').value = '2026-08-25T16:30'; markTaskEditDirty(); submitTaskEdit(); /* V2.8.5.2 — l'éditeur applique le démarrage réel (§6) : on confirme. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); });
+  await ev(p, () => { document.querySelector('#taskEditForm [name=end]').value = '2026-08-25T16:30'; markTaskEditDirty(); submitTaskEdit(); /* V2.8.5.2 — l'éditeur applique le démarrage réel (§6) : on confirme. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); });
   await p.waitForTimeout(150);
   await ev(p, () => cancelTaskEditPreview());
   await p.waitForTimeout(150);
@@ -216,7 +216,7 @@ console.log('\n[EDIT-04] Dépendances');
   await ev(p, () => {
     const boxes = [...document.querySelectorAll('#teDepList [name=dep]')];
     ['k-cloisons', 'k-control'].forEach((id) => { const bx = boxes.find((b) => b.value === id); if (bx) bx.checked = true; });
-    markTaskEditDirty(); submitTaskEdit(); /* V2.8.5.2 — l'éditeur applique le démarrage réel (§6) : on confirme. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
+    markTaskEditDirty(); submitTaskEdit(); /* V2.8.5.2 — l'éditeur applique le démarrage réel (§6) : on confirme. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
   });
   await p.waitForTimeout(200);
   // si preview (k-final n'a pas de successeur -> pas de shift), sinon direct
@@ -228,7 +228,7 @@ console.log('\n[EDIT-04] Dépendances');
   const cyc = await ev(p, () => {
     const bx = [...document.querySelectorAll('#teDepList [name=dep]')].find((c) => c.value === 'k-lining');
     if (bx) bx.checked = true;
-    submitTaskEdit(); /* V2.8.5.2 — l'éditeur applique le démarrage réel (§6) : on confirme. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
+    submitTaskEdit(); /* V2.8.5.2 — l'éditeur applique le démarrage réel (§6) : on confirme. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     return { err: document.querySelector('#taskEditError')?.textContent || '', deps: task('k-windows').deps };
   });
   ok(/boucle/i.test(cyc.err) && cyc.deps.length === 0, 'EDIT-04 : cycle refusé (C→A alors que A→…→C)', 'EDIT-04');
@@ -248,7 +248,7 @@ console.log('\n[EDIT-05] Kanban');
   await p.waitForTimeout(120);
   await ev(p, () => [...document.querySelectorAll('#drawer .btn')].find((x) => /Modifier la tâche/.test(x.textContent)).click());
   await p.waitForTimeout(120);
-  await ev(p, () => { document.querySelector('#taskEditForm [name=start]').value = '2026-08-21T08:00'; document.querySelector('#taskEditForm [name=end]').value = '2026-08-21T10:00'; markTaskEditDirty(); submitTaskEdit(); /* V2.8.5.2 — l'éditeur applique le démarrage réel (§6) : on confirme. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); });
+  await ev(p, () => { document.querySelector('#taskEditForm [name=start]').value = '2026-08-21T08:00'; document.querySelector('#taskEditForm [name=end]').value = '2026-08-21T10:00'; markTaskEditDirty(); submitTaskEdit(); /* V2.8.5.2 — l'éditeur applique le démarrage réel (§6) : on confirme. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); });
   await p.waitForTimeout(200);
   // pas d'impact aval (k-final terminal) -> pas de preview
   const r = await ev(p, () => ({
@@ -277,7 +277,7 @@ console.log('\n[EDIT-06] Mode Chantier');
   await p.waitForTimeout(150);
   const editorOpen = await ev(p, () => document.querySelector('#drawer').classList.contains('open') && !!document.querySelector('#taskEditForm'));
   ok(editorOpen, 'EDIT-06 : éditeur ouvert depuis le Planning mobile', 'EDIT-06');
-  await ev(p, () => { document.querySelector('#taskEditForm [name=end]').value = '2026-08-14T18:00'; document.querySelector('#taskEditForm [name=comment]').value = 'Fin repoussée en soirée.'; markTaskEditDirty(); submitTaskEdit(); /* V2.8.5.2 — l'éditeur applique le démarrage réel (§6) : on confirme. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); });
+  await ev(p, () => { document.querySelector('#taskEditForm [name=end]').value = '2026-08-14T18:00'; document.querySelector('#taskEditForm [name=comment]').value = 'Fin repoussée en soirée.'; markTaskEditDirty(); submitTaskEdit(); /* V2.8.5.2 — l'éditeur applique le démarrage réel (§6) : on confirme. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); });
   await p.waitForTimeout(200);
   // k-windows end change -> successeurs todo décalés -> preview
   const hasPreview = await ev(p, () => document.querySelector('#modal').classList.contains('open'));
@@ -305,7 +305,7 @@ console.log('\n[EDIT-07] Statut manuel');
   await openPlanning(p);
   await ev(p, () => openTaskEdit('k-final', 'planning-gantt'));   // k-final = todo
   await p.waitForTimeout(120);
-  await ev(p, () => { const seg = document.querySelector('.te-status-seg'); [...seg.querySelectorAll('.seg-opt')].find((x) => /En cours/.test(x.textContent)).click(); submitTaskEdit(); /* V2.8.5.2 — l'éditeur applique le démarrage réel (§6) : on confirme. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); });
+  await ev(p, () => { const seg = document.querySelector('.te-status-seg'); [...seg.querySelectorAll('.seg-opt')].find((x) => /En cours/.test(x.textContent)).click(); submitTaskEdit(); /* V2.8.5.2 — l'éditeur applique le démarrage réel (§6) : on confirme. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); });
   await p.waitForTimeout(150);
   const r = await ev(p, () => ({
     status: task('k-final').status,
@@ -385,7 +385,7 @@ try {
   await pA.waitForTimeout(150);
   await ev(pA, () => { openTaskEdit('k-windows', 'planning-gantt'); });
   await pA.waitForTimeout(120);
-  await ev(pA, () => { document.querySelector('#taskEditForm [name=name]').value = 'Fenêtres — sync test'; markTaskEditDirty(); submitTaskEdit(); /* V2.8.5.2 — l'éditeur applique le démarrage réel (§6) : on confirme. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); });
+  await ev(pA, () => { document.querySelector('#taskEditForm [name=name]').value = 'Fenêtres — sync test'; markTaskEditDirty(); submitTaskEdit(); /* V2.8.5.2 — l'éditeur applique le démarrage réel (§6) : on confirme. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); });
   await pA.waitForTimeout(120);
   // pas d'impact planning (nom) -> pas de preview ; sinon appliquer
   if (await ev(pA, () => document.querySelector('#modal').classList.contains('open'))) await ev(pA, () => applyTaskEditReflow());
@@ -405,10 +405,10 @@ console.log('\n[VALID] Validation');
   await ev(p, () => openTaskEdit('k-final', 'planning-gantt'));
   await p.waitForTimeout(120);
   // Nom vide
-  await ev(p, () => { document.querySelector('#taskEditForm [name=name]').value = ''; submitTaskEdit(); /* V2.8.5.2 — l'éditeur applique le démarrage réel (§6) : on confirme. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); });
+  await ev(p, () => { document.querySelector('#taskEditForm [name=name]').value = ''; submitTaskEdit(); /* V2.8.5.2 — l'éditeur applique le démarrage réel (§6) : on confirme. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); });
   ok(await ev(p, () => /obligatoire/i.test(document.querySelector('#taskEditError')?.textContent || '')), 'VALID : nom vide refusé (erreur inline)', 'VALID');
   // Fin < début
-  await ev(p, () => { const f = document.querySelector('#taskEditForm'); f.querySelector('[name=name]').value = 'X'; f.querySelector('[name=start]').value = '2026-08-20T10:00'; f.querySelector('[name=end]').value = '2026-08-20T09:00'; submitTaskEdit(); /* V2.8.5.2 — l'éditeur applique le démarrage réel (§6) : on confirme. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); });
+  await ev(p, () => { const f = document.querySelector('#taskEditForm'); f.querySelector('[name=name]').value = 'X'; f.querySelector('[name=start]').value = '2026-08-20T10:00'; f.querySelector('[name=end]').value = '2026-08-20T09:00'; submitTaskEdit(); /* V2.8.5.2 — l'éditeur applique le démarrage réel (§6) : on confirme. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); });
   ok(await ev(p, () => /postérieure/i.test(document.querySelector('#taskEditError')?.textContent || '')), 'VALID : fin < début refusé (erreur inline)', 'VALID');
   ok(await ev(p, () => document.querySelector('#drawer').classList.contains('open')), 'VALID : le drawer reste ouvert tant que le formulaire est invalide', 'VALID');
   await ctx.close();
@@ -430,7 +430,7 @@ console.log('\n[HIST] Historique groupé');
     const sel = f.querySelector('[name=resourceId]'); const opt = [...sel.options].find((o) => /Marc/.test(o.textContent)); if (opt) sel.value = opt.value;
     f.querySelector('[name=start]').value = '2026-08-21T08:00'; f.querySelector('[name=end]').value = '2026-08-21T10:00';
     f.querySelector('[name=comment]').value = 'Regroupement test.';
-    markTaskEditDirty(); submitTaskEdit(); /* V2.8.5.2 — l'éditeur applique le démarrage réel (§6) : on confirme. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
+    markTaskEditDirty(); submitTaskEdit(); /* V2.8.5.2 — l'éditeur applique le démarrage réel (§6) : on confirme. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
   });
   await p.waitForTimeout(200);
   const r = await ev(p, () => {
@@ -479,7 +479,7 @@ console.log('\n[DARK] Thème sombre');
   });
   ok(dark.body && !!dark.h && !!dark.name && !!dark.readonly, 'DARK : éditeur lisible en sombre (titres/champs/lecture seule)', 'DARK');
   await p.screenshot({ path: SHOTS + 'edit-dark.png', fullPage: true });
-  await ev(p, () => { document.querySelector('#taskEditForm [name=end]').value = '2026-08-25T16:30'; markTaskEditDirty(); submitTaskEdit(); /* V2.8.5.2 — l'éditeur applique le démarrage réel (§6) : on confirme. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); });
+  await ev(p, () => { document.querySelector('#taskEditForm [name=end]').value = '2026-08-25T16:30'; markTaskEditDirty(); submitTaskEdit(); /* V2.8.5.2 — l'éditeur applique le démarrage réel (§6) : on confirme. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); });
   await p.waitForTimeout(150);
   const previewDark = await ev(p, () => document.querySelector('#modal').classList.contains('open') && !!getComputedStyle(document.querySelector('#modalContent h4')).color);
   ok(previewDark, 'DARK : aperçu d\'impact lisible en sombre', 'DARK');

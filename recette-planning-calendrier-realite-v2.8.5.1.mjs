@@ -843,6 +843,11 @@ console.log('\n[PC-NONREG] Undo/Redo, Kanban, Qualité, Mode Chantier');
     const t = task('k-windows');
     t.start = localDateTime(getDemoNow()); t.end = add(t.start, 2 * 3600000); t.status = 'todo';
     save();
+    /* V2.12.0 — RE-POINTAGE. « Cohérente » a désormais DEUX dimensions : la
+       tâche est à l'heure ET ses conditions de démarrage sont réglées (§12). On
+       complète donc la prémisse ; l'exigence, elle, ne bouge pas d'un iota —
+       dans ce cas, AUCUNE confirmation ne doit s'interposer. */
+    taskPrerequisites('k-windows').forEach((x) => setPrerequisiteStatus(x.id, 'confirmed'));
     const undoAvant = undoHistory.length;
     setTaskStatus('k-windows', 'doing', 'kanban');
     return { colonnes, cartes, statut: task('k-windows').status,
@@ -968,15 +973,24 @@ console.log('\n[FREEZE-2851] Byte-identité');
        défaut l'extracteur par accolades (il déborde sur les fonctions
        suivantes). Sa byte-identité est vérifiée séparément, par comparaison
        ligne à ligne bornée à l'indentation. */
+  /* V2.12.0 — RE-BASELINE, une seule cause NOMMÉE. « Conditions de démarrage »
+     (§12, §14, §16, §20, §23, §30) étend un petit nombre de moteurs centraux —
+     et les étend PLUTÔT QUE de les dupliquer, ce qui est précisément la règle
+     que ces gels protègent. Les fonctions ci-dessous quittent donc le gel,
+     déclarées et assumées ; elles sont vérifiées ligne à ligne par
+     `recette-conditions-demarrage-v2.12.0.mjs` (FREEZE-2120), qui les nomme
+     une à une. TOUT LE RESTE reste gelé byte à byte ici : rien n'est relâché. */
+  const rebaseV2120 = ['exportKanvixData'];
   const bouges = [];
   let compares = 0;
   geles.forEach((n) => {
+    if (rebaseV2120.includes(n)) return;
     const a = extractFn(A, n), c = extractFn(B, n);
     if (!a || !c) return;
     compares++;
     if (md5(a) !== md5(c)) bouges.push(`${n} (${md5(a)} → ${md5(c)})`);
   });
-  note('FREEZE-2851', { comparées: compares, bougés: bouges });
+  note('FREEZE-2851', { comparées: compares, bougés: bouges, reBaséesV2120: rebaseV2120 });
   ok(bouges.length === 0,
     `FREEZE-2851 : les ${compares} moteurs de V2.8.5 sont BYTE-IDENTIQUES — Undo/Redo complet, propagation, glisser-déposer, création souris, Qualité, Ressources, Jalons, Backup et Mode Chantier`, 'FREEZE-2851');
 

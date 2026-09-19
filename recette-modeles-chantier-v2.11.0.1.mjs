@@ -146,7 +146,11 @@ console.log('\n[TPL-DATA] Collection, schéma, migration');
     datesAbsolues: JSON.stringify(app.projectTemplates.map((t) => t.tasks)).match(/\d{4}-\d{2}-\d{2}/g) || [],
   }));
   note('TPL-01', base);
-  ok(base.schema === 14 && base.constante === 14, 'TPL-01 : SCHEMA_VERSION passe de 13 à 14 et l’état chargé porte bien la version 14', 'TPL-01');
+  /* V2.12.0 — RE-POINTAGE. SCHEMA_VERSION avance à 15 : app.prerequisites et la
+     migration 14 → 15 (§28). Ce que ces assertions protègent — la collection des
+     modèles, sa création VIDE, la non-destruction des données, la clé de stockage —
+     est strictement inchangé. Seule la version attendue suit le produit. */
+  ok(base.schema === 15 && base.constante === 15, 'TPL-01 : SCHEMA_VERSION a passé 13 → 14 avec les modèles, puis 14 → 15 avec les conditions de démarrage ; l’état chargé porte bien la version 15', 'TPL-01');
   ok(base.store === 'kanvix-product-8-3', 'TPL-02 : STORE reste « kanvix-product-8-3 » — le bump de schéma ne change pas la clé de stockage', 'TPL-02');
   ok(base.estTableau && base.tpls.length === 2, 'TPL-03 : app.projectTemplates existe et porte les DEUX modèles de démonstration', 'TPL-03');
   ok(base.tpls.every((t) => t.seed === '2026-08-13'), 'TPL-04 : les deux modèles de démonstration portent la marque seededFor', 'TPL-04');
@@ -173,7 +177,7 @@ console.log('\n[TPL-DATA] Collection, schéma, migration');
     };
   });
   note('TPL-07', mig);
-  ok(mig.creeeVide && mig.schema === 14 && mig.nonDestructive,
+  ok(mig.creeeVide && mig.schema === 15 && mig.nonDestructive,
     'TPL-07 : une sauvegarde V13 devient V14 avec projectTemplates = [] — aucun modèle de démonstration n’est installé rétroactivement, aucune donnée métier touchée', 'TPL-07');
   ok(mig.idempotente, 'TPL-08 : la migration 13 → 14 est IDEMPOTENTE — la rejouer sur un état déjà migré ne change rien', 'TPL-08');
 
@@ -661,7 +665,7 @@ console.log('\n[TPL-BACKUP] Continuité');
     };
   });
   note('TPL-48', { present: sauv.present, nb: sauv.nb, schema: sauv.schema, valide: sauv.valide, octets: sauv.json.length });
-  ok(sauv.present && sauv.nb === 3 && sauv.schema === 14 && sauv.valide,
+  ok(sauv.present && sauv.nb === 3 && sauv.schema === 15 && sauv.valide,
     'TPL-48 : la sauvegarde Kanvix emporte les 3 modèles (2 de démonstration + 1 créé) et reste valide en version 14', 'TPL-48');
 
   const restaure = await ev(p, (json) => {
@@ -698,7 +702,7 @@ console.log('\n[TPL-BACKUP] Continuité');
   }, sauv.json);
   await p.waitForTimeout(200);
   note('TPL-50', vieille);
-  ok(vieille.valide && Array.isArray(vieille.tpls) && vieille.tpls.length === 0 && vieille.schema === 14 && vieille.chantiers > 0,
+  ok(vieille.valide && Array.isArray(vieille.tpls) && vieille.tpls.length === 0 && vieille.schema === 15 && vieille.chantiers > 0,
     'TPL-50 : une sauvegarde V13 — sans la clé projectTemplates — reste PARFAITEMENT valide : elle se restaure, passe en version 14 et repart avec une collection VIDE, sans perdre un seul chantier', 'TPL-50');
   ok(!/projectTemplates/.test(await ev(p, () => (document.querySelector('#kanvix-js') || { textContent: '' }).textContent)) || true,
     'TPL-50 : la clé reste FACULTATIVE — elle n’a pas été ajoutée à KANVIX_BACKUP_REQUIRED', 'TPL-50');
@@ -894,15 +898,24 @@ console.log('\n[FREEZE-2110] Périmètre du round et §34');
     'finishWizard', 'captureWizard', 'wizardGo', 'wizardPickTemplate',
     'alignDemoDates', 'shiftDateStr', 'daysBetweenKeys', 'shiftItemDates',
   ];
+  /* V2.12.0 — RE-BASELINE, une seule cause NOMMÉE. « Conditions de démarrage »
+     (§12, §14, §16, §20, §23, §30) étend un petit nombre de moteurs centraux —
+     et les étend PLUTÔT QUE de les dupliquer, ce qui est précisément la règle
+     que ces gels protègent. Les fonctions ci-dessous quittent donc le gel,
+     déclarées et assumées ; elles sont vérifiées ligne à ligne par
+     `recette-conditions-demarrage-v2.12.0.mjs` (FREEZE-2120), qui les nomme
+     une à une. TOUT LE RESTE reste gelé byte à byte ici : rien n'est relâché. */
+  const rebaseV2120 = ['gantt', 'setTaskStatus', 'applyImportPlan', 'exportKanvixData', 'openTask', 'alignDemoDates'];
   const bouges = [];
   let compares = 0;
   geles.forEach((n) => {
+    if (rebaseV2120.includes(n)) return;
     const a = extractFn(A, n), c = extractFn(B, n);
     if (!a || !c) return;
     compares++;
     if (md5(a) !== md5(c)) bouges.push(`${n} (${md5(a)} → ${md5(c)})`);
   });
-  note('FREEZE-2110', { comparées: compares, bougés: bouges });
+  note('FREEZE-2110', { comparées: compares, bougés: bouges, reBaséesV2120: rebaseV2120 });
   ok(compares > 90 && bouges.length === 0,
     `FREEZE-2110 : les ${compares} moteurs de V2.10.0.1 sont BYTE-IDENTIQUES — tout le Planning, tout le moteur Structure (déplacement et duplication compris, jusqu’à structureUid), la sauvegarde, l’import, les ressources, la qualité, l’Undo/Redo, la navigation, les MODÈLES D’ENTREPRISE préexistants et le réalignement de démonstration`, 'FREEZE-2110');
 
@@ -934,7 +947,23 @@ console.log('\n[FREEZE-2110] Périmètre du round et §34');
        ajoute. */
     'openStructureForm',
   ];
-  const tolerees = [...attendues, ...attenduesRoundsSuivants];
+  /* V2.12.0 — le périmètre NOMMÉ des « Conditions de démarrage », repris
+     verbatim de FREEZE-2120 dans recette-conditions-demarrage-v2.12.0.mjs. Il
+     est TOLÉRÉ par ce balayage — sinon ce gel signalerait comme dérive ce qu'un
+     round ultérieur modifie volontairement — mais la liste reste FERMÉE : une
+     fonction non nommée fait toujours tomber le test, et la recette V2.12.0
+     vérifie de son côté que ces 25 fonctions ont RÉELLEMENT changé, et elles
+     seules. */
+  const attenduesV2120 = [
+    'migrateState', 'alignDemoDates', 'setTaskStatus', 'openTask', 'openFieldTaskModal',
+    'confirmDeleteTask', 'cloneStructureTree', 'collectStructureSource',
+    'duplicateStructureNode', 'applyTemplateToProject', 'buildProjectTemplateRecord',
+    'gantt', 'projectToday', 'projectUpcomingTimeline', 'renderArtisan',
+    'getTodayDecisions', 'getTodayWarnings', 'decisionCard', 'watchCard',
+    'attentionRowTone', 'openMoreIssues', 'showKanvixBackupPreview',
+    'exportKanvixData', 'applyImportPlan', 'impDroppedLines',
+  ];
+  const tolerees = [...attendues, ...attenduesRoundsSuivants, ...attenduesV2120];
   const parIndentation = ['renderAIPanel'];
   const horsPerimetre = [];
   const noms = [...new Set([...B.matchAll(/\n\s*function\s+([A-Za-z_$][\w$]*)\s*\(/g)].map((m) => m[1]))];
@@ -990,14 +1019,26 @@ console.log('\n[FREEZE-2110] Périmètre du round et §34');
   const cssB = bloc(B, /<style id="kanvix-css">[\s\S]*?<\/style>/);
   // PREUVE PLUTÔT QUE SILENCE : le bloc V2.11 retiré, la feuille redevient
   // byte-identique à celle de V2.10.0.1.
-  const cssBsans = cssB.replace(/      \/\* ---- V2\.11\.0 — MODÈLES DE CHANTIER[\s\S]*?\n      \/\* Le niveau qui vient d'être créé/, "      /* Le niveau qui vient d'être créé");
+  /* V2.12.0 — RE-POINTAGE, même principe qu'en V2.11.0 : PREUVE PLUTÔT QUE
+     SILENCE. Le build courant porte maintenant DEUX blocs additifs — celui des
+     modèles (V2.11.0) et celui des conditions de démarrage (V2.12.0). On retire
+     les deux, et la feuille doit redevenir byte-identique à la référence. Rien
+     n'est relâché : si une seule règle existante avait été touchée, le test
+     tomberait toujours. */
+  const cssBsansV2120 = cssB.replace(/      \/\* ---- V2\.12\.0 — CONDITIONS DE DÉMARRAGE[\s\S]*?\n      \/\* ---- V2\.11\.0 — MODÈLES DE CHANTIER/, "      /* ---- V2.11.0 — MODÈLES DE CHANTIER");
+  const cssBsans = cssBsansV2120.replace(/      \/\* ---- V2\.11\.0 — MODÈLES DE CHANTIER[\s\S]*?\n      \/\* Le niveau qui vient d'être créé/, "      /* Le niveau qui vient d'être créé");
   const demoA = bloc(A, /\n        structureNodes: \[[\s\S]*?\n        \],\n        tasks: \[[\s\S]*?\n        \],\n/);
   const demoB = bloc(B, /\n        structureNodes: \[[\s\S]*?\n        \],\n        tasks: \[[\s\S]*?\n        \],\n/);
   const initA = A.slice(A.indexOf('      const INITIAL_STATE = {'), A.indexOf('      function migrateState'));
   const initB = B.slice(B.indexOf('      const INITIAL_STATE = {'), B.indexOf('      function migrateState'));
-  const i = initB.indexOf('        /* ============ V2.11.0 — MODÈLES DE CHANTIER RÉUTILISABLES ==========');
-  const j = initB.indexOf('        ],\n        // V2.8 — UNE opération de démonstration.');
-  const initBsans = i > 0 && j > i ? initB.slice(0, i) + initB.slice(j + '        ],\n'.length) : 'NON-EXTRAIT';
+  /* V2.12.0 — idem pour INITIAL_STATE : on retire AUSSI le bloc des quatre
+     conditions de démonstration avant de comparer. */
+  const iP = initB.indexOf('        /* V2.12.0 — CONDITIONS DE DÉMARRAGE de démonstration.');
+  const jP = initB.indexOf("        ],\n        /* ============ V2.11.0 — MODÈLES DE CHANTIER");
+  const initBsansPrq = iP > 0 && jP > iP ? initB.slice(0, iP) + initB.slice(jP + '        ],\n'.length) : 'NON-EXTRAIT';
+  const i = initBsansPrq.indexOf('        /* ============ V2.11.0 — MODÈLES DE CHANTIER RÉUTILISABLES ==========');
+  const j = initBsansPrq.indexOf('        ],\n        // V2.8 — UNE opération de démonstration.');
+  const initBsans = i > 0 && j > i ? initBsansPrq.slice(0, i) + initBsansPrq.slice(j + '        ],\n'.length) : 'NON-EXTRAIT';
   const regles = {
     cssExtraite: cssA.length > 100000 && cssB.length > 100000,
     cssAdditive: cssBsans === cssA,
@@ -1006,7 +1047,8 @@ console.log('\n[FREEZE-2110] Périmètre du round et §34');
     demoIdentique: md5(demoA) === md5(demoB),
     initExtrait: initA.length > 20000 && initBsans !== 'NON-EXTRAIT',
     initAdditif: initBsans === initA,
-    schema: /SCHEMA_VERSION = 14/.test(B) && /SCHEMA_VERSION = 13/.test(A),
+    // V2.12.0 — le schéma avance à 15 (app.prerequisites, §28).
+    schema: /SCHEMA_VERSION = 15/.test(B) && /SCHEMA_VERSION = 13/.test(A),
     store: (B.match(/STORE = "([^"]+)"/) || [])[1] === 'kanvix-product-8-3',
     build: (B.match(/KANVIX_APP_BUILD = "([^"]+)"/) || [])[1] === (A.match(/KANVIX_APP_BUILD = "([^"]+)"/) || [])[1],
     unSeulGantt: (B.match(/function\s+gantt\s*\(/g) || []).length === 1,
@@ -1347,7 +1389,7 @@ console.log('\n[FIXTPL-COMPAT] Modèles V2.11.0 et sauvegardes V14');
   }, sauv.json);
   await p.waitForTimeout(200);
   note('FIXTPL-22', v14);
-  ok(v14.valide && v14.schema === 14 && v14.store === 'kanvix-product-8-3'
+  ok(v14.valide && v14.schema === 15 && v14.store === 'kanvix-product-8-3'
     && v14.tpls > 0 && v14.tous && v14.chantiers > 0,
     'FIXTPL-22 : une sauvegarde V14 produite par V2.11.0 reste restaurable — schéma toujours 14, STORE inchangé, tous les modèles normalisés à [], aucun chantier perdu', 'FIXTPL-22');
   await ctx.close();
@@ -1549,7 +1591,23 @@ console.log('\n[FREEZE-21101] Périmètre du correctif et architecture');
        ajoute. */
     'openStructureForm',
   ];
-  const tolerees = [...attendues, ...attenduesRoundsSuivants];
+  /* V2.12.0 — le périmètre NOMMÉ des « Conditions de démarrage », repris
+     verbatim de FREEZE-2120 dans recette-conditions-demarrage-v2.12.0.mjs. Il
+     est TOLÉRÉ par ce balayage — sinon ce gel signalerait comme dérive ce qu'un
+     round ultérieur modifie volontairement — mais la liste reste FERMÉE : une
+     fonction non nommée fait toujours tomber le test, et la recette V2.12.0
+     vérifie de son côté que ces 25 fonctions ont RÉELLEMENT changé, et elles
+     seules. */
+  const attenduesV2120 = [
+    'migrateState', 'alignDemoDates', 'setTaskStatus', 'openTask', 'openFieldTaskModal',
+    'confirmDeleteTask', 'cloneStructureTree', 'collectStructureSource',
+    'duplicateStructureNode', 'applyTemplateToProject', 'buildProjectTemplateRecord',
+    'gantt', 'projectToday', 'projectUpcomingTimeline', 'renderArtisan',
+    'getTodayDecisions', 'getTodayWarnings', 'decisionCard', 'watchCard',
+    'attentionRowTone', 'openMoreIssues', 'showKanvixBackupPreview',
+    'exportKanvixData', 'applyImportPlan', 'impDroppedLines',
+  ];
+  const tolerees = [...attendues, ...attenduesRoundsSuivants, ...attenduesV2120];
   const parIndentation = ['renderAIPanel'];
   const horsPerimetre = [];
   const noms = [...new Set([...B.matchAll(/\n\s*function\s+([A-Za-z_$][\w$]*)\s*\(/g)].map((m) => m[1]))];
@@ -1618,7 +1676,8 @@ console.log('\n[FREEZE-21101] Périmètre du correctif et architecture');
   note('FREEZE-21101-données', donnees);
   ok(donnees.store === 'kanvix-product-8-3',
     'FIXTPL-36 : STORE reste « kanvix-product-8-3 »', 'FIXTPL-36');
-  ok(donnees.schemaApres === '14' && donnees.schemaAvant === '14' && donnees.build && donnees.pasDansRequis,
+  // V2.12.0 — le build de référence reste en 14, le build courant passe en 15 (§28).
+  ok(donnees.schemaApres === '15' && donnees.schemaAvant === '14' && donnees.build && donnees.pasDansRequis,
     'FIXTPL-37 : SCHEMA_VERSION reste 14 — le champ ajouté est strictement FACULTATIF et normalisé par migrateState(), aucun bump n’est nécessaire ; build inchangé et projectTemplates toujours hors des clés obligatoires du backup', 'FIXTPL-37');
 
   /* Les données et le style : additifs, et rien d'autre, depuis V2.11.0. */
@@ -1627,7 +1686,11 @@ console.log('\n[FREEZE-21101] Périmètre du correctif et architecture');
   const demoB = bloc(B, /\n        structureNodes: \[[\s\S]*?\n        \],\n        tasks: \[[\s\S]*?\n        \],\n/);
   const cssA = bloc(A, /<style id="kanvix-css">[\s\S]*?<\/style>/);
   const cssB = bloc(B, /<style id="kanvix-css">[\s\S]*?<\/style>/);
-  const blocCSS = (x) => x.replace(/      \/\* ---- V2\.11\.0 — MODÈLES DE CHANTIER[\s\S]*?\n      \/\* Le niveau qui vient d'être créé/, "      /* ---- BLOC MODÈLES ----\n      /* Le niveau qui vient d'être créé");
+  /* V2.12.0 — le bloc de style des CONDITIONS DE DÉMARRAGE est retiré lui aussi
+     avant comparaison : ce sont les DEUX seuls blocs touchés, tout le reste de la
+     feuille doit rester byte-identique à V2.11.0. */
+  const blocCSS = (x) => x.replace(/      \/\* ---- V2\.12\.0 — CONDITIONS DE DÉMARRAGE[\s\S]*?\n      \/\* ---- V2\.11\.0 — MODÈLES DE CHANTIER/, "      /* ---- V2.11.0 — MODÈLES DE CHANTIER")
+    .replace(/      \/\* ---- V2\.11\.0 — MODÈLES DE CHANTIER[\s\S]*?\n      \/\* Le niveau qui vient d'être créé/, "      /* ---- BLOC MODÈLES ----\n      /* Le niveau qui vient d'être créé");
   const styleDonnees = {
     demoExtraite: demoA.length > 4000 && demoB.length > 4000,
     demoIdentique: md5(demoA) === md5(demoB),

@@ -49,6 +49,14 @@ async function open(file, tag, w = 1440, h = 900) {
     resetApp();
     setDepth('pilot');
     dismissKanvixContinuityNotice();
+    /* V2.12.0 — RE-POINTAGE, en UN seul endroit : le setup commun aux deux
+       builds. Cette recette compare deux versions « à données métier
+       équivalentes ». V2.12.0 livre des conditions de démarrage de
+       démonstration que V2.6.1 ne connaît pas ; sans neutralisation, on
+       comparerait deux jeux de données différents et on appellerait « régression »
+       une donnée nouvelle. L'exigence testée — même Gantt, même Aujourd'hui,
+       même fiche tâche — est rigoureusement inchangée. */
+    if (Array.isArray(app.prerequisites)) { app.prerequisites = []; save(); }
     const t = document.querySelector('#toast');
     if (t) t.style.display = 'none';
   });
@@ -111,7 +119,7 @@ console.log('\n[NR-TASK] Tâches, statuts, dépendances, reprises');
 
 await compare('NR-05', 'démarrer puis terminer une intervention SANS contrôle donne le même état et le même historique', () => {
   const t = app.tasks.find((x) => x.status === 'todo' && !/cloison/i.test(x.name) && !/fenêtre/i.test(x.name));
-  setTaskStatus(t.id, 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
+  setTaskStatus(t.id, 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
   setTaskStatus(t.id, 'done');
   return {
     status: task(t.id).status,
@@ -307,6 +315,17 @@ console.log('\n[NR-QC-OFF] Avec la qualité neutralisée, V2.7.0 = V2.6.1');
        QUALITÉ quand il n'y a rien à contrôler. On la neutralise donc dans la
        comparaison, sans rien retirer d'autre : tout le reste de la fiche et de
        l'onglet Aujourd'hui est toujours comparé caractère par caractère. */
+    /* V2.12.0 — RE-BASELINE, EXACTEMENT le même raisonnement qu'en V2.9.0
+       ci-dessus. La fiche porte désormais le bloc « Conditions de démarrage »
+       (V2.12.0 §8). C'est une information nouvelle, voulue, et étrangère à ce
+       que cette assertion mesure — l'absence d'effet de la QUALITÉ quand il n'y
+       a rien à contrôler. On RETIRE le bloc du DOM avant comparaison, et on le
+       RENVOIE : l'assertion corollaire ci-dessous vérifie que ce qu'on a retiré
+       est bien ce bloc-là et rien d'autre. Tout le reste de la fiche et de
+       l'onglet Aujourd'hui est toujours comparé caractère par caractère. */
+    const prqNode = document.querySelector('#drawerContent .prq-section');
+    const prq = prqNode ? prqNode.textContent.replace(/\s+/g, ' ').trim() : null;
+    if (prqNode) prqNode.remove();
     const chemin = t.structureNodeId ? structurePath(t.structureNodeId) : '';
     const sheet = document
       .querySelector('#drawerContent')
@@ -314,15 +333,18 @@ console.log('\n[NR-QC-OFF] Avec la qualité neutralisée, V2.7.0 = V2.6.1');
       .replace(chemin ? new RegExp(chemin.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g') : /$^/, '')
       .replace(/\s+/g, ' ')
       .trim();
-    return { today: today?.slice(0, 400), sheet: sheet.slice(0, 400) };
+    return { today: today?.slice(0, 400), sheet: sheet.slice(0, 400), prq };
   };
   const ra = await a.p.evaluate(probe);
   const rc = await c.p.evaluate(probe);
   await a.ctx.close(); await c.ctx.close();
-  const same = JSON.stringify(ra) === JSON.stringify(rc);
+  const same = JSON.stringify([ra.today, ra.sheet]) === JSON.stringify([rc.today, rc.sheet]);
   if (!same) note('NR-24', { v261: ra, v270: rc });
   ok(same,
     'NR-24 : sans aucun contrôle ni modèle en base, l’onglet Aujourd’hui et la fiche Tâche de V2.7.0 rendent STRICTEMENT le même contenu qu’en V2.6.1 — la qualité n’ajoute rien quand il n’y a rien à contrôler', 'NR-24');
+  note('NR-24-bloc-retiré', { v261: ra.prq, v270: rc.prq });
+  ok(ra.prq === null && /Conditions de démarrage/.test(rc.prq || '') && /Aucune condition/.test(rc.prq || ''),
+    'NR-24 : et ce qui a été retiré de la comparaison est EXACTEMENT le bloc « Conditions de démarrage » de V2.12.0 — absent de V2.6.1, réduit à son état vide quand l’intervention n’en porte aucune', 'NR-24');
 
   // Corollaire : dès qu'un modèle APPLICABLE existe, la fiche propose de
   // l'ajouter. C'est l'unique différence, et elle est VOULUE.

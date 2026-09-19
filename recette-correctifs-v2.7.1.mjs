@@ -281,6 +281,14 @@ console.log('\n[QUAL271] Le contrôle devient visible au moment où il devient p
        inchangée : le moteur renvoie un outcome exploitable dont `completed`
        est faux pour une transition qui n'est pas une fin. */
     let out = setTaskStatus('k-windows', 'doing');
+    /* V2.12.0 — RE-POINTAGE, même raisonnement qu'en V2.8.5.2. « Pose des 6
+       fenêtres » porte désormais une condition de démarrage non confirmée : la
+       garde (§12) s'interpose AVANT le calendrier et l'appel initial rend donc
+       la main sans outcome. On confirme, comme l'utilisateur, et on capture le
+       retour de la transition réellement effectuée. L'exigence est inchangée —
+       et elle est même renforcée : la garde doit RENDRE l'outcome du moteur,
+       pas l'avaler. */
+    if (document.querySelector('#modal.open [data-prq-confirm]')) out = confirmPrerequisiteStart();
     if (document.querySelector('#modal.open [data-calendar-confirm]')) {
       const reprise = pendingCalendarConfirm;
       pendingCalendarConfirm = null;
@@ -401,7 +409,7 @@ console.log('\n[QUAL271] Le contrôle devient visible au moment où il devient p
   // ---- QUAL271-10 : « Contrôler maintenant » ouvre le formulaire EXISTANT.
   await reset();
   const now = await ev(p, () => {
-    setTaskStatus('k-windows', 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); closeOverlay('modal');
+    setTaskStatus('k-windows', 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); closeOverlay('modal');
     setTaskStatus('k-windows', 'done');
     const cid = controlsForTask('k-windows')[0].id;
     [...document.querySelectorAll('#modalContent button')].find((x) => /Contrôler maintenant/.test(x.textContent)).click();
@@ -477,7 +485,7 @@ console.log('\n[QUAL271] Le contrôle devient visible au moment où il devient p
   // ---- QUAL271-16 : passage par le KANBAN.
   await reset();
   const kanban = await ev(p, () => {
-    setTaskStatus('k-windows', 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); closeOverlay('modal');
+    setTaskStatus('k-windows', 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); closeOverlay('modal');
     const t = document.querySelector('#toast'); t.textContent = ''; t.classList.remove('show');
     setTaskStatus('k-windows', 'done', 'kanban');
     const m = document.querySelector('#modalContent');
@@ -495,7 +503,7 @@ console.log('\n[QUAL271] Le contrôle devient visible au moment où il devient p
   // ---- QUAL271-17 : passage par la FICHE TÂCHE (bouton réel).
   await reset();
   const sheetPath = await ev(p, () => {
-    setTaskStatus('k-windows', 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); closeOverlay('modal');
+    setTaskStatus('k-windows', 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); closeOverlay('modal');
     openTask('k-windows');
     const btn = [...document.querySelectorAll('#drawerContent .task-actions .btn')].find((x) => /Terminer/.test(x.textContent));
     if (!btn) return { btn: false };
@@ -513,7 +521,7 @@ console.log('\n[QUAL271] Le contrôle devient visible au moment où il devient p
   // ---- QUAL271-18 : passage par l'ÉDITEUR UNIVERSEL (transactionnel).
   await reset();
   const editor = await ev(p, () => {
-    setTaskStatus('k-windows', 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); closeOverlay('modal');
+    setTaskStatus('k-windows', 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); closeOverlay('modal');
     openTaskEdit('k-windows', 'planning-gantt');
     const f = document.querySelector('#taskEditFormEl') || document.querySelector('#drawerContent form');
     const sel = f.querySelector('[name=status]');
@@ -533,7 +541,7 @@ console.log('\n[QUAL271] Le contrôle devient visible au moment où il devient p
 
   // ---- QUAL271-19 : aucun doublon de contrôle, quel que soit le chemin.
   const dedup = await ev(p, () => {
-    setTaskStatus('k-windows', 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
+    setTaskStatus('k-windows', 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     ensureTaskControlInstances('k-windows');
     ensureTaskControlInstances('k-windows');
     const key = controlsForTask('k-windows').map((c) => c.taskId + '/' + c.templateId);
@@ -548,7 +556,7 @@ console.log('\n[QUAL271] Le contrôle devient visible au moment où il devient p
   const many = await ev(p, () => {
     const tpl = controlTemplate('ctl-platrerie-cloisons');
     tpl.lotId = null; tpl.taskPattern = 'fenêtre';
-    setTaskStatus('k-windows', 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); closeOverlay('modal');
+    setTaskStatus('k-windows', 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); closeOverlay('modal');
     setTaskStatus('k-windows', 'done');
     const m = document.querySelector('#modalContent');
     return {
@@ -592,7 +600,7 @@ console.log('\n[QUAL271-ARTISAN] L’artisan ne contrôle toujours pas');
 
   // ---- QUAL271-14 : contrôle NON bloquant — il termine, sans checklist.
   const soft = await ev(p, () => {
-    setTaskStatus('k-windows', 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); closeOverlay('modal');
+    setTaskStatus('k-windows', 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); closeOverlay('modal');
     const t = document.querySelector('#toast'); t.textContent = ''; t.classList.remove('show');
     setTaskStatus('k-windows', 'done');
     const m = document.querySelector('#modalContent');
@@ -641,7 +649,7 @@ console.log('\n[QUAL271-FIELD] Mode Chantier — le contrôle créé dynamiqueme
   const field = await ev(p, () => {
     // Le contrôle n'existe PAS au départ : on le fait naître par le parcours.
     const before = controlsForTask('k-windows').length;
-    setTaskStatus('k-windows', 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
+    setTaskStatus('k-windows', 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     closeOverlay('modal');
     setTaskStatus('k-windows', 'done');
     closeOverlay('modal');
@@ -684,7 +692,7 @@ console.log('\n[RESP271] Responsive : Mode Chantier, popup de fin, formulaire de
       setFieldTab('messages'); out.messages = over();
       handleFieldSiteTab();
       app.settings.driverMode = 'office'; save(); renderPage();
-      setTaskStatus('k-windows', 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); closeOverlay('modal');
+      setTaskStatus('k-windows', 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); closeOverlay('modal');
       setTaskStatus('k-windows', 'done'); out.qualityPopup = over();
       const actions = [...document.querySelectorAll('#modalContent .pop-actions .btn')].map((x) => Math.round(x.getBoundingClientRect().height));
       [...document.querySelectorAll('#modalContent button')].find((x) => /Contrôler maintenant/.test(x.textContent)).click();
@@ -712,7 +720,7 @@ console.log('\n[DARK271] Thème sombre');
   const { ctx, p } = await newPage({ tag: 'DARK' });
   const dark = await ev(p, () => {
     setAppearance('dark');
-    setTaskStatus('k-windows', 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); closeOverlay('modal');
+    setTaskStatus('k-windows', 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); closeOverlay('modal');
     setTaskStatus('k-windows', 'done');
     const box = document.querySelector('.modal-box'),
       lead = document.querySelector('.qc-done-lead'),

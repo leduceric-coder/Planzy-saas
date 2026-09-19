@@ -1147,9 +1147,19 @@ console.log('\n[LOT-26..31] Sauvegarde, restauration V9, export, import, replace
 // ============================================================
 console.log('\n[LOT-32] Baseline métier V2.5.0 vs V2.6.0 — résultats identiques');
 {
-  const snapshotOf = async (file, tag) => {
+  /* V2.12.0 — RE-POINTAGE. « À données métier ÉQUIVALENTES » : V2.12.0 livre
+     quatre conditions de démarrage de démonstration dont une bloquante non
+     confirmée, qui alimente légitimement « À décider » (§14). V2.5.0 n'a pas
+     cette collection : les deux jeux ne sont donc plus équivalents tant qu'on
+     ne l'a pas neutralisée. On la neutralise — et on ne s'arrête pas là : on
+     mesure AUSSI le build courant sans neutralisation, et on exige que l'écart
+     soit EXACTEMENT « decisions, +1 ». Le test devient donc plus strict qu'avant,
+     puisqu'il chiffre désormais la contribution de la nouveauté. */
+  const snapshotOf = async (file, tag, sansConditions) => {
     const { ctx, p } = await newPage({ tag, file });
-    const out = await ev(p, () => ({
+    const out = await ev(p, (sans) => {
+      if (sans && Array.isArray(app.prerequisites)) { app.prerequisites = []; save(); }
+      return ({
       health: app.projects.map((x) => [x.id, JSON.stringify(getProjectHealth(x.id))]),
       delay: app.projects.map((x) => [x.id, calculateProjectDelay(x.id)]),
       decisions: getTodayDecisions(Infinity).length,
@@ -1160,17 +1170,25 @@ console.log('\n[LOT-32] Baseline métier V2.5.0 vs V2.6.0 — résultats identiq
       resourceStates: app.resources.map((r) => [r.id, getResourceState(r.id, localDateKey(TODAY))]),
       taskStates: app.tasks.map((t) => [t.id, t.status, t.start, t.end]),
       mobilised: app.tasks.map((t) => [t.id, taskResourceIds(t).join(',')]),
-    }));
+    });
+    }, sansConditions);
     await ctx.close();
     return out;
   };
-  const a = await snapshotOf(PREV, 'BASE-25');
-  const c = await snapshotOf(CUR, 'BASE-26');
+  const a = await snapshotOf(PREV, 'BASE-25', true);
+  const c = await snapshotOf(CUR, 'BASE-26', true);
   const keys = Object.keys(a);
   const diffs = keys.filter((k) => JSON.stringify(a[k]) !== JSON.stringify(c[k]));
-  note('LOT-32', { comparés: keys.length, divergents: diffs });
+  // Le même build, conditions de démonstration COMPRISES : l'écart doit être
+  // nommé et chiffré, jamais vague.
+  const brut = await snapshotOf(CUR, 'BASE-26-BRUT', false);
+  const diffsBruts = keys.filter((k) => JSON.stringify(a[k]) !== JSON.stringify(brut[k]));
+  note('LOT-32', { comparés: keys.length, divergents: diffs,
+    divergentsSansNeutralisation: diffsBruts, decisions: [a.decisions, brut.decisions] });
   ok(diffs.length === 0,
     `LOT-32 : à données métier équivalentes, V2.6.0 produit EXACTEMENT les mêmes résultats que V2.5.0 (${keys.length} indicateurs : santé, retards, décisions, surveillances, conflits ressources, états)`, 'LOT-32');
+  ok(JSON.stringify(diffsBruts) === JSON.stringify(['decisions']) && brut.decisions === a.decisions + 1,
+    'LOT-32 : et la SEULE contribution des conditions de démarrage de V2.12.0 est UNE décision de plus — aucun autre des dix indicateurs métier ne bouge', 'LOT-32');
 }
 
 // ============================================================

@@ -103,7 +103,8 @@ console.log('\n[ST-MIGRATION] V12 → V13');
   /* V2.11.0 — RE-POINTAGE : le schéma a avancé à 14 avec les modèles de
      chantier. La clé de stockage, elle, n'a jamais bougé — c'est ce que cette
      assertion protège réellement. */
-  ok(r.schema === 14 && r.store === 'kanvix-product-8-3',
+  /* V2.12.0 — RE-POINTAGE. Le schéma avance à 15 : « Conditions de démarrage » introduit app.prerequisites, migration 14 → 15 (§28). Ce que cette assertion protège réellement — la CLÉ DE STOCKAGE, qui n'a jamais bougé — est inchangé. */
+  ok(r.schema === 15 && r.store === 'kanvix-product-8-3',
     `ST-70 / ST-69 : SCHEMA_VERSION = ${r.schema} et STORE inchangé (« ${r.store} »)`, 'ST-70');
   await ctx.close();
 }
@@ -328,7 +329,7 @@ console.log('\n[ST-TACHES] Le formulaire, l’historique et l’Undo');
     const f = document.querySelector('#taskEditForm');
     f.querySelector('[name=structureNodeId]').value = 'sn-keravel-rdc';
     submitTaskEdit();
-    if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
+    /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     const t = task('k-cloisons');
     return {
       avant, apres: t.structureNodeId, lot: t.lotId,
@@ -466,7 +467,7 @@ console.log('\n[ST-PLANNING] Le Gantt existant, filtré');
     app.ui.structureNodeId = null; app.settings.period = 'week'; save(); go('planning');
     const avant = { sn: task('k-cloisons').structureNodeId, start: task('k-cloisons').start };
     requestTaskScheduleMove('k-cloisons', '2026-08-19T08:00', 'planning-gantt');
-    if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
+    /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     const t = task('k-cloisons');
     return { avant, apres: { sn: t.structureNodeId, start: t.start } };
   });
@@ -984,15 +985,24 @@ console.log('\n[FREEZE-290] Byte-identité');
     'planningToday', 'planningCanDrawCreate', 'planningIsReadOnly', 'getProjectTasks',
     'getUpcomingTasks', 'projectDocuments', 'projectPhotos', 'kanbanBoard', 'kanbanCard',
   ];
+  /* V2.12.0 — RE-BASELINE, une seule cause NOMMÉE. « Conditions de démarrage »
+     (§12, §14, §16, §20, §23, §30) étend un petit nombre de moteurs centraux —
+     et les étend PLUTÔT QUE de les dupliquer, ce qui est précisément la règle
+     que ces gels protègent. Les fonctions ci-dessous quittent donc le gel,
+     déclarées et assumées ; elles sont vérifiées ligne à ligne par
+     `recette-conditions-demarrage-v2.12.0.mjs` (FREEZE-2120), qui les nomme
+     une à une. TOUT LE RESTE reste gelé byte à byte ici : rien n'est relâché. */
+  const rebaseV2120 = ['setTaskStatus'];
   const bouges = [];
   let compares = 0;
   geles.forEach((n) => {
+    if (rebaseV2120.includes(n)) return;
     const a = extractFn(A, n), c = extractFn(B, n);
     if (!a || !c) return;
     compares++;
     if (md5(a) !== md5(c)) bouges.push(`${n} (${md5(a)} → ${md5(c)})`);
   });
-  note('FREEZE-290', { comparées: compares, bougés: bouges });
+  note('FREEZE-290', { comparées: compares, bougés: bouges, reBaséesV2120: rebaseV2120 });
   ok(bouges.length === 0,
     `FREEZE-290 : les ${compares} moteurs de V2.8.5.2 sont BYTE-IDENTIQUES — Undo/Redo, propagation, déplacement, création à la souris, jours non ouvrés, démarrage réel, Qualité, Ressources, Jalons, Opérations, Backup et Mode Chantier`, 'FREEZE-290');
 
@@ -1004,7 +1014,8 @@ console.log('\n[FREEZE-290] Byte-identité');
     pasDeMoteurStructure:
       !/function\s+(structureGantt|structurePlanningTasks|structureResourcesEngine|structureRiskStatus|structureConflicts|renderStructurePlanning)\s*\(/.test(B),
     pasDeRisquePersiste: !/app\.structureRisks|structureRiskStore/.test(B),
-    schema: /SCHEMA_VERSION = 14/.test(B),
+    // V2.12.0 — le schéma avance à 15 (app.prerequisites, §28).
+    schema: /SCHEMA_VERSION = 15/.test(B),
     store: (B.match(/STORE = "([^"]+)"/) || [])[1] === 'kanvix-product-8-3',
     pasDansObligatoires: !/KANVIX_BACKUP_REQUIRED = \[[^\]]*structureNodes/.test(B),
   };

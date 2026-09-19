@@ -504,6 +504,13 @@ console.log('\n[SECTION 8] Densité de l\'Accueil');
   await ev(p3, () => {
     resetApp(); setDepth('pilot');
     app.issues.forEach((i) => (i.status = 'resolved'));
+    /* V2.12.0 — RE-POINTAGE. « À décider » agrège désormais une QUATRIÈME
+       source : les conditions de démarrage non confirmées (§14). Ce cas neutralise
+       déjà tout le bruit préexistant pour que les 10 décisions injectées soient la
+       totalité mesurable ; on neutralise donc aussi les conditions. L'exigence est
+       strictement la même — le compteur donne le TOTAL RÉEL, pas le nombre affiché —
+       et le seuil reste 10, pas un nombre relâché. */
+    app.prerequisites = [];
     for (let i = 0; i < 10; i++) {
       let id = 'dens-decision-' + i;
       app.issues.push({ id, projectId: 'keravel', taskId: 'k-electric', status: 'open', severity: 'critical', source: 'planning', title: 'Décision ' + i, comment: 'x' });
@@ -911,7 +918,7 @@ try {
   await pA.waitForTimeout(200);
   const tid = await ev(pB, () => getArtisanTodayTasks('thomas')[0]?.id);
   ok(!!tid, 'une tâche artisan du jour existe (onglet B)', 'field-sync');
-  await ev(pB, (id) => { setTaskStatus(id, 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); }, tid);
+  await ev(pB, (id) => { setTaskStatus(id, 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); }, tid);
   await pA.waitForTimeout(400);
   const rowTextA = await ev(pA, (id) => document.querySelector(`.tp-row[onclick*="${id}"]`)?.textContent || '', tid);
   ok(rowTextA.includes('Démarrée à'), 'onglet A (Accueil): confirmation "Démarrée à HH:MM" visible sans F5', 'field-sync');
@@ -940,7 +947,7 @@ try {
   await pA.waitForTimeout(200);
   await ev(pB, () => {
     kanbanDragStart({ currentTarget: { classList: { add(){} } }, dataTransfer: { setData(){}, getData(){ return 'k-control'; } } }, 'k-control');
-    kanbanDrop({ preventDefault(){}, currentTarget: { classList: { remove(){} } }, dataTransfer: { getData(){ return 'k-control'; } } }, 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
+    kanbanDrop({ preventDefault(){}, currentTarget: { classList: { remove(){} } }, dataTransfer: { getData(){ return 'k-control'; } } }, 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
   });
   await pA.waitForTimeout(400);
   const rowTextA = await ev(pA, () => document.querySelector('.tp-row[onclick*="k-control"]')?.textContent || '');

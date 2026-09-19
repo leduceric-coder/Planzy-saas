@@ -280,7 +280,7 @@ console.log('\n[PLAN-F5] Kanban statut uniquement');
     const fe = eval('(' + FAKE + ')');
     const beforeStart = task('k-final').start,
       beforeDuree = date(task('k-final').end) - date(task('k-final').start);
-    kanbanDragStart(fe, 'k-final'); kanbanDrop(fe, 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
+    kanbanDragStart(fe, 'k-final'); kanbanDrop(fe, 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     const t = task('k-final');
     return { status: t.status, startKept: t.start === beforeStart,
       dureeConservee: (date(t.end) - date(t.start)) === beforeDuree,
@@ -503,11 +503,11 @@ console.log('\n[STATUS-TERM] setTaskStatus terminal');
   const r = await ev(p, () => {
     task('k-final').status = 'done'; save();
     const u = app.undoStack.length;
-    setTaskStatus('k-final', 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); setTaskStatus('k-final', 'todo');
+    setTaskStatus('k-final', 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); setTaskStatus('k-final', 'todo');
     return { status: task('k-final').status, undoDelta: app.undoStack.length - u };
   });
   ok(r.status === 'done' && r.undoDelta === 0, 'STATUS-TERM-01 : setTaskStatus(done → doing/todo) refusé, aucun snapshot', 'STATUS-TERM');
-  const ok2 = await ev(p, () => { resetApp(); setDepth('pilot'); setTaskStatus('k-final', 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); const a = task('k-final').status; setTaskStatus('k-final', 'done'); return a === 'doing' && task('k-final').status === 'done'; });
+  const ok2 = await ev(p, () => { resetApp(); setDepth('pilot'); setTaskStatus('k-final', 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm(); const a = task('k-final').status; setTaskStatus('k-final', 'done'); return a === 'doing' && task('k-final').status === 'done'; });
   ok(ok2, 'STATUS-TERM-01 : todo→doing→done toujours possibles (règles existantes préservées)', 'STATUS-TERM');
   await ctx.close();
 }

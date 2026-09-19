@@ -280,7 +280,7 @@ console.log('\n[PLAN-F5] Kanban statut uniquement');
     const fe = eval('(' + FAKE + ')');
     const beforeStart = task('k-final').start,
       beforeDuree = date(task('k-final').end) - date(task('k-final').start);
-    kanbanDragStart(fe, 'k-final'); kanbanDrop(fe, 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
+    kanbanDragStart(fe, 'k-final'); kanbanDrop(fe, 'doing'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     const t = task('k-final');
     return { status: t.status, startKept: t.start === beforeStart,
       dureeConservee: (date(t.end) - date(t.start)) === beforeDuree,

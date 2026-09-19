@@ -476,7 +476,7 @@ console.log('\n[UIUR-PAGES] Présence par page, responsive, Mode Chantier, sombr
     resetApp(); setRole('driver'); setDepth('pilot');
     enterFieldMode(); selectFieldProject('keravel');
     const t = app.tasks.find((x) => x.status === 'todo');
-    setTaskStatus(t.id, 'doing', 'field'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
+    setTaskStatus(t.id, 'doing', 'field'); /* V2.8.5.2 — le passage « En cours » demande désormais confirmation (§7) : on confirme, comme l'utilisateur. */ /* V2.12.0 — RE-POINTAGE. Le passage « En cours » traverse désormais aussi la garde des CONDITIONS DE DÉMARRAGE (§12) : on confirme, comme l'utilisateur, exactement comme on confirmait déjà le calendrier depuis V2.8.5.2. L'exigence testée est inchangée. */ if (document.querySelector('#modal.open [data-prq-confirm]')) confirmPrerequisiteStart(); if (document.querySelector('#modal.open [data-calendar-confirm]')) runCalendarConfirm();
     const out = { controls: document.querySelectorAll('.history-controls').length,
       bottom: document.querySelectorAll('.field-bottom-nav button, .field-nav button').length,
       toast: document.querySelector('#toast').textContent,
