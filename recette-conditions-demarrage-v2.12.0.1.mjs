@@ -602,14 +602,24 @@ console.log('\n[FREEZE-21201] Périmètre et architecture');
 
   /* TROIS fonctions, et trois seulement. */
   const attendues = ['submitTaskEdit', 'confirmPrerequisiteStart', 'clearTaskEditAck'];
+  /* V2.12.0.2 — les fonctions touchées par le ROUND SUIVANT sont tolérées par
+     le BALAYAGE, sinon ce gel signalerait comme dérive ce qu'un correctif
+     ultérieur modifie volontairement. La liste reste FERMÉE, et les deux
+     contrôles propres à V2.12.0.1 — « les trois fonctions annoncées ont
+     réellement changé » et « ce round n'a ajouté aucune fonction » — restent
+     strictement ceux de ce round.
+       · restoreHistoryState   — y pose la préservation des communications ;
+       · preserveCommunications — le helper pur qu'elle appelle. */
+  const attenduesRoundsSuivants = ['restoreHistoryState', 'preserveCommunications'];
+  const tolerees = [...attendues, ...attenduesRoundsSuivants];
   const parIndentation = ['renderAIPanel'];
   const horsPerimetre = [], ajoutees = [];
   const noms = [...new Set([...B.matchAll(/\n\s*function\s+([A-Za-z_$][\w$]*)\s*\(/g)].map((m) => m[1]))];
   noms.forEach((n) => {
     if (parIndentation.includes(n)) return;
     const a = extractFn(A, n), c = extractFn(B, n);
-    if (!a && c) { ajoutees.push(n); return; }
-    if (a && c && md5(a) !== md5(c) && !attendues.includes(n)) horsPerimetre.push(n);
+    if (!a && c) { if (!attenduesRoundsSuivants.includes(n)) ajoutees.push(n); return; }
+    if (a && c && md5(a) !== md5(c) && !tolerees.includes(n)) horsPerimetre.push(n);
   });
   const indentDiff = parIndentation.filter((n) => blocIndente(A, n) !== blocIndente(B, n));
   const nonModifiees = attendues.filter((n) => md5(extractFn(A, n) || '') === md5(extractFn(B, n) || ''));
@@ -649,15 +659,21 @@ console.log('\n[FREEZE-21201] Périmètre et architecture');
     'kanbanBoard', 'kanbanCard', 'setTaskStatusFromKanban', 'openTaskEdit',
     'guardEditable', 'canEditProject', 'save', 'resetApp',
   ];
+  /* V2.12.0.2 — RE-BASELINE, une seule cause NOMMÉE : restoreHistoryState()
+     reçoit la préservation des communications. Elle quitte le gel, déclarée et
+     assumée, et FREEZE-21202 la vérifie ligne à ligne. setTaskStatus() — le
+     vrai sujet de ce gel-ci — reste byte-identique. */
+  const rebaseV21202 = ['restoreHistoryState'];
   const bouges = [];
   let compares = 0;
   geles.forEach((n) => {
+    if (rebaseV21202.includes(n)) return;
     const a = extractFn(A, n), c = extractFn(B, n);
     if (!a || !c) return;
     compares++;
     if (md5(a) !== md5(c)) bouges.push(`${n} (${md5(a)} → ${md5(c)})`);
   });
-  note('FREEZE-21201-gelés', { comparées: compares, bougés: bouges });
+  note('FREEZE-21201-gelés', { comparées: compares, bougés: bouges, reBaséesV21202: rebaseV21202 });
   ok(compares > 80 && bouges.length === 0,
     `FREEZE-21201 : les ${compares} moteurs nommément protégés sont BYTE-IDENTIQUES — dont setTaskStatus() lui-même. La garde centrale n’a PAS été déplacée : elle protège toujours les cinq autres chemins, et la transaction unique de l’éditeur n’a pas été cassée`, 'FREEZE-21201');
 

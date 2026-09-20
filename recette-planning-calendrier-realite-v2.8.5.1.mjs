@@ -981,10 +981,20 @@ console.log('\n[FREEZE-2851] Byte-identité');
      `recette-conditions-demarrage-v2.12.0.mjs` (FREEZE-2120), qui les nomme
      une à une. TOUT LE RESTE reste gelé byte à byte ici : rien n'est relâché. */
   const rebaseV2120 = ['exportKanvixData'];
+  /* V2.12.0.2 — RE-BASELINE, une seule cause NOMMÉE. Le correctif « une
+     communication ne remonte pas le temps » pose dans restoreHistoryState() la
+     seule règle du round : un message émis après la prise du snapshot n'est pas
+     « dé-envoyé » par l'annulation d'une transaction qui ne le concerne pas. La
+     fonction quitte donc le gel, déclarée et assumée ; FREEZE-21202 la vérifie
+     ligne à ligne dans recette-undo-communications-v2.12.0.2.mjs. snapshot(),
+     undo(), redo(), cloneHistoryState() et invalidateRedo() restent, eux,
+     BYTE-IDENTIQUES — le moteur Undo/Redo n'a pas été refait. */
+  const rebaseV21202 = ['restoreHistoryState'];
   const bouges = [];
   let compares = 0;
   geles.forEach((n) => {
     if (rebaseV2120.includes(n)) return;
+    if (rebaseV21202.includes(n)) return;
     const a = extractFn(A, n), c = extractFn(B, n);
     if (!a || !c) return;
     compares++;

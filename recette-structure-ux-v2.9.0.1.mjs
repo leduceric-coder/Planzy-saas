@@ -858,10 +858,20 @@ console.log('\n[FREEZE-2901] Byte-identité V2.9.0 → V2.9.0.1');
        depuis l'éditeur transactionnel. Déclarée, donc assumée, et vérifiée par
        FREEZE-21201. setTaskStatus() reste, lui, byte-identique. */
     'submitTaskEdit'];
+  /* V2.12.0.2 — RE-BASELINE, une seule cause NOMMÉE. Le correctif « une
+     communication ne remonte pas le temps » pose dans restoreHistoryState() la
+     seule règle du round : un message émis après la prise du snapshot n'est pas
+     « dé-envoyé » par l'annulation d'une transaction qui ne le concerne pas. La
+     fonction quitte donc le gel, déclarée et assumée ; FREEZE-21202 la vérifie
+     ligne à ligne dans recette-undo-communications-v2.12.0.2.mjs. snapshot(),
+     undo(), redo(), cloneHistoryState() et invalidateRedo() restent, eux,
+     BYTE-IDENTIQUES — le moteur Undo/Redo n'a pas été refait. */
+  const rebaseV21202 = ['restoreHistoryState'];
   const bouges = [];
   let compares = 0;
   geles.forEach((n) => {
     if (rebaseV291.includes(n)) return;
+    if (rebaseV21202.includes(n)) return;
     const a = extractFn(A, n), c = extractFn(B, n);
     if (!a || !c) return;
     compares++;

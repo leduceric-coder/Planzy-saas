@@ -797,9 +797,19 @@ console.log('\n[FREEZE-285] Byte-identité');
      ce gel protège. Déclarées, donc assumées, et vérifiées une à une par
      FREEZE-2120 dans recette-conditions-demarrage-v2.12.0.mjs. */
   const rebaseV2120 = ['confirmDeleteTask'];
+  /* V2.12.0.2 — RE-BASELINE, une seule cause NOMMÉE. Le correctif « une
+     communication ne remonte pas le temps » pose dans restoreHistoryState() la
+     seule règle du round : un message émis après la prise du snapshot n'est pas
+     « dé-envoyé » par l'annulation d'une transaction qui ne le concerne pas. La
+     fonction quitte donc le gel, déclarée et assumée ; FREEZE-21202 la vérifie
+     ligne à ligne dans recette-undo-communications-v2.12.0.2.mjs. snapshot(),
+     undo(), redo(), cloneHistoryState() et invalidateRedo() restent, eux,
+     BYTE-IDENTIQUES — le moteur Undo/Redo n'a pas été refait. */
+  const rebaseV21202 = ['restoreHistoryState'];
   let moved = [], same = 0;
   for (const n of frozen) {
     if (rebaseV2120.includes(n)) continue;
+    if (rebaseV21202.includes(n)) continue;
     const a = extract(prevSrc, n), c = extract(curSrc, n);
     if (a && c && md5(a) === md5(c)) same++;
     else moved.push(`${n} (${a ? md5(a).slice(0, 8) : 'ABSENT'} → ${c ? md5(c).slice(0, 8) : 'ABSENT'})`);

@@ -931,10 +931,20 @@ console.log('\n[FREEZE-2110] Périmètre du round et §34');
      setTaskStatus(), lui, reste BYTE-IDENTIQUE — la garde centrale n'a pas
      bougé, et c'est tout l'intérêt du correctif. */
   const rebaseV21201 = ['submitTaskEdit'];
+  /* V2.12.0.2 — RE-BASELINE, une seule cause NOMMÉE. Le correctif « une
+     communication ne remonte pas le temps » pose dans restoreHistoryState() la
+     seule règle du round : un message émis après la prise du snapshot n'est pas
+     « dé-envoyé » par l'annulation d'une transaction qui ne le concerne pas. La
+     fonction quitte donc le gel, déclarée et assumée ; FREEZE-21202 la vérifie
+     ligne à ligne dans recette-undo-communications-v2.12.0.2.mjs. snapshot(),
+     undo(), redo(), cloneHistoryState() et invalidateRedo() restent, eux,
+     BYTE-IDENTIQUES — le moteur Undo/Redo n'a pas été refait. */
+  const rebaseV21202 = ['restoreHistoryState'];
   const bouges = [];
   let compares = 0;
   geles.forEach((n) => {
     if (rebaseV2120.includes(n) || rebaseV21201.includes(n)) return;
+    if (rebaseV21202.includes(n)) return;
     const a = extractFn(A, n), c = extractFn(B, n);
     if (!a || !c) return;
     compares++;
@@ -993,7 +1003,12 @@ console.log('\n[FREEZE-2110] Périmètre du round et §34');
      ultérieur corrige volontairement). La liste reste FERMÉE et le contrôle
      « les fonctions du round ont réellement changé » reste celui de la recette. */
   const attenduesV21201 = ['submitTaskEdit', 'clearTaskEditAck', 'confirmPrerequisiteStart'];
-  const tolerees = [...attendues, ...attenduesRoundsSuivants, ...attenduesV2120, ...attenduesV21201];
+  /* V2.12.0.2 — restoreHistoryState(), TOLÉRÉE par ce balayage : le correctif
+     « une communication ne remonte pas le temps » la modifie volontairement.
+     La liste reste FERMÉE, et le contrôle « les fonctions du round ont
+     réellement changé » reste celui de la recette. */
+  const attenduesV21202 = ['restoreHistoryState', 'preserveCommunications'];
+  const tolerees = [...attendues, ...attenduesRoundsSuivants, ...attenduesV2120, ...attenduesV21201, ...attenduesV21202];
   const parIndentation = ['renderAIPanel'];
   const horsPerimetre = [];
   const noms = [...new Set([...B.matchAll(/\n\s*function\s+([A-Za-z_$][\w$]*)\s*\(/g)].map((m) => m[1]))];
@@ -1642,7 +1657,12 @@ console.log('\n[FREEZE-21101] Périmètre du correctif et architecture');
      ultérieur corrige volontairement). La liste reste FERMÉE et le contrôle
      « les fonctions du round ont réellement changé » reste celui de la recette. */
   const attenduesV21201 = ['submitTaskEdit', 'clearTaskEditAck', 'confirmPrerequisiteStart'];
-  const tolerees = [...attendues, ...attenduesRoundsSuivants, ...attenduesV2120, ...attenduesV21201];
+  /* V2.12.0.2 — restoreHistoryState(), TOLÉRÉE par ce balayage : le correctif
+     « une communication ne remonte pas le temps » la modifie volontairement.
+     La liste reste FERMÉE, et le contrôle « les fonctions du round ont
+     réellement changé » reste celui de la recette. */
+  const attenduesV21202 = ['restoreHistoryState', 'preserveCommunications'];
+  const tolerees = [...attendues, ...attenduesRoundsSuivants, ...attenduesV2120, ...attenduesV21201, ...attenduesV21202];
   const parIndentation = ['renderAIPanel'];
   const horsPerimetre = [];
   const noms = [...new Set([...B.matchAll(/\n\s*function\s+([A-Za-z_$][\w$]*)\s*\(/g)].map((m) => m[1]))];
@@ -2166,7 +2186,12 @@ console.log('\n[FREEZE-21102] Périmètre du correctif et architecture');
      ultérieur corrige volontairement). La liste reste FERMÉE et le contrôle
      « les fonctions du round ont réellement changé » reste celui de la recette. */
   const attenduesV21201 = ['submitTaskEdit', 'clearTaskEditAck', 'confirmPrerequisiteStart'];
-  const tolerees = [...attendues, ...attenduesRoundsSuivants, ...attenduesV2120, ...attenduesV21201];
+  /* V2.12.0.2 — restoreHistoryState(), TOLÉRÉE par ce balayage : le correctif
+     « une communication ne remonte pas le temps » la modifie volontairement.
+     La liste reste FERMÉE, et le contrôle « les fonctions du round ont
+     réellement changé » reste celui de la recette. */
+  const attenduesV21202 = ['restoreHistoryState', 'preserveCommunications'];
+  const tolerees = [...attendues, ...attenduesRoundsSuivants, ...attenduesV2120, ...attenduesV21201, ...attenduesV21202];
   const parIndentation = ['renderAIPanel'];
   const horsPerimetre = [];
   const noms = [...new Set([...B.matchAll(/\n\s*function\s+([A-Za-z_$][\w$]*)\s*\(/g)].map((m) => m[1]))];

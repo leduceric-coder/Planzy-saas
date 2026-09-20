@@ -1,0 +1,207 @@
+{
+  "passed": 40,
+  "failed": [],
+  "results": [
+    {
+      "sec": "UNDOCOM-01",
+      "name": "UNDOCOM-01 : le cas de test est bien celui du défaut — deux communications réelles sont émises APRÈS la transaction, dont une avec photo jointe",
+      "status": "PASS"
+    },
+    {
+      "sec": "UNDOCOM-01",
+      "name": "UNDOCOM-01 : sur V2.12.0.1, l’Undo de la transaction EFFACE les deux messages ET la photo jointe — une opération de planning supprime des communications émises ensuite. Le défaut est REPRODUIT, pas supposé",
+      "status": "PASS"
+    },
+    {
+      "sec": "UNDOCOM-02",
+      "name": "UNDOCOM-02 : après Undo, le message SANS photo émis après la transaction est CONSERVÉ",
+      "status": "PASS"
+    },
+    {
+      "sec": "UNDOCOM-03",
+      "name": "UNDOCOM-03 : après Undo, le message AVEC photo émis après la transaction est CONSERVÉ",
+      "status": "PASS"
+    },
+    {
+      "sec": "UNDOCOM-04",
+      "name": "UNDOCOM-04 : la photo rattachée à ce message est CONSERVÉE elle aussi — une pièce jointe n’est pas une donnée transactionnelle comme une autre",
+      "status": "PASS"
+    },
+    {
+      "sec": "UNDOCOM-05",
+      "name": "UNDOCOM-05 : message.photoId reste RÉSOLVABLE — la pièce jointe se retrouve toujours dans app.photos, aucune référence cassée",
+      "status": "PASS"
+    },
+    {
+      "sec": "UNDOCOM-06",
+      "name": "UNDOCOM-06 : aucun message dupliqué, ni après Undo ni après Redo",
+      "status": "PASS"
+    },
+    {
+      "sec": "UNDOCOM-07",
+      "name": "UNDOCOM-07 : aucune photo dupliquée, aucun identifiant de photo en double",
+      "status": "PASS"
+    },
+    {
+      "sec": "UNDOCOM-11",
+      "name": "UNDOCOM-11 : après Redo, les deux messages et la photo jointe sont toujours là — la règle est SYMÉTRIQUE, parce qu’elle est posée au point de restauration unique",
+      "status": "PASS"
+    },
+    {
+      "sec": "UNDOCOM-13",
+      "name": "UNDOCOM-13 / 14 / 15 : le contexte du message conducteur ↔ artisan est intact après Undo — resourceId, taskId et projectId sont conservés tels quels",
+      "status": "PASS"
+    },
+    {
+      "sec": "UNDOCOM-08",
+      "name": "UNDOCOM-08 : les messages ANTÉRIEURS au snapshot — ceux de la démonstration comme ceux envoyés juste avant la transaction — restent évidemment présents, après Undo comme après Redo",
+      "status": "PASS"
+    },
+    {
+      "sec": "UNDOCOM-09",
+      "name": "UNDOCOM-09 : les TROIS messages postérieurs au snapshot survivent tous, à l’Undo comme au Redo — et le total est exact, donc rien n’a été ni perdu ni dupliqué",
+      "status": "PASS"
+    },
+    {
+      "sec": "UNDOCOM-10",
+      "name": "UNDOCOM-10 : un message envoyé ENTRE l’Undo et le Redo est conservé — aucun Redo ne réinjecte une collection de messages plus ancienne",
+      "status": "PASS"
+    },
+    {
+      "sec": "UNDOCOM-10",
+      "name": "UNDOCOM-10 : et ce cas se comportait DÉJÀ correctement en V2.12.0.1, pour une autre raison — l’envoi d’un message appelle invalidateRedo(), qui coupe la branche Redo (redoHistory vide, redo() rend false). Le correctif ne change donc rien à ce contrat : il le rend simplement inutile comme unique rempart",
+      "status": "PASS"
+    },
+    {
+      "sec": "UNDOCOM-12",
+      "name": "UNDOCOM-12 : le message d’information posé par addPhoto() ne porte AUCUN photoId — la photo n’est donc rattachée à aucune communication",
+      "status": "PASS"
+    },
+    {
+      "sec": "UNDOCOM-12",
+      "name": "UNDOCOM-12 : et elle DISPARAÎT bien à l’Undo — une photo non rattachée à un message suit le comportement transactionnel historique. La galerie n’est pas devenue un domaine hors-Undo",
+      "status": "PASS"
+    },
+    {
+      "sec": "UNDOCOM-12",
+      "name": "UNDOCOM-12 : l’entrée d’historique de la photo disparaît elle aussi — la transaction est bien annulée",
+      "status": "PASS"
+    },
+    {
+      "sec": "UNDOCOM-12",
+      "name": "UNDOCOM-12 : aucune référence cassée ne subsiste — aucun message ne pointe vers une photo absente",
+      "status": "PASS"
+    },
+    {
+      "sec": "UNDOCOM-12",
+      "name": "UNDOCOM-12 : conséquence assumée — le message d’information « Photo terrain ajoutée. », lui, est enregistré dans app.messages et survit à l’Undo, sans référence cassée puisqu’il ne porte pas de photoId",
+      "status": "PASS"
+    },
+    {
+      "sec": "UNDOCOM-12bis",
+      "name": "UNDOCOM-12bis : après une transaction qui VIDE app.messages, l’Undo les rend tous, aux mêmes identifiants et dans le même ordre — la préservation est une UNION, jamais un remplacement par la collection courante",
+      "status": "PASS"
+    },
+    {
+      "sec": "UNDOCOM-12bis",
+      "name": "UNDOCOM-12bis : et le résultat est IDENTIQUE à V2.12.0.1 — ce cas fonctionnait, il continue de fonctionner à l’identique",
+      "status": "PASS"
+    },
+    {
+      "sec": "UNDOCOM-12ter",
+      "name": "UNDOCOM-12ter : pour un message DÉJÀ présent au snapshot, c’est la version du SNAPSHOT qui est restaurée — son contenu appartient au domaine transactionnel, seule son EXISTENCE est sanctuarisée",
+      "status": "PASS"
+    },
+    {
+      "sec": "UNDOCOM-13",
+      "name": "UNDOCOM-13 : un message envoyé depuis la CONVERSATION ARTISAN — l’autre point d’envoi du produit — survit lui aussi à l’Undo",
+      "status": "PASS"
+    },
+    {
+      "sec": "UNDOCOM-14",
+      "name": "UNDOCOM-14 / 15 : son contexte complet est conservé à l’identique — émetteur, ressource, tâche et chantier",
+      "status": "PASS"
+    },
+    {
+      "sec": "UNDOCOM-14",
+      "name": "UNDOCOM-14 : un simple brouillon de composer n’est pas persisté dans app.messages — il n’est donc PAS sanctuarisé, et la règle ne s’applique qu’à une communication réellement enregistrée",
+      "status": "PASS"
+    },
+    {
+      "sec": "UNDOCOM-16",
+      "name": "UNDOCOM-16 : envoyer un message n’écrit AUCUNE entrée d’historique — la seule entrée est celle de la transaction elle-même. Aucun événement artificiel « message préservé » n’est inventé",
+      "status": "PASS"
+    },
+    {
+      "sec": "UNDOCOM-17",
+      "name": "UNDOCOM-17 : l’Undo restaure toujours la TÂCHE elle-même — nom, dates, intervenant — et retire l’entrée d’historique de la transaction. Le domaine transactionnel garde tous ses droits",
+      "status": "PASS"
+    },
+    {
+      "sec": "UNDOCOM-18",
+      "name": "UNDOCOM-18 : et le Redo la rétablit intégralement",
+      "status": "PASS"
+    },
+    {
+      "sec": "UNDOCOM-19",
+      "name": "UNDOCOM-19 : il n’existe QU’UN restoreHistoryState(), QU’UN cloneHistoryState(), QU’UN snapshot() et QU’UN helper de préservation — appelé uniquement depuis le point de restauration unique (une définition, un appel)",
+      "status": "PASS"
+    },
+    {
+      "sec": "UNDOCOM-20",
+      "name": "UNDOCOM-20 : undo() et redo() sont BYTE-IDENTIQUES à V2.12.0.1 et ne contiennent aucune logique de fusion — ils ne mentionnent ni messages, ni photos, ni le helper. La symétrie vient du point de restauration commun, pas d’un code dupliqué",
+      "status": "PASS"
+    },
+    {
+      "sec": "UNDOCOM-20",
+      "name": "UNDOCOM-20 : snapshot(), cloneHistoryState() et invalidateRedo() sont eux aussi byte-identiques — le contrat d’invalidation du Redo n’a PAS été changé",
+      "status": "PASS"
+    },
+    {
+      "sec": "UNDOCOM-19",
+      "name": "UNDOCOM-19 : le helper est PUR — il ne touche jamais `app` — et aucune collection ni aucun champ persistant n’a été inventé pour piloter la règle",
+      "status": "PASS"
+    },
+    {
+      "sec": "UNDOCOM-21",
+      "name": "UNDOCOM-21 : SCHEMA_VERSION reste 15 — aucune donnée persistée nouvelle, aucune migration",
+      "status": "PASS"
+    },
+    {
+      "sec": "UNDOCOM-22",
+      "name": "UNDOCOM-22 : STORE reste « kanvix-product-8-3 » et le build est inchangé",
+      "status": "PASS"
+    },
+    {
+      "sec": "UNDOCOM-22",
+      "name": "UNDOCOM-22 : migrateState(), buildKanvixBackup(), validateKanvixBackup() et confirmKanvixRestore() sont BYTE-IDENTIQUES",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21202",
+      "name": "FREEZE-21202 : hors de restoreHistoryState(), le balayage md5 de TOUT le fichier ne trouve AUCUNE autre fonction modifiée depuis V2.12.0.1",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21202",
+      "name": "FREEZE-21202 : restoreHistoryState() a réellement changé, et la SEULE fonction ajoutée est le helper pur preserveCommunications()",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21202",
+      "name": "FREEZE-21202 : les 85 moteurs nommément protégés sont BYTE-IDENTIQUES — tout l’Undo/Redo hors restauration, la Messagerie, les Photos, le Planning, les Tâches, les Conditions de démarrage, la Structure, les Modèles, les Ressources, la Qualité, le Kanban, la Sauvegarde et l’Import/Export",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-21202",
+      "name": "FREEZE-21202 / §17 : la feuille de style, le balisage <body> et INITIAL_STATE sont BYTE-IDENTIQUES — ce patch ne change rien de visible, ni en clair, ni en sombre, ni sur mobile",
+      "status": "PASS"
+    },
+    {
+      "sec": "UNDOCOM-23",
+      "name": "UNDOCOM-23 : aucune erreur JavaScript applicative en console (0)",
+      "status": "PASS"
+    }
+  ],
+  "consoleErrors": []
+}

@@ -1154,7 +1154,10 @@ console.log('\n[FREEZE-2120] Périmètre du round et architecture');
        · confirmPrerequisiteStart — rend la décision à l'appelant qui tient déjà
          une transaction, au lieu de rappeler le moteur lui-même ;
        · clearTaskEditAck — nettoie le nouvel accusé avec le formulaire. */
-  const attenduesRoundsSuivants = ['submitTaskEdit', 'confirmPrerequisiteStart', 'clearTaskEditAck'];
+  /* V2.12.0.2 — restoreHistoryState() rejoint la liste : le correctif « une
+     communication ne remonte pas le temps » la modifie volontairement. */
+  const attenduesRoundsSuivants = ['submitTaskEdit', 'confirmPrerequisiteStart', 'clearTaskEditAck',
+    'restoreHistoryState'];
   const tolerees = [...attendues, ...attenduesRoundsSuivants];
   const parIndentation = ['renderAIPanel'];
   const horsPerimetre = [];
@@ -1203,10 +1206,12 @@ console.log('\n[FREEZE-2120] Périmètre du round et architecture');
      garde CENTRALE, et le vrai sujet de ce gel — reste byte-identique : le
      correctif ne l'a pas déplacée. */
   const rebaseV21201 = ['submitTaskEdit'];
+  // V2.12.0.2 — même motif, même discipline : la fonction est vérifiée par FREEZE-21202.
+  const rebaseV21202 = ['restoreHistoryState'];
   const bouges = [];
   let compares = 0;
   geles.forEach((n) => {
-    if (rebaseV21201.includes(n)) return;
+    if (rebaseV21201.includes(n) || rebaseV21202.includes(n)) return;
     const a = extractFn(A, n), c = extractFn(B, n);
     if (!a || !c) return;
     compares++;
