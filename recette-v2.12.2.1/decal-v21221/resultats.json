@@ -1,0 +1,396 @@
+{
+  "passed": 74,
+  "failed": [
+    "[DECAL-70] DECAL-70 : migrateState() est BYTE-IDENTIQUE — aucune migration n’a été nécessaire",
+    "[FREEZE-2121] FREEZE-2121 : hors de openTask() (bouton ajouté), le balayage md5 de TOUT le fichier ne trouve AUCUNE autre fonction EXISTANTE modifiée depuis V2.12.0.2 — renderAIPanel comparé par bloc indenté reste lui aussi identique",
+    "[FREEZE-2121] FREEZE-2121 : la feuille de style est BYTE-IDENTIQUE — le nouveau panneau réutilise exclusivement des classes CSS déjà en production (.drawer-section/.te-section/.te-advanced/.seg/.effect-summary/.prq-confirm-list/.check-row/.form-error), aucune classe n’a été ajoutée"
+  ],
+  "results": [
+    {
+      "sec": "DECAL-01",
+      "name": "DECAL-01 : sur V2.12.0.2, scenarioOptions() ne calcule des scénarios QUE pour « windows-delay » — tout autre identifiant renvoie []. La limitation est REPRODUITE, pas supposée",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-01",
+      "name": "DECAL-01 : « Préparer un décalage » n’existe pas du tout sur V2.12.0.2 (taskShiftEligibility n’est pas définie)",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-01",
+      "name": "DECAL-01 : et la fiche tâche de V2.12.0.2 ne propose aucune action « Préparer un décalage »",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-02",
+      "name": "DECAL-02 : sur une intervention À FAIRE, le bouton « Préparer un décalage » est présent et ACTIF",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-03",
+      "name": "DECAL-03 : sur une intervention EN COURS, le bouton est présent mais DÉSACTIVÉ, avec une explication",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-04",
+      "name": "DECAL-04 : sur une intervention TERMINÉE, l’action n’est pas proposée — cohérent avec le reste du menu (Modifier/Replanifier/Tester un décalage disparaissent déjà tous pour une tâche terminée)",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-05",
+      "name": "DECAL-05 : chantier clôturé — la fiche passe en lecture seule et aucune action « Préparer un décalage » n’est proposée (même règle que Modifier/Replanifier/Supprimer)",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-06",
+      "name": "DECAL-06 : « Préparer un décalage » ouvre le panneau latéral du produit (#drawer), pas une nouvelle page ni une modale",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-06",
+      "name": "DECAL-06 : la première étape propose 1 jour par défaut",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-07",
+      "name": "DECAL-07 : computeShiftChain()/evaluateShiftImpact() sont des fonctions PURES — aucune écriture avant validation, même après avoir calculé un aperçu avec propagation",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-08",
+      "name": "DECAL-08 : fermer le panneau sans appliquer (Annuler) ne laisse aucune trace — pas de snapshot, pas de mutation",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-09",
+      "name": "DECAL-09 : décaler « t-slab » seule (sans propagation) ne modifie QU’UNE tâche",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-10",
+      "name": "DECAL-10 : la nouvelle date est le jour ouvré suivant (lundi 17 → mardi 18 août)",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-11",
+      "name": "DECAL-11 : la durée de l’intervention est PRÉSERVÉE à l’identique (addWorkingDuration)",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-12",
+      "name": "DECAL-12 : ce décalage simple n’a aucun blocage",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-13",
+      "name": "DECAL-13 : sans propagation, « k-lining » (dépendante de k-windows) n’apparaît PAS dans les changements et reste à sa date d’origine",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-14",
+      "name": "DECAL-14 : la propagation atteint TOUTE la chaîne k-windows → k-lining → k-paint → k-final",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-15",
+      "name": "DECAL-15 : UNE tâche avec DEUX successeurs directs — les deux sont replanifiés, sans conflit introduit entre eux",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-16",
+      "name": "DECAL-16 : quand le prédécesseur décalé devient le plus contraignant, la tâche à deux prédécesseurs est replanifiée juste après lui — la fin maximale des prédécesseurs est respectée",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-17",
+      "name": "DECAL-17 : quand la cascade violerait la contrainte du DEUXIÈME prédécesseur (non déplacé), le conflit de dépendances RÉSULTANT est détecté et l’application est REFUSÉE — aucune date incohérente n’est jamais écrite",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-18",
+      "name": "DECAL-18 : TOUTES les tâches touchées par la propagation ont une date ÉGALE OU POSTÉRIEURE à leur date d’origine — un décalage de ce lot n’avance jamais une tâche",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-19",
+      "name": "DECAL-19 : une intervention DÉPENDANTE déjà commencée bloque la propagation automatique — elle n’est jamais déplacée en silence, il n’existe qu’un arbitrage MANUEL",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-20",
+      "name": "DECAL-20 : une intervention TERMINÉE dans la chaîne n’est PAS un blocage — la cascade s’arrête simplement là, comme le fait déjà planReflow ailleurs dans le produit",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-20",
+      "name": "DECAL-20 : et rien au-delà de la tâche terminée n’est recalculé",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-21",
+      "name": "DECAL-21 : une boucle de dépendances est détectée EXPLICITEMENT et bloque la propagation, avec un message clair",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-21",
+      "name": "DECAL-21 : la détection est immédiate — aucune boucle infinie, même sur un graphe circulaire",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-22",
+      "name": "DECAL-22 : un cycle détecté ne laisse aucune mutation partielle — aucun snapshot n’a été pris",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-25",
+      "name": "DECAL-25 : un week-end touché par la cascade est bien SIGNALÉ dans l’aperçu",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-26",
+      "name": "DECAL-26 : conformément à la règle déjà en vigueur dans Kanvix (« il AVERTIT, le conducteur tranche »), un jour non ouvré touché n’est JAMAIS, à lui seul, un blocage",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-27",
+      "name": "DECAL-27 : le calcul de « Préparer un décalage » produit EXACTEMENT le même résultat que la composition directe addBusinessDays + addWorkingDuration — aucun second moteur de calendrier n’a été écrit",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-28",
+      "name": "DECAL-28 : « Pose des 6 fenêtres », qui dure plus d’un jour, reste une intervention MULTI-JOURS après décalage (la durée ouvrée est préservée, pas la date de fin brute)",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-29",
+      "name": "DECAL-29 : un décalage qui traverse une fin de mois calcule une date de septembre cohérente — aucune date invalide, aucun blocage calendrier artificiel (les fonctions de calendrier sont totales, voir RAPPORT-V2.12.1)",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-31",
+      "name": "DECAL-31 : décaler une tâche isolée dont la ressource est libre ne signale aucun conflit",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-32",
+      "name": "DECAL-32 : le conflit entre « Pré A » et « Pré B » (préexistant, sans rapport avec le décalage) est bien relevé…",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-32",
+      "name": "DECAL-32 : …mais n’est PAS présenté comme une conséquence NOUVELLE du décalage, et ne bloque donc pas l’application de ce décalage",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-33",
+      "name": "DECAL-33 : le décalage qui fait chevaucher l’intervention avec l’indisponibilité de Thomas est détecté comme un conflit NOUVEAU…",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-34",
+      "name": "DECAL-34 : …et BLOQUE l’application",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-35",
+      "name": "DECAL-35 : le camion (ressource COMPLÉMENTAIRE, pas l’intervenant principal) fait bien partie des ressources examinées pour ce décalage",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-36",
+      "name": "DECAL-36 : l’indisponibilité d’un ÉQUIPEMENT (pas seulement une personne) mobilisé en ressource complémentaire est détectée",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-39",
+      "name": "DECAL-39 : un jalon explicitement lié à la tâche décalée, dont la nouvelle fin dépasse sa date cible, est signalé « menacé »",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-40",
+      "name": "DECAL-40 : décaler « t-slab » (qui ne détermine pas la fin du chantier — t-plumb finit plus tard) ne menace PAS le jalon final : ce n’est pas un jalon sans lien causal traité comme s’il l’était",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-41",
+      "name": "DECAL-41 : à l’inverse, décaler la tâche qui détermine RÉELLEMENT la fin de chantier menace bien le jalon final — la même logique que milestoneStatus() (§\"Jalons\")",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-43",
+      "name": "DECAL-43 : la tâche source a changé depuis l’aperçu (ses dates ont bougé) → l’application est REFUSÉE, aucune écriture, retour au formulaire",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-44",
+      "name": "DECAL-44 : une dépendance concernée a changé depuis l’aperçu → application refusée",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-45",
+      "name": "DECAL-45 : une tâche PROPAGÉE (pas seulement la source) qui a changé depuis l’aperçu suffit à refuser l’application",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-46",
+      "name": "DECAL-46 : une ressource mobilisée dont la capacité a changé depuis l’aperçu suffit à refuser l’application",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-47",
+      "name": "DECAL-47 : une NOUVELLE indisponibilité ajoutée après l’aperçu (sur une ressource concernée) suffit à le périmer",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-48",
+      "name": "DECAL-48 : un changement SANS rapport avec le décalage préparé ne le périme PAS — l’application réussit normalement (l’empreinte n’est pas hyper-sensible à tout l’état de l’application)",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-50",
+      "name": "DECAL-50 : le bouton « Appliquer » est DÉSACTIVÉ tant que la case n’est pas cochée, et applyPrepareShift() refuse défensivement même appelé directement",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-51",
+      "name": "DECAL-51 : quand un blocage subsiste (ici, un conflit de ressources), la case de confirmation ELLE-MÊME est désactivée — impossible de la cocher pour forcer le passage",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-52",
+      "name": "DECAL-52 : sans blocage, la case est ACTIVABLE, mais le bouton « Appliquer » reste désactivé tant qu’elle n’est pas cochée — les deux conditions sont indépendantes",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-53",
+      "name": "DECAL-53 : un second appel à applyPrepareShift() après une application réussie ne fait STRICTEMENT rien (shiftDraft est vidé) — pas de double transaction, pas de double décalage",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-55",
+      "name": "DECAL-55 : UN seul snapshot pour le décalage source ET toute sa cascade",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-56",
+      "name": "DECAL-56 : UNE seule entrée d’historique intelligible pour tout le geste (même choix que applySimulation() — pas le détail par tâche d’applyReflowPlan, hors périmètre de ce lot)",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-56",
+      "name": "DECAL-56 : l’entrée nomme la tâche, le nombre de jours et le nombre de tâches dépendantes replanifiées",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-57",
+      "name": "DECAL-57 : aucun message ni notification automatique n’est créé par l’application du décalage",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-58",
+      "name": "DECAL-58 : l’Undo restaure les QUATRE dates (source + trois tâches propagées) à leur valeur d’origine, en un seul geste",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-59",
+      "name": "DECAL-59 : le Redo réapplique les QUATRE dates décalées, symétriquement",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-60",
+      "name": "DECAL-60 : calculer un aperçu qui SE RÉVÈLE bloqué n’ouvre aucune transaction — il n’y a donc rien à annuler (pas de rollback nécessaire, rien n’a jamais été écrit)",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-61",
+      "name": "DECAL-61 : un message envoyé APRÈS l’application d’un décalage SURVIT à l’Undo de ce décalage — la garantie V2.12.0.2 s’applique sans changement à cette nouvelle transaction",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-62",
+      "name": "DECAL-62 : et il survit symétriquement au Redo",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-62",
+      "name": "DECAL-62 : aucun doublon",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-63",
+      "name": "DECAL-63 : un message AVEC photo, envoyé après un décalage propagé, survit à l’Undo de ce décalage — message ET photo conservés, référence toujours résolvable",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-64",
+      "name": "DECAL-64 : une photo terrain SANS lien à un message reste transactionnelle — son propre Undo l’efface, SANS toucher au décalage (transaction distincte, non affectée)",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-64",
+      "name": "DECAL-64 : et le second Undo restaure ensuite le décalage lui-même — les deux transactions restent bien séparées, dans l’ordre",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-67",
+      "name": "DECAL-67 : SCHEMA_VERSION reste 15 — aucune donnée persistée nouvelle, aucune migration",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-68",
+      "name": "DECAL-68 : STORE reste « kanvix-product-8-3 »",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-69",
+      "name": "DECAL-69 : INITIAL_STATE est BYTE-IDENTIQUE — aucune donnée de démonstration modifiée",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-70",
+      "name": "DECAL-70 : migrateState() est BYTE-IDENTIQUE — aucune migration n’a été nécessaire",
+      "status": "FAIL"
+    },
+    {
+      "sec": "FREEZE-2121",
+      "name": "FREEZE-2121 : hors de openTask() (bouton ajouté), le balayage md5 de TOUT le fichier ne trouve AUCUNE autre fonction EXISTANTE modifiée depuis V2.12.0.2 — renderAIPanel comparé par bloc indenté reste lui aussi identique",
+      "status": "FAIL"
+    },
+    {
+      "sec": "FREEZE-2121",
+      "name": "FREEZE-2121 : les SEULES fonctions ajoutées sont exactement celles du nouveau parcours « Préparer un décalage » — aucun second moteur, aucune fonction utilitaire surnuméraire",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2121",
+      "name": "FREEZE-2121 : les 66 moteurs nommément réutilisés sont BYTE-IDENTIQUES à V2.12.0.2 — planReflow, evaluateScenario, evaluateDependencyConflicts, getResourceSchedulingConflicts, addBusinessDays, addWorkingDuration, nonWorkingDaysInRange, snapshot/undo/redo/restoreHistoryState/preserveCommunications compris. Aucun second moteur de calendrier, de dépendances ou de propagation n’a été créé",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2121",
+      "name": "FREEZE-2121 : la feuille de style est BYTE-IDENTIQUE — le nouveau panneau réutilise exclusivement des classes CSS déjà en production (.drawer-section/.te-section/.te-advanced/.seg/.effect-summary/.prq-confirm-list/.check-row/.form-error), aucune classe n’a été ajoutée",
+      "status": "FAIL"
+    },
+    {
+      "sec": "FIXDECAL-RESP",
+      "name": "FIXDECAL-RESP : sur 12 combinaisons (6 largeurs de 1920 à 390 px × clair/sombre), le panneau « Préparer un décalage » et son aperçu ne provoquent AUCUN défilement horizontal ni débordement du panneau",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXDECAL-RESP",
+      "name": "FIXDECAL-RESP : sur mobile (390/430 px), les contrôles dont CE LOT choisit la taille (choix de propagation, boutons d’action) mesurent une hauteur tactile cohérente avec le reste du produit (≥36 px, même convention que la modale « Conditions non confirmées » déjà mesurée en V2.12.0.1)",
+      "status": "PASS"
+    },
+    {
+      "sec": "FIXDECAL-KBD",
+      "name": "FIXDECAL-KBD : à l’ouverture du panneau, le focus se pose sur le champ « jours » — cohérent avec le reste du produit (openTaskEdit fait de même sur son premier champ)",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL",
+      "name": "DECAL : aucune erreur JavaScript applicative en console (0)",
+      "status": "PASS"
+    }
+  ],
+  "consoleErrors": []
+}
