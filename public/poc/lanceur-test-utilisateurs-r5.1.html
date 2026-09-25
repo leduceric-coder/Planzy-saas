@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lanceur — Tests utilisateurs R5.1 (Kanvix Agenda)</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f3f5f8;
+        --surface: #ffffff;
+        --border: #e1e5ea;
+        --border-light: #edf0f3;
+        --text: #1a1f27;
+        --text-secondary: #5b6472;
+        --accent: #1c6fe0;
+        --accent-ink: #ffffff;
+        --radius: 12px;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto,
+          sans-serif;
+        padding: 32px 20px 60px;
+      }
+      .wrap {
+        max-width: 880px;
+        margin: 0 auto;
+      }
+      h1 {
+        font-size: 22px;
+        margin: 0 0 6px;
+      }
+      p.lede {
+        color: var(--text-secondary);
+        margin: 0 0 28px;
+        max-width: 640px;
+        line-height: 1.5;
+      }
+      .notice {
+        background: #fff7e6;
+        border: 1px solid #f0d999;
+        border-radius: var(--radius);
+        padding: 14px 16px;
+        margin-bottom: 28px;
+        font-size: 13.5px;
+        line-height: 1.5;
+      }
+      .notice b {
+        display: block;
+        margin-bottom: 4px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 14px;
+      }
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .card h2 {
+        font-size: 16px;
+        margin: 0;
+      }
+      .card .meta {
+        font-size: 12.5px;
+        color: var(--text-secondary);
+        line-height: 1.5;
+      }
+      .card .meta b {
+        color: var(--text);
+      }
+      .launch {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-top: auto;
+        padding: 10px 14px;
+        border-radius: 8px;
+        background: var(--accent);
+        color: var(--accent-ink);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+        border: 0;
+        cursor: pointer;
+      }
+      .launch:hover {
+        filter: brightness(1.06);
+      }
+      .launch:focus-visible {
+        outline: 3px solid #90bdf2;
+        outline-offset: 2px;
+      }
+      code {
+        background: var(--border-light);
+        padding: 1px 5px;
+        border-radius: 4px;
+        font-size: 12px;
+      }
+      footer {
+        margin-top: 36px;
+        font-size: 12.5px;
+        color: var(--text-secondary);
+        line-height: 1.6;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>Lanceur des séances de test — Prototype Agenda (R5.1)</h1>
+      <p class="lede">
+        Un bouton par personne testée. Chaque ouverture démarre le fichier
+        <code>kanvix-next-gen-v2.12.2.1-r5.1-user-test.html</code> avec la
+        combinaison vue initiale / vocabulaire prévue pour le
+        contre-balancement (voir <code>PROTOCOLE-TEST-UTILISATEURS-R5.1.md</code>),
+        et une horloge de démonstration figée au
+        <b>lundi 17 août 2026, 09:00</b>. Ce fichier de test utilise un
+        stockage dédié, entièrement isolé du produit Kanvix normal.
+      </p>
+      <div class="notice">
+        <b>Avant chaque séance</b>
+        Ouvrir ce lanceur DEPUIS LE MÊME DOSSIER que les fichiers
+        <code>kanvix-next-gen-v2.12.2.1-r5.1-user-test.html</code> — un
+        simple double-clic sur ce fichier, ou un glisser-déposer dans un
+        onglet de navigateur, suffit. Aucune connexion internet, aucun
+        serveur, aucun outil technique n'est nécessaire. Chaque bouton
+        ci-dessous repart automatiquement d'un état propre, même si une
+        personne précédente a modifié des données pendant sa propre séance.
+      </div>
+      <div class="grid" id="grid"></div>
+      <footer>
+        Réglage technique constant sur les huit liens :
+        <code>now=2026-08-17T09:00:00</code>. Le paramètre
+        <code>r5Initial</code> fixe la vue Planning affichée à l'ouverture
+        (<code>gantt</code> ou <code>agenda</code>) ; le paramètre
+        <code>r5Labels</code> fixe le vocabulaire affiché en premier sur les
+        boutons Gantt/Kanban (<code>current</code> = libellés actuels,
+        <code>plain</code> = « Chronologie / Avancement »). Ni l'un ni
+        l'autre n'est jamais enregistré : fermer l'onglet suffit à tout
+        remettre à zéro.
+      </footer>
+    </div>
+    <script>
+      // CORRECTIF R5.1 — répartition FIXE du contre-balancement (protocole §7),
+      // jamais recalculée ni choisie dynamiquement : les 8 combinaisons sont
+      // écrites en dur, dans l'ordre exact spécifié par la mission.
+      const PERSONNES = [
+        { n: 1, vue: "gantt", vocab: "current" },
+        { n: 2, vue: "agenda", vocab: "plain" },
+        { n: 3, vue: "gantt", vocab: "plain" },
+        { n: 4, vue: "agenda", vocab: "current" },
+        { n: 5, vue: "gantt", vocab: "current" },
+        { n: 6, vue: "agenda", vocab: "plain" },
+        { n: 7, vue: "gantt", vocab: "plain" },
+        { n: 8, vue: "agenda", vocab: "current" },
+      ];
+      const NOW_FIXE = "2026-08-17T09:00:00";
+      const CIBLE = "kanvix-next-gen-v2.12.2.1-r5.1-user-test.html";
+
+      function buildUrl(p) {
+        const params = new URLSearchParams();
+        params.set("now", NOW_FIXE);
+        params.set("r5Initial", p.vue);
+        params.set("r5Labels", p.vocab);
+        return CIBLE + "?" + params.toString();
+      }
+
+      const grid = document.getElementById("grid");
+      PERSONNES.forEach((p) => {
+        const url = buildUrl(p);
+        const vueLabel = p.vue === "agenda" ? "Agenda" : "Gantt";
+        const vocabLabel =
+          p.vocab === "plain"
+            ? "Chronologie / Avancement"
+            : "Gantt / Kanban (actuel)";
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML =
+          "<h2>Personne " +
+          p.n +
+          "</h2>" +
+          '<div class="meta">Vue initiale : <b>' +
+          vueLabel +
+          "</b><br>Vocabulaire présenté en premier : <b>" +
+          vocabLabel +
+          '</b><br>Horloge figée : <b>lun. 17 août 2026, 09:00</b></div>' +
+          '<a class="launch" target="_blank" rel="noopener" href="' +
+          url +
+          '">Démarrer la séance →</a>' +
+          '<div class="meta" style="word-break:break-all;opacity:.65">' +
+          url +
+          "</div>";
+        grid.appendChild(card);
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,324 @@
+{
+  "date": "2026-09-25T12:12:40.755Z",
+  "fichiers": {
+    "reference": "kanvix-next-gen-v2.12.2.1.html",
+    "r5Original": "kanvix-next-gen-v2.12.2.1-r5-prototype.html",
+    "r51Prototype": "kanvix-next-gen-v2.12.2.1-r5.1-prototype.html",
+    "r51UserTest": "kanvix-next-gen-v2.12.2.1-r5.1-user-test.html",
+    "lanceur": "lanceur-test-utilisateurs-r5.1.html"
+  },
+  "protection": {
+    "REF": {
+      "avant": "84a438663acc59703cd31f5bd50ecd81"
+    },
+    "R5_ORIG": {
+      "avant": "dbc1784369661093d13da871f53dcbd8"
+    }
+  },
+  "passed": 60,
+  "total": 60,
+  "failed": [],
+  "consoleErrors": [],
+  "results": [
+    {
+      "sec": "PERIM-0",
+      "name": "Tous les fichiers livrés (référence, R5 original, R5.1 prototype, R5.1 test utilisateur, lanceur) existent sur disque",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-00",
+      "name": "Le jeu de données R5 (9 tâches) est ajouté sans écraser de tâche existante",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-01",
+      "name": "AGENDA-01 : la vue Agenda se rend toujours normalement après le correctif",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-02",
+      "name": "AGENDA-02 : une tâche de 5 jours ouvrés produit toujours EXACTEMENT 5 occurrences après le correctif",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-02",
+      "name": "AGENDA-02 : repères Début (1er jour) / Fin (dernier jour) toujours corrects (calcul désormais borné à 7 jours, plus par parcours complet)",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-02",
+      "name": "AGENDA-02 : les jours intermédiaires portent toujours « Suite »",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-03",
+      "name": "AGENDA-03 : toujours aucune ligne « samedi » artificielle (projectCalendar.workingDays inchangé, seulement documenté)",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-03",
+      "name": "AGENDA-03 : traversée de week-end toujours limitée au vendredi dans la fenêtre affichée",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-04",
+      "name": "AGENDA-04 : tâche commencée avant la période toujours sans occurrence avant le début de la fenêtre",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-06",
+      "name": "AGENDA-06 : tâche couvrant toute la période toujours marquée « Suite » sur les 5 jours visibles (jamais de faux Début/Fin sur les bords de fenêtre)",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-07",
+      "name": "AGENDA-07 : les pastilles de statut restent correctes après le correctif",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-09",
+      "name": "AGENDA-09 : le filtre chantier fonctionne toujours en Agenda après le correctif",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-15",
+      "name": "AGENDA-15 : ouvrir une ligne Agenda ouvre toujours la bonne fiche tâche",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-16",
+      "name": "AGENDA-16 : app.tasks toujours sans duplication après changements de vue/filtre",
+      "status": "PASS"
+    },
+    {
+      "sec": "TRESLONGUE-00",
+      "name": "TRESLONGUE-00 : confirmation du bug — sur le prototype R5 ORIGINAL (non corrigé), une tâche commencée >400j avant la fenêtre affichée est INVISIBLE dans l’Agenda alors qu’elle y est active (garde à 400 itérations épuisée avant d’atteindre la fenêtre)",
+      "status": "PASS"
+    },
+    {
+      "sec": "TRESLONGUE-01",
+      "name": "TRESLONGUE-01 : sur r5.1-prototype.html, cette même tâche (commencée le 2024-01-01, finissant le 2027-01-01) apparaît désormais sur les 5 jours ouvrés de la semaine affichée",
+      "status": "PASS"
+    },
+    {
+      "sec": "TRESLONGUE-02",
+      "name": "TRESLONGUE-02 : toutes ces occurrences sont marquées « Suite » (ses vraies bornes Début/Fin, en 2024 et 2027, restent hors fenêtre — jamais de faux repère)",
+      "status": "PASS"
+    },
+    {
+      "sec": "TRESLONGUE-03",
+      "name": "TRESLONGUE-03 : même résultat avec une tâche commencée 10 ans avant la fenêtre affichée — le correctif ne dépend jamais de la distance à la fenêtre",
+      "status": "PASS"
+    },
+    {
+      "sec": "LABELS-01",
+      "name": "LABELS-01 : sans paramètre, libellés toujours « Gantt / Kanban / Agenda »",
+      "status": "PASS"
+    },
+    {
+      "sec": "LABELS-02",
+      "name": "LABELS-02 : ?r5Labels=plain toujours « Chronologie / Avancement / Agenda »",
+      "status": "PASS"
+    },
+    {
+      "sec": "LABELS-03",
+      "name": "LABELS-03 : valeur interne toujours indépendante du vocabulaire affiché",
+      "status": "PASS"
+    },
+    {
+      "sec": "INITIAL-01",
+      "name": "INITIAL-01 : ?r5Initial=agenda ouvre toujours directement l’Agenda",
+      "status": "PASS"
+    },
+    {
+      "sec": "INITIAL-03",
+      "name": "INITIAL-03 : non-persistance toujours vérifiée (migrateState() intacte)",
+      "status": "PASS"
+    },
+    {
+      "sec": "NONREG-01",
+      "name": "NONREG-01 : le Gantt continue de s’afficher normalement",
+      "status": "PASS"
+    },
+    {
+      "sec": "NONREG-02",
+      "name": "NONREG-02 : le Kanban continue d’afficher ses 3 colonnes",
+      "status": "PASS"
+    },
+    {
+      "sec": "NONREG-03",
+      "name": "NONREG-03 : « Préparer un décalage » toujours proposé",
+      "status": "PASS"
+    },
+    {
+      "sec": "NONREG-04",
+      "name": "NONREG-04 : l’onglet Structure toujours proposé",
+      "status": "PASS"
+    },
+    {
+      "sec": "NONREG-05",
+      "name": "NONREG-05 : gating R4 Opérations/Pilotage toujours inchangé",
+      "status": "PASS"
+    },
+    {
+      "sec": "NONREG-07",
+      "name": "NONREG-07 : Undo/Redo toujours fonctionnel",
+      "status": "PASS"
+    },
+    {
+      "sec": "USERTEST-01",
+      "name": "USERTEST-01 : les 9 fixtures R5 sont visibles dès l’ouverture DIRECTE du fichier, sans aucune assistance Playwright",
+      "status": "PASS"
+    },
+    {
+      "sec": "USERTEST-02",
+      "name": "USERTEST-02 : « R5 — Chape 5 jours » — la tâche demandée par le protocole — est bien présente, avec son nom exact",
+      "status": "PASS"
+    },
+    {
+      "sec": "USERTEST-03",
+      "name": "USERTEST-03 : l’horloge de démonstration est figée au lundi 17 août 2026 09:00 par défaut, sans paramètre ?now= dans cette ouverture",
+      "status": "PASS"
+    },
+    {
+      "sec": "USERTEST-04",
+      "name": "USERTEST-04 : le fichier utilise une clé de stockage dédiée, distincte du STORE normal de Kanvix",
+      "status": "PASS"
+    },
+    {
+      "sec": "USERTEST-04b",
+      "name": "USERTEST-04b : la bannière produit « Cette copie de Kanvix ne contient pas encore de données enregistrées » (non liée à R5) ne s’affiche PAS — sans quoi elle apparaîtrait devant chaque participant à chaque séance, puisque l’état est volontairement réinitialisé à chaque ouverture",
+      "status": "PASS"
+    },
+    {
+      "sec": "USERTEST-05",
+      "name": "USERTEST-05 : la semaine du 17 au 23 août 2026 s’affiche bien par défaut",
+      "status": "PASS"
+    },
+    {
+      "sec": "USERTEST-06",
+      "name": "USERTEST-06 : Gantt, Kanban et Agenda se comportent tous normalement dans ce fichier, avec les fixtures R5 visibles en Agenda",
+      "status": "PASS"
+    },
+    {
+      "sec": "USERTEST-07",
+      "name": "USERTEST-07 : après une modification puis 2 réouvertures successives, toujours EXACTEMENT 9 fixtures R5 — aucune duplication",
+      "status": "PASS"
+    },
+    {
+      "sec": "USERTEST-08",
+      "name": "USERTEST-08 : chaque réouverture repart d’un état propre et déterministe (le statut modifié en séance précédente n’est pas conservé)",
+      "status": "PASS"
+    },
+    {
+      "sec": "USERTEST-09",
+      "name": "USERTEST-09 : ouverte ENSUITE dans le MÊME contexte navigateur, la référence certifiée ne porte AUCUNE trace des données ou du STORE de test — isolation prouvée, pas seulement déclarée",
+      "status": "PASS"
+    },
+    {
+      "sec": "LANCEUR-01",
+      "name": "LANCEUR-01 : exactement 8 boutons (Personne 1 à 8)",
+      "status": "PASS"
+    },
+    {
+      "sec": "LANCEUR-02",
+      "name": "LANCEUR-02 : les 8 combinaisons vue initiale / vocabulaire correspondent EXACTEMENT au tableau de contre-balancement de la mission",
+      "status": "PASS"
+    },
+    {
+      "sec": "LANCEUR-03",
+      "name": "LANCEUR-03 : les 8 liens incluent tous now=2026-08-17T09:00:00",
+      "status": "PASS"
+    },
+    {
+      "sec": "LANCEUR-04",
+      "name": "LANCEUR-04 : cliquer sur « Personne 2 » ouvre réellement la séance en Agenda avec le vocabulaire Chronologie/Avancement",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-A",
+      "name": "FREEZE-A : hors renderPlanning()/setPlanningView(), aucune fonction existante n’a changé entre V2.12.2.1 et r5.1-prototype.html",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-A",
+      "name": "FREEZE-A : exactement les 9 fonctions Agenda attendues sont ajoutées (les 6 de R5 + les 3 nouvelles du correctif), aucune supprimée",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-A",
+      "name": "FREEZE-A : migrateState() toujours byte-identique",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-A",
+      "name": "FREEZE-A : INITIAL_STATE toujours inchangé — aucune fixture R5 n’entre dans les données de démonstration livrées",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-A",
+      "name": "FREEZE-A : les 69 moteurs gelés restent BYTE-IDENTIQUES (décalage, calendrier, dépendances/ressources, Undo/Redo/communications, Structure, Opérations, Essentiel/Pilotage, Gantt, Kanban)",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-A",
+      "name": "FREEZE-A : la diff brute (diff -u) ne compte toujours que 7 blocs de changement entre la référence et r5.1-prototype.html",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-B",
+      "name": "FREEZE-B : hors des 5 fonctions Agenda du correctif, AUCUNE autre fonction (renderPlanning, setPlanningView, renderAgenda compris) n’a changé entre R5 et R5.1",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-B",
+      "name": "FREEZE-B : exactement les 3 fonctions utilitaires attendues sont ajoutées (agendaTaskBounds/agendaFirstWorkingDay/agendaLastWorkingDay), aucune supprimée",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-B",
+      "name": "FREEZE-B : la diff brute entre R5 original et R5.1 ne compte que 5 blocs, tous à l’intérieur du bloc de fonctions Agenda",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-C",
+      "name": "FREEZE-C : ZÉRO fonction ne diffère entre r5.1-prototype.html et r5.1-user-test.html — le fichier de test reprend bien EXACTEMENT le même moteur, seuls des réglages hors fonction changent (STORE, horloge, amorçage des fixtures)",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-C",
+      "name": "FREEZE-C : la diff brute ne compte que 3 blocs (clé de stockage, horloge figée, amorçage des fixtures)",
+      "status": "PASS"
+    },
+    {
+      "sec": "VISUEL",
+      "name": "VISUEL-r51-agenda-desktop-clair : aucun débordement horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "VISUEL",
+      "name": "VISUEL-r51-agenda-desktop-sombre : aucun débordement horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "VISUEL",
+      "name": "VISUEL-r51-agenda-mobile-clair : aucun débordement horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "PROTECTION",
+      "name": "PROTECTION : kanvix-next-gen-v2.12.2.1.html — empreinte md5 strictement identique avant/après l’exécution complète de cette recette",
+      "status": "PASS"
+    },
+    {
+      "sec": "PROTECTION",
+      "name": "PROTECTION : kanvix-next-gen-v2.12.2.1-r5-prototype.html — empreinte md5 strictement identique avant/après",
+      "status": "PASS"
+    },
+    {
+      "sec": "ERREURS-CONSOLE",
+      "name": "ERREURS-CONSOLE : 0 erreur console applicative sur l’ensemble des scénarios — 0 trouvée(s)",
+      "status": "PASS"
+    }
+  ]
+}
