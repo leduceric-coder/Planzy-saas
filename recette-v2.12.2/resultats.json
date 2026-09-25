@@ -1,0 +1,272 @@
+{
+  "passed": 53,
+  "failed": [],
+  "results": [
+    {
+      "sec": "STRUCT-01",
+      "name": "STRUCT-01 : l’onglet « Structure » figure dans projectTabs() en niveau ESSENTIEL",
+      "status": "PASS"
+    },
+    {
+      "sec": "STRUCT-02",
+      "name": "STRUCT-02 : et dans projectTabs() en niveau PILOTAGE — le même tableau, sans condition de niveau ni de nombre de tâches/niveaux",
+      "status": "PASS"
+    },
+    {
+      "sec": "STRUCT-01",
+      "name": "STRUCT-01 : le cas de test est bien celui d’un chantier SANS tâche et SANS structure",
+      "status": "PASS"
+    },
+    {
+      "sec": "STRUCT-03",
+      "name": "STRUCT-03 : chantier SANS tâche et SANS structure, niveau ESSENTIEL — onglet visible et son contenu (état vide) se rend",
+      "status": "PASS"
+    },
+    {
+      "sec": "STRUCT-04",
+      "name": "STRUCT-04 : même cas en niveau PILOTAGE — visible",
+      "status": "PASS"
+    },
+    {
+      "sec": "STRUCT-05",
+      "name": "STRUCT-05 : chantier AVEC structure mais SANS tâche — visible",
+      "status": "PASS"
+    },
+    {
+      "sec": "STRUCT-06",
+      "name": "STRUCT-06 : chantier AVEC tâches (cas courant) — visible",
+      "status": "PASS"
+    },
+    {
+      "sec": "STRUCT-07",
+      "name": "STRUCT-07 : le texte d’état vide contient EXACTEMENT « Organisez si besoin — utile sur les chantiers à plusieurs bâtiments ou lots. »",
+      "status": "PASS"
+    },
+    {
+      "sec": "STRUCT-08",
+      "name": "STRUCT-08 : l’action « Créer mon premier niveau » reste présente et cliquable — ce n’est que l’INVITATION textuelle qui change, pas l’action",
+      "status": "PASS"
+    },
+    {
+      "sec": "STRUCT-09",
+      "name": "STRUCT-09 : « Créer mon premier niveau » → formulaire réel → soumission réelle → le niveau est bien créé",
+      "status": "PASS"
+    },
+    {
+      "sec": "STRUCT-09",
+      "name": "STRUCT-09 : l’onglet reste évidemment visible après la création",
+      "status": "PASS"
+    },
+    {
+      "sec": "STRUCT-10",
+      "name": "STRUCT-10 : la structure existante de Keravel est intacte et la garde anti-cycle (structureParentError) fonctionne toujours à l’identique",
+      "status": "PASS"
+    },
+    {
+      "sec": "ROLE-01",
+      "name": "ROLE-01 : « Voir comme artisan » n’apparaît plus dans le popover profil",
+      "status": "PASS"
+    },
+    {
+      "sec": "ROLE-01",
+      "name": "ROLE-01 : les AUTRES actions du popover (Mode Chantier, Réglages, Réinitialiser) restent toutes présentes — retrait chirurgical",
+      "status": "PASS"
+    },
+    {
+      "sec": "ROLE-02",
+      "name": "ROLE-02 : le bloc « Mode de démonstration » (titre, cartes, sous-titre) a disparu entièrement des Réglages",
+      "status": "PASS"
+    },
+    {
+      "sec": "ROLE-03",
+      "name": "ROLE-03 : le bouton « Vue conducteur » de la conversation Artisan (l’autre sens du même bascule manuel) a lui aussi disparu",
+      "status": "PASS"
+    },
+    {
+      "sec": "ROLE-04",
+      "name": "ROLE-04 : balayage du fichier entier — plus AUCUN attribut onclick n’appelle setRole() nulle part dans l’interface",
+      "status": "PASS"
+    },
+    {
+      "sec": "ROLE-05",
+      "name": "ROLE-05 : renderArtisan() rend toujours intégralement sa page (mission, fil de conversation, composeur) — setRole('artisan') fonctionne encore en interne, seule l’AFFORDANCE utilisateur a été retirée",
+      "status": "PASS"
+    },
+    {
+      "sec": "ROLE-06",
+      "name": "ROLE-06 : setRole() existe toujours (nécessaire en interne et pour les recettes automatisées qui testent la vue Artisan)",
+      "status": "PASS"
+    },
+    {
+      "sec": "ROLE-07",
+      "name": "ROLE-07 : le RACCOURCI du popover profil (Essentiel/Pilotage) est toujours là",
+      "status": "PASS"
+    },
+    {
+      "sec": "ROLE-08",
+      "name": "ROLE-08 : l’EMPLACEMENT DE RÉFÉRENCE des Réglages (« Niveau d’affichage ») est toujours là",
+      "status": "PASS"
+    },
+    {
+      "sec": "ROLE-09",
+      "name": "ROLE-09 : changer le niveau via setDepth() (le mécanisme du popover) est immédiatement reflété dans les Réglages, ré-rendus au prochain passage sur cette page",
+      "status": "PASS"
+    },
+    {
+      "sec": "ROLE-10",
+      "name": "ROLE-10 : cliquer le contrôle des Réglages met immédiatement à jour le badge « Mode · … » ET la sélection du popover",
+      "status": "PASS"
+    },
+    {
+      "sec": "ROLE-11",
+      "name": "ROLE-11 : le niveau choisi persiste après un rechargement complet de la page (nouvel onglet, même stockage)",
+      "status": "PASS"
+    },
+    {
+      "sec": "ROLE-12",
+      "name": "ROLE-12 : à chaque niveau, popover ET Réglages désignent la MÊME valeur active — aucune divergence",
+      "status": "PASS"
+    },
+    {
+      "sec": "OPS-01",
+      "name": "OPS-01 : le sélecteur Chantiers/Opérations ne se rend PAS du tout en Essentiel",
+      "status": "PASS"
+    },
+    {
+      "sec": "OPS-01",
+      "name": "OPS-01 : aucune carte d’opération n’est présente sur la page Chantiers en Essentiel",
+      "status": "PASS"
+    },
+    {
+      "sec": "OPS-02",
+      "name": "OPS-02 : le sélecteur est présent et « Opérations » est activable en Pilotage",
+      "status": "PASS"
+    },
+    {
+      "sec": "OPS-02",
+      "name": "OPS-02 : la liste des opérations se rend réellement (renderOperationsList / operationCard inchangés)",
+      "status": "PASS"
+    },
+    {
+      "sec": "OPS-03",
+      "name": "OPS-03 : en train de consulter la LISTE des Opérations, un passage en Essentiel montre immédiatement la page Chantiers — jamais un écran vide sans navigation",
+      "status": "PASS"
+    },
+    {
+      "sec": "OPS-04",
+      "name": "OPS-04 : le cas de test consulte bien la fiche détaillée d’UNE opération (page \"operation\")",
+      "status": "PASS"
+    },
+    {
+      "sec": "OPS-04",
+      "name": "OPS-04 : passer en Essentiel pendant la consultation de cette fiche renvoie proprement vers Chantiers — jamais la fiche Opération affichée sans point de navigation",
+      "status": "PASS"
+    },
+    {
+      "sec": "OPS-05",
+      "name": "OPS-05 : de retour en Pilotage, le sélecteur Chantiers/Opérations réapparaît",
+      "status": "PASS"
+    },
+    {
+      "sec": "OPS-05",
+      "name": "OPS-05 : la préférence app.ui.sitesMode n’a jamais été effacée par le passage en Essentiel — l’utilisateur retrouve directement sa liste d’Opérations",
+      "status": "PASS"
+    },
+    {
+      "sec": "OPS-06",
+      "name": "OPS-06 : app.operations et les rattachements project.operationId sont STRICTEMENT identiques après un aller-retour Pilotage → Essentiel → Pilotage — aucune opération ni rattachement supprimé",
+      "status": "PASS"
+    },
+    {
+      "sec": "OPS-07",
+      "name": "OPS-07 : PREUVE STATIQUE — dans V2.12.1, `advanced` et `expert` sont calculées par l’EXACTE même expression (app.settings.level !== \"essential\") ; `advanced && !expert` vaut donc toujours FAUX, quel que soit le niveau",
+      "status": "PASS"
+    },
+    {
+      "sec": "OPS-07",
+      "name": "OPS-07 : le ternaire mort a bien été retiré du source de V2.12.2",
+      "status": "PASS"
+    },
+    {
+      "sec": "OPS-07",
+      "name": "OPS-07 : PREUVE COMPORTEMENTALE — le HTML de .plan-toolbar est BYTE-IDENTIQUE entre V2.12.1 et V2.12.2, en Essentiel comme en Pilotage : supprimer le code mort n’a strictement rien changé au rendu observable",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-REPLAY",
+      "name": "DECAL-REPLAY : la recette V2.12.1 « Préparer un décalage », REJOUÉE TELLE QUELLE contre kanvix-next-gen-v2.12.1.html (son propre CUR, inchangé au sein de ce repo — voir note ci-dessous), obtient RÉSULTAT : 77 / 77",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-ON-V2122",
+      "name": "DECAL-ON-V2122 : sur le fichier V2.12.2 lui-même, le parcours complet (bouton → panneau → calcul → confirmation → application) fonctionne à l’identique",
+      "status": "PASS"
+    },
+    {
+      "sec": "DECAL-ON-V2122",
+      "name": "DECAL-ON-V2122 : et son Undo restaure la date d’origine — la transaction et son annulation sont intactes",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2122",
+      "name": "FREEZE-2122 : hors des 8 fonctions annoncées (renderMore, renderUserMenu, renderArtisan, renderSites, sitesModeSwitch, renderOperation, renderPlanning, projectStructureTab), AUCUNE autre fonction existante n’a changé — renderAIPanel comparé par bloc indenté reste lui aussi identique",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2122",
+      "name": "FREEZE-2122 : les 8 fonctions annoncées ont RÉELLEMENT changé — aucun périmètre annoncé pour rien",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2122",
+      "name": "FREEZE-2122 : AUCUNE fonction ajoutée — ce lot ne crée aucun moteur, uniquement des gardes de rendu et un retrait",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2122",
+      "name": "FREEZE-2122 : UNE SEULE fonction supprimée (roleCard) — le helper de rendu devenu orphelin après le retrait du bloc « Mode de démonstration »",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2122",
+      "name": "FREEZE-2122 : les 53 fonctions gelées sont BYTE-IDENTIQUES à V2.12.1 — les 14 fonctions transactionnelles de « Préparer un décalage » comprises, plus planReflow/applyReflowPlan/planScheduleChanges, le calendrier, Undo/Redo/preserveCommunications, la messagerie, setTaskStatus, scenarioOptions/showWhatIf, le moteur Structure (getProjectStructure/openStructureForm/toggleStructureArchive) et openTask() (dont le bouton « Préparer un décalage » du menu reste inchangé)",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2122",
+      "name": "FREEZE-2122 : SCHEMA_VERSION (15) et STORE inchangés — R2-R4 est un lot UX, aucune migration",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2122",
+      "name": "FREEZE-2122 : INITIAL_STATE byte-identique — aucune donnée de démonstration modifiée",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-2122",
+      "name": "FREEZE-2122 : la feuille de style a changé UNIQUEMENT par le retrait des 4 classes du sélecteur de rôle (.role-card/.role-grid/.settings-grid/.settings-intro) — changement attendu et borné, pas une refonte",
+      "status": "PASS"
+    },
+    {
+      "sec": "NAV-RESP",
+      "name": "NAV-RESP : sur 4 combinaisons (1440/390 × clair/sombre), Chantiers (Essentiel et Pilotage), le popover profil, les Réglages et Structure (état vide) ne provoquent AUCUN débordement horizontal",
+      "status": "PASS"
+    },
+    {
+      "sec": "NAV-KBD",
+      "name": "NAV-KBD : le bouton d’action de l’état vide Structure est atteignable et reçoit le focus",
+      "status": "PASS"
+    },
+    {
+      "sec": "NAV-KBD",
+      "name": "NAV-KBD : Tab déplace le focus vers un autre élément interactif — navigation clavier fonctionnelle",
+      "status": "PASS"
+    },
+    {
+      "sec": "SIMPLIF",
+      "name": "SIMPLIF-R2R4 : aucune erreur JavaScript applicative en console (0)",
+      "status": "PASS"
+    }
+  ],
+  "consoleErrors": []
+}
