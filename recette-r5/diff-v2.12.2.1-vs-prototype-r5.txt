@@ -1,0 +1,261 @@
+--- /home/user/Planzy-saas/public/poc/kanvix-next-gen-v2.12.2.1.html	2026-09-25 09:41:33.496063243 +0000
++++ /home/user/Planzy-saas/public/poc/kanvix-next-gen-v2.12.2.1-r5-prototype.html	2026-09-25 11:10:03.826516713 +0000
+@@ -6226,6 +6226,45 @@
+         display: none;
+       }
+ 
++      /* PROTOTYPE R5 — vue « Agenda » du Planning (troisième représentation,
++         expérimentale). Distincte de .mobile-agenda ci-dessus. Réutilise
++         .day-task/.day-task-body/.pill/.dot tels quels pour chaque ligne. */
++      .agenda-view {
++        display: flex;
++        flex-direction: column;
++        gap: 16px;
++        margin: 14px 0 4px;
++      }
++      .agenda-day {
++        background: var(--surface);
++        border: 1px solid var(--border-light);
++        border-radius: var(--radius-lg);
++        padding: 14px;
++      }
++      .agenda-day-head {
++        display: flex;
++        align-items: baseline;
++        justify-content: space-between;
++        gap: 10px;
++        margin-bottom: 10px;
++        padding-bottom: 8px;
++        border-bottom: 1px solid var(--border-light);
++      }
++      .agenda-day-head b {
++        font-size: 14px;
++        text-transform: capitalize;
++      }
++      .agenda-day-count {
++        color: var(--text-secondary);
++        font-size: 12px;
++        white-space: nowrap;
++      }
++      .agenda-list {
++        display: flex;
++        flex-direction: column;
++        gap: 8px;
++      }
++
+       /* ---------------- Documents ---------------- */
+       /* ---------------- Bibliothèque : contrôles (recherche + filtres) ------- */
+       .lib-controls {
+@@ -11697,6 +11736,18 @@
+         let q = new URLSearchParams(location.search).get("now");
+         if (q) NOW_OVERRIDE = q;
+       } catch {}
++      // PROTOTYPE R5 (expérimental, non persistant) — paramètres d'URL isolés de NOW_OVERRIDE.
++      // ?r5Labels=plain force le vocabulaire "Chronologie / Avancement" (défaut : "current" = Gantt / Kanban inchangé).
++      // ?r5Initial=agenda force une seule fois la vue Planning initiale (défaut : comportement V2.12.2.1 inchangé).
++      let R5_LABELS_MODE = "current";
++      let R5_INITIAL_VIEW = null;
++      try {
++        let sp = new URLSearchParams(location.search);
++        let lbl = sp.get("r5Labels");
++        if (lbl === "plain") R5_LABELS_MODE = "plain";
++        let iv = sp.get("r5Initial");
++        if (iv === "gantt" || iv === "agenda" || iv === "kanban") R5_INITIAL_VIEW = iv;
++      } catch {}
+       function nowDate() {
+         return NOW_OVERRIDE ? new Date(NOW_OVERRIDE) : new Date();
+       }
+@@ -12916,6 +12967,10 @@
+         }
+       }
+       let app = migrateState(load());
++      // PROTOTYPE R5 — bascule non persistante et à usage unique de la vue Planning initiale.
++      // Ne touche pas migrateState() : au prochain chargement sans ?r5Initial, celle-ci
++      // renormalise app.ui.planningView vers "gantt"/"kanban" comme en V2.12.2.1.
++      if (R5_INITIAL_VIEW) app.ui.planningView = R5_INITIAL_VIEW;
+       function migrateState(value) {
+         if (!value || !value.settings || !Array.isArray(value.tasks))
+           value = structuredClone(INITIAL_STATE);
+@@ -20493,6 +20548,136 @@
+           return `<div class="mobile-agenda"><div class="plan-empty" style="border:0;background:none;padding:28px 16px"><b>Aucune tâche sur cette période.</b><p>Modifiez les filtres ou revenez à aujourd’hui.</p></div></div>`;
+         return `<div class="mobile-agenda">${tasks.map((t) => `<div class="agenda-row" onclick="openTask('${t.id}')">${dot(taskTone(t))}<div><b>${esc(t.name)}</b><small>${project(t.projectId).name} · ${resourceLabel(t.resourceId)}</small></div><span>${fmtDay(t.start)}<br>${fmtTime(t.start)}</span></div>`).join("")}</div>`;
+       }
++      /* ===================== PROTOTYPE R5 — Vue « Agenda » =================
++         Troisième représentation du Planning, EXPÉRIMENTALE (non intégrée au
++         produit certifié). Réutilise planningTasks()/scale() tels quels comme
++         UNIQUE source de tâches et de fenêtre temporelle : aucun second moteur
++         de période/filtre n'est créé, et app.tasks n'est jamais dupliqué —
++         chaque occurrence n'est qu'une ligne d'affichage recalculée au rendu.
++
++         Différence assumée avec un simple regroupement par date de début
++         (limite du prototype Astra) : une tâche pluri-jours est répétée sur
++         CHAQUE jour ouvré qu'elle occupe réellement, avec un repère Début /
++         Suite / Fin, pas seulement sur son premier jour.
++
++         Distincte de planningAgenda()/.mobile-agenda ci-dessus (repli mobile
++         déjà existant sous le Gantt, qui ne liste qu'une ligne par tâche à sa
++         date de début) : ni l'un ni l'autre n'est modifié ni réutilisé comme
++         moteur par cette vue. */
++      // Les jours OUVRÉS (projectCalendar.workingDays — même définition que
++      // nextWorkingTime/addWorkingDuration) réellement traversés par une
++      // tâche. Même convention de fermeture que nonWorkingDaysInRange : une
++      // fin pile à minuit n'entame pas le jour suivant. Si la tâche ne
++      // traverse aucun jour ouvré (posée un jour non ouvré), on replie sur
++      // son jour de début : une tâche n'est jamais retirée silencieusement
++      // de l'Agenda.
++      function agendaWorkingDays(t) {
++        let from = date(t.start),
++          to = date(t.end);
++        if (!(+from)) return [];
++        if (!(+to) || to <= from) to = from;
++        let cur = new Date(from.getFullYear(), from.getMonth(), from.getDate()),
++          lastKey = localDateKey(to);
++        if (
++          to.getHours() === 0 &&
++          to.getMinutes() === 0 &&
++          localDateKey(to) !== localDateKey(from)
++        ) {
++          let back = new Date(to);
++          back.setDate(back.getDate() - 1);
++          lastKey = localDateKey(back);
++        }
++        let out = [];
++        for (let guard = 0; guard < 400; guard++) {
++          let key = localDateKey(cur);
++          if (projectCalendar.workingDays.includes(cur.getDay())) out.push(key);
++          if (key >= lastKey) break;
++          cur.setDate(cur.getDate() + 1);
++        }
++        return out.length ? out : [localDateKey(from)];
++      }
++      // Repère affiché quand une même tâche apparaît sur plusieurs jours.
++      // "Suite" (et non "En cours") pour ne jamais entrer en collision avec
++      // le STATUT de la tâche, qui peut lui-même valoir « En cours ».
++      function agendaMarker(days, dk) {
++        if (days.length <= 1) return null;
++        let i = days.indexOf(dk);
++        return i === 0 ? "Début" : i === days.length - 1 ? "Fin" : "Suite";
++      }
++      // Horaire affiché pour une occurrence : plage complète si la tâche
++      // COMMENCE ET FINIT le même jour calendaire, sinon seule l'heure qui a
++      // un sens ce jour-là (début le 1er jour, fin le dernier, rien entre
++      // les deux). Comparé au jour calendaire réel (pas à la seule liste des
++      // jours ouvrés) : une tâche qui déborde sur un jour non ouvré après son
++      // dernier jour ouvré affiché (ex. vendredi→samedi 16h) ne doit jamais
++      // afficher une heure de fin trompeuse sur ce dernier jour ouvré. Même
++      // convention de fermeture à minuit que agendaWorkingDays.
++      function agendaOccurrenceTime(t, dk) {
++        let startDay = localDateKey(date(t.start)),
++          endDate = date(t.end),
++          endDay = localDateKey(endDate);
++        if (
++          endDate.getHours() === 0 &&
++          endDate.getMinutes() === 0 &&
++          endDay !== startDay
++        ) {
++          let back = new Date(endDate);
++          back.setDate(back.getDate() - 1);
++          endDay = localDateKey(back);
++        }
++        if (startDay === endDay) return `${fmtTime(t.start)}–${fmtTime(t.end)}`;
++        if (dk === startDay) return `à partir de ${fmtTime(t.start)}`;
++        if (dk === endDay) return `jusqu’à ${fmtTime(t.end)}`;
++        return "Toute la journée";
++      }
++      // Regroupe les OCCURRENCES par jour ouvré, bornées à la fenêtre
++      // affichée par scale() (période Jour/Semaine/Mois/Année en cours) —
++      // sans jamais recadrer les dates réelles de la tâche : une tâche
++      // commencée avant la période, ou qui la dépasse, ou qui la couvre
++      // entièrement, n'affiche que ses occurrences RÉELLEMENT dans la
++      // fenêtre visible, exactement comme le Gantt/Kanban le font déjà pour
++      // l'inclusion des tâches (planningTasks/s.filter), jamais moins.
++      function agendaGroups(pid = "all", opts = {}) {
++        let s = scale(),
++          tasks = planningTasks(pid, opts),
++          winStart = localDateKey(s.dates[0]),
++          winEnd = localDateKey(new Date(+date(s.end) - 1)),
++          byDay = {};
++        tasks.forEach((t) => {
++          let days = agendaWorkingDays(t);
++          days.forEach((dk) => {
++            if (dk < winStart || dk > winEnd) return;
++            (byDay[dk] = byDay[dk] || []).push({ task: t, days, dk });
++          });
++        });
++        return Object.keys(byDay)
++          .sort()
++          .map((dk) => ({
++            key: dk,
++            occurrences: byDay[dk].sort((a, b) =>
++              a.task.start.localeCompare(b.task.start),
++            ),
++          }));
++      }
++      // Une ligne d'occurrence : réutilise .day-task/.day-task-body TELS
++      // QUELS (même gabarit tactile ~56-60px que les popups jour existants).
++      function agendaOccurrenceRow(occ) {
++        let t = occ.task,
++          marker = agendaMarker(occ.days, occ.dk),
++          time = agendaOccurrenceTime(t, occ.dk);
++        return `<button class="day-task" onclick="openTask('${t.id}')">${dot(taskTone(t))}<div class="day-task-body"><b>${esc(t.name)}</b><small>${esc(project(t.projectId).name)} · ${esc(resourceLabel(t.resourceId))} · ${time}</small></div>${marker ? pill("", marker) : ""}${pill(taskTone(t), STATUS[t.status])}</button>`;
++      }
++      function renderAgenda(pid = "all", opts = {}) {
++        let groups = agendaGroups(pid, opts);
++        if (!groups.length)
++          return `<div class="plan-empty"><b>Aucune tâche sur cette période.</b><p>Modifiez les filtres ou revenez à aujourd’hui.</p><div class="actions"><button class="btn" onclick="planningToday()">Aujourd’hui</button>${app.ui.planningResource !== "all" || app.ui.planningProject !== "all" || (app.ui.planningLot || "all") !== "all" ? `<button class="btn" onclick="app.ui.planningProject='all';app.ui.planningResource='all';app.ui.planningLot='all';save();renderPage()">Réinitialiser les filtres</button>` : ""}</div></div>`;
++        return `<div class="agenda-view">${groups
++          .map(
++            (g) =>
++              `<div class="agenda-day"><div class="agenda-day-head"><b>${esc(fmtDay(g.key + "T12:00"))}</b><span class="agenda-day-count">${g.occurrences.length} intervention${g.occurrences.length > 1 ? "s" : ""}</span></div><div class="agenda-list">${g.occurrences.map(agendaOccurrenceRow).join("")}</div></div>`,
++          )
++          .join("")}</div>`;
++      }
+       /* V2.8 — MÊME moteur Gantt pour le Planning global, un chantier, et une
+          OPÉRATION. `opts` ne fait que borner le périmètre : aucun second Gantt
+          n'existe dans ce fichier, et la recette le vérifie (OP-23). */
+@@ -21012,14 +21197,21 @@
+             )
+             .join("")}</div>`,
+           kanban = app.ui.planningView === "kanban",
++          // PROTOTYPE R5 — troisième représentation « Agenda » (expérimentale).
++          agenda = app.ui.planningView === "agenda",
++          // PROTOTYPE R5 — variante de vocabulaire non persistante (test A/B), pilotée
++          // par ?r5Labels=plain. Le libellé "Agenda" ne varie jamais entre les deux
++          // variantes (seul son ajout est testé, pas son nom).
++          r5PlainLabels = typeof R5_LABELS_MODE !== "undefined" && R5_LABELS_MODE === "plain",
+           // Sélecteur de REPRÉSENTATION (distinct du sélecteur temporel).
+           viewSeg = `<div class="segment view-segment">${[
+-            ["gantt", "Gantt"],
+-            ["kanban", "Kanban"],
++            ["gantt", r5PlainLabels ? "Chronologie" : "Gantt"],
++            ["kanban", r5PlainLabels ? "Avancement" : "Kanban"],
++            ["agenda", "Agenda"],
+           ]
+             .map(
+               (v) =>
+-                `<button class="${kanban === (v[0] === "kanban") ? "active" : ""}" onclick="setPlanningView('${v[0]}')">${v[1]}</button>`,
++                `<button class="${app.ui.planningView === v[0] ? "active" : ""}" onclick="setPlanningView('${v[0]}')">${v[1]}</button>`,
+             )
+             .join("")}</div>`,
+           filters = `<select aria-label="Filtrer par chantier" onchange="setPlanningFilter('project',this.value)"><option value="all">Tous les chantiers</option>${app.projects.filter((p) => isProjectActive(p) || app.ui.planningProject === p.id).map((p) => `<option value="${p.id}" ${app.ui.planningProject === p.id ? "selected" : ""}>${esc(p.name)}${isProjectActive(p) ? "" : " (clôturé)"}</option>`).join("")}</select><select aria-label="Filtrer par ressource" onchange="setPlanningFilter('resource',this.value)"><option value="all">Toutes les ressources</option>${resourceFilterOptions(resFilter)}</select>${planningLotSelect()}${planningStructureSelect()}`;
+@@ -21042,8 +21234,8 @@
+           (advanced && prob.total
+             ? `<div class="ai-nudge">${icon("assistant")}<span><b>Kanvix</b> — ${planningProblemText()} à vérifier.</span><button class="link" onclick="openScenarios()">Examiner</button></div>`
+             : "") +
+-          (kanban ? kanbanBoard() : gantt()) +
+-          (kanban
++          (agenda ? renderAgenda() : kanban ? kanbanBoard() : gantt()) +
++          (kanban || agenda
+             ? ""
+             : `<div class="scroll-hint" id="scrollHint">← Faire défiler le planning →</div>`)
+         );
+@@ -21258,7 +21450,8 @@
+       // Représentation du planning : Gantt (temporel) ou Kanban (par statut).
+       // Même source de vérité (planningTasks) et mêmes filtres — voir kanbanBoard.
+       function setPlanningView(view) {
+-        app.ui.planningView = view === "kanban" ? "kanban" : "gantt";
++        app.ui.planningView =
++          view === "kanban" ? "kanban" : view === "agenda" ? "agenda" : "gantt";
+         save();
+         renderPage();
+         requestAnimationFrame(drawDeps);

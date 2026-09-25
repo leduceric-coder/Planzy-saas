@@ -1,0 +1,331 @@
+{
+  "date": "2026-09-25T11:19:43.024Z",
+  "fichierTeste": "kanvix-next-gen-v2.12.2.1-r5-prototype.html",
+  "reference": "kanvix-next-gen-v2.12.2.1.html",
+  "passed": 64,
+  "total": 64,
+  "failed": [],
+  "consoleErrors": [],
+  "results": [
+    {
+      "sec": "PERIM-0",
+      "name": "Les deux fichiers (référence V2.12.2.1 et prototype R5) existent bien sur disque",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-00",
+      "name": "Le jeu de données R5 (9 tâches) est bien ajouté à app.tasks sans en écraser aucune existante",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-01",
+      "name": "AGENDA-01 : la vue Agenda est bien active et rendue (.agenda-view présent)",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-01b",
+      "name": "AGENDA-01b : .mobile-agenda (repli mobile préexistant DU GANTT) reste présent et intact en vue Gantt — moteur DISTINCT, non touché par R5",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-02",
+      "name": "AGENDA-02 : une tâche de 5 jours ouvrés (lun→ven) produit EXACTEMENT 5 occurrences (une par jour réellement occupé)",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-02",
+      "name": "AGENDA-02 : la 1ère occurrence porte « Début », la dernière porte « Fin »",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-02",
+      "name": "AGENDA-02 : les 3 occurrences intermédiaires portent toutes « Suite » (jamais « En cours », pour ne pas entrer en collision avec le statut)",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-03",
+      "name": "AGENDA-03 : aucun groupe-jour « samedi » n’est créé — projectCalendar.workingDays (lun-ven) est la seule vérité, sans ligne week-end artificielle",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-03",
+      "name": "AGENDA-03 : la tâche vendredi 14h→lundi 10h n’apparaît QUE le vendredi dans la fenêtre affichée (lundi suivant hors fenêtre de cette semaine)",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-04",
+      "name": "AGENDA-04 : une tâche commencée le 13 août (avant la semaine du 17) n’affiche AUCUNE occurrence avant le début de la fenêtre visible",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-05",
+      "name": "AGENDA-05 : une tâche commencée avant la période et finissant le 19 août affiche bien sa dernière occurrence le 19, sans dépasser",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-06",
+      "name": "AGENDA-06 : une tâche qui couvre toute la période affichée produit une occurrence pour CHACUN des 5 jours ouvrés visibles de la semaine",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-06",
+      "name": "AGENDA-06 : aucune de ces occurrences visibles n’est marquée Début ni Fin (les vrais bornes sont hors fenêtre) — la date réelle de la tâche n’est jamais recadrée",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-07",
+      "name": "AGENDA-07 : statut « done » → pastille « Terminée »",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-07",
+      "name": "AGENDA-07 : statut « todo » → pastille « À faire »",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-07",
+      "name": "AGENDA-07 : statut « doing » → pastille « En cours »",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-07",
+      "name": "AGENDA-07 : statut « late » → pastille « En retard »",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-07",
+      "name": "AGENDA-07 : statut « waiting » → pastille « En attente »",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-08",
+      "name": "AGENDA-08 : plusieurs interventions le même jour (lundi 17 août) apparaissent bien comme autant de lignes distinctes",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-08",
+      "name": "AGENDA-08 : le compteur de jour affiche le bon nombre d’interventions, au pluriel",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-09",
+      "name": "AGENDA-09 : le filtre CHANTIER masque bien en Agenda les tâches d’un autre chantier (r5-we est sur \"terrasses\")",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-09",
+      "name": "AGENDA-09 : le filtre CHANTIER conserve bien les tâches du chantier sélectionné (r5-5j est sur \"keravel\")",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-10",
+      "name": "AGENDA-10 : le filtre RESSOURCE (marc) ne conserve en Agenda QUE les tâches de marc — même comportement que Gantt/Kanban",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-11",
+      "name": "AGENDA-11 : le filtre LOT (platrerie) ne conserve en Agenda que les tâches de ce lot",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-12",
+      "name": "AGENDA-12 : le filtre STRUCTURE conserve bien la tâche rattachée au nœud sélectionné en Agenda",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-13",
+      "name": "AGENDA-13 : une tâche portant une dépendance (deps) s’affiche normalement en Agenda, sans erreur",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-14",
+      "name": "AGENDA-14 : en Pilotage, le bandeau Analyse (conflits/dépendances) cohabite normalement au-dessus de la vue Agenda, sans la casser",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-15",
+      "name": "AGENDA-15 : cliquer une ligne Agenda ouvre EXACTEMENT la même fiche tâche (openTask) que le Gantt/Kanban — aucune vue de détail parallèle",
+      "status": "PASS"
+    },
+    {
+      "sec": "AGENDA-16",
+      "name": "AGENDA-16 : après tous les rendus et bascules de vue, app.tasks n’a NI grossi NI rétréci — aucune occurrence n’est stockée, tout est recalculé au rendu",
+      "status": "PASS"
+    },
+    {
+      "sec": "LABELS-01",
+      "name": "LABELS-01 : sans paramètre, les libellés restent EXACTEMENT « Gantt / Kanban / Agenda » — comportement V2.12.2.1 inchangé sur les deux premiers",
+      "status": "PASS"
+    },
+    {
+      "sec": "LABELS-02",
+      "name": "LABELS-02 : avec ?r5Labels=plain, les libellés deviennent « Chronologie / Avancement / Agenda »",
+      "status": "PASS"
+    },
+    {
+      "sec": "LABELS-03",
+      "name": "LABELS-03 : quelle que soit la variante de vocabulaire, la valeur interne app.ui.planningView reste \"gantt\"/\"kanban\"/\"agenda\" — jamais \"chronologie\" ni \"avancement\"",
+      "status": "PASS"
+    },
+    {
+      "sec": "LABELS-04",
+      "name": "LABELS-04 : ?r5Labels n’est écrit NULLE PART dans localStorage — c’est un paramètre d’URL pur, jamais un champ d’état, donc non persistant par construction",
+      "status": "PASS"
+    },
+    {
+      "sec": "INITIAL-0X",
+      "name": "INITIAL-01 : ?r5Initial=agenda ouvre bien directement la vue Planning \"agenda\"",
+      "status": "PASS"
+    },
+    {
+      "sec": "INITIAL-0X",
+      "name": "INITIAL-02 : ?r5Initial=kanban ouvre bien directement la vue Planning \"kanban\"",
+      "status": "PASS"
+    },
+    {
+      "sec": "INITIAL-0X",
+      "name": "INITIAL-03 : ?r5Initial=gantt ouvre bien directement la vue Planning \"gantt\"",
+      "status": "PASS"
+    },
+    {
+      "sec": "INITIAL-03",
+      "name": "INITIAL-03 : la bascule ?r5Initial=agenda a bien pris effet au premier chargement (preuve que ce qui suit teste une VRAIE réversion, pas une absence d’effet)",
+      "status": "PASS"
+    },
+    {
+      "sec": "INITIAL-03",
+      "name": "INITIAL-03 : rechargé SANS ?r5Initial, migrateState() (inchangée) renormalise vers \"gantt\" — non-persistance prouvée sans avoir touché migrateState()",
+      "status": "PASS"
+    },
+    {
+      "sec": "INITIAL-04",
+      "name": "INITIAL-04 : sans aucun paramètre R5, la vue Planning initiale reste \"gantt\" — IDENTIQUE entre V2.12.2.1 et le prototype",
+      "status": "PASS"
+    },
+    {
+      "sec": "INITIAL-04",
+      "name": "INITIAL-04 : le HTML du Gantt rendu par défaut est BYTE-IDENTIQUE entre la référence et le prototype (même données de démo, mêmes dates)",
+      "status": "PASS"
+    },
+    {
+      "sec": "NONREG-01",
+      "name": "NONREG-01 : le Gantt continue de s’afficher avec des barres — vue par défaut non cassée",
+      "status": "PASS"
+    },
+    {
+      "sec": "NONREG-02",
+      "name": "NONREG-02 : le Kanban continue d’afficher exactement ses 3 colonnes de statut",
+      "status": "PASS"
+    },
+    {
+      "sec": "NONREG-03",
+      "name": "NONREG-03 : le bouton « Préparer un décalage » est toujours proposé sur une tâche éligible (moteur byte-identique à V2.12.2.1)",
+      "status": "PASS"
+    },
+    {
+      "sec": "NONREG-04",
+      "name": "NONREG-04 : l’onglet « Structure » d’un chantier reste bien proposé et s’ouvre normalement (présent aux deux niveaux Essentiel/Pilotage, R2 — moteur byte-identique)",
+      "status": "PASS"
+    },
+    {
+      "sec": "NONREG-05",
+      "name": "NONREG-05 : le gating R4 « Opérations » réservé au Pilotage fonctionne toujours à l’identique (renderSites non touché par R5)",
+      "status": "PASS"
+    },
+    {
+      "sec": "NONREG-06",
+      "name": "NONREG-06 : la bascule Essentiel/Pilotage fonctionne toujours normalement",
+      "status": "PASS"
+    },
+    {
+      "sec": "NONREG-07",
+      "name": "NONREG-07 : Undo restaure correctement le statut d’une tâche après un changement — le moteur Undo/Redo (byte-identique) fonctionne toujours",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-R5",
+      "name": "FREEZE-R5 : hors de renderPlanning() et setPlanningView(), AUCUNE fonction EXISTANTE n’a été modifiée entre V2.12.2.1 et le prototype R5",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-R5",
+      "name": "FREEZE-R5 : EXACTEMENT les 6 fonctions Agenda attendues ont été ajoutées — aucune autre, aucune manquante",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-R5",
+      "name": "FREEZE-R5 : aucune fonction n’a été supprimée",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-R5",
+      "name": "FREEZE-R5 : migrateState() est BYTE-IDENTIQUE — la non-persistance de ?r5Initial repose sur son comportement EXISTANT, jamais modifié",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-R5",
+      "name": "FREEZE-R5 : INITIAL_STATE et SCHEMA_VERSION strictement inchangés — le jeu de données R5 est bien recette-only, jamais dans les données de démo livrées",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-R5",
+      "name": "FREEZE-R5 : les 69 moteurs gelés (décalage, calendrier, dépendances/ressources, Undo/Redo/communications, Structure, Opérations, Essentiel/Pilotage, Gantt, Kanban, planningTasks/scale, agenda mobile préexistant) restent BYTE-IDENTIQUES",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-R5",
+      "name": "FREEZE-R5 : la diff BRUTE ligne à ligne (diff -u) entre la référence et le prototype ne compte QUE 7 blocs de changement, tous documentés — aucune modification furtive ailleurs dans le fichier",
+      "status": "PASS"
+    },
+    {
+      "sec": "FREEZE-R5",
+      "name": "FREEZE-R5 : très peu de lignes SUPPRIMÉES (uniquement des lignes réécrites à l’identique fonctionnellement, ex. le tableau Gantt/Kanban → Gantt/Kanban/Agenda) — le prototype est presque exclusivement additif",
+      "status": "PASS"
+    },
+    {
+      "sec": "VISUEL-OVERFLOW",
+      "name": "VISUEL-desktop-clair : aucun débordement horizontal de la page en vue Agenda (scrollWidth ≈ clientWidth)",
+      "status": "PASS"
+    },
+    {
+      "sec": "VISUEL-OVERFLOW",
+      "name": "VISUEL-desktop-sombre : aucun débordement horizontal de la page en vue Agenda (scrollWidth ≈ clientWidth)",
+      "status": "PASS"
+    },
+    {
+      "sec": "VISUEL-OVERFLOW",
+      "name": "VISUEL-mobile-clair : aucun débordement horizontal de la page en vue Agenda (scrollWidth ≈ clientWidth)",
+      "status": "PASS"
+    },
+    {
+      "sec": "VISUEL-OVERFLOW",
+      "name": "VISUEL-mobile-sombre : aucun débordement horizontal de la page en vue Agenda (scrollWidth ≈ clientWidth)",
+      "status": "PASS"
+    },
+    {
+      "sec": "INT-02",
+      "name": "INT-02 : la ligne d’une intervention longue reste intégralement lisible (nom complet en DOM, hauteur tactile conservée)",
+      "status": "PASS"
+    },
+    {
+      "sec": "INT-03",
+      "name": "INT-03 : sur aucune ligne le repère de position (Début/Suite/Fin) et la pastille de statut n’affichent le même texte — pas de collision de sens (validation du choix « Suite » plutôt que « En cours »)",
+      "status": "PASS"
+    },
+    {
+      "sec": "INT-04",
+      "name": "INT-04 : une ligne d’occurrence Agenda (bouton natif) est bien focusable au clavier",
+      "status": "PASS"
+    },
+    {
+      "sec": "INT-05",
+      "name": "INT-05 : en thème sombre, avec un filtre chantier actif, l’ouverture d’une fiche depuis l’Agenda fonctionne et n’ouvre QU’UN SEUL panneau (aucun chevauchement de panneaux)",
+      "status": "PASS"
+    },
+    {
+      "sec": "ERREURS-CONSOLE",
+      "name": "ERREURS-CONSOLE : 0 erreur console applicative sur l’ensemble des scénarios (bruit réseau sandbox préexistant filtré, voir en-tête) — 0 trouvée(s)",
+      "status": "PASS"
+    }
+  ]
+}
