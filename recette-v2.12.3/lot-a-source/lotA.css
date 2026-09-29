@@ -1,0 +1,232 @@
+
+      /* ================= V2.12.3 — ACTIVITÉS D'ENTREPRISE ===================
+         Tout passe par les variables du design system : le thème sombre
+         (body.dark) redéfinit ces variables, aucune règle dédiée n'est
+         nécessaire pour les couleurs. */
+      .act-tags {
+        display: inline-flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 4px;
+        margin-top: 4px;
+        max-width: 100%;
+      }
+      .act-rest {
+        display: contents;
+      }
+      .act-rest[hidden] {
+        display: none;
+      }
+      .act-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        max-width: 100%;
+        padding: 2px 9px 2px 7px;
+        border: 1px solid var(--border-light);
+        border-radius: 999px;
+        background: var(--surface-muted);
+        color: var(--text-secondary);
+        font-size: 11px;
+        font-weight: 600;
+        line-height: 1.35;
+        overflow-wrap: anywhere;
+      }
+      .act-tag i {
+        flex: none;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--lot-dot, var(--text-tertiary));
+      }
+      .act-tag.is-off {
+        opacity: 0.7;
+        font-style: italic;
+      }
+      .act-more {
+        position: relative;
+        min-height: 22px;
+        padding: 1px 8px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: var(--surface);
+        color: var(--accent-ink);
+        font-size: 11px;
+        font-weight: 700;
+        line-height: 1.35;
+        cursor: pointer;
+      }
+      /* Zone de toucher élargie : le bouton reste discret, le doigt le trouve. */
+      .act-more::after {
+        content: "";
+        position: absolute;
+        inset: -10px -8px;
+      }
+      .act-more:hover {
+        background: var(--accent-soft);
+      }
+      .act-more[aria-expanded="true"] {
+        background: var(--accent-soft);
+      }
+      /* Fiche ressource : version complète, un peu plus lisible. */
+      .drawer-section .act-tags {
+        margin-top: 0;
+        gap: 6px;
+      }
+      .drawer-section .act-tag {
+        font-size: 12.5px;
+        padding: 3px 11px 3px 9px;
+      }
+
+      /* Recherche et filtre d'activité (page Équipe) */
+      .team-filters .team-search,
+      .team-filters .team-activity {
+        min-width: 0;
+        width: 210px;
+        max-width: 100%;
+      }
+      .team-filters > .team-find {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: end;
+        gap: 12px;
+      }
+      .team-find > div {
+        display: grid;
+        gap: 6px;
+      }
+      @media (max-width: 620px) {
+        .team-filters > .team-find {
+          flex: 1 1 100%;
+        }
+        .team-find > div {
+          flex: 1 1 100%;
+        }
+        .team-filters .team-search,
+        .team-filters .team-activity {
+          width: 100%;
+        }
+      }
+
+      /* Sélecteur multiple du formulaire */
+      .act-picker {
+        display: grid;
+        gap: 6px;
+      }
+      .act-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-secondary);
+      }
+      .act-box {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px;
+        min-height: 42px;
+        padding: 5px 8px;
+        border: 1px solid var(--border-strong);
+        border-radius: var(--radius-sm);
+        background: var(--surface);
+        cursor: text;
+      }
+      .act-box:focus-within {
+        border-color: var(--accent);
+        outline: 3px solid color-mix(in srgb, var(--accent) 42%, transparent);
+        outline-offset: 1px;
+      }
+      .act-chips {
+        display: contents;
+      }
+      .act-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 2px;
+        max-width: 100%;
+        padding: 2px 2px 2px 10px;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        color: var(--accent-ink);
+        font-size: 12.5px;
+        font-weight: 600;
+      }
+      .act-chip-label {
+        overflow-wrap: anywhere;
+      }
+      .act-x {
+        display: inline-grid;
+        place-items: center;
+        width: 28px;
+        height: 28px;
+        border: 0;
+        border-radius: 50%;
+        background: transparent;
+        color: inherit;
+        font-size: 17px;
+        line-height: 1;
+        cursor: pointer;
+      }
+      .act-x:hover {
+        background: color-mix(in srgb, var(--accent) 22%, transparent);
+      }
+      .drawer-form .act-box .act-input {
+        flex: 1 1 130px;
+        min-width: 0;
+        padding: 6px 2px;
+        border: 0;
+        border-radius: 0;
+        outline: 0;
+        background: transparent;
+        box-shadow: none;
+      }
+      .drawer-form .act-box .act-input:focus {
+        border: 0;
+        outline: 0;
+      }
+      .act-list {
+        margin: 0;
+        padding: 4px;
+        max-height: 220px;
+        overflow-y: auto;
+        list-style: none;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        background: var(--surface);
+        box-shadow: var(--shadow-xs);
+      }
+      .act-list[hidden] {
+        display: none;
+      }
+      .act-opt,
+      .act-empty {
+        display: flex;
+        align-items: center;
+        min-height: 44px;
+        padding: 6px 12px;
+        border-radius: var(--radius-xs);
+        font-size: 13.5px;
+        color: var(--text);
+      }
+      .act-opt {
+        cursor: pointer;
+      }
+      .act-opt:hover,
+      .act-opt.is-active {
+        background: var(--accent-soft);
+        color: var(--accent-ink);
+      }
+      .act-opt.is-new {
+        font-weight: 600;
+        color: var(--accent-ink);
+      }
+      .act-empty {
+        color: var(--text-tertiary);
+      }
+      .act-live {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+      }

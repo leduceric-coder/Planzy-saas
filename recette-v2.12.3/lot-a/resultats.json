@@ -1,0 +1,774 @@
+{
+ "passed": 153,
+ "failed": 0,
+ "total": 153,
+ "failedList": [],
+ "errs": [],
+ "results": [
+  {
+   "test": "A01",
+   "name": "la puce « Électricité » est posée",
+   "status": "PASS"
+  },
+  {
+   "test": "A01",
+   "name": "l’entreprise est créée",
+   "status": "PASS"
+  },
+  {
+   "test": "A01",
+   "name": "activityLotIds = [\"lot-electricite\"] (id stable, pas une chaîne)",
+   "status": "PASS"
+  },
+  {
+   "test": "A01",
+   "name": "le tiroir se ferme après enregistrement",
+   "status": "PASS"
+  },
+  {
+   "test": "A02",
+   "name": "trois puces, dans l’ordre de saisie",
+   "status": "PASS"
+  },
+  {
+   "test": "A02",
+   "name": "ids enregistrés dans l’ordre choisi",
+   "status": "PASS"
+  },
+  {
+   "test": "A03",
+   "name": "activityLotIds = [] (tableau vide, jamais undefined)",
+   "status": "PASS"
+  },
+  {
+   "test": "A03",
+   "name": "la fiche l’indique explicitement",
+   "status": "PASS"
+  },
+  {
+   "test": "A03",
+   "name": "la carte n’affiche aucune étiquette d’activité",
+   "status": "PASS"
+  },
+  {
+   "test": "A04",
+   "name": "Menuiserie Armor n’a aucune activité au départ",
+   "status": "PASS"
+  },
+  {
+   "test": "A04",
+   "name": "l’activité choisie est enregistrée",
+   "status": "PASS"
+  },
+  {
+   "test": "A05",
+   "name": "Le Gall part de « Électricité »",
+   "status": "PASS"
+  },
+  {
+   "test": "A05",
+   "name": "Le Gall exerce maintenant deux activités",
+   "status": "PASS"
+  },
+  {
+   "test": "A06",
+   "name": "× retire uniquement la puce visée",
+   "status": "PASS"
+  },
+  {
+   "test": "A06",
+   "name": "Retour arrière sur champ vide retire la dernière puce",
+   "status": "PASS"
+  },
+  {
+   "test": "A06",
+   "name": "la suppression est enregistrée",
+   "status": "PASS"
+  },
+  {
+   "test": "A06",
+   "name": "les lots du référentiel ne sont PAS supprimés (seule la référence l’est)",
+   "status": "PASS"
+  },
+  {
+   "test": "A07",
+   "name": "saisir une activité déjà choisie affiche « Déjà sélectionnée »",
+   "status": "PASS"
+  },
+  {
+   "test": "A07",
+   "name": "Entrée ne crée pas de doublon",
+   "status": "PASS"
+  },
+  {
+   "test": "A07",
+   "name": "aucune proposition « Ajouter » quand le nom existe déjà (accents/casse ignorés)",
+   "status": "PASS"
+  },
+  {
+   "test": "A07",
+   "name": "aucun lot créé : pas de doublon dans le référentiel",
+   "status": "PASS"
+  },
+  {
+   "test": "A07",
+   "name": "aucun id en double sur l’entreprise",
+   "status": "PASS"
+  },
+  {
+   "test": "A07",
+   "name": "applyCompanyActivities dédoublonne et ignore un id inconnu",
+   "status": "PASS"
+  },
+  {
+   "test": "A08",
+   "name": "l’entreprise et ses 2 activités survivent au rechargement",
+   "status": "PASS"
+  },
+  {
+   "test": "A08",
+   "name": "les noms résolus sont corrects (dont le lot créé à la volée)",
+   "status": "PASS"
+  },
+  {
+   "test": "A08",
+   "name": "schemaVersion = 16 après rechargement",
+   "status": "PASS"
+  },
+  {
+   "test": "A09",
+   "name": "la sauvegarde porte schemaVersion 16",
+   "status": "PASS"
+  },
+  {
+   "test": "A09",
+   "name": "les activités sont DANS la sauvegarde",
+   "status": "PASS"
+  },
+  {
+   "test": "A09",
+   "name": "le lot créé à la volée est DANS la sauvegarde",
+   "status": "PASS"
+  },
+  {
+   "test": "A09",
+   "name": "le contexte B (état neuf) ne connaît pas cette entreprise",
+   "status": "PASS"
+  },
+  {
+   "test": "A09",
+   "name": "après restauration, les 2 activités sont présentes",
+   "status": "PASS"
+  },
+  {
+   "test": "A09",
+   "name": "les noms sont identiques à la source",
+   "status": "PASS"
+  },
+  {
+   "test": "A09",
+   "name": "et elles survivent à un rechargement après restauration",
+   "status": "PASS"
+  },
+  {
+   "test": "A10",
+   "name": "l’export métier ne transporte pas les ressources (contrat V2.12.2.1 inchangé, documenté)",
+   "status": "PASS"
+  },
+  {
+   "test": "A10",
+   "name": "mais il transporte le référentiel de lots, donc le nouveau lot",
+   "status": "PASS"
+  },
+  {
+   "test": "A10",
+   "name": "l’import fusionne le nouveau lot dans le référentiel",
+   "status": "PASS"
+  },
+  {
+   "test": "A10",
+   "name": "un seul lot ajouté, aucun doublon",
+   "status": "PASS"
+  },
+  {
+   "test": "A10",
+   "name": "les activités des entreprises existantes sont intactes après import",
+   "status": "PASS"
+  },
+  {
+   "test": "A10",
+   "name": "toutes les entreprises gardent un tableau valide",
+   "status": "PASS"
+  },
+  {
+   "test": "A10",
+   "name": "la sauvegarde source est bien de schéma 15 (V2.12.2.1)",
+   "status": "PASS"
+  },
+  {
+   "test": "A10",
+   "name": "la sauvegarde V15 est migrée en schéma 16",
+   "status": "PASS"
+  },
+  {
+   "test": "A10",
+   "name": "toutes les entreprises anciennes arrivent avec [] : aucune activité inventée",
+   "status": "PASS"
+  },
+  {
+   "test": "A10",
+   "name": "le référentiel de la sauvegarde ancienne est respecté (9 lots, « Sanitaire » non injecté)",
+   "status": "PASS"
+  },
+  {
+   "test": "A11",
+   "name": "« Électricité » trouve Ouest Fluides & Énergie + Le Gall Électricité (trouvé : Le Gall Électricité, Ouest Fluides & Énergie)",
+   "status": "PASS"
+  },
+  {
+   "test": "A11",
+   "name": "« plomberie » trouve Ouest Fluides & Énergie (trouvé : Ouest Fluides & Énergie)",
+   "status": "PASS"
+  },
+  {
+   "test": "A11",
+   "name": "« SANITAIRE » trouve Ouest Fluides & Énergie (trouvé : Ouest Fluides & Énergie)",
+   "status": "PASS"
+  },
+  {
+   "test": "A11",
+   "name": "« electricite » trouve Le Gall Électricité + Ouest Fluides & Énergie (trouvé : Le Gall Électricité, Ouest Fluides & Énergie)",
+   "status": "PASS"
+  },
+  {
+   "test": "A11",
+   "name": "« Sanitaire » ne retourne QUE l’entreprise qui l’exerce",
+   "status": "PASS"
+  },
+  {
+   "test": "A11",
+   "name": "une recherche sans résultat affiche un état vide clair",
+   "status": "PASS"
+  },
+  {
+   "test": "A11",
+   "name": "« Effacer la recherche » rétablit la liste complète",
+   "status": "PASS"
+  },
+  {
+   "test": "A11",
+   "name": "la palette de commandes (Ctrl+K) retrouve l’entreprise par chacune de ses 3 activités",
+   "status": "PASS"
+  },
+  {
+   "test": "A12",
+   "name": "le filtre liste les activités utilisées avec leur effectif",
+   "status": "PASS"
+  },
+  {
+   "test": "A12",
+   "name": "filtre « Plomberie » : l’entreprise à 3 activités est retournée",
+   "status": "PASS"
+  },
+  {
+   "test": "A12",
+   "name": "filtre « Électricité » : les DEUX entreprises qui la possèdent",
+   "status": "PASS"
+  },
+  {
+   "test": "A12",
+   "name": "aucune personne ni matériel dans un filtre d’activité",
+   "status": "PASS"
+  },
+  {
+   "test": "A12",
+   "name": "« Toutes les activités » rétablit la liste",
+   "status": "PASS"
+  },
+  {
+   "test": "A12",
+   "name": "un filtre devenu sans objet est ignoré au lieu de vider la liste sans explication",
+   "status": "PASS"
+  },
+  {
+   "test": "A13",
+   "name": "surface compacte : deux activités visibles",
+   "status": "PASS"
+  },
+  {
+   "test": "A13",
+   "name": "puis un bouton « +1 »",
+   "status": "PASS"
+  },
+  {
+   "test": "A13",
+   "name": "le nom masqué est accessible (aria-label) sans surcharger l’écran",
+   "status": "PASS"
+  },
+  {
+   "test": "A13",
+   "name": "aria-expanded = false au repos",
+   "status": "PASS"
+  },
+  {
+   "test": "A13",
+   "name": "le clic révèle la troisième activité",
+   "status": "PASS"
+  },
+  {
+   "test": "A13",
+   "name": "et n’ouvre PAS la fiche (clic isolé de la carte)",
+   "status": "PASS"
+  },
+  {
+   "test": "A13",
+   "name": "au clavier : Entrée replie, sans ouvrir la fiche",
+   "status": "PASS"
+  },
+  {
+   "test": "A13",
+   "name": "une entreprise à une seule activité n’a pas de « +N »",
+   "status": "PASS"
+  },
+  {
+   "test": "A13",
+   "name": "la fiche affiche les 3 activités, sans « +N »",
+   "status": "PASS"
+  },
+  {
+   "test": "A14",
+   "name": "contraste étiquette ≥ 4,5 (5.34)",
+   "status": "PASS"
+  },
+  {
+   "test": "A14",
+   "name": "contraste puce du formulaire ≥ 4,5 (5.96)",
+   "status": "PASS"
+  },
+  {
+   "test": "A14",
+   "name": "contraste option de liste ≥ 4,5 (17.74)",
+   "status": "PASS"
+  },
+  {
+   "test": "A14",
+   "name": "thème clair bien actif",
+   "status": "PASS"
+  },
+  {
+   "test": "A15",
+   "name": "contraste étiquette ≥ 4,5 (6.60)",
+   "status": "PASS"
+  },
+  {
+   "test": "A15",
+   "name": "contraste puce du formulaire ≥ 4,5 (9.57)",
+   "status": "PASS"
+  },
+  {
+   "test": "A15",
+   "name": "contraste option de liste ≥ 4,5 (14.92)",
+   "status": "PASS"
+  },
+  {
+   "test": "A15",
+   "name": "thème sombre bien actif",
+   "status": "PASS"
+  },
+  {
+   "test": "A16",
+   "name": "page Équipe : aucun défilement horizontal",
+   "status": "PASS"
+  },
+  {
+   "test": "A16",
+   "name": "la recherche occupe la largeur (utilisable au pouce)",
+   "status": "PASS"
+  },
+  {
+   "test": "A16",
+   "name": "formulaire : aucun débordement horizontal",
+   "status": "PASS"
+  },
+  {
+   "test": "A16",
+   "name": "option de liste ≥ 44 px de haut (44px) : cible tactile suffisante",
+   "status": "PASS"
+  },
+  {
+   "test": "A16",
+   "name": "bouton × ≥ 24 px (28×28) — seuil WCAG 2.2",
+   "status": "PASS"
+  },
+  {
+   "test": "A16",
+   "name": "une activité se choisit au toucher",
+   "status": "PASS"
+  },
+  {
+   "test": "A16",
+   "name": "et se retire au toucher",
+   "status": "PASS"
+  },
+  {
+   "test": "A17",
+   "name": "le formulaire d’une personne affiche toujours « Poste / métier »",
+   "status": "PASS"
+  },
+  {
+   "test": "A17",
+   "name": "valeur « Menuisier » conservée",
+   "status": "PASS"
+  },
+  {
+   "test": "A17",
+   "name": "les champs entreprise (dont Activités) sont masqués pour une personne",
+   "status": "PASS"
+  },
+  {
+   "test": "A17",
+   "name": "jobTitle intact, aucun activityLotIds ajouté à une personne",
+   "status": "PASS"
+  },
+  {
+   "test": "A17",
+   "name": "la fiche personne est strictement identique après enregistrement",
+   "status": "PASS"
+  },
+  {
+   "test": "A17",
+   "name": "le formulaire d’une entreprise dit « Activités / corps d’état », pas « Métier »",
+   "status": "PASS"
+  },
+  {
+   "test": "A17",
+   "name": "la fiche entreprise ne contient pas le mot « Métier »",
+   "status": "PASS"
+  },
+  {
+   "test": "A18",
+   "name": "l’ancien fichier a bien persisté sa propre entreprise",
+   "status": "PASS"
+  },
+  {
+   "test": "A18",
+   "name": "état persistant de schéma 15",
+   "status": "PASS"
+  },
+  {
+   "test": "A18",
+   "name": "l’état est migré en schéma 16 à l’ouverture",
+   "status": "PASS"
+  },
+  {
+   "test": "A18",
+   "name": "chantiers, tâches, ressources : effectifs strictement identiques",
+   "status": "PASS"
+  },
+  {
+   "test": "A18",
+   "name": "la page courante est conservée",
+   "status": "PASS"
+  },
+  {
+   "test": "A18",
+   "name": "les 4 entreprises (dont celle créée par l’ancienne version) arrivent avec [] — AUCUNE activité de démo injectée",
+   "status": "PASS"
+  },
+  {
+   "test": "A18",
+   "name": "le référentiel n’est pas modifié par la migration (9 lots)",
+   "status": "PASS"
+  },
+  {
+   "test": "A18",
+   "name": "le nouveau filtre d’interface est initialisé à « Toutes »",
+   "status": "PASS"
+  },
+  {
+   "test": "A18",
+   "name": "aucune étiquette fantôme affichée",
+   "status": "PASS"
+  },
+  {
+   "test": "A19",
+   "name": "ancien champ unique « activity » → id du lot",
+   "status": "PASS"
+  },
+  {
+   "test": "A19",
+   "name": "« trade: Plombier » rapproché du métier indicatif du lot Plomberie",
+   "status": "PASS"
+  },
+  {
+   "test": "A19",
+   "name": "chaîne « A, b ; C » découpée, casse/accents normalisés",
+   "status": "PASS"
+  },
+  {
+   "test": "A19",
+   "name": "noms, doublons de casse et vides → un seul id",
+   "status": "PASS"
+  },
+  {
+   "test": "A19",
+   "name": "valeur inconnue → un lot « Domotique » est CRÉÉ et référencé (rien n’est perdu)",
+   "status": "PASS"
+  },
+  {
+   "test": "A19",
+   "name": "lots créés = Domotique + 20 (plafond de c-many) = 21 : les 10 noms au-delà du plafond ne créent PAS de lot",
+   "status": "PASS"
+  },
+  {
+   "test": "A19",
+   "name": "id « lot-… » orphelin retiré, id valide conservé",
+   "status": "PASS"
+  },
+  {
+   "test": "A19",
+   "name": "valeur vide / absente → []",
+   "status": "PASS"
+  },
+  {
+   "test": "A19",
+   "name": "null, nombre, objet vide ignorés ; objet {name} reconnu",
+   "status": "PASS"
+  },
+  {
+   "test": "A19",
+   "name": "jobTitle porté par une ENTREPRISE traité comme ancienne activité",
+   "status": "PASS"
+  },
+  {
+   "test": "A19",
+   "name": "plafond de 20 activités par entreprise",
+   "status": "PASS"
+  },
+  {
+   "test": "A19",
+   "name": "les anciens champs sont consommés (une activité retirée ne peut pas revenir)",
+   "status": "PASS"
+  },
+  {
+   "test": "A19",
+   "name": "une PERSONNE n’est pas touchée",
+   "status": "PASS"
+  },
+  {
+   "test": "A19",
+   "name": "IDEMPOTENCE : 2e et 3e passages strictement identiques (ressources ET lots)",
+   "status": "PASS"
+  },
+  {
+   "test": "A19",
+   "name": "aucun lot en double après migration",
+   "status": "PASS"
+  },
+  {
+   "test": "A20",
+   "name": "création entreprise + nouveau lot = UN seul point d’annulation",
+   "status": "PASS"
+  },
+  {
+   "test": "A20",
+   "name": "Annuler retire l’entreprise ET le lot créé avec elle",
+   "status": "PASS"
+  },
+  {
+   "test": "A20",
+   "name": "Rétablir restitue les deux",
+   "status": "PASS"
+  },
+  {
+   "test": "A20",
+   "name": "l’activité pointe bien sur le lot rétabli",
+   "status": "PASS"
+  },
+  {
+   "test": "A20",
+   "name": "retrait d’une activité enregistré",
+   "status": "PASS"
+  },
+  {
+   "test": "A20",
+   "name": "Annuler restaure les 3 activités",
+   "status": "PASS"
+  },
+  {
+   "test": "B01",
+   "name": "role=combobox, aria-expanded=false au repos",
+   "status": "PASS"
+  },
+  {
+   "test": "B01",
+   "name": "la liste est un listbox",
+   "status": "PASS"
+  },
+  {
+   "test": "B01",
+   "name": "le focus ouvre la liste (aria-expanded=true)",
+   "status": "PASS"
+  },
+  {
+   "test": "B01",
+   "name": "Flèche bas déplace aria-activedescendant (actOpt0 → actOpt1)",
+   "status": "PASS"
+  },
+  {
+   "test": "B01",
+   "name": "une seule option est aria-selected",
+   "status": "PASS"
+  },
+  {
+   "test": "B01",
+   "name": "Flèche haut revient en arrière",
+   "status": "PASS"
+  },
+  {
+   "test": "B01",
+   "name": "Entrée choisit l’option active",
+   "status": "PASS"
+  },
+  {
+   "test": "B01",
+   "name": "Entrée ne soumet PAS le formulaire (le tiroir reste ouvert)",
+   "status": "PASS"
+  },
+  {
+   "test": "B01",
+   "name": "1er Échap : ferme la liste seulement",
+   "status": "PASS"
+  },
+  {
+   "test": "B01",
+   "name": "2e Échap : ferme le tiroir",
+   "status": "PASS"
+  },
+  {
+   "test": "B02",
+   "name": "la puce « nouvelle » est affichée",
+   "status": "PASS"
+  },
+  {
+   "test": "B02",
+   "name": "pendant la saisie, le référentiel n’est PAS modifié",
+   "status": "PASS"
+  },
+  {
+   "test": "B02",
+   "name": "annuler le formulaire ne crée ni lot ni entreprise",
+   "status": "PASS"
+  },
+  {
+   "test": "B03",
+   "name": "l’activité saisie sans validation est bien enregistrée",
+   "status": "PASS"
+  },
+  {
+   "test": "B04",
+   "name": "un lot porté par une entreprise ne peut pas être supprimé",
+   "status": "PASS"
+  },
+  {
+   "test": "B04",
+   "name": "un lot sans usage reste supprimable",
+   "status": "PASS"
+  },
+  {
+   "test": "B04",
+   "name": "le message le dit (« 1 entreprise »)",
+   "status": "PASS"
+  },
+  {
+   "test": "B04",
+   "name": "le dialogue de refus s’affiche",
+   "status": "PASS"
+  },
+  {
+   "test": "B04",
+   "name": "renommer le lot renomme l’activité partout (un seul catalogue)",
+   "status": "PASS"
+  },
+  {
+   "test": "B05",
+   "name": "sélecteur d’intervenant : « Nom — Électricité, Plomberie +1 »",
+   "status": "PASS"
+  },
+  {
+   "test": "B05",
+   "name": "Le Gall affiche son activité unique",
+   "status": "PASS"
+  },
+  {
+   "test": "B05",
+   "name": "une personne garde son libellé habituel (pas de suffixe)",
+   "status": "PASS"
+  },
+  {
+   "test": "B05",
+   "name": "sélecteur de renforts : résumé compact sous le nom",
+   "status": "PASS"
+  },
+  {
+   "test": "B05",
+   "name": "la palette affiche les activités en méta",
+   "status": "PASS"
+  },
+  {
+   "test": "B06",
+   "name": "affecter une entreprise à une tâche hors de ses activités reste permis (§4.6)",
+   "status": "PASS"
+  },
+  {
+   "test": "P01",
+   "name": "les 33 fonctions protégées existent dans la base",
+   "status": "PASS"
+  },
+  {
+   "test": "P01",
+   "name": "33/33 fonctions protégées byte-identiques",
+   "status": "PASS"
+  },
+  {
+   "test": "P01",
+   "name": "exactement 15 fonctions modifiées, toutes attendues",
+   "status": "PASS"
+  },
+  {
+   "test": "P01",
+   "name": "aucune fonction supprimée",
+   "status": "PASS"
+  },
+  {
+   "test": "P02",
+   "name": "le cas de décalage est réel : 3 intervention(s) touchée(s) par la cascade",
+   "status": "PASS"
+  },
+  {
+   "test": "P02",
+   "name": "planReflow : plan strictement identique (décalages, en cours, terminées)",
+   "status": "PASS"
+  },
+  {
+   "test": "P02",
+   "name": "planScheduleChanges : changements strictement identiques",
+   "status": "PASS"
+  },
+  {
+   "test": "P02",
+   "name": "dates de toutes les tâches identiques à l’ouverture",
+   "status": "PASS"
+  },
+  {
+   "test": "P02",
+   "name": "fonctions calendaires : résultats identiques",
+   "status": "PASS"
+  },
+  {
+   "test": "Z01",
+   "name": "erreurs applicatives : 0",
+   "status": "PASS"
+  }
+ ]
+}

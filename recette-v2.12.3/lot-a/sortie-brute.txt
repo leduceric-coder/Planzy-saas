@@ -1,0 +1,213 @@
+
+[A01] Création d’une entreprise avec UNE activité
+    ✓ la puce « Électricité » est posée
+    ✓ l’entreprise est créée
+    ✓ activityLotIds = ["lot-electricite"] (id stable, pas une chaîne)
+    ✓ le tiroir se ferme après enregistrement
+
+[A02] Création avec TROIS activités (saisie clavier)
+    ✓ trois puces, dans l’ordre de saisie
+    ✓ ids enregistrés dans l’ordre choisi
+
+[A03] Création SANS activité
+    ✓ activityLotIds = [] (tableau vide, jamais undefined)
+    ✓ la fiche l’indique explicitement
+    ✓ la carte n’affiche aucune étiquette d’activité
+
+[A04] Modification des activités d’une entreprise existante
+    ✓ Menuiserie Armor n’a aucune activité au départ
+    ✓ l’activité choisie est enregistrée
+
+[A05] Ajout d’une activité à une entreprise qui en a déjà
+    ✓ Le Gall part de « Électricité »
+    ✓ Le Gall exerce maintenant deux activités
+
+[A06] Suppression d’une activité (bouton ×, puis Retour arrière)
+    ✓ × retire uniquement la puce visée
+    ✓ Retour arrière sur champ vide retire la dernière puce
+    ✓ la suppression est enregistrée
+    ✓ les lots du référentiel ne sont PAS supprimés (seule la référence l’est)
+
+[A07] Prévention des doublons
+    ✓ saisir une activité déjà choisie affiche « Déjà sélectionnée »
+    ✓ Entrée ne crée pas de doublon
+    ✓ aucune proposition « Ajouter » quand le nom existe déjà (accents/casse ignorés)
+    ✓ aucun lot créé : pas de doublon dans le référentiel
+    ✓ aucun id en double sur l’entreprise
+    ✓ applyCompanyActivities dédoublonne et ignore un id inconnu
+
+[A08] Persistance après RECHARGEMENT
+    ✓ l’entreprise et ses 2 activités survivent au rechargement
+    ✓ les noms résolus sont corrects (dont le lot créé à la volée)
+    ✓ schemaVersion = 16 après rechargement
+
+[A09] Sauvegarde complète puis RESTAURATION (parcours réel)
+    ✓ la sauvegarde porte schemaVersion 16
+    ✓ les activités sont DANS la sauvegarde
+    ✓ le lot créé à la volée est DANS la sauvegarde
+    ✓ le contexte B (état neuf) ne connaît pas cette entreprise
+    ✓ après restauration, les 2 activités sont présentes
+    ✓ les noms sont identiques à la source
+    ✓ et elles survivent à un rechargement après restauration
+
+[A10] Export métier puis réimport ; sauvegarde d’une ANCIENNE version
+    ✓ l’export métier ne transporte pas les ressources (contrat V2.12.2.1 inchangé, documenté)
+    ✓ mais il transporte le référentiel de lots, donc le nouveau lot
+    ✓ l’import fusionne le nouveau lot dans le référentiel
+    ✓ un seul lot ajouté, aucun doublon
+    ✓ les activités des entreprises existantes sont intactes après import
+    ✓ toutes les entreprises gardent un tableau valide
+    ✓ la sauvegarde source est bien de schéma 15 (V2.12.2.1)
+    ✓ la sauvegarde V15 est migrée en schéma 16
+    ✓ toutes les entreprises anciennes arrivent avec [] : aucune activité inventée
+    ✓ le référentiel de la sauvegarde ancienne est respecté (9 lots, « Sanitaire » non injecté)
+
+[A11] Recherche par CHACUNE des activités (page Équipe et palette)
+    ✓ « Électricité » trouve Ouest Fluides & Énergie + Le Gall Électricité (trouvé : Le Gall Électricité, Ouest Fluides & Énergie)
+    ✓ « plomberie » trouve Ouest Fluides & Énergie (trouvé : Ouest Fluides & Énergie)
+    ✓ « SANITAIRE » trouve Ouest Fluides & Énergie (trouvé : Ouest Fluides & Énergie)
+    ✓ « electricite » trouve Le Gall Électricité + Ouest Fluides & Énergie (trouvé : Le Gall Électricité, Ouest Fluides & Énergie)
+    ✓ « Sanitaire » ne retourne QUE l’entreprise qui l’exerce
+    ✓ une recherche sans résultat affiche un état vide clair
+    ✓ « Effacer la recherche » rétablit la liste complète
+    ✓ la palette de commandes (Ctrl+K) retrouve l’entreprise par chacune de ses 3 activités
+
+[A12] Filtre par activité
+    ✓ le filtre liste les activités utilisées avec leur effectif
+    ✓ filtre « Plomberie » : l’entreprise à 3 activités est retournée
+    ✓ filtre « Électricité » : les DEUX entreprises qui la possèdent
+    ✓ aucune personne ni matériel dans un filtre d’activité
+    ✓ « Toutes les activités » rétablit la liste
+    ✓ un filtre devenu sans objet est ignoré au lieu de vider la liste sans explication
+
+[A13] Affichage compact « +N »
+    ✓ surface compacte : deux activités visibles
+    ✓ puis un bouton « +1 »
+    ✓ le nom masqué est accessible (aria-label) sans surcharger l’écran
+    ✓ aria-expanded = false au repos
+    ✓ le clic révèle la troisième activité
+    ✓ et n’ouvre PAS la fiche (clic isolé de la carte)
+    ✓ au clavier : Entrée replie, sans ouvrir la fiche
+    ✓ une entreprise à une seule activité n’a pas de « +N »
+    ✓ la fiche affiche les 3 activités, sans « +N »
+
+[A14] Thème CLAIR
+    ✓ contraste étiquette ≥ 4,5 (5.34)
+    ✓ contraste puce du formulaire ≥ 4,5 (5.96)
+    ✓ contraste option de liste ≥ 4,5 (17.74)
+    ✓ thème clair bien actif
+
+[A15] Thème SOMBRE
+    ✓ contraste étiquette ≥ 4,5 (6.60)
+    ✓ contraste puce du formulaire ≥ 4,5 (9.57)
+    ✓ contraste option de liste ≥ 4,5 (14.92)
+    ✓ thème sombre bien actif
+
+[A16] Smartphone 390 px
+    ✓ page Équipe : aucun défilement horizontal
+    ✓ la recherche occupe la largeur (utilisable au pouce)
+    ✓ formulaire : aucun débordement horizontal
+    ✓ option de liste ≥ 44 px de haut (44px) : cible tactile suffisante
+    ✓ bouton × ≥ 24 px (28×28) — seuil WCAG 2.2
+    ✓ une activité se choisit au toucher
+    ✓ et se retire au toucher
+
+[A17] Le métier unique des PERSONNES est conservé
+    ✓ le formulaire d’une personne affiche toujours « Poste / métier »
+    ✓ valeur « Menuisier » conservée
+    ✓ les champs entreprise (dont Activités) sont masqués pour une personne
+    ✓ jobTitle intact, aucun activityLotIds ajouté à une personne
+    ✓ la fiche personne est strictement identique après enregistrement
+    ✓ le formulaire d’une entreprise dit « Activités / corps d’état », pas « Métier »
+    ✓ la fiche entreprise ne contient pas le mot « Métier »
+
+[A18] Migration d’un état ANCIEN authentique (jeu réel de V2.12.2.1)
+    ✓ l’ancien fichier a bien persisté sa propre entreprise
+    ✓ état persistant de schéma 15
+    ✓ l’état est migré en schéma 16 à l’ouverture
+    ✓ chantiers, tâches, ressources : effectifs strictement identiques
+    ✓ la page courante est conservée
+    ✓ les 4 entreprises (dont celle créée par l’ancienne version) arrivent avec [] — AUCUNE activité de démo injectée
+    ✓ le référentiel n’est pas modifié par la migration (9 lots)
+    ✓ le nouveau filtre d’interface est initialisé à « Toutes »
+    ✓ aucune étiquette fantôme affichée
+
+[A19] Migration DÉFENSIVE et IDEMPOTENTE (11 formes de données anciennes)
+    ✓ ancien champ unique « activity » → id du lot
+    ✓ « trade: Plombier » rapproché du métier indicatif du lot Plomberie
+    ✓ chaîne « A, b ; C » découpée, casse/accents normalisés
+    ✓ noms, doublons de casse et vides → un seul id
+    ✓ valeur inconnue → un lot « Domotique » est CRÉÉ et référencé (rien n’est perdu)
+    ✓ lots créés = Domotique + 20 (plafond de c-many) = 21 : les 10 noms au-delà du plafond ne créent PAS de lot
+    ✓ id « lot-… » orphelin retiré, id valide conservé
+    ✓ valeur vide / absente → []
+    ✓ null, nombre, objet vide ignorés ; objet {name} reconnu
+    ✓ jobTitle porté par une ENTREPRISE traité comme ancienne activité
+    ✓ plafond de 20 activités par entreprise
+    ✓ les anciens champs sont consommés (une activité retirée ne peut pas revenir)
+    ✓ une PERSONNE n’est pas touchée
+    ✓ IDEMPOTENCE : 2e et 3e passages strictement identiques (ressources ET lots)
+    ✓ aucun lot en double après migration
+
+[A20] Undo / Redo (une transaction unique)
+    ✓ création entreprise + nouveau lot = UN seul point d’annulation
+    ✓ Annuler retire l’entreprise ET le lot créé avec elle
+    ✓ Rétablir restitue les deux
+    ✓ l’activité pointe bien sur le lot rétabli
+    ✓ retrait d’une activité enregistré
+    ✓ Annuler restaure les 3 activités
+
+[B01] Combobox : clavier, ARIA, Échap en deux temps, Entrée ne soumet pas
+    ✓ role=combobox, aria-expanded=false au repos
+    ✓ la liste est un listbox
+    ✓ le focus ouvre la liste (aria-expanded=true)
+    ✓ Flèche bas déplace aria-activedescendant (actOpt0 → actOpt1)
+    ✓ une seule option est aria-selected
+    ✓ Flèche haut revient en arrière
+    ✓ Entrée choisit l’option active
+    ✓ Entrée ne soumet PAS le formulaire (le tiroir reste ouvert)
+    ✓ 1er Échap : ferme la liste seulement
+    ✓ 2e Échap : ferme le tiroir
+
+[B02] Créer un lot depuis le formulaire est ATOMIQUE (annuler ne crée rien)
+    ✓ la puce « nouvelle » est affichée
+    ✓ pendant la saisie, le référentiel n’est PAS modifié
+    ✓ annuler le formulaire ne crée ni lot ni entreprise
+
+[B03] Un texte tapé mais non validé n’est pas perdu à l’envoi
+    ✓ l’activité saisie sans validation est bien enregistrée
+
+[B04] Cycle de vie du lot : protégé tant qu’une entreprise l’utilise
+    ✓ un lot porté par une entreprise ne peut pas être supprimé
+    ✓ un lot sans usage reste supprimable
+    ✓ le message le dit (« 1 entreprise »)
+    ✓ le dialogue de refus s’affiche
+    ✓ renommer le lot renomme l’activité partout (un seul catalogue)
+
+[B05] Formulaires d’affectation et archives
+    ✓ sélecteur d’intervenant : « Nom — Électricité, Plomberie +1 »
+    ✓ Le Gall affiche son activité unique
+    ✓ une personne garde son libellé habituel (pas de suffixe)
+    ✓ sélecteur de renforts : résumé compact sous le nom
+    ✓ la palette affiche les activités en méta
+
+[B06] Aucun assignation bloquée par une activité « non concordante »
+    ✓ affecter une entreprise à une tâche hors de ses activités reste permis (§4.6)
+
+[P01] Moteurs protégés : empreintes identiques à la base certifiée V2.12.2.1
+    ✓ les 33 fonctions protégées existent dans la base
+    ✓ 33/33 fonctions protégées byte-identiques
+    ✓ exactement 15 fonctions modifiées, toutes attendues
+    ✓ aucune fonction supprimée
+
+[P02] Moteur « Préparer un décalage » : plans identiques base ↔ V2.12.3 sur un cas réel
+    ✓ le cas de décalage est réel : 3 intervention(s) touchée(s) par la cascade
+    ✓ planReflow : plan strictement identique (décalages, en cours, terminées)
+    ✓ planScheduleChanges : changements strictement identiques
+    ✓ dates de toutes les tâches identiques à l’ouverture
+    ✓ fonctions calendaires : résultats identiques
+
+[Z01] Zéro erreur console / exception page sur toute la recette
+    ✓ erreurs applicatives : 0
+
+RÉSULTAT : 153 / 153  ·  ERREURS CONSOLE : 0
