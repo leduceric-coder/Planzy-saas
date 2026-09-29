@@ -1,0 +1,480 @@
+
+      /* ================= PROTOTYPE — BILAN DES RETARDS =====================
+         Variables du design system uniquement : le thème sombre (body.dark)
+         les redéfinit, aucune couleur n'est codée en dur. Une information n'est
+         jamais portée par la seule couleur : chaque étiquette a son texte. */
+
+      /* Jetons du bilan. En clair, les variantes « -ink » du produit sont assez
+         contrastées ; en sombre elles ne sont PAS redéfinies (≈3:1) — on utilise
+         donc les teintes vives du thème et le texte courant. */
+      body {
+        --dly-banner-ink: var(--warning-ink);
+        --dly-error-ink: var(--danger-ink);
+        --dly-warn: var(--warning-ink);
+        --dly-ok: var(--success-ink);
+        --dly-bad: var(--danger-ink);
+      }
+      body.dark {
+        --dly-banner-ink: var(--text);
+        --dly-error-ink: var(--text);
+        --dly-warn: var(--warning);
+        --dly-ok: var(--success);
+        --dly-bad: var(--danger);
+      }
+      .dly-entry {
+        margin-top: 10px;
+      }
+      .dly-banner {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 4px 10px;
+        margin: 0 0 14px;
+        padding: 10px 14px;
+        border: 1px dashed var(--warning-border);
+        border-radius: var(--radius-md);
+        background: var(--warning-soft);
+        color: var(--dly-banner-ink);
+        font-size: 13px;
+        line-height: 1.45;
+      }
+      .dly-banner b {
+        font-size: 11px;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+      }
+      .dly-banner.dly-error {
+        border-color: var(--danger-border);
+        background: var(--danger-soft);
+        color: var(--dly-error-ink);
+      }
+      .dly-banner-sm {
+        margin: 8px 0 0;
+        padding: 6px 10px;
+        font-size: 12px;
+      }
+      .dly-kpis {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+        margin: 0 0 12px;
+      }
+      .dly-kpi {
+        display: grid;
+        gap: 2px;
+        padding: 12px 14px;
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-lg);
+        background: var(--surface);
+        box-shadow: var(--shadow-xs);
+      }
+      .dly-kpi small {
+        color: var(--text-secondary);
+        font-size: 10.5px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .dly-kpi b {
+        color: var(--text);
+        font-size: 20px;
+        line-height: 1.2;
+      }
+      .dly-kpi span {
+        color: var(--text-secondary);
+        font-size: 12px;
+      }
+      .dly-kpi.warn b {
+        color: var(--dly-warn);
+      }
+      .dly-kpi.ok b {
+        color: var(--dly-ok);
+      }
+      .dly-note {
+        margin: 0 0 12px;
+        color: var(--text-secondary);
+        font-size: 12.5px;
+        line-height: 1.5;
+      }
+      .dly-help {
+        margin: 0 0 6px;
+        font-size: 13px;
+      }
+      .dly-help summary,
+      .dly-adv summary {
+        cursor: pointer;
+        font-weight: 600;
+        color: var(--accent-ink);
+      }
+      .dly-help dl,
+      .dly-adv dl {
+        display: grid;
+        grid-template-columns: max-content 1fr;
+        gap: 4px 14px;
+        margin: 8px 0 0;
+      }
+      .dly-help dt,
+      .dly-adv dt {
+        font-weight: 600;
+        color: var(--text);
+      }
+      .dly-help dd,
+      .dly-adv dd {
+        margin: 0;
+        color: var(--text-secondary);
+        overflow-wrap: anywhere;
+      }
+      .dly-filters {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: end;
+        gap: 12px 18px;
+        margin: 14px 0 6px;
+      }
+      .dly-filters > div {
+        display: grid;
+        gap: 6px;
+      }
+      .dly-filters small {
+        display: block;
+        color: var(--text-secondary);
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.09em;
+      }
+      .dly-filters select {
+        min-width: 150px;
+        max-width: 100%;
+      }
+      .dly-count {
+        margin: 6px 0 10px;
+        color: var(--text-secondary);
+        font-size: 12.5px;
+      }
+      .dly-table-wrap {
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-lg);
+        background: var(--surface);
+        /* Filet de sécurité : rien n'est jamais rogné, la zone défile au besoin. */
+        overflow-x: auto;
+      }
+      .dly-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+        line-height: 1.4;
+      }
+      .dly-table th {
+        padding: 10px 9px;
+        border-bottom: 1px solid var(--border-light);
+        background: var(--surface-subtle);
+        color: var(--text-secondary);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-align: left;
+        text-transform: uppercase;
+      }
+      .dly-table td {
+        padding: 10px 9px;
+        border-bottom: 1px solid var(--border-light);
+        vertical-align: top;
+        overflow-wrap: break-word;
+      }
+      .dly-nw {
+        white-space: nowrap;
+      }
+      .dly-table tbody tr:last-child td {
+        border-bottom: 0;
+      }
+      .dly-row {
+        cursor: pointer;
+      }
+      .dly-row:hover {
+        background: var(--surface-subtle);
+      }
+      .dly-table small {
+        display: block;
+        margin-top: 2px;
+        color: var(--text-secondary);
+        font-size: 11px;
+      }
+      .dly-open {
+        display: inline;
+        padding: 0;
+        border: 0;
+        background: none;
+        color: var(--accent-ink);
+        font-size: 12.5px;
+        font-weight: 700;
+        text-align: left;
+      }
+      .dly-open:hover {
+        text-decoration: underline;
+      }
+      .dly-days {
+        color: var(--dly-bad);
+        white-space: nowrap;
+      }
+      .dly-tag {
+        display: inline-flex;
+        padding: 2px 9px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+      .dly-tag.direct {
+        background: var(--danger-soft);
+        color: var(--danger-ink);
+      }
+      .dly-tag.inherited {
+        background: var(--accent-soft);
+        color: var(--accent-ink);
+      }
+      body.dark .dly-tag.direct,
+      body.dark .dly-tag.inherited {
+        color: var(--text);
+      }
+
+      /* Sous 1366 px (largeur minimale mesurée du tableau : ~1090 px) il devient une liste de cartes : une seule
+         structure HTML (les rôles ARIA conservent la sémantique de tableau). */
+      @media (max-width: 1365px) {
+        .dly-table thead {
+          position: absolute;
+          width: 1px;
+          height: 1px;
+          overflow: hidden;
+          clip: rect(0 0 0 0);
+        }
+        .dly-table,
+        .dly-table tbody,
+        .dly-table tr,
+        .dly-table td {
+          display: block;
+          width: 100%;
+        }
+        .dly-table tr {
+          padding: 12px 14px;
+          border-bottom: 1px solid var(--border-light);
+        }
+        .dly-table tbody tr:last-child {
+          border-bottom: 0;
+        }
+        .dly-table td {
+          display: grid;
+          grid-template-columns: 124px minmax(0, 1fr);
+          gap: 8px;
+          padding: 4px 0;
+          border: 0;
+        }
+        .dly-table td::before {
+          content: attr(data-label);
+          color: var(--text-secondary);
+          font-size: 10.5px;
+          font-weight: 700;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
+        }
+        .dly-table td:first-child {
+          display: block;
+          padding-bottom: 6px;
+        }
+        .dly-table td:first-child::before {
+          display: none;
+        }
+        .dly-open {
+          font-size: 14.5px;
+        }
+      }
+      @media (max-width: 900px) {
+        .dly-kpis {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+      @media (max-width: 620px) {
+        .dly-kpis {
+          gap: 8px;
+        }
+        .dly-kpi {
+          padding: 9px 11px;
+        }
+        .dly-kpi b {
+          font-size: 17px;
+        }
+        .dly-kpi span {
+          font-size: 11.5px;
+        }
+        .dly-open {
+          display: inline-block;
+          min-height: 40px;
+          padding: 8px 0;
+        }
+        .dly-filters > div {
+          flex: 1 1 100%;
+        }
+        .dly-filters .segment {
+          display: flex;
+        }
+        .dly-filters .segment button {
+          flex: 1;
+        }
+        .dly-filters select {
+          width: 100%;
+        }
+        .dly-help dl,
+        .dly-adv dl {
+          grid-template-columns: 1fr;
+        }
+        .dly-help dt,
+        .dly-adv dt {
+          margin-top: 6px;
+        }
+      }
+
+      /* Panneau de détail */
+      .dly-sub {
+        margin: 4px 0 0;
+        color: var(--text-secondary);
+        font-size: 13px;
+      }
+      .dly-sec p {
+        margin: 4px 0;
+      }
+      .dly-history {
+        display: grid;
+        gap: 8px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .dly-history li {
+        display: grid;
+        gap: 1px;
+        padding: 8px 10px;
+        border-left: 3px solid var(--border);
+        border-radius: 0 var(--radius-xs) var(--radius-xs) 0;
+      }
+      .dly-history li.is-current {
+        border-left-color: var(--accent);
+        background: var(--accent-soft);
+      }
+      .dly-history span {
+        color: var(--text-secondary);
+        font-size: 12.5px;
+      }
+      .dly-history small {
+        color: var(--text-secondary);
+        font-size: 11px;
+      }
+      .dly-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .dly-chips .link {
+        padding: 4px 11px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: var(--surface);
+      }
+      .dly-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 6px;
+      }
+      .dly-cons {
+        display: grid;
+        gap: 8px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .dly-cons li {
+        display: grid;
+        gap: 1px;
+      }
+      .dly-cons span {
+        color: var(--text-secondary);
+        font-size: 12.5px;
+      }
+      .dly-adv {
+        margin: 14px 0 0;
+      }
+      .dly-json {
+        max-height: 260px;
+        margin: 6px 0 0;
+        padding: 10px;
+        overflow: auto;
+        border-radius: var(--radius-sm);
+        background: var(--surface-muted);
+        color: var(--text);
+        font-size: 11.5px;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+      }
+
+      /* Impression : mêmes principes que le planning (window.print). */
+      @media print {
+        body.delays-print .sidebar,
+        body.delays-print .project-top-row,
+        body.delays-print .header .context,
+        body.delays-print .dly-filters,
+        body.delays-print .dly-help,
+        body.delays-print .add,
+        body.delays-print #toast {
+          display: none !important;
+        }
+        body.delays-print .shell {
+          display: block;
+        }
+        body.delays-print .main {
+          padding: 0;
+        }
+        body.delays-print .page {
+          padding: 12px;
+        }
+        body.delays-print .dly-table-wrap {
+          overflow: visible;
+          border: 1px solid #cbd5e1;
+        }
+        body.delays-print .dly-table {
+          font-size: 9.5px;
+        }
+        body.delays-print .dly-table thead {
+          position: static;
+          width: auto;
+          height: auto;
+          clip: auto;
+        }
+        body.delays-print .dly-table {
+          display: table;
+        }
+        body.delays-print .dly-table thead {
+          display: table-header-group;
+        }
+        body.delays-print .dly-table tbody {
+          display: table-row-group;
+        }
+        body.delays-print .dly-table tr {
+          display: table-row;
+          padding: 0;
+          break-inside: avoid;
+        }
+        body.delays-print .dly-table td {
+          display: table-cell;
+          width: auto;
+          padding: 5px 6px;
+          border-bottom: 1px solid #cbd5e1;
+        }
+        body.delays-print .dly-table td::before {
+          content: none;
+        }
+        body.delays-print .dly-table td:first-child {
+          display: table-cell;
+        }
+        body.delays-print .dly-kpis {
+          grid-template-columns: repeat(4, 1fr);
+        }
+      }

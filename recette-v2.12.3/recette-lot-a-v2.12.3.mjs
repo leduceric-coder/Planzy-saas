@@ -369,6 +369,11 @@ const themeCheck = async (dark) => {
   await p.locator('#actInput').click()
   const opt = await ev(p, () => { const e = document.querySelector('.act-opt'); const s = getComputedStyle(e); const l = getComputedStyle(document.querySelector('.act-list')); return { c: s.color, bg: l.backgroundColor } })
   ok(contrast(opt.c, opt.bg) >= 4.5, `contraste option de liste ≥ 4,5 (${contrast(opt.c, opt.bg).toFixed(2)})`)
+  await p.locator('#actInput').fill('electricite') // déjà choisie : la liste n'offre rien d'autre → message vide
+  const emp = await ev(p, () => { const e = document.querySelector('.act-empty'); const l = getComputedStyle(document.querySelector('.act-list')); return { c: getComputedStyle(e).color, bg: l.backgroundColor } })
+  ok(contrast(emp.c, emp.bg) >= 4.5, `contraste du message « Déjà sélectionnée » ≥ 4,5 (${contrast(emp.c, emp.bg).toFixed(2)})`)
+  const lab = await ev(p, () => { const e = document.querySelector('.act-label'); let n = e, bg = getComputedStyle(n).backgroundColor; while (/rgba\(.*, ?0\)|transparent/.test(bg) && n.parentElement) { n = n.parentElement; bg = getComputedStyle(n).backgroundColor } return { c: getComputedStyle(e).color, bg } })
+  ok(contrast(lab.c, lab.bg) >= 4.5, `contraste du libellé « Activités / corps d’état » ≥ 4,5 (${contrast(lab.c, lab.bg).toFixed(2)})`)
   ok((await ev(p, () => document.body.classList.contains('dark'))) === dark, `thème ${dark ? 'sombre' : 'clair'} bien actif`)
   await p.screenshot({ path: OUT + `A${dark ? 15 : 14}-formulaire-${dark ? 'sombre' : 'clair'}.png` })
   await ctx.close()

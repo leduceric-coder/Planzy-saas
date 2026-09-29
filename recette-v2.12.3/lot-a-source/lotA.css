@@ -220,7 +220,7 @@
         color: var(--accent-ink);
       }
       .act-empty {
-        color: var(--text-tertiary);
+        color: var(--text-secondary);
       }
       .act-live {
         position: absolute;

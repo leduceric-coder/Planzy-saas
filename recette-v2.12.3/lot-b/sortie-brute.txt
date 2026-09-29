@@ -1,0 +1,229 @@
+
+[B01] Affichage des indicateurs (8)
+    ✓ 8 indicateurs affichés (8)
+    ✓ les 8 intitulés attendus, dans l’ordre
+    ✓ fin initialement prévue : lun. 28 sept.
+    ✓ fin projetée : ven. 2 oct.
+
+[B02] Exactitude des totaux (recalculés indépendamment)
+    ✓ retard net = 4 j ouvrés (affiché « 4 jours ouvrés|dérive de la fin du chantier »)
+    ✓ 10 interventions en retard sur 11
+    ✓ 5 retards directs, 13 j générés
+    ✓ 5 retards hérités, 13 j subis
+    ✓ 1 attribution confirmée
+    ✓ 1 attribution à confirmer
+    ✓ 3 retards directs sans responsable désigné annoncés
+    ✓ le moteur du prototype = la référence indépendante sur les 9 valeurs
+    ✓ la fixture respecte tous ses invariants (aucun écart)
+
+[B03] Séparation direct / hérité
+    ✓ un retard direct ne porte que des jours directs
+    ✓ un retard hérité ne porte que des jours hérités
+    ✓ aucun retard hérité ne porte de responsabilité ni d’attribution
+    ✓ l’écran distingue 5 « Direct » et 5 « Hérité » (texte, pas la seule couleur)
+
+[B04] Absence de double comptage
+    ✓ retard net (4 j) < somme des jours directs (13 j) : le net n’est pas une somme
+    ✓ le net n’est pas non plus la somme directs + hérités (26)
+    ✓ la somme naïve (26 j) n’apparaît nulle part dans les indicateurs
+    ✓ ajouter un retard hérité ne change NI les jours directs NI leur nombre
+    ✓ il n’alimente que la ligne « hérités »
+
+[B05] Cas plaquiste / électricien : retard hérité, électricien non responsable
+    ✓ le plaquiste termine avec 2 jours ouvrés de retard
+    ✓ l’électricien commence 2 jours ouvrés plus tard
+    ✓ l’électricien subit un retard HÉRITÉ (2 j) du retard des cloisons
+    ✓ Le Gall Électricité est bien l’intervenant associé
+    ✓ Le Gall n’est responsable d’AUCUN retard du bilan
+    ✓ colonne « Responsabilité déclarée » : « Sans objet »
+    ✓ la cause affichée pointe l’origine (cloisons, approvisionnement), pas l’électricien
+    ✓ le panneau dit « décalée par Pose des cloisons »
+    ✓ le panneau écrit noir sur blanc que l’intervenant n’est pas responsable
+
+[B06] Intervenant associé ≠ responsable déclaré
+    ✓ menuiseries : Thomas et Armor associés, seule Armor est désignée responsable
+    ✓ réseaux : Marc associé mais non désigné ; Ouest Fluides désignée
+    ✓ cloisons : Mathieu (plaquiste) associé, personne n’est désigné
+    ✓ à l’écran, Thomas Martin n’apparaît pas dans « Responsabilité déclarée »
+    ✓ le panneau rappelle que l’association n’implique pas la responsabilité
+
+[B07] Attribution confirmée
+    ✓ badge « Confirmée » sur les menuiseries
+    ✓ le panneau indique qui a validé et quand
+    ✓ cause « Erreur » et commentaire affichés
+
+[B08] Attribution à confirmer
+    ✓ badge « À confirmer » sur la reprise des réseaux
+    ✓ le panneau avertit que l’attribution n’est pas établie
+    ✓ aucun validateur affiché tant que la validation manque
+
+[B09] Filtres fonctionnels (nature, cause, entreprise, personne, attribution)
+    ✓ départ : 10 retards
+    ✓ nature = Directs → 5
+    ✓ nature = Hérités → 5
+    ✓ le bouton actif porte aria-pressed=true
+    ✓ cause = Approvisionnement → 3 (le retard et ses deux héritiers)
+    ✓ cause = Météo → 1
+    ✓ cause = Décision du client → 2 (cuisine + réception héritée)
+    ✓ entreprise = Le Gall Électricité → 1
+    ✓ entreprise = Menuiserie Armor → 1 (menuiseries)
+    ✓ personne = Thomas Martin → 3 (menuiseries, calfeutrement, cuisine)
+    ✓ attribution = Confirmées → 1
+    ✓ attribution = À confirmer → 1
+    ✓ attribution = Sans responsable désigné → 3 (les hérités n’en font pas partie)
+    ✓ filtres combinés (Directs + Sans responsable) → 3
+    ✓ le compteur « 3 retards affichés sur 10 » suit les filtres
+    ✓ « Réinitialiser » restaure les 10 retards
+
+[B10] État vide clair
+    ✓ météo + attribution confirmée → 0 résultat
+    ✓ message explicite + bouton de réinitialisation
+    ✓ plus de tableau vide, compteur à 0
+    ✓ le bouton rétablit la liste
+    ✓ un autre chantier affiche un état vide explicite et renvoie vers Keravel
+
+[B11] Panneau de détail : contenu, ordre, <details>, conséquences
+    ✓ un clic sur la ligne ouvre le panneau latéral
+    ✓ les 9 sections demandées, dans l’ordre
+    ✓ historique des dates : 2 entrées, la dernière est « retenue »
+    ✓ origine du décalage et cause (direct)
+    ✓ auteur de la déclaration et date
+    ✓ informations avancées dans un <details> replié par défaut
+    ✓ le <details> se déplie
+    ✓ enregistrement cible : les 17 champs du modèle de données sont présents
+    ✓ et ses valeurs sont exactes (2 j, direct)
+    ✓ conséquence : « Passage des gaines » décalée de +2 j par ce retard
+    ✓ un héritier de 2e niveau indique aussi son origine première
+    ✓ « Ouvrir l’origine première » navigue vers le retard direct
+    ✓ la météo n’est pas rendue responsable du retard de la réception (« une autre cause »)
+
+[B12] Export CSV fonctionnel
+    ✓ nom de fichier : kanvix-bilan-retards-keravel-2026-09-29.csv
+    ✓ BOM UTF-8 (s’ouvre correctement dans Excel)
+    ✓ 11 lignes (en-tête + 10) × 16 colonnes (11 × 16)
+    ✓ en-têtes en français
+    ✓ ligne « gaines » : hérité, 2 j, associé Le Gall, AUCUN responsable dans le fichier
+    ✓ ligne « menuiseries » : associés ≠ responsable, validation « Confirmée »
+    ✓ le fichier contient 5 retards directs
+    ✓ avec le filtre « Directs », l’export ne contient que les 5 directs (le bilan AFFICHÉ)
+    ✓ une valeur qui ressemble à une formule est neutralisée
+    ✓ séparateur, guillemets et retours à la ligne correctement échappés
+
+[B13] Thème CLAIR
+    ✓ thème clair actif
+    ✓ contraste bandeau « Prototype » ≥ 4,5 (4.77)
+    ✓ contraste libellé d’indicateur ≥ 4,5 (5.90)
+    ✓ contraste valeur d’indicateur ≥ 4,5 (17.74)
+    ✓ contraste retard net (alerte) ≥ 4,5 (5.14)
+    ✓ contraste étiquette Direct ≥ 4,5 (4.79)
+    ✓ contraste étiquette Hérité ≥ 4,5 (5.96)
+    ✓ contraste nom d’intervention ≥ 4,5 (6.59)
+    ✓ contraste texte du tableau ≥ 4,5 (17.74)
+    ✓ contraste jours de retard ≥ 4,5 (5.29)
+    ✓ contraste note explicative ≥ 4,5 (5.12)
+    ✓ contraste badge Confirmée ≥ 4,5 (5.01)
+    ✓ contraste badge À confirmer ≥ 4,5 (4.77)
+
+[B14] Thème SOMBRE
+    ✓ thème sombre actif
+    ✓ contraste bandeau « Prototype » ≥ 4,5 (13.08)
+    ✓ contraste libellé d’indicateur ≥ 4,5 (7.72)
+    ✓ contraste valeur d’indicateur ≥ 4,5 (14.92)
+    ✓ contraste retard net (alerte) ≥ 4,5 (7.64)
+    ✓ contraste étiquette Direct ≥ 4,5 (13.93)
+    ✓ contraste étiquette Hérité ≥ 4,5 (11.43)
+    ✓ contraste nom d’intervention ≥ 4,5 (12.50)
+    ✓ contraste texte du tableau ≥ 4,5 (14.92)
+    ✓ contraste jours de retard ≥ 4,5 (5.49)
+    ✓ contraste note explicative ≥ 4,5 (9.07)
+    ✓ contraste badge Confirmée ≥ 4,5 (13.98)
+    ✓ contraste badge À confirmer ≥ 4,5 (14.50)
+
+[B15] Smartphone 390 px : cartes, panneau, tactile
+    ✓ sous 1366 px le tableau devient une liste de cartes
+    ✓ l’en-tête n’est masqué que visuellement (reste lisible par un lecteur d’écran)
+    ✓ chaque cellule porte son libellé (data-label)
+    ✓ 11 champs par carte
+    ✓ lien d’intervention ≥ 40 px de haut (40 px)
+    ✓ toucher une intervention ouvre le panneau
+    ✓ panneau ouvert : aucun débordement horizontal
+    ✓ informations avancées dépliées : toujours aucun débordement
+    ✓ les filtres se manipulent au toucher
+
+[B16] Aucun débordement horizontal (8 largeurs)
+    ✓ 360 px : ni la page ni le tableau ne débordent
+    ✓ 390 px : ni la page ni le tableau ne débordent
+    ✓ 768 px : ni la page ni le tableau ne débordent
+    ✓ 1024 px : ni la page ni le tableau ne débordent
+    ✓ 1280 px : ni la page ni le tableau ne débordent
+    ✓ 1366 px : ni la page ni le tableau ne débordent
+    ✓ 1440 px : ni la page ni le tableau ne débordent
+    ✓ 1920 px : ni la page ni le tableau ne débordent
+
+[B17] Navigation clavier
+    ✓ Tab atteint « Exporter en CSV » et « Imprimer / PDF »
+    ✓ Tab atteint le <details> « Comment lire ce bilan »
+    ✓ Tab atteint les 4 filtres, dans l’ordre du visuel
+    ✓ puis atteint les interventions (un seul arrêt de tabulation par ligne)
+    ✓ Entrée sur une intervention ouvre le panneau
+    ✓ Échap referme le panneau
+    ✓ changer un filtre au clavier ne fait pas perdre le focus
+    ✓ et le filtre s’applique
+    ✓ le bouton de nature garde le focus après activation
+    ✓ Entrée déplie « Comment lire ce bilan »
+
+[C01] Accès depuis le chantier ; navigation globale non surchargée
+    ✓ bouton « Bilan des retards » dans l’en-tête de la fiche chantier
+    ✓ il ouvre l’écran du bilan
+    ✓ la barre latérale est inchangée (5 entrées : aucune ajoutée)
+    ✓ « Chantiers » reste allumé pendant le bilan
+    ✓ « ← Résidence Keravel » ramène à la fiche chantier
+    ✓ l’accès existe sur tous les chantiers (état vide explicite sur ceux sans données)
+    ✓ et dans les deux niveaux (Essentiel et Pilotage) — pas de retour en arrière sur les niveaux
+
+[C02] Invariants de fixture : les erreurs de données sont détectées
+    ✓ fixture d’origine : 0 écart
+    ✓ un retard hérité qui porte une responsabilité est REFUSÉ
+    ✓ un retard direct avec parent est refusé
+    ✓ un héritier qui dépasse les jours de son parent est refusé (anti double comptage)
+    ✓ un événement sur une intervention à l’heure est refusé
+    ✓ un retard direct sans cause est refusé
+    ✓ une validation « confirmée » retirée à un responsable désigné est refusée
+
+[C03] Le prototype ne modifie NI les données produit NI l’historique
+    ✓ tâches, chantiers, ressources, lots, jalons, incidents : strictement identiques après usage complet du bilan
+    ✓ aucun snapshot() : l’historique Annuler/Rétablir n’est pas touché
+
+[C04] Stockage isolé : le prototype ne contamine pas le produit
+    ✓ le prototype écrit dans sa propre clé (kanvix-proto-bilan-retards-8-3)
+    ✓ la route du bilan survit à un rechargement
+    ✓ la version produit V2.12.3 ne voit aucune trace du prototype
+    ✓ et ne contient pas le code du bilan (fichier produit intact)
+    ✓ le prototype reste en schéma 16 (aucune nouvelle structure de données produit)
+
+[C05] Moteurs protégés : identiques à la base certifiée V2.12.2.1 ; écart vs V2.12.3 borné
+    ✓ 35/35 moteurs protégés byte-identiques à la base certifiée
+    ✓ migrateState du prototype = celui de la V2.12.3 produit (le bilan n’ajoute aucune migration)
+    ✓ écart vs V2.12.3 : exactement nav, renderPage, renderProject
+    ✓ aucune fonction supprimée
+    ✓ les 25 fonctions ajoutées portent toutes le préfixe « delay… » (isolées)
+
+[C06] Impression / PDF
+    ✓ le bouton déclenche window.print() (impression navigateur, pas de nouveau moteur PDF)
+    ✓ la classe d’impression est posée le temps de l’impression
+    ✓ à l’impression : barre latérale, filtres et navigation masqués
+    ✓ et le tableau garde sa forme de tableau (même sous 1366 px)
+    ✓ un PDF paysage est produit (305 Ko)
+
+[C07] Déterminisme : indépendant de l’horloge
+    ✓ deux ouvertures au même instant : résultat identique
+    ✓ à une autre date du jour (mars 2027) : bilan strictement identique
+
+[C08] Le Lot A reste intact dans le prototype (entreprises multi-activités)
+    ✓ Ouest Fluides : 2 activités visibles puis « +1 »
+    ✓ ses 3 activités sont en base
+
+[Z01] Zéro erreur console / exception page sur toute la recette
+    ✓ erreurs applicatives : 0
+
+RÉSULTAT : 175 / 175  ·  ERREURS CONSOLE : 0

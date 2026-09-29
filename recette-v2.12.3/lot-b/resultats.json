@@ -1,0 +1,884 @@
+{
+ "passed": 175,
+ "failed": 0,
+ "total": 175,
+ "failedList": [],
+ "errs": [],
+ "results": [
+  {
+   "test": "B01",
+   "name": "8 indicateurs affichés (8)",
+   "status": "PASS"
+  },
+  {
+   "test": "B01",
+   "name": "les 8 intitulés attendus, dans l’ordre",
+   "status": "PASS"
+  },
+  {
+   "test": "B01",
+   "name": "fin initialement prévue : lun. 28 sept.",
+   "status": "PASS"
+  },
+  {
+   "test": "B01",
+   "name": "fin projetée : ven. 2 oct.",
+   "status": "PASS"
+  },
+  {
+   "test": "B02",
+   "name": "retard net = 4 j ouvrés (affiché « 4 jours ouvrés|dérive de la fin du chantier »)",
+   "status": "PASS"
+  },
+  {
+   "test": "B02",
+   "name": "10 interventions en retard sur 11",
+   "status": "PASS"
+  },
+  {
+   "test": "B02",
+   "name": "5 retards directs, 13 j générés",
+   "status": "PASS"
+  },
+  {
+   "test": "B02",
+   "name": "5 retards hérités, 13 j subis",
+   "status": "PASS"
+  },
+  {
+   "test": "B02",
+   "name": "1 attribution confirmée",
+   "status": "PASS"
+  },
+  {
+   "test": "B02",
+   "name": "1 attribution à confirmer",
+   "status": "PASS"
+  },
+  {
+   "test": "B02",
+   "name": "3 retards directs sans responsable désigné annoncés",
+   "status": "PASS"
+  },
+  {
+   "test": "B02",
+   "name": "le moteur du prototype = la référence indépendante sur les 9 valeurs",
+   "status": "PASS"
+  },
+  {
+   "test": "B02",
+   "name": "la fixture respecte tous ses invariants (aucun écart)",
+   "status": "PASS"
+  },
+  {
+   "test": "B03",
+   "name": "un retard direct ne porte que des jours directs",
+   "status": "PASS"
+  },
+  {
+   "test": "B03",
+   "name": "un retard hérité ne porte que des jours hérités",
+   "status": "PASS"
+  },
+  {
+   "test": "B03",
+   "name": "aucun retard hérité ne porte de responsabilité ni d’attribution",
+   "status": "PASS"
+  },
+  {
+   "test": "B03",
+   "name": "l’écran distingue 5 « Direct » et 5 « Hérité » (texte, pas la seule couleur)",
+   "status": "PASS"
+  },
+  {
+   "test": "B04",
+   "name": "retard net (4 j) < somme des jours directs (13 j) : le net n’est pas une somme",
+   "status": "PASS"
+  },
+  {
+   "test": "B04",
+   "name": "le net n’est pas non plus la somme directs + hérités (26)",
+   "status": "PASS"
+  },
+  {
+   "test": "B04",
+   "name": "la somme naïve (26 j) n’apparaît nulle part dans les indicateurs",
+   "status": "PASS"
+  },
+  {
+   "test": "B04",
+   "name": "ajouter un retard hérité ne change NI les jours directs NI leur nombre",
+   "status": "PASS"
+  },
+  {
+   "test": "B04",
+   "name": "il n’alimente que la ligne « hérités »",
+   "status": "PASS"
+  },
+  {
+   "test": "B05",
+   "name": "le plaquiste termine avec 2 jours ouvrés de retard",
+   "status": "PASS"
+  },
+  {
+   "test": "B05",
+   "name": "l’électricien commence 2 jours ouvrés plus tard",
+   "status": "PASS"
+  },
+  {
+   "test": "B05",
+   "name": "l’électricien subit un retard HÉRITÉ (2 j) du retard des cloisons",
+   "status": "PASS"
+  },
+  {
+   "test": "B05",
+   "name": "Le Gall Électricité est bien l’intervenant associé",
+   "status": "PASS"
+  },
+  {
+   "test": "B05",
+   "name": "Le Gall n’est responsable d’AUCUN retard du bilan",
+   "status": "PASS"
+  },
+  {
+   "test": "B05",
+   "name": "colonne « Responsabilité déclarée » : « Sans objet »",
+   "status": "PASS"
+  },
+  {
+   "test": "B05",
+   "name": "la cause affichée pointe l’origine (cloisons, approvisionnement), pas l’électricien",
+   "status": "PASS"
+  },
+  {
+   "test": "B05",
+   "name": "le panneau dit « décalée par Pose des cloisons »",
+   "status": "PASS"
+  },
+  {
+   "test": "B05",
+   "name": "le panneau écrit noir sur blanc que l’intervenant n’est pas responsable",
+   "status": "PASS"
+  },
+  {
+   "test": "B06",
+   "name": "menuiseries : Thomas et Armor associés, seule Armor est désignée responsable",
+   "status": "PASS"
+  },
+  {
+   "test": "B06",
+   "name": "réseaux : Marc associé mais non désigné ; Ouest Fluides désignée",
+   "status": "PASS"
+  },
+  {
+   "test": "B06",
+   "name": "cloisons : Mathieu (plaquiste) associé, personne n’est désigné",
+   "status": "PASS"
+  },
+  {
+   "test": "B06",
+   "name": "à l’écran, Thomas Martin n’apparaît pas dans « Responsabilité déclarée »",
+   "status": "PASS"
+  },
+  {
+   "test": "B06",
+   "name": "le panneau rappelle que l’association n’implique pas la responsabilité",
+   "status": "PASS"
+  },
+  {
+   "test": "B07",
+   "name": "badge « Confirmée » sur les menuiseries",
+   "status": "PASS"
+  },
+  {
+   "test": "B07",
+   "name": "le panneau indique qui a validé et quand",
+   "status": "PASS"
+  },
+  {
+   "test": "B07",
+   "name": "cause « Erreur » et commentaire affichés",
+   "status": "PASS"
+  },
+  {
+   "test": "B08",
+   "name": "badge « À confirmer » sur la reprise des réseaux",
+   "status": "PASS"
+  },
+  {
+   "test": "B08",
+   "name": "le panneau avertit que l’attribution n’est pas établie",
+   "status": "PASS"
+  },
+  {
+   "test": "B08",
+   "name": "aucun validateur affiché tant que la validation manque",
+   "status": "PASS"
+  },
+  {
+   "test": "B09",
+   "name": "départ : 10 retards",
+   "status": "PASS"
+  },
+  {
+   "test": "B09",
+   "name": "nature = Directs → 5",
+   "status": "PASS"
+  },
+  {
+   "test": "B09",
+   "name": "nature = Hérités → 5",
+   "status": "PASS"
+  },
+  {
+   "test": "B09",
+   "name": "le bouton actif porte aria-pressed=true",
+   "status": "PASS"
+  },
+  {
+   "test": "B09",
+   "name": "cause = Approvisionnement → 3 (le retard et ses deux héritiers)",
+   "status": "PASS"
+  },
+  {
+   "test": "B09",
+   "name": "cause = Météo → 1",
+   "status": "PASS"
+  },
+  {
+   "test": "B09",
+   "name": "cause = Décision du client → 2 (cuisine + réception héritée)",
+   "status": "PASS"
+  },
+  {
+   "test": "B09",
+   "name": "entreprise = Le Gall Électricité → 1",
+   "status": "PASS"
+  },
+  {
+   "test": "B09",
+   "name": "entreprise = Menuiserie Armor → 1 (menuiseries)",
+   "status": "PASS"
+  },
+  {
+   "test": "B09",
+   "name": "personne = Thomas Martin → 3 (menuiseries, calfeutrement, cuisine)",
+   "status": "PASS"
+  },
+  {
+   "test": "B09",
+   "name": "attribution = Confirmées → 1",
+   "status": "PASS"
+  },
+  {
+   "test": "B09",
+   "name": "attribution = À confirmer → 1",
+   "status": "PASS"
+  },
+  {
+   "test": "B09",
+   "name": "attribution = Sans responsable désigné → 3 (les hérités n’en font pas partie)",
+   "status": "PASS"
+  },
+  {
+   "test": "B09",
+   "name": "filtres combinés (Directs + Sans responsable) → 3",
+   "status": "PASS"
+  },
+  {
+   "test": "B09",
+   "name": "le compteur « 3 retards affichés sur 10 » suit les filtres",
+   "status": "PASS"
+  },
+  {
+   "test": "B09",
+   "name": "« Réinitialiser » restaure les 10 retards",
+   "status": "PASS"
+  },
+  {
+   "test": "B10",
+   "name": "météo + attribution confirmée → 0 résultat",
+   "status": "PASS"
+  },
+  {
+   "test": "B10",
+   "name": "message explicite + bouton de réinitialisation",
+   "status": "PASS"
+  },
+  {
+   "test": "B10",
+   "name": "plus de tableau vide, compteur à 0",
+   "status": "PASS"
+  },
+  {
+   "test": "B10",
+   "name": "le bouton rétablit la liste",
+   "status": "PASS"
+  },
+  {
+   "test": "B10",
+   "name": "un autre chantier affiche un état vide explicite et renvoie vers Keravel",
+   "status": "PASS"
+  },
+  {
+   "test": "B11",
+   "name": "un clic sur la ligne ouvre le panneau latéral",
+   "status": "PASS"
+  },
+  {
+   "test": "B11",
+   "name": "les 9 sections demandées, dans l’ordre",
+   "status": "PASS"
+  },
+  {
+   "test": "B11",
+   "name": "historique des dates : 2 entrées, la dernière est « retenue »",
+   "status": "PASS"
+  },
+  {
+   "test": "B11",
+   "name": "origine du décalage et cause (direct)",
+   "status": "PASS"
+  },
+  {
+   "test": "B11",
+   "name": "auteur de la déclaration et date",
+   "status": "PASS"
+  },
+  {
+   "test": "B11",
+   "name": "informations avancées dans un <details> replié par défaut",
+   "status": "PASS"
+  },
+  {
+   "test": "B11",
+   "name": "le <details> se déplie",
+   "status": "PASS"
+  },
+  {
+   "test": "B11",
+   "name": "enregistrement cible : les 17 champs du modèle de données sont présents",
+   "status": "PASS"
+  },
+  {
+   "test": "B11",
+   "name": "et ses valeurs sont exactes (2 j, direct)",
+   "status": "PASS"
+  },
+  {
+   "test": "B11",
+   "name": "conséquence : « Passage des gaines » décalée de +2 j par ce retard",
+   "status": "PASS"
+  },
+  {
+   "test": "B11",
+   "name": "un héritier de 2e niveau indique aussi son origine première",
+   "status": "PASS"
+  },
+  {
+   "test": "B11",
+   "name": "« Ouvrir l’origine première » navigue vers le retard direct",
+   "status": "PASS"
+  },
+  {
+   "test": "B11",
+   "name": "la météo n’est pas rendue responsable du retard de la réception (« une autre cause »)",
+   "status": "PASS"
+  },
+  {
+   "test": "B12",
+   "name": "nom de fichier : kanvix-bilan-retards-keravel-2026-09-29.csv",
+   "status": "PASS"
+  },
+  {
+   "test": "B12",
+   "name": "BOM UTF-8 (s’ouvre correctement dans Excel)",
+   "status": "PASS"
+  },
+  {
+   "test": "B12",
+   "name": "11 lignes (en-tête + 10) × 16 colonnes (11 × 16)",
+   "status": "PASS"
+  },
+  {
+   "test": "B12",
+   "name": "en-têtes en français",
+   "status": "PASS"
+  },
+  {
+   "test": "B12",
+   "name": "ligne « gaines » : hérité, 2 j, associé Le Gall, AUCUN responsable dans le fichier",
+   "status": "PASS"
+  },
+  {
+   "test": "B12",
+   "name": "ligne « menuiseries » : associés ≠ responsable, validation « Confirmée »",
+   "status": "PASS"
+  },
+  {
+   "test": "B12",
+   "name": "le fichier contient 5 retards directs",
+   "status": "PASS"
+  },
+  {
+   "test": "B12",
+   "name": "avec le filtre « Directs », l’export ne contient que les 5 directs (le bilan AFFICHÉ)",
+   "status": "PASS"
+  },
+  {
+   "test": "B12",
+   "name": "une valeur qui ressemble à une formule est neutralisée",
+   "status": "PASS"
+  },
+  {
+   "test": "B12",
+   "name": "séparateur, guillemets et retours à la ligne correctement échappés",
+   "status": "PASS"
+  },
+  {
+   "test": "B13",
+   "name": "thème clair actif",
+   "status": "PASS"
+  },
+  {
+   "test": "B13",
+   "name": "contraste bandeau « Prototype » ≥ 4,5 (4.77)",
+   "status": "PASS"
+  },
+  {
+   "test": "B13",
+   "name": "contraste libellé d’indicateur ≥ 4,5 (5.90)",
+   "status": "PASS"
+  },
+  {
+   "test": "B13",
+   "name": "contraste valeur d’indicateur ≥ 4,5 (17.74)",
+   "status": "PASS"
+  },
+  {
+   "test": "B13",
+   "name": "contraste retard net (alerte) ≥ 4,5 (5.14)",
+   "status": "PASS"
+  },
+  {
+   "test": "B13",
+   "name": "contraste étiquette Direct ≥ 4,5 (4.79)",
+   "status": "PASS"
+  },
+  {
+   "test": "B13",
+   "name": "contraste étiquette Hérité ≥ 4,5 (5.96)",
+   "status": "PASS"
+  },
+  {
+   "test": "B13",
+   "name": "contraste nom d’intervention ≥ 4,5 (6.59)",
+   "status": "PASS"
+  },
+  {
+   "test": "B13",
+   "name": "contraste texte du tableau ≥ 4,5 (17.74)",
+   "status": "PASS"
+  },
+  {
+   "test": "B13",
+   "name": "contraste jours de retard ≥ 4,5 (5.29)",
+   "status": "PASS"
+  },
+  {
+   "test": "B13",
+   "name": "contraste note explicative ≥ 4,5 (5.12)",
+   "status": "PASS"
+  },
+  {
+   "test": "B13",
+   "name": "contraste badge Confirmée ≥ 4,5 (5.01)",
+   "status": "PASS"
+  },
+  {
+   "test": "B13",
+   "name": "contraste badge À confirmer ≥ 4,5 (4.77)",
+   "status": "PASS"
+  },
+  {
+   "test": "B14",
+   "name": "thème sombre actif",
+   "status": "PASS"
+  },
+  {
+   "test": "B14",
+   "name": "contraste bandeau « Prototype » ≥ 4,5 (13.08)",
+   "status": "PASS"
+  },
+  {
+   "test": "B14",
+   "name": "contraste libellé d’indicateur ≥ 4,5 (7.72)",
+   "status": "PASS"
+  },
+  {
+   "test": "B14",
+   "name": "contraste valeur d’indicateur ≥ 4,5 (14.92)",
+   "status": "PASS"
+  },
+  {
+   "test": "B14",
+   "name": "contraste retard net (alerte) ≥ 4,5 (7.64)",
+   "status": "PASS"
+  },
+  {
+   "test": "B14",
+   "name": "contraste étiquette Direct ≥ 4,5 (13.93)",
+   "status": "PASS"
+  },
+  {
+   "test": "B14",
+   "name": "contraste étiquette Hérité ≥ 4,5 (11.43)",
+   "status": "PASS"
+  },
+  {
+   "test": "B14",
+   "name": "contraste nom d’intervention ≥ 4,5 (12.50)",
+   "status": "PASS"
+  },
+  {
+   "test": "B14",
+   "name": "contraste texte du tableau ≥ 4,5 (14.92)",
+   "status": "PASS"
+  },
+  {
+   "test": "B14",
+   "name": "contraste jours de retard ≥ 4,5 (5.49)",
+   "status": "PASS"
+  },
+  {
+   "test": "B14",
+   "name": "contraste note explicative ≥ 4,5 (9.07)",
+   "status": "PASS"
+  },
+  {
+   "test": "B14",
+   "name": "contraste badge Confirmée ≥ 4,5 (13.98)",
+   "status": "PASS"
+  },
+  {
+   "test": "B14",
+   "name": "contraste badge À confirmer ≥ 4,5 (14.50)",
+   "status": "PASS"
+  },
+  {
+   "test": "B15",
+   "name": "sous 1366 px le tableau devient une liste de cartes",
+   "status": "PASS"
+  },
+  {
+   "test": "B15",
+   "name": "l’en-tête n’est masqué que visuellement (reste lisible par un lecteur d’écran)",
+   "status": "PASS"
+  },
+  {
+   "test": "B15",
+   "name": "chaque cellule porte son libellé (data-label)",
+   "status": "PASS"
+  },
+  {
+   "test": "B15",
+   "name": "11 champs par carte",
+   "status": "PASS"
+  },
+  {
+   "test": "B15",
+   "name": "lien d’intervention ≥ 40 px de haut (40 px)",
+   "status": "PASS"
+  },
+  {
+   "test": "B15",
+   "name": "toucher une intervention ouvre le panneau",
+   "status": "PASS"
+  },
+  {
+   "test": "B15",
+   "name": "panneau ouvert : aucun débordement horizontal",
+   "status": "PASS"
+  },
+  {
+   "test": "B15",
+   "name": "informations avancées dépliées : toujours aucun débordement",
+   "status": "PASS"
+  },
+  {
+   "test": "B15",
+   "name": "les filtres se manipulent au toucher",
+   "status": "PASS"
+  },
+  {
+   "test": "B16",
+   "name": "360 px : ni la page ni le tableau ne débordent",
+   "status": "PASS"
+  },
+  {
+   "test": "B16",
+   "name": "390 px : ni la page ni le tableau ne débordent",
+   "status": "PASS"
+  },
+  {
+   "test": "B16",
+   "name": "768 px : ni la page ni le tableau ne débordent",
+   "status": "PASS"
+  },
+  {
+   "test": "B16",
+   "name": "1024 px : ni la page ni le tableau ne débordent",
+   "status": "PASS"
+  },
+  {
+   "test": "B16",
+   "name": "1280 px : ni la page ni le tableau ne débordent",
+   "status": "PASS"
+  },
+  {
+   "test": "B16",
+   "name": "1366 px : ni la page ni le tableau ne débordent",
+   "status": "PASS"
+  },
+  {
+   "test": "B16",
+   "name": "1440 px : ni la page ni le tableau ne débordent",
+   "status": "PASS"
+  },
+  {
+   "test": "B16",
+   "name": "1920 px : ni la page ni le tableau ne débordent",
+   "status": "PASS"
+  },
+  {
+   "test": "B17",
+   "name": "Tab atteint « Exporter en CSV » et « Imprimer / PDF »",
+   "status": "PASS"
+  },
+  {
+   "test": "B17",
+   "name": "Tab atteint le <details> « Comment lire ce bilan »",
+   "status": "PASS"
+  },
+  {
+   "test": "B17",
+   "name": "Tab atteint les 4 filtres, dans l’ordre du visuel",
+   "status": "PASS"
+  },
+  {
+   "test": "B17",
+   "name": "puis atteint les interventions (un seul arrêt de tabulation par ligne)",
+   "status": "PASS"
+  },
+  {
+   "test": "B17",
+   "name": "Entrée sur une intervention ouvre le panneau",
+   "status": "PASS"
+  },
+  {
+   "test": "B17",
+   "name": "Échap referme le panneau",
+   "status": "PASS"
+  },
+  {
+   "test": "B17",
+   "name": "changer un filtre au clavier ne fait pas perdre le focus",
+   "status": "PASS"
+  },
+  {
+   "test": "B17",
+   "name": "et le filtre s’applique",
+   "status": "PASS"
+  },
+  {
+   "test": "B17",
+   "name": "le bouton de nature garde le focus après activation",
+   "status": "PASS"
+  },
+  {
+   "test": "B17",
+   "name": "Entrée déplie « Comment lire ce bilan »",
+   "status": "PASS"
+  },
+  {
+   "test": "C01",
+   "name": "bouton « Bilan des retards » dans l’en-tête de la fiche chantier",
+   "status": "PASS"
+  },
+  {
+   "test": "C01",
+   "name": "il ouvre l’écran du bilan",
+   "status": "PASS"
+  },
+  {
+   "test": "C01",
+   "name": "la barre latérale est inchangée (5 entrées : aucune ajoutée)",
+   "status": "PASS"
+  },
+  {
+   "test": "C01",
+   "name": "« Chantiers » reste allumé pendant le bilan",
+   "status": "PASS"
+  },
+  {
+   "test": "C01",
+   "name": "« ← Résidence Keravel » ramène à la fiche chantier",
+   "status": "PASS"
+  },
+  {
+   "test": "C01",
+   "name": "l’accès existe sur tous les chantiers (état vide explicite sur ceux sans données)",
+   "status": "PASS"
+  },
+  {
+   "test": "C01",
+   "name": "et dans les deux niveaux (Essentiel et Pilotage) — pas de retour en arrière sur les niveaux",
+   "status": "PASS"
+  },
+  {
+   "test": "C02",
+   "name": "fixture d’origine : 0 écart",
+   "status": "PASS"
+  },
+  {
+   "test": "C02",
+   "name": "un retard hérité qui porte une responsabilité est REFUSÉ",
+   "status": "PASS"
+  },
+  {
+   "test": "C02",
+   "name": "un retard direct avec parent est refusé",
+   "status": "PASS"
+  },
+  {
+   "test": "C02",
+   "name": "un héritier qui dépasse les jours de son parent est refusé (anti double comptage)",
+   "status": "PASS"
+  },
+  {
+   "test": "C02",
+   "name": "un événement sur une intervention à l’heure est refusé",
+   "status": "PASS"
+  },
+  {
+   "test": "C02",
+   "name": "un retard direct sans cause est refusé",
+   "status": "PASS"
+  },
+  {
+   "test": "C02",
+   "name": "une validation « confirmée » retirée à un responsable désigné est refusée",
+   "status": "PASS"
+  },
+  {
+   "test": "C03",
+   "name": "tâches, chantiers, ressources, lots, jalons, incidents : strictement identiques après usage complet du bilan",
+   "status": "PASS"
+  },
+  {
+   "test": "C03",
+   "name": "aucun snapshot() : l’historique Annuler/Rétablir n’est pas touché",
+   "status": "PASS"
+  },
+  {
+   "test": "C04",
+   "name": "le prototype écrit dans sa propre clé (kanvix-proto-bilan-retards-8-3)",
+   "status": "PASS"
+  },
+  {
+   "test": "C04",
+   "name": "la route du bilan survit à un rechargement",
+   "status": "PASS"
+  },
+  {
+   "test": "C04",
+   "name": "la version produit V2.12.3 ne voit aucune trace du prototype",
+   "status": "PASS"
+  },
+  {
+   "test": "C04",
+   "name": "et ne contient pas le code du bilan (fichier produit intact)",
+   "status": "PASS"
+  },
+  {
+   "test": "C04",
+   "name": "le prototype reste en schéma 16 (aucune nouvelle structure de données produit)",
+   "status": "PASS"
+  },
+  {
+   "test": "C05",
+   "name": "35/35 moteurs protégés byte-identiques à la base certifiée",
+   "status": "PASS"
+  },
+  {
+   "test": "C05",
+   "name": "migrateState du prototype = celui de la V2.12.3 produit (le bilan n’ajoute aucune migration)",
+   "status": "PASS"
+  },
+  {
+   "test": "C05",
+   "name": "écart vs V2.12.3 : exactement nav, renderPage, renderProject",
+   "status": "PASS"
+  },
+  {
+   "test": "C05",
+   "name": "aucune fonction supprimée",
+   "status": "PASS"
+  },
+  {
+   "test": "C05",
+   "name": "les 25 fonctions ajoutées portent toutes le préfixe « delay… » (isolées)",
+   "status": "PASS"
+  },
+  {
+   "test": "C06",
+   "name": "le bouton déclenche window.print() (impression navigateur, pas de nouveau moteur PDF)",
+   "status": "PASS"
+  },
+  {
+   "test": "C06",
+   "name": "la classe d’impression est posée le temps de l’impression",
+   "status": "PASS"
+  },
+  {
+   "test": "C06",
+   "name": "à l’impression : barre latérale, filtres et navigation masqués",
+   "status": "PASS"
+  },
+  {
+   "test": "C06",
+   "name": "et le tableau garde sa forme de tableau (même sous 1366 px)",
+   "status": "PASS"
+  },
+  {
+   "test": "C06",
+   "name": "un PDF paysage est produit (305 Ko)",
+   "status": "PASS"
+  },
+  {
+   "test": "C07",
+   "name": "deux ouvertures au même instant : résultat identique",
+   "status": "PASS"
+  },
+  {
+   "test": "C07",
+   "name": "à une autre date du jour (mars 2027) : bilan strictement identique",
+   "status": "PASS"
+  },
+  {
+   "test": "C08",
+   "name": "Ouest Fluides : 2 activités visibles puis « +1 »",
+   "status": "PASS"
+  },
+  {
+   "test": "C08",
+   "name": "ses 3 activités sont en base",
+   "status": "PASS"
+  },
+  {
+   "test": "Z01",
+   "name": "erreurs applicatives : 0",
+   "status": "PASS"
+  }
+ ]
+}

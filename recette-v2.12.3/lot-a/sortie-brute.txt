@@ -95,12 +95,16 @@
     ✓ contraste étiquette ≥ 4,5 (5.34)
     ✓ contraste puce du formulaire ≥ 4,5 (5.96)
     ✓ contraste option de liste ≥ 4,5 (17.74)
+    ✓ contraste du message « Déjà sélectionnée » ≥ 4,5 (5.90)
+    ✓ contraste du libellé « Activités / corps d’état » ≥ 4,5 (5.90)
     ✓ thème clair bien actif
 
 [A15] Thème SOMBRE
     ✓ contraste étiquette ≥ 4,5 (6.60)
     ✓ contraste puce du formulaire ≥ 4,5 (9.57)
     ✓ contraste option de liste ≥ 4,5 (14.92)
+    ✓ contraste du message « Déjà sélectionnée » ≥ 4,5 (7.72)
+    ✓ contraste du libellé « Activités / corps d’état » ≥ 4,5 (7.72)
     ✓ thème sombre bien actif
 
 [A16] Smartphone 390 px
@@ -210,4 +214,4 @@
 [Z01] Zéro erreur console / exception page sur toute la recette
     ✓ erreurs applicatives : 0
 
-RÉSULTAT : 153 / 153  ·  ERREURS CONSOLE : 0
+RÉSULTAT : 157 / 157  ·  ERREURS CONSOLE : 0

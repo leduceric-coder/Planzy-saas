@@ -1,7 +1,7 @@
 {
- "passed": 153,
+ "passed": 157,
  "failed": 0,
- "total": 153,
+ "total": 157,
  "failedList": [],
  "errs": [],
  "results": [
@@ -352,6 +352,16 @@
   },
   {
    "test": "A14",
+   "name": "contraste du message « Déjà sélectionnée » ≥ 4,5 (5.90)",
+   "status": "PASS"
+  },
+  {
+   "test": "A14",
+   "name": "contraste du libellé « Activités / corps d’état » ≥ 4,5 (5.90)",
+   "status": "PASS"
+  },
+  {
+   "test": "A14",
    "name": "thème clair bien actif",
    "status": "PASS"
   },
@@ -368,6 +378,16 @@
   {
    "test": "A15",
    "name": "contraste option de liste ≥ 4,5 (14.92)",
+   "status": "PASS"
+  },
+  {
+   "test": "A15",
+   "name": "contraste du message « Déjà sélectionnée » ≥ 4,5 (7.72)",
+   "status": "PASS"
+  },
+  {
+   "test": "A15",
+   "name": "contraste du libellé « Activités / corps d’état » ≥ 4,5 (7.72)",
    "status": "PASS"
   },
   {

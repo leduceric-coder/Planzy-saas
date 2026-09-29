@@ -7,8 +7,8 @@
       content="width=device-width,initial-scale=1,viewport-fit=cover"
     />
     <link rel="icon" href="data:" />
-    <meta name="kanvix-version" content="2.12.3" />
-    <title>Kanvix — Piloter simplement</title>
+    <meta name="kanvix-version" content="2.12.3-bilan-retards-prototype" />
+    <title>Kanvix — Prototype · Bilan des retards</title>
     <!-- PWA : installable en plein écran, s'ancre sur l'horloge de l'appareil.
          Le manifeste n'est référencé que servi en http/https (voir le script
          d'amorçage) : en ouverture locale file://, le charger déclencherait une
@@ -11785,6 +11785,486 @@
         clip: rect(0 0 0 0);
         white-space: nowrap;
       }
+    
+      /* ================= PROTOTYPE — BILAN DES RETARDS =====================
+         Variables du design system uniquement : le thème sombre (body.dark)
+         les redéfinit, aucune couleur n'est codée en dur. Une information n'est
+         jamais portée par la seule couleur : chaque étiquette a son texte. */
+
+      /* Jetons du bilan. En clair, les variantes « -ink » du produit sont assez
+         contrastées ; en sombre elles ne sont PAS redéfinies (≈3:1) — on utilise
+         donc les teintes vives du thème et le texte courant. */
+      body {
+        --dly-banner-ink: var(--warning-ink);
+        --dly-error-ink: var(--danger-ink);
+        --dly-warn: var(--warning-ink);
+        --dly-ok: var(--success-ink);
+        --dly-bad: var(--danger-ink);
+      }
+      body.dark {
+        --dly-banner-ink: var(--text);
+        --dly-error-ink: var(--text);
+        --dly-warn: var(--warning);
+        --dly-ok: var(--success);
+        --dly-bad: var(--danger);
+      }
+      .dly-entry {
+        margin-top: 10px;
+      }
+      .dly-banner {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 4px 10px;
+        margin: 0 0 14px;
+        padding: 10px 14px;
+        border: 1px dashed var(--warning-border);
+        border-radius: var(--radius-md);
+        background: var(--warning-soft);
+        color: var(--dly-banner-ink);
+        font-size: 13px;
+        line-height: 1.45;
+      }
+      .dly-banner b {
+        font-size: 11px;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+      }
+      .dly-banner.dly-error {
+        border-color: var(--danger-border);
+        background: var(--danger-soft);
+        color: var(--dly-error-ink);
+      }
+      .dly-banner-sm {
+        margin: 8px 0 0;
+        padding: 6px 10px;
+        font-size: 12px;
+      }
+      .dly-kpis {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+        margin: 0 0 12px;
+      }
+      .dly-kpi {
+        display: grid;
+        gap: 2px;
+        padding: 12px 14px;
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-lg);
+        background: var(--surface);
+        box-shadow: var(--shadow-xs);
+      }
+      .dly-kpi small {
+        color: var(--text-secondary);
+        font-size: 10.5px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .dly-kpi b {
+        color: var(--text);
+        font-size: 20px;
+        line-height: 1.2;
+      }
+      .dly-kpi span {
+        color: var(--text-secondary);
+        font-size: 12px;
+      }
+      .dly-kpi.warn b {
+        color: var(--dly-warn);
+      }
+      .dly-kpi.ok b {
+        color: var(--dly-ok);
+      }
+      .dly-note {
+        margin: 0 0 12px;
+        color: var(--text-secondary);
+        font-size: 12.5px;
+        line-height: 1.5;
+      }
+      .dly-help {
+        margin: 0 0 6px;
+        font-size: 13px;
+      }
+      .dly-help summary,
+      .dly-adv summary {
+        cursor: pointer;
+        font-weight: 600;
+        color: var(--accent-ink);
+      }
+      .dly-help dl,
+      .dly-adv dl {
+        display: grid;
+        grid-template-columns: max-content 1fr;
+        gap: 4px 14px;
+        margin: 8px 0 0;
+      }
+      .dly-help dt,
+      .dly-adv dt {
+        font-weight: 600;
+        color: var(--text);
+      }
+      .dly-help dd,
+      .dly-adv dd {
+        margin: 0;
+        color: var(--text-secondary);
+        overflow-wrap: anywhere;
+      }
+      .dly-filters {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: end;
+        gap: 12px 18px;
+        margin: 14px 0 6px;
+      }
+      .dly-filters > div {
+        display: grid;
+        gap: 6px;
+      }
+      .dly-filters small {
+        display: block;
+        color: var(--text-secondary);
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.09em;
+      }
+      .dly-filters select {
+        min-width: 150px;
+        max-width: 100%;
+      }
+      .dly-count {
+        margin: 6px 0 10px;
+        color: var(--text-secondary);
+        font-size: 12.5px;
+      }
+      .dly-table-wrap {
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-lg);
+        background: var(--surface);
+        /* Filet de sécurité : rien n'est jamais rogné, la zone défile au besoin. */
+        overflow-x: auto;
+      }
+      .dly-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+        line-height: 1.4;
+      }
+      .dly-table th {
+        padding: 10px 9px;
+        border-bottom: 1px solid var(--border-light);
+        background: var(--surface-subtle);
+        color: var(--text-secondary);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-align: left;
+        text-transform: uppercase;
+      }
+      .dly-table td {
+        padding: 10px 9px;
+        border-bottom: 1px solid var(--border-light);
+        vertical-align: top;
+        overflow-wrap: break-word;
+      }
+      .dly-nw {
+        white-space: nowrap;
+      }
+      .dly-table tbody tr:last-child td {
+        border-bottom: 0;
+      }
+      .dly-row {
+        cursor: pointer;
+      }
+      .dly-row:hover {
+        background: var(--surface-subtle);
+      }
+      .dly-table small {
+        display: block;
+        margin-top: 2px;
+        color: var(--text-secondary);
+        font-size: 11px;
+      }
+      .dly-open {
+        display: inline;
+        padding: 0;
+        border: 0;
+        background: none;
+        color: var(--accent-ink);
+        font-size: 12.5px;
+        font-weight: 700;
+        text-align: left;
+      }
+      .dly-open:hover {
+        text-decoration: underline;
+      }
+      .dly-days {
+        color: var(--dly-bad);
+        white-space: nowrap;
+      }
+      .dly-tag {
+        display: inline-flex;
+        padding: 2px 9px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+      .dly-tag.direct {
+        background: var(--danger-soft);
+        color: var(--danger-ink);
+      }
+      .dly-tag.inherited {
+        background: var(--accent-soft);
+        color: var(--accent-ink);
+      }
+      body.dark .dly-tag.direct,
+      body.dark .dly-tag.inherited {
+        color: var(--text);
+      }
+
+      /* Sous 1366 px (largeur minimale mesurée du tableau : ~1090 px) il devient une liste de cartes : une seule
+         structure HTML (les rôles ARIA conservent la sémantique de tableau). */
+      @media (max-width: 1365px) {
+        .dly-table thead {
+          position: absolute;
+          width: 1px;
+          height: 1px;
+          overflow: hidden;
+          clip: rect(0 0 0 0);
+        }
+        .dly-table,
+        .dly-table tbody,
+        .dly-table tr,
+        .dly-table td {
+          display: block;
+          width: 100%;
+        }
+        .dly-table tr {
+          padding: 12px 14px;
+          border-bottom: 1px solid var(--border-light);
+        }
+        .dly-table tbody tr:last-child {
+          border-bottom: 0;
+        }
+        .dly-table td {
+          display: grid;
+          grid-template-columns: 124px minmax(0, 1fr);
+          gap: 8px;
+          padding: 4px 0;
+          border: 0;
+        }
+        .dly-table td::before {
+          content: attr(data-label);
+          color: var(--text-secondary);
+          font-size: 10.5px;
+          font-weight: 700;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
+        }
+        .dly-table td:first-child {
+          display: block;
+          padding-bottom: 6px;
+        }
+        .dly-table td:first-child::before {
+          display: none;
+        }
+        .dly-open {
+          font-size: 14.5px;
+        }
+      }
+      @media (max-width: 900px) {
+        .dly-kpis {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+      @media (max-width: 620px) {
+        .dly-kpis {
+          gap: 8px;
+        }
+        .dly-kpi {
+          padding: 9px 11px;
+        }
+        .dly-kpi b {
+          font-size: 17px;
+        }
+        .dly-kpi span {
+          font-size: 11.5px;
+        }
+        .dly-open {
+          display: inline-block;
+          min-height: 40px;
+          padding: 8px 0;
+        }
+        .dly-filters > div {
+          flex: 1 1 100%;
+        }
+        .dly-filters .segment {
+          display: flex;
+        }
+        .dly-filters .segment button {
+          flex: 1;
+        }
+        .dly-filters select {
+          width: 100%;
+        }
+        .dly-help dl,
+        .dly-adv dl {
+          grid-template-columns: 1fr;
+        }
+        .dly-help dt,
+        .dly-adv dt {
+          margin-top: 6px;
+        }
+      }
+
+      /* Panneau de détail */
+      .dly-sub {
+        margin: 4px 0 0;
+        color: var(--text-secondary);
+        font-size: 13px;
+      }
+      .dly-sec p {
+        margin: 4px 0;
+      }
+      .dly-history {
+        display: grid;
+        gap: 8px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .dly-history li {
+        display: grid;
+        gap: 1px;
+        padding: 8px 10px;
+        border-left: 3px solid var(--border);
+        border-radius: 0 var(--radius-xs) var(--radius-xs) 0;
+      }
+      .dly-history li.is-current {
+        border-left-color: var(--accent);
+        background: var(--accent-soft);
+      }
+      .dly-history span {
+        color: var(--text-secondary);
+        font-size: 12.5px;
+      }
+      .dly-history small {
+        color: var(--text-secondary);
+        font-size: 11px;
+      }
+      .dly-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .dly-chips .link {
+        padding: 4px 11px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: var(--surface);
+      }
+      .dly-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 6px;
+      }
+      .dly-cons {
+        display: grid;
+        gap: 8px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .dly-cons li {
+        display: grid;
+        gap: 1px;
+      }
+      .dly-cons span {
+        color: var(--text-secondary);
+        font-size: 12.5px;
+      }
+      .dly-adv {
+        margin: 14px 0 0;
+      }
+      .dly-json {
+        max-height: 260px;
+        margin: 6px 0 0;
+        padding: 10px;
+        overflow: auto;
+        border-radius: var(--radius-sm);
+        background: var(--surface-muted);
+        color: var(--text);
+        font-size: 11.5px;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+      }
+
+      /* Impression : mêmes principes que le planning (window.print). */
+      @media print {
+        body.delays-print .sidebar,
+        body.delays-print .project-top-row,
+        body.delays-print .header .context,
+        body.delays-print .dly-filters,
+        body.delays-print .dly-help,
+        body.delays-print .add,
+        body.delays-print #toast {
+          display: none !important;
+        }
+        body.delays-print .shell {
+          display: block;
+        }
+        body.delays-print .main {
+          padding: 0;
+        }
+        body.delays-print .page {
+          padding: 12px;
+        }
+        body.delays-print .dly-table-wrap {
+          overflow: visible;
+          border: 1px solid #cbd5e1;
+        }
+        body.delays-print .dly-table {
+          font-size: 9.5px;
+        }
+        body.delays-print .dly-table thead {
+          position: static;
+          width: auto;
+          height: auto;
+          clip: auto;
+        }
+        body.delays-print .dly-table {
+          display: table;
+        }
+        body.delays-print .dly-table thead {
+          display: table-header-group;
+        }
+        body.delays-print .dly-table tbody {
+          display: table-row-group;
+        }
+        body.delays-print .dly-table tr {
+          display: table-row;
+          padding: 0;
+          break-inside: avoid;
+        }
+        body.delays-print .dly-table td {
+          display: table-cell;
+          width: auto;
+          padding: 5px 6px;
+          border-bottom: 1px solid #cbd5e1;
+        }
+        body.delays-print .dly-table td::before {
+          content: none;
+        }
+        body.delays-print .dly-table td:first-child {
+          display: table-cell;
+        }
+        body.delays-print .dly-kpis {
+          grid-template-columns: repeat(4, 1fr);
+        }
+      }
     </style>
   </head>
   <body>
@@ -11913,7 +12393,7 @@
       // CONSTANTS
       const SEED_TODAY = "2026-08-13", // date d'écriture des données de démo
         APP_VERSION = "8.3",
-        STORE = "kanvix-product-8-3",
+        STORE = "kanvix-proto-bilan-retards-8-3",
         DAY = 86400000,
         STATUS = {
           todo: "À faire",
@@ -19572,6 +20052,681 @@
         if (app.settings.level !== "essential") a.push("Historique");
         return a;
       }
+      /* ================= PROTOTYPE — BILAN DES RETARDS (noyau) ===============
+         ⚠ PROTOTYPE DE VALIDATION MÉTIER. Rien ici n'est calculé par le moteur
+         de planification : les interventions, leurs dates et leurs événements
+         de retard sont des FIXTURES DE DÉMONSTRATION déterministes
+         (DELAY_FIXTURES). Seuls les DÉRIVÉS (jours ouvrés, direct/hérité,
+         indicateurs, conséquences) sont calculés, à partir de ces fixtures.
+
+         ISOLEMENT. Ce bloc n'appelle aucune fonction du moteur transactionnel
+         (planReflow, applyReflowPlan, planScheduleChanges, snapshot, undo…) et
+         n'écrit jamais dans `app` : il LIT seulement le calendrier du produit
+         (isNonWorkingDate) et le référentiel (lot, resource). Ses réglages de
+         vue vivent hors de app.ui — rien de ce prototype n'est persisté.
+
+         RÈGLE FONDAMENTALE — aucune conclusion automatique. Être AFFECTÉ à une
+         intervention ne fait pas d'une personne ou d'une entreprise la cause de
+         son retard. On distingue toujours :
+           - intervenant ASSOCIÉ      : affecté à l'intervention (task.resourceIds) ;
+           - retard DIRECT            : généré sur cette intervention ;
+           - retard HÉRITÉ            : subi à cause d'une intervention précédente ;
+           - CAUSE déclarée           : météo, approvisionnement, décision client… ;
+           - RESPONSABILITÉ déclarée  : désignée À LA MAIN par un utilisateur ;
+           - attribution À CONFIRMER  : déclarée mais pas encore validée.
+         Un retard hérité ne porte JAMAIS de responsabilité et n'est JAMAIS
+         recompté : le retard net du chantier n'est pas la somme des retards. */
+      const DELAY_CAUSES = [
+        ["weather", "Météo"],
+        ["absence", "Absence"],
+        ["supply", "Approvisionnement"],
+        ["client", "Décision du client"],
+        ["access", "Accès indisponible"],
+        ["error", "Erreur"],
+        ["breakdown", "Panne"],
+        ["technical", "Aléa technique"],
+        ["other", "Autre"],
+      ];
+      const DELAY_VALIDATION = {
+        confirmed: "Confirmée",
+        pending: "À confirmer",
+        none: "Sans responsable désigné",
+      };
+      /* Fixtures. Dates au jour près (aaaa-mm-jj, inclusives). Septembre 2026
+         ne contient aucun jour férié : l'arithmétique se vérifie à la main.
+         Scénario obligatoire : le plaquiste termine avec 2 jours de retard, le
+         Gall Électricité démarre 2 jours plus tard et SUBIT un retard hérité —
+         il n'est pas responsable du retard initial. */
+      const DELAY_FIXTURES = {
+        kind: "demonstration",
+        projects: {
+          keravel: {
+            label: "Second œuvre",
+            baselineEnd: "2026-09-28",
+            finalTaskId: "fx-recep",
+            tasks: [
+              { id: "fx-install", name: "Installation de chantier et protections", lotId: null, resourceIds: ["eric"], base: ["2026-09-07", "2026-09-07"], rev: ["2026-09-07", "2026-09-07"], state: "done", after: [],
+                history: [{ at: "2026-09-04", label: "Planning initial", start: "2026-09-07", end: "2026-09-07" }] },
+              { id: "fx-cloisons", name: "Pose des cloisons", lotId: "lot-platrerie", resourceIds: ["mathieu"], base: ["2026-09-07", "2026-09-11"], rev: ["2026-09-07", "2026-09-15"], state: "done", after: ["fx-install"],
+                history: [
+                  { at: "2026-09-04", label: "Planning initial", start: "2026-09-07", end: "2026-09-11" },
+                  { at: "2026-09-10", label: "Fin repoussée : plaques de plâtre non livrées", start: "2026-09-07", end: "2026-09-15" },
+                ] },
+              { id: "fx-menuis", name: "Pose des menuiseries extérieures", lotId: "lot-menuiseries-ext", resourceIds: ["armor", "thomas"], base: ["2026-09-07", "2026-09-11"], rev: ["2026-09-07", "2026-09-16"], state: "done", after: ["fx-install"],
+                history: [
+                  { at: "2026-09-04", label: "Planning initial", start: "2026-09-07", end: "2026-09-11" },
+                  { at: "2026-09-11", label: "Deux fenêtres à refaire", start: "2026-09-07", end: "2026-09-14" },
+                  { at: "2026-09-14", label: "Repose reportée : nouvelle livraison", start: "2026-09-07", end: "2026-09-16" },
+                ] },
+              { id: "fx-reseaux", name: "Reprise des réseaux d’eau", lotId: "lot-plomberie", resourceIds: ["ouest-fluides", "marc"], base: ["2026-09-08", "2026-09-11"], rev: ["2026-09-08", "2026-09-15"], state: "done", after: ["fx-install"],
+                history: [
+                  { at: "2026-09-04", label: "Planning initial", start: "2026-09-08", end: "2026-09-11" },
+                  { at: "2026-09-11", label: "Fuite découverte : tronçon à remplacer", start: "2026-09-08", end: "2026-09-15" },
+                ] },
+              { id: "fx-gaines", name: "Passage des gaines et câbles", lotId: "lot-electricite", resourceIds: ["legall"], base: ["2026-09-14", "2026-09-18"], rev: ["2026-09-16", "2026-09-22"], state: "done", after: ["fx-cloisons"],
+                history: [
+                  { at: "2026-09-04", label: "Planning initial", start: "2026-09-14", end: "2026-09-18" },
+                  { at: "2026-09-10", label: "Démarrage décalé : cloisons terminées plus tard", start: "2026-09-16", end: "2026-09-22" },
+                ] },
+              { id: "fx-calfeut", name: "Calfeutrement et joints extérieurs", lotId: "lot-menuiseries-ext", resourceIds: ["thomas"], base: ["2026-09-14", "2026-09-15"], rev: ["2026-09-17", "2026-09-18"], state: "done", after: ["fx-menuis"],
+                history: [
+                  { at: "2026-09-04", label: "Planning initial", start: "2026-09-14", end: "2026-09-15" },
+                  { at: "2026-09-14", label: "Démarrage décalé : menuiseries posées plus tard", start: "2026-09-17", end: "2026-09-18" },
+                ] },
+              { id: "fx-sanit", name: "Pose des sanitaires", lotId: "lot-sanitaire", resourceIds: ["ouest-fluides"], base: ["2026-09-14", "2026-09-16"], rev: ["2026-09-16", "2026-09-18"], state: "done", after: ["fx-reseaux"],
+                history: [
+                  { at: "2026-09-04", label: "Planning initial", start: "2026-09-14", end: "2026-09-16" },
+                  { at: "2026-09-11", label: "Démarrage décalé : réseaux repris plus tard", start: "2026-09-16", end: "2026-09-18" },
+                ] },
+              { id: "fx-peinture", name: "Peinture des cloisons", lotId: "lot-peinture", resourceIds: ["coloris"], base: ["2026-09-21", "2026-09-25"], rev: ["2026-09-23", "2026-09-29"], state: "in_progress", after: ["fx-gaines"],
+                history: [
+                  { at: "2026-09-04", label: "Planning initial", start: "2026-09-21", end: "2026-09-25" },
+                  { at: "2026-09-18", label: "Démarrage décalé : gaines terminées plus tard", start: "2026-09-23", end: "2026-09-29" },
+                ] },
+              { id: "fx-facades", name: "Peinture des façades", lotId: "lot-peinture", resourceIds: ["coloris"], base: ["2026-09-21", "2026-09-23"], rev: ["2026-09-21", "2026-09-24"], state: "done", after: ["fx-calfeut"],
+                history: [
+                  { at: "2026-09-04", label: "Planning initial", start: "2026-09-21", end: "2026-09-23" },
+                  { at: "2026-09-24", label: "Fin repoussée : pluie", start: "2026-09-21", end: "2026-09-24" },
+                ] },
+              { id: "fx-cuisine", name: "Pose de la cuisine", lotId: null, resourceIds: ["thomas"], base: ["2026-09-21", "2026-09-24"], rev: ["2026-09-28", "2026-10-01"], state: "in_progress", after: ["fx-sanit", "fx-calfeut"],
+                history: [
+                  { at: "2026-09-04", label: "Planning initial", start: "2026-09-21", end: "2026-09-24" },
+                  { at: "2026-09-18", label: "Report : nouveau modèle choisi par le client", start: "2026-09-28", end: "2026-10-01" },
+                ] },
+              { id: "fx-recep", name: "Réception des travaux", lotId: null, resourceIds: ["eric"], base: ["2026-09-28", "2026-09-28"], rev: ["2026-10-02", "2026-10-02"], state: "planned", after: ["fx-peinture", "fx-facades", "fx-cuisine"],
+                history: [
+                  { at: "2026-09-04", label: "Planning initial", start: "2026-09-28", end: "2026-09-28" },
+                  { at: "2026-09-18", label: "Reportée : la cuisine se termine plus tard", start: "2026-10-02", end: "2026-10-02" },
+                ] },
+            ],
+            events: [
+              { id: "ev-cloisons", taskId: "fx-cloisons", type: "direct", parentEventId: null, cause: "supply",
+                comment: "Plaques de plâtre livrées avec 2 jours de retard : la pose a été interrompue, la fin repoussée de 2 jours ouvrés.",
+                responsibleIds: [], validation: "none", author: "eric", declaredAt: "2026-09-10", validatedBy: null, validatedAt: null,
+                attachments: ["Bon de livraison du 10-09.pdf"] },
+              { id: "ev-menuis", taskId: "fx-menuis", type: "direct", parentEventId: null, cause: "error",
+                comment: "Deux fenêtres livrées à la mauvaise cote : refabrication puis repose.",
+                responsibleIds: ["armor"], validation: "confirmed", author: "eric", declaredAt: "2026-09-14", validatedBy: "eric", validatedAt: "2026-09-17",
+                attachments: ["Mail Menuiserie Armor du 15-09.pdf", "Bon de commande rev. B.pdf"] },
+              { id: "ev-reseaux", taskId: "fx-reseaux", type: "direct", parentEventId: null, cause: "technical",
+                comment: "Fuite découverte sur la colonne existante : purge et remplacement d’un tronçon. L’origine de la fuite (réseau existant ou intervention) reste à établir.",
+                responsibleIds: ["ouest-fluides"], validation: "pending", author: "eric", declaredAt: "2026-09-11", validatedBy: null, validatedAt: null,
+                attachments: [] },
+              { id: "ev-facades", taskId: "fx-facades", type: "direct", parentEventId: null, cause: "weather",
+                comment: "Pluie continue les 22 et 23 septembre : application impossible.",
+                responsibleIds: [], validation: "none", author: "eric", declaredAt: "2026-09-24", validatedBy: null, validatedAt: null,
+                attachments: [] },
+              { id: "ev-cuisine", taskId: "fx-cuisine", type: "direct", parentEventId: null, cause: "client",
+                comment: "Le client a changé de modèle de cuisine le 18 septembre : la pose n’a pu démarrer qu’après réception du nouveau plan.",
+                responsibleIds: [], validation: "none", author: "eric", declaredAt: "2026-09-18", validatedBy: null, validatedAt: null,
+                attachments: ["Mail du client du 18-09.pdf"] },
+              { id: "ev-gaines", taskId: "fx-gaines", type: "inherited", parentEventId: "ev-cloisons", cause: null,
+                comment: "Démarrage décalé de 2 jours : les cloisons, à équiper, se sont terminées avec 2 jours de retard.",
+                responsibleIds: [], validation: "none", author: "eric", declaredAt: "2026-09-10", validatedBy: null, validatedAt: null, attachments: [] },
+              { id: "ev-calfeut", taskId: "fx-calfeut", type: "inherited", parentEventId: "ev-menuis", cause: null,
+                comment: "Démarrage décalé de 3 jours : les menuiseries ont été posées 3 jours plus tard.",
+                responsibleIds: [], validation: "none", author: "eric", declaredAt: "2026-09-14", validatedBy: null, validatedAt: null, attachments: [] },
+              { id: "ev-sanit", taskId: "fx-sanit", type: "inherited", parentEventId: "ev-reseaux", cause: null,
+                comment: "Démarrage décalé de 2 jours : la reprise des réseaux s’est terminée avec 2 jours de retard.",
+                responsibleIds: [], validation: "none", author: "eric", declaredAt: "2026-09-11", validatedBy: null, validatedAt: null, attachments: [] },
+              { id: "ev-peinture", taskId: "fx-peinture", type: "inherited", parentEventId: "ev-gaines", cause: null,
+                comment: "Démarrage décalé de 2 jours : le passage des gaines s’est terminé avec 2 jours de retard.",
+                responsibleIds: [], validation: "none", author: "eric", declaredAt: "2026-09-18", validatedBy: null, validatedAt: null, attachments: [] },
+              { id: "ev-recep", taskId: "fx-recep", type: "inherited", parentEventId: "ev-cuisine", cause: null,
+                comment: "Réception reportée de 4 jours ouvrés : elle attend la fin de la pose de la cuisine, dernière intervention à se terminer.",
+                responsibleIds: [], validation: "none", author: "eric", declaredAt: "2026-09-18", validatedBy: null, validatedAt: null, attachments: [] },
+            ],
+          },
+        },
+      };
+
+      /* ---- Jours ouvrés : LECTURE SEULE du calendrier du produit ---------- */
+      function delayAddDays(key, n) {
+        let d = new Date(key + "T12:00");
+        d.setDate(d.getDate() + n);
+        return localDateKey(d);
+      }
+      /* Nombre de jours ouvrés (week-ends et jours fériés français exclus)
+         séparant deux jours : de `from` (exclu) à `to` (inclus). Signé. */
+      function delayBD(from, to) {
+        if (!from || !to || from === to) return 0;
+        let sign = to > from ? 1 : -1,
+          a = sign > 0 ? from : to,
+          b = sign > 0 ? to : from,
+          cur = a,
+          n = 0;
+        for (let guard = 0; guard < 800 && cur < b; guard++) {
+          cur = delayAddDays(cur, 1);
+          if (!isNonWorkingDate(cur)) n++;
+        }
+        return sign * n;
+      }
+      function delayCauseLabel(code) {
+        return (DELAY_CAUSES.find((c) => c[0] === code) || [null, "—"])[1];
+      }
+
+      /* ---- Calcul du bilan : PUR, ne lit que les fixtures fournies --------- */
+      function buildDelayBilan(fx) {
+        let tasks = new Map(),
+          events = new Map();
+        fx.tasks.forEach((t) => {
+          tasks.set(t.id, {
+            ...t,
+            startSlip: delayBD(t.base[0], t.rev[0]),
+            endSlip: delayBD(t.base[1], t.rev[1]),
+          });
+        });
+        fx.events.forEach((e) => events.set(e.id, { ...e }));
+        let byTask = new Map([...events.values()].map((e) => [e.taskId, e]));
+        let rootOf = (e) => {
+          let cur = e,
+            seen = new Set();
+          while (cur.parentEventId && events.has(cur.parentEventId) && !seen.has(cur.id)) {
+            seen.add(cur.id);
+            cur = events.get(cur.parentEventId);
+          }
+          return cur;
+        };
+        let rows = [...events.values()].map((e) => {
+          let t = tasks.get(e.taskId),
+            root = rootOf(e),
+            days = t ? t.endSlip : 0,
+            parent = e.parentEventId ? events.get(e.parentEventId) : null,
+            // Conséquences : les interventions qui DÉPENDENT de celle-ci.
+            successors = [...tasks.values()].filter((x) => (x.after || []).includes(e.taskId)),
+            consequences = successors.map((s) => {
+              let se = byTask.get(s.id);
+              return {
+                taskId: s.id,
+                name: s.name,
+                days: s.endSlip,
+                // décalée PAR cette cause / décalée par une AUTRE cause / non décalée
+                relation: se && se.parentEventId === e.id ? "propagated" : s.endSlip > 0 ? "other" : "none",
+              };
+            }),
+            descendants = [];
+          let walk = (id) =>
+            [...events.values()]
+              .filter((x) => x.parentEventId === id)
+              .forEach((c) => {
+                descendants.push(c);
+                walk(c.id);
+              });
+          walk(e.id);
+          return {
+            ...e,
+            task: t,
+            days,
+            directDays: e.type === "direct" ? days : 0,
+            inheritedDays: e.type === "inherited" ? days : 0,
+            rootId: root.id,
+            rootCause: root.cause,
+            parent,
+            parentTask: parent ? tasks.get(parent.taskId) : null,
+            associatedIds: t ? [...t.resourceIds] : [],
+            consequences,
+            descendantIds: descendants.map((d) => d.id),
+            propagatedDays: descendants.length ? descendants.reduce((n, d) => n + (tasks.get(d.taskId)?.endSlip || 0), 0) : 0,
+          };
+        });
+        let finalTask = tasks.get(fx.finalTaskId),
+          projectedEnd = finalTask ? finalTask.rev[1] : null,
+          late = [...tasks.values()].filter((t) => t.endSlip > 0),
+          direct = rows.filter((r) => r.type === "direct"),
+          inherited = rows.filter((r) => r.type === "inherited");
+        return {
+          fx,
+          tasks,
+          rows,
+          kpis: {
+            baselineEnd: fx.baselineEnd,
+            projectedEnd,
+            projectedIsActual: finalTask ? finalTask.state === "done" : false,
+            // Le retard NET est la dérive de la fin du chantier — jamais une somme.
+            netDelay: delayBD(fx.baselineEnd, projectedEnd),
+            lateCount: late.length,
+            totalTasks: tasks.size,
+            direct: direct.length,
+            inherited: inherited.length,
+            confirmed: direct.filter((r) => r.validation === "confirmed").length,
+            pending: direct.filter((r) => r.validation === "pending").length,
+            noResponsible: direct.filter((r) => !r.responsibleIds.length).length,
+            // Informatif : les jours hérités ne s'ajoutent JAMAIS aux jours générés.
+            directDaysSum: direct.reduce((n, r) => n + r.directDays, 0),
+            inheritedDaysSum: inherited.reduce((n, r) => n + r.inheritedDays, 0),
+          },
+        };
+      }
+
+      /* Invariants de cohérence d'une fixture. Retourne la liste des écarts
+         (vide = fixture saine). Sert de garde-fou à toute évolution des données. */
+      function validateDelayFixture(fx) {
+        let errs = [],
+          m = buildDelayBilan(fx),
+          evByTask = new Map(m.rows.map((r) => [r.taskId, r]));
+        m.tasks.forEach((t) => {
+          if (t.endSlip > 0 && !evByTask.has(t.id)) errs.push(`${t.id} : retard de ${t.endSlip} j sans événement`);
+          if (t.endSlip <= 0 && evByTask.has(t.id)) errs.push(`${t.id} : événement sur une intervention à l’heure`);
+          if (t.startSlip < 0) errs.push(`${t.id} : démarre avant la date prévue`);
+        });
+        m.rows.forEach((r) => {
+          if (!r.task) return errs.push(`${r.id} : intervention inconnue`);
+          if (r.type === "direct") {
+            if (r.parentEventId) errs.push(`${r.id} : un retard direct n’a pas de parent`);
+            if (!r.cause) errs.push(`${r.id} : un retard direct doit avoir une cause`);
+          } else {
+            if (!r.parent) errs.push(`${r.id} : un retard hérité doit avoir un événement parent`);
+            else {
+              if (!(r.task.after || []).includes(r.parent.taskId)) errs.push(`${r.id} : le parent n’est pas un prédécesseur`);
+              if (r.days > (r.parentTask?.endSlip ?? 0)) errs.push(`${r.id} : hérite de plus de jours (${r.days}) que son parent (${r.parentTask?.endSlip})`);
+              if (r.task.rev[0] <= (r.parentTask?.rev[1] ?? "")) errs.push(`${r.id} : démarre avant la fin révisée de son prédécesseur`);
+            }
+            if (r.responsibleIds.length) errs.push(`${r.id} : un retard hérité ne porte jamais de responsabilité`);
+            if (r.validation !== "none") errs.push(`${r.id} : un retard hérité n’a pas d’attribution à valider`);
+          }
+          if (r.responsibleIds.length && !["confirmed", "pending"].includes(r.validation)) errs.push(`${r.id} : responsabilité déclarée sans statut de validation`);
+          if (!r.responsibleIds.length && r.validation !== "none") errs.push(`${r.id} : statut de validation sans responsable désigné`);
+        });
+        // Double comptage : la fin du chantier ne peut pas dériver de plus que
+        // le plus long retard direct.
+        let maxDirect = Math.max(0, ...m.rows.filter((r) => r.type === "direct").map((r) => r.directDays));
+        if (m.kpis.netDelay > maxDirect) errs.push(`retard net (${m.kpis.netDelay}) supérieur au plus long retard direct (${maxDirect})`);
+        return errs;
+      }
+
+      /* ---- Filtres (purs) -------------------------------------------------- */
+      function filterDelayEvents(rows, f) {
+        return rows.filter((r) => {
+          if (f.type && f.type !== "all" && r.type !== f.type) return false;
+          // La cause suit l'ORIGINE : un retard hérité porte la cause de sa racine.
+          if (f.cause && f.cause !== "all" && r.rootCause !== f.cause) return false;
+          let involved = new Set([...r.associatedIds, ...r.responsibleIds]);
+          if (f.company && f.company !== "all" && !involved.has(f.company)) return false;
+          if (f.person && f.person !== "all" && !involved.has(f.person)) return false;
+          if (f.attribution && f.attribution !== "all") {
+            // L'attribution ne concerne que les retards DIRECTS : un retard hérité
+            // n'est ni « confirmé », ni « à confirmer », ni « sans responsable ».
+            if (r.type !== "direct") return false;
+            if (f.attribution === "none") return !r.responsibleIds.length;
+            if (r.validation !== f.attribution) return false;
+          }
+          return true;
+        });
+      }
+
+      /* ---- Export CSV (pur) ------------------------------------------------ */
+      function delayCsvCell(v) {
+        let s = String(v ?? "");
+        // Neutralise l'interprétation d'une formule par un tableur.
+        if (/^[=+\-@\t\r]/.test(s)) s = "'" + s;
+        return /[";\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+      }
+      function delaysToCSV(model, rows, nameOf) {
+        let head = ["Intervention", "Lot", "Début prévu", "Fin prévue", "Début révisé ou réel", "Fin révisée ou réelle", "Jours ouvrés de retard", "Nature", "Cause", "Origine (retard hérité)", "Intervenants associés", "Responsabilité déclarée", "Statut de validation", "Conséquences propagées", "Déclaré par", "Déclaré le"],
+          cause = (r) => (r.type === "direct" ? delayCauseLabel(r.cause) : "Hérité (" + delayCauseLabel(r.rootCause) + ")"),
+          lines = rows.map((r) =>
+            [
+              r.task.name,
+              r.task.lotId ? lot(r.task.lotId)?.name || "" : "Sans lot",
+              r.task.base[0],
+              r.task.base[1],
+              r.task.rev[0],
+              r.task.rev[1],
+              r.days,
+              r.type === "direct" ? "Direct" : "Hérité",
+              cause(r),
+              r.parentTask ? r.parentTask.name : "",
+              r.associatedIds.map(nameOf).join(" + "),
+              r.responsibleIds.length ? r.responsibleIds.map(nameOf).join(" + ") : "",
+              r.type === "direct" ? DELAY_VALIDATION[r.validation] : "Sans objet (retard hérité)",
+              r.descendantIds.length ? `${r.descendantIds.length} intervention(s) décalée(s)` : "Aucune",
+              nameOf(r.author),
+              r.declaredAt,
+            ]
+              .map(delayCsvCell)
+              .join(";"),
+          );
+        // BOM UTF-8 + séparateur « ; » : s'ouvre correctement dans Excel en français.
+        return "﻿" + [head.map(delayCsvCell).join(";"), ...lines].join("\r\n") + "\r\n";
+      }
+      /* ================= PROTOTYPE — BILAN DES RETARDS (interface) ============
+         Route INTERNE « delays » (aucune entrée de barre latérale, comme
+         « operation » et « structure ») : on y entre depuis la fiche chantier.
+         Les réglages de vue vivent HORS de app.ui : rien n'est persisté. */
+      let delaysView = { type: "all", cause: "all", company: "all", person: "all", attribution: "all" };
+      const DELAY_STATE_LABEL = { done: "Terminé", in_progress: "En cours", planned: "À venir" };
+
+      function delayResName(id) {
+        return resource(id)?.name || id || "—";
+      }
+      function delayShort(key) {
+        return new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "short" }).format(new Date(key + "T12:00"));
+      }
+      /* Retourne du HTML : chaque date est insécable, seule la flèche peut couper. */
+      function delayRange(pair) {
+        let nw = (k) => `<span class="dly-nw">${esc(delayShort(k))}</span>`;
+        return pair[0] === pair[1] ? nw(pair[0]) : `${nw(pair[0])} → ${nw(pair[1])}`;
+      }
+      function delayPlural(n, one, many) {
+        return n > 1 ? many : one;
+      }
+      function delayModelFor(projectId) {
+        let fx = DELAY_FIXTURES.projects[projectId];
+        return fx ? buildDelayBilan(fx) : null;
+      }
+      function delaySortedRows(model) {
+        return model.rows
+          .slice()
+          .sort((a, b) => a.task.base[0].localeCompare(b.task.base[0]) || a.task.name.localeCompare(b.task.name, "fr"));
+      }
+      function openDelaysBilan(projectId) {
+        app.ui.projectId = projectId;
+        go("delays");
+      }
+      function setDelayFilter(key, value) {
+        delaysView[key] = value || "all";
+        renderPage();
+        let id = { cause: "dlyCause", company: "dlyCompany", person: "dlyPerson", attribution: "dlyAttr" }[key];
+        (id ? $("#" + id) : $(`.dly-seg button[data-v="${value}"]`))?.focus();
+      }
+      function resetDelayFilters() {
+        delaysView = { type: "all", cause: "all", company: "all", person: "all", attribution: "all" };
+        renderPage();
+        $("#dlyCause")?.focus();
+      }
+      function delayFiltersActive() {
+        return Object.values(delaysView).some((v) => v !== "all");
+      }
+
+      function delayFilterBar(model) {
+        let rows = model.rows,
+          uniq = (fn) => [...new Set(rows.flatMap(fn))],
+          causes = [...new Set(rows.map((r) => r.rootCause).filter(Boolean))],
+          involved = uniq((r) => [...r.associatedIds, ...r.responsibleIds]),
+          companies = involved.filter((id) => resource(id)?.type === "company"),
+          persons = involved.filter((id) => resource(id)?.type === "person"),
+          count = (fn) => rows.filter(fn).length,
+          sel = (id, label, key, options) =>
+            `<div><small>${label}</small><select id="${id}" aria-label="Filtrer par ${label.toLowerCase()}" onchange="setDelayFilter('${key}',this.value)"><option value="all">Tous</option>${options
+              .map(([v, l]) => `<option value="${esc(v)}" ${delaysView[key] === v ? "selected" : ""}>${esc(l)}</option>`)
+              .join("")}</select></div>`;
+        return (
+          `<div class="dly-filters" role="group" aria-label="Filtres du bilan des retards">` +
+          `<div><small id="dlyTypeLbl">NATURE</small><div class="segment dly-seg" role="group" aria-labelledby="dlyTypeLbl">${[
+            ["all", "Tous"],
+            ["direct", "Directs"],
+            ["inherited", "Hérités"],
+          ]
+            .map(
+              ([v, l]) =>
+                `<button type="button" data-v="${v}" class="${delaysView.type === v ? "active" : ""}" aria-pressed="${delaysView.type === v}" onclick="setDelayFilter('type','${v}')">${l}</button>`,
+            )
+            .join("")}</div></div>` +
+          sel("dlyCause", "CAUSE", "cause", DELAY_CAUSES.filter((c) => causes.includes(c[0])).map((c) => [c[0], `${c[1]} · ${count((r) => r.rootCause === c[0])}`])) +
+          sel("dlyCompany", "ENTREPRISE", "company", companies.map((id) => [id, `${delayResName(id)} · ${count((r) => r.associatedIds.includes(id) || r.responsibleIds.includes(id))}`])) +
+          sel("dlyPerson", "PERSONNE", "person", persons.map((id) => [id, `${delayResName(id)} · ${count((r) => r.associatedIds.includes(id) || r.responsibleIds.includes(id))}`])) +
+          `<div><small>ATTRIBUTION</small><select id="dlyAttr" aria-label="Filtrer par attribution" onchange="setDelayFilter('attribution',this.value)">${[
+            ["all", "Toutes"],
+            ["confirmed", "Confirmées"],
+            ["pending", "À confirmer"],
+            ["none", "Sans responsable désigné"],
+          ]
+            .map(([v, l]) => `<option value="${v}" ${delaysView.attribution === v ? "selected" : ""}>${l}</option>`)
+            .join("")}</select></div>` +
+          (delayFiltersActive() ? `<div><small>&nbsp;</small><button type="button" class="link" onclick="resetDelayFilters()">Réinitialiser</button></div>` : "") +
+          `</div>`
+        );
+      }
+
+      function delayRowHTML(r) {
+        let t = r.task,
+          direct = r.type === "direct",
+          lotName = t.lotId ? lot(t.lotId)?.name || "—" : "Sans lot",
+          state = `<small class="dly-state ${t.state}">${DELAY_STATE_LABEL[t.state]}</small>`,
+          revLabel = t.state === "done" ? "réel" : "projeté",
+          cause = direct
+            ? `<b>${esc(delayCauseLabel(r.cause))}</b>`
+            : `<span class="muted">Aucune cause propre</span><small>origine : ${esc(r.parentTask.name)} · ${esc(delayCauseLabel(r.rootCause))}</small>`,
+          validation = !direct
+            ? `<span class="muted">Sans objet</span><small>retard hérité</small>`
+            : r.validation === "confirmed"
+              ? pill("success", "Confirmée")
+              : r.validation === "pending"
+                ? pill("warning", "À confirmer")
+                : `<span class="pill">Sans responsable désigné</span>`,
+          consequence = r.descendantIds.length
+            ? `<b>${r.descendantIds.length}</b> ${delayPlural(r.descendantIds.length, "intervention décalée", "interventions décalées")}<small>${esc(r.consequences.filter((c) => c.relation === "propagated").map((c) => c.name).join(", "))}</small>`
+            : `<span class="muted">Aucune</span>`;
+        return (
+          `<tr class="dly-row" role="row" data-event="${r.id}" onclick="openDelayDetail('${r.id}')">` +
+          `<td role="cell" data-label="Intervention"><button type="button" class="link dly-open" onclick="event.stopPropagation();openDelayDetail('${r.id}')" aria-label="Ouvrir le détail : ${esc(t.name)}">${esc(t.name)}</button>${state}</td>` +
+          `<td role="cell" data-label="Lot">${esc(lotName)}</td>` +
+          `<td role="cell" data-label="Dates initiales">${delayRange(t.base)}</td>` +
+          `<td role="cell" data-label="Dates révisées ou réelles">${delayRange(t.rev)}<small>${revLabel}</small></td>` +
+          `<td role="cell" data-label="Jours ouvrés"><b class="dly-days">+${r.days} j</b></td>` +
+          `<td role="cell" data-label="Nature"><span class="dly-tag ${r.type}">${direct ? "Direct" : "Hérité"}</span></td>` +
+          `<td role="cell" data-label="Cause">${cause}</td>` +
+          `<td role="cell" data-label="Intervenants associés">${r.associatedIds.map((id) => esc(delayResName(id))).join("<br>")}</td>` +
+          `<td role="cell" data-label="Responsabilité déclarée">${
+            r.responsibleIds.length
+              ? r.responsibleIds.map((id) => `<b>${esc(delayResName(id))}</b>`).join("<br>")
+              : direct
+                ? `<span class="muted">Aucune désignée</span>`
+                : `<span class="muted">Sans objet</span>`
+          }</td>` +
+          `<td role="cell" data-label="Validation">${validation}</td>` +
+          `<td role="cell" data-label="Conséquences">${consequence}</td>` +
+          `</tr>`
+        );
+      }
+
+      function renderDelays() {
+        let p = project(app.ui.projectId),
+          back = `<div class="project-top-row"><button class="link project-back-link" onclick="go('project')">← ${esc(p ? p.name : "Chantiers")}</button></div>`,
+          banner = `<div class="dly-banner" role="note"><b>Prototype</b><span>Données de démonstration injectées pour valider l’ergonomie et les règles de lecture. Ces retards ne sont <u>pas calculés</u> par le moteur de planification de Kanvix.</span></div>`;
+        if (!p) return back + banner + emptyState("Chantier introuvable", "Retournez à la liste des chantiers.");
+        let fx = DELAY_FIXTURES.projects[p.id];
+        if (!fx)
+          return (
+            back +
+            header("Bilan des retards", esc(p.name)) +
+            banner +
+            emptyState(
+              "Pas de bilan de démonstration pour ce chantier",
+              "Ce prototype ne contient de données d’exemple que pour « Résidence Keravel ».",
+              `<button class="btn" onclick="openDelaysBilan('keravel')">Voir Résidence Keravel</button>`,
+            )
+          );
+        let model = buildDelayBilan(fx),
+          k = model.kpis,
+          errors = validateDelayFixture(fx),
+          all = delaySortedRows(model),
+          rows = filterDelayEvents(all, delaysView),
+          kpi = (label, value, sub, tone = "") =>
+            `<div class="dly-kpi ${tone}" role="group" aria-label="${esc(label)}"><small>${label}</small><b>${value}</b>${sub ? `<span>${sub}</span>` : ""}</div>`,
+          actions = `<div class="team-actions"><button class="btn" onclick="downloadDelaysCSV()">Exporter en CSV</button><button class="btn" onclick="printDelays()">Imprimer / PDF</button></div>`;
+        return (
+          back +
+          header("Bilan des retards", `${esc(p.name)} · ${esc(fx.label)}`, actions) +
+          banner +
+          (errors.length ? `<div class="dly-banner dly-error" role="alert"><b>Fixture invalide</b><span>${esc(errors.slice(0, 3).join(" ; "))}</span></div>` : "") +
+          `<section class="dly-kpis" aria-label="Indicateurs du bilan">` +
+          kpi("Fin initialement prévue", esc(fmtDay(k.baselineEnd + "T12:00"))) +
+          kpi(k.projectedIsActual ? "Fin réelle" : "Fin projetée", esc(fmtDay(k.projectedEnd + "T12:00")), k.projectedIsActual ? "" : "d’après les dates révisées") +
+          kpi("Retard net", `${k.netDelay} jour${delayPlural(k.netDelay, "", "s")} ouvré${delayPlural(k.netDelay, "", "s")}`, "dérive de la fin du chantier", k.netDelay > 0 ? "warn" : "ok") +
+          kpi("Interventions en retard", `${k.lateCount} sur ${k.totalTasks}`) +
+          kpi("Retards directs", String(k.direct), `${k.directDaysSum} j générés`) +
+          kpi("Retards hérités", String(k.inherited), `${k.inheritedDaysSum} j subis, non recomptés`) +
+          kpi("Attributions confirmées", String(k.confirmed), "désignées et validées", k.confirmed ? "ok" : "") +
+          kpi("Attributions à confirmer", String(k.pending), "désignées, en attente", k.pending ? "warn" : "") +
+          `</section>` +
+          `<p class="dly-note">Le retard net mesure la dérive de la fin du chantier : ce n’est pas la somme des retards des interventions. Un retard hérité vient d’une intervention précédente et n’est <b>jamais recompté</b>. ${k.noResponsible} retard${delayPlural(k.noResponsible, "", "s")} direct${delayPlural(k.noResponsible, "", "s")} n’${delayPlural(k.noResponsible, "a", "ont")} aucun responsable désigné.</p>` +
+          `<details class="dly-help"><summary>Comment lire ce bilan</summary><dl>` +
+          `<dt>Intervenant associé</dt><dd>Personne ou entreprise affectée à l’intervention. Être associé ne signifie jamais être responsable du retard.</dd>` +
+          `<dt>Retard direct</dt><dd>Retard réellement généré sur cette intervention.</dd>` +
+          `<dt>Retard hérité</dt><dd>Intervention décalée à cause d’une intervention précédente. Elle ne porte aucune responsabilité.</dd>` +
+          `<dt>Cause déclarée</dt><dd>Météo, approvisionnement, décision du client, erreur… saisie par un utilisateur.</dd>` +
+          `<dt>Responsabilité déclarée</dt><dd>Désignée manuellement par un utilisateur habilité. Kanvix n’en déduit jamais.</dd>` +
+          `<dt>À confirmer</dt><dd>Attribution proposée mais pas encore validée : à ne pas tenir pour établie.</dd>` +
+          `<dt>Le filtre Cause</dt><dd>Suit l’origine du retard : un retard hérité porte la cause de son origine.</dd>` +
+          `</dl></details>` +
+          delayFilterBar(model) +
+          `<p class="dly-count" role="status" aria-live="polite" id="dlyCount">${rows.length} retard${delayPlural(rows.length, "", "s")} affiché${delayPlural(rows.length, "", "s")} sur ${all.length}</p>` +
+          (rows.length
+            ? `<div class="dly-table-wrap"><table class="dly-table" role="table" aria-label="Retards du chantier" aria-describedby="dlyCount"><thead role="rowgroup"><tr role="row">${["Intervention", "Lot", "Dates initiales", "Dates révisées ou réelles", "Jours ouvrés", "Nature", "Cause", "Intervenants associés", "Responsabilité déclarée", "Validation", "Conséquences"]
+                .map((h) => `<th role="columnheader" scope="col">${h}</th>`)
+                .join("")}</tr></thead><tbody role="rowgroup">${rows.map(delayRowHTML).join("")}</tbody></table></div>`
+            : `<div id="dlyEmpty">${emptyState("Aucun retard ne correspond à ces filtres", "Modifiez un filtre ou revenez à la liste complète.", `<button class="btn" onclick="resetDelayFilters()">Réinitialiser les filtres</button>`)}</div>`)
+        );
+      }
+
+      /* ---- Panneau de détail (sidewindow) ---------------------------------- */
+      function openDelayDetail(eventId) {
+        let fx = DELAY_FIXTURES.projects[app.ui.projectId];
+        if (!fx) return;
+        let model = buildDelayBilan(fx),
+          r = model.rows.find((x) => x.id === eventId);
+        if (!r) return;
+        let t = r.task,
+          direct = r.type === "direct",
+          root = model.rows.find((x) => x.id === r.rootId),
+          lotName = t.lotId ? lot(t.lotId)?.name || "—" : "Sans lot",
+          names = (ids) => ids.map((id) => esc(delayResName(id))),
+          section = (title, body) => `<div class="drawer-section dly-sec"><h3>${title}</h3>${body}</div>`,
+          resLink = (id) => `<button type="button" class="link" onclick="openResource('${id}')">${esc(delayResName(id))}</button>`,
+          history = t.history
+            .map(
+              (h, i) =>
+                `<li class="${i === t.history.length - 1 ? "is-current" : ""}"><b>${delayRange([h.start, h.end])}</b><span>${esc(h.label)}</span><small>${esc(fmtDay(h.at + "T12:00"))}${i === t.history.length - 1 ? " · dates retenues" : ""}</small></li>`,
+            )
+            .join(""),
+          origin = direct
+            ? `<p>Retard <b>généré sur cette intervention</b> : ${r.days} jour${delayPlural(r.days, "", "s")} ouvré${delayPlural(r.days, "", "s")} de dérive à la fin.</p>`
+            : `<p>Intervention <b>décalée par « ${esc(r.parentTask.name)} »</b> (${r.parent.type === "direct" ? "retard direct" : "elle-même en retard hérité"}, +${r.parentTask.endSlip} j).</p>` +
+              (root && root.id !== r.parent.id ? `<p class="muted">Origine première : « ${esc(root.task.name)} » — ${esc(delayCauseLabel(root.cause))}.</p>` : "") +
+              `<div class="dly-links"><button type="button" class="btn small" onclick="openDelayDetail('${r.parent.id}')">Ouvrir l’origine</button>${root && root.id !== r.parent.id ? `<button type="button" class="btn small" onclick="openDelayDetail('${root.id}')">Ouvrir l’origine première</button>` : ""}</div>`,
+          validation = !direct
+            ? `<p class="muted">Sans objet : un retard hérité n’a pas d’attribution à valider.</p>`
+            : r.validation === "confirmed"
+              ? `<p>${pill("success", "Confirmée")}</p><p class="muted">Validée par ${esc(delayResName(r.validatedBy))} le ${esc(fmtDay(r.validatedAt + "T12:00"))}.</p>`
+              : r.validation === "pending"
+                ? `<p>${pill("warning", "À confirmer")}</p><p class="muted">Cette attribution n’a pas encore été validée : elle ne doit pas être tenue pour établie.</p>`
+                : `<p><span class="pill">Sans responsable désigné</span></p><p class="muted">Aucune personne ni entreprise n’a été désignée pour ce retard.</p>`,
+          consequences = r.consequences.length
+            ? `<ul class="dly-cons">${r.consequences
+                .map(
+                  (c) =>
+                    `<li><b>${esc(c.name)}</b><span>${
+                      c.relation === "propagated"
+                        ? `décalée de <b>+${c.days} j</b> par ce retard`
+                        : c.relation === "other"
+                          ? `décalée de +${c.days} j, mais par <b>une autre cause</b> : non attribuée à ce retard`
+                          : "non décalée"
+                    }</span></li>`,
+                )
+                .join("")}</ul>`
+            : `<p class="muted">Aucune intervention ne dépend de celle-ci.</p>`,
+          model_json = JSON.stringify(
+            {
+              id: r.id, projectId: app.ui.projectId, taskId: r.taskId, type: r.type, parentEventId: r.parentEventId, causeCode: r.cause,
+              baseline: { start: t.base[0], end: t.base[1] }, revised: { start: t.rev[0], end: t.rev[1] },
+              delayBusinessDays: r.days, comment: r.comment, associatedResourceIds: r.associatedIds, declaredResponsibleIds: r.responsibleIds,
+              validation: r.validation, author: r.author, createdAt: r.declaredAt, validatedAt: r.validatedAt, attachments: r.attachments,
+            },
+            null,
+            1,
+          );
+        $("#drawerContent").innerHTML =
+          `<p class="muted">BILAN DES RETARDS · ${direct ? "RETARD DIRECT" : "RETARD HÉRITÉ"}</p>` +
+          `<h2>${esc(t.name)}</h2>` +
+          `<p class="dly-sub"><span class="dly-tag ${r.type}">${direct ? "Direct" : "Hérité"}</span> <b class="dly-days">+${r.days} j ouvrés</b> · ${esc(lotName)} · ${DELAY_STATE_LABEL[t.state]}</p>` +
+          `<div class="dly-banner dly-banner-sm" role="note"><span>Prototype — données de démonstration.</span></div>` +
+          section("Historique des dates", `<ol class="dly-history">${history}</ol>`) +
+          section("Origine du décalage", origin) +
+          section("Cause", direct ? `<p><b>${esc(delayCauseLabel(r.cause))}</b></p>` : `<p class="muted">Aucune cause propre : retard hérité. Cause de l’origine : <b>${esc(delayCauseLabel(r.rootCause))}</b>.</p>`) +
+          section("Commentaire", `<p>${esc(r.comment)}</p>`) +
+          section("Intervenants associés", `<p class="dly-chips">${r.associatedIds.map(resLink).join("")}</p><p class="muted small">Affectés à l’intervention. Être associé ne signifie pas être responsable du retard.</p>`) +
+          section(
+            "Responsabilité déclarée",
+            r.responsibleIds.length
+              ? `<p class="dly-chips">${r.responsibleIds.map(resLink).join("")}</p><p class="muted small">Désignée manuellement — non déduite par Kanvix.</p>`
+              : direct
+                ? `<p class="muted">Aucune responsabilité désignée.</p>`
+                : `<p class="muted">Sans objet : l’intervenant qui subit un retard hérité n’en est pas responsable.</p>`,
+          ) +
+          section("Déclaration", `<p><b>${esc(delayResName(r.author))}</b> · ${esc(fmtDay(r.declaredAt + "T12:00"))}</p>`) +
+          section("Statut de validation", validation) +
+          section("Conséquences sur les tâches dépendantes", consequences) +
+          `<details class="dly-adv"><summary>Informations avancées</summary>` +
+          `<dl><dt>Identifiant</dt><dd>${esc(r.id)}</dd><dt>Événement parent</dt><dd>${esc(r.parentEventId || "—")}</dd><dt>Origine première</dt><dd>${esc(r.rootId)}</dd>` +
+          `<dt>Dates initiales</dt><dd>${esc(t.base.join(" → "))}</dd><dt>Dates révisées ou réelles</dt><dd>${esc(t.rev.join(" → "))}</dd>` +
+          `<dt>Décalage du début / de la fin</dt><dd>+${t.startSlip} j / +${t.endSlip} j ouvrés (week-ends et jours fériés exclus)</dd>` +
+          `<dt>Pièces justificatives</dt><dd>${r.attachments.length ? r.attachments.map(esc).join("<br>") : "Aucune"}</dd></dl>` +
+          `<p class="muted small">Enregistrement cible proposé (non implémenté dans le moteur) :</p><pre class="dly-json" tabindex="0">${esc(model_json)}</pre></details>` +
+          `<div class="drawer-section actions"><button class="btn" onclick="closeOverlay('drawer')">Fermer</button></div>`;
+        $("#drawer").classList.add("open");
+      }
+
+      /* ---- Export ---------------------------------------------------------- */
+      function delayCurrentRows() {
+        let model = delayModelFor(app.ui.projectId);
+        return model ? { model, rows: filterDelayEvents(delaySortedRows(model), delaysView) } : null;
+      }
+      function downloadDelaysCSV() {
+        let cur = delayCurrentRows();
+        if (!cur) return toast("Aucun bilan à exporter pour ce chantier.");
+        try {
+          let csv = delaysToCSV(cur.model, cur.rows, delayResName),
+            blob = new Blob([csv], { type: "text/csv;charset=utf-8" }),
+            url = URL.createObjectURL(blob),
+            a = document.createElement("a");
+          a.href = url;
+          a.download = `kanvix-bilan-retards-${app.ui.projectId}-${localDateKey(new Date())}.csv`;
+          a.style.display = "none";
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          setTimeout(() => URL.revokeObjectURL(url), 5000);
+          toast(`Export CSV : ${cur.rows.length} ligne${delayPlural(cur.rows.length, "", "s")}`);
+        } catch (error) {
+          console.error("Kanvix: export CSV impossible", error);
+          toast("Export impossible dans ce navigateur.");
+        }
+      }
+      /* PDF : impression du navigateur, sur le modèle de exportPlanningPDF(). */
+      function printDelays() {
+        document.body.classList.add("delays-print");
+        let previousTitle = document.title;
+        document.title = `Kanvix - Bilan des retards - ${localDateKey(new Date())}`;
+        let cleanup = () => {
+          document.body.classList.remove("delays-print");
+          document.title = previousTitle;
+          window.removeEventListener("afterprint", cleanup);
+        };
+        window.addEventListener("afterprint", cleanup);
+        setTimeout(() => window.print(), 80);
+        setTimeout(cleanup, 30000);
+      }
       function renderProject() {
         let p = project(app.ui.projectId),
           sum = getProjectSummary(p.id),
@@ -19683,6 +20838,7 @@
                   <h1>${esc(p.name)}</h1>
                   <p class="location">${esc(p.location)}</p>
                   ${closureReady ? `<p class="headline">Le chantier est prêt à être clôturé.</p>` : sum.lifecycle === "active" && !sum.setupNeeded ? `<p class="headline">${sum.headline}</p>` : sum.setupNeeded ? `<p class="headline">Votre chantier est prêt.</p>` : ""}
+                  <button type="button" class="btn small dly-entry" onclick="openDelaysBilan('${p.id}')">Bilan des retards</button>
                 </div>
               </div>
             </div>
@@ -31727,7 +32883,7 @@
               (x) =>
                 // V2.8 — la page Opération est un NIVEAU de la page Chantiers :
                 // son entrée de barre latérale reste allumée, sans en ajouter une.
-                `<button class="${app.ui.page === x[0] || (x[0] === "sites" && app.ui.page === "operation") ? "active" : ""}" onclick="go('${x[0]}')">${icon(x[0])}<span>${x[1]}</span></button>`,
+                `<button class="${app.ui.page === x[0] || (x[0] === "sites" && (app.ui.page === "operation" || app.ui.page === "delays")) ? "active" : ""}" onclick="go('${x[0]}')">${icon(x[0])}<span>${x[1]}</span></button>`,
             )
             .join("") +
           `<button class="nav-messaging" onclick="app.ui.msgQuery='';openMessagingHub()">${icon("messages")}<span>Messagerie</span>${msgBadge}</button>`;
@@ -32418,6 +33574,9 @@
             // Aucune entrée de barre latérale : on y entre depuis l'onglet
             // Structure d'un chantier.
             structure: renderStructureNode,
+            // PROTOTYPE — route INTERNE du bilan des retards : on y entre depuis
+            // la fiche chantier, aucune entrée de barre latérale n'est ajoutée.
+            delays: renderDelays,
             team: renderTeam,
             planning: renderPlanning,
             resources: renderResources,
