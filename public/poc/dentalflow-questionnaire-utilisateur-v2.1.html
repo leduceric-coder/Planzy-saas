@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DentalFlow — Questionnaire utilisateur V2.1</title>
+<style>
+  :root{--ink:#1a2334;--muted:#6b7686;--line:#e2e6ec;--accent:#0a84ff;--bg:#f5f7fa;--card:#ffffff;--danger:#d93025}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;padding:0 0 60px}
+  header{background:var(--card);border-bottom:1px solid var(--line);padding:22px 18px}
+  header h1{margin:0 0 4px;font-size:21px}
+  header p{margin:0;color:var(--muted);font-size:13.5px}
+  main{max-width:760px;margin:0 auto;padding:18px}
+  section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:18px}
+  h2{font-size:16px;margin:0 0 10px;display:flex;align-items:center;gap:8px}
+  h2 .n{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;font-size:12px;font-weight:800;flex:0 0 auto}
+  .sub{color:var(--muted);font-size:13px;margin:-4px 0 14px}
+  .mission{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:10px}
+  .mission b{display:block;font-size:14px;margin-bottom:4px}
+  .mission .desc{font-size:13.5px;color:#374151}
+  .note{font-size:12.5px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+  .note.warn{color:var(--danger);font-weight:700}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{border:1px solid var(--line);padding:8px 6px;text-align:center}
+  th:first-child,td:first-child{text-align:left;width:46%}
+  th{background:#f0f3f7;font-weight:700;font-size:12px}
+  .q{margin-bottom:16px}
+  .q label{display:block;font-weight:700;font-size:13.5px;margin-bottom:6px}
+  .q textarea{width:100%;min-height:54px;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font:inherit;resize:vertical}
+  .foot{display:flex;gap:16px;flex-wrap:wrap;font-size:13px}
+  .foot label{font-weight:700}
+  .foot input{border:1px solid var(--line);border-radius:8px;padding:6px 10px;font:inherit;margin-left:6px}
+  @media print{body{background:#fff}section{break-inside:avoid;border-color:#ccc}}
+</style>
+</head>
+<body>
+<header>
+  <h1>DentalFlow — Questionnaire utilisateur V2.1</h1>
+  <p>À remettre au laboratoire après la seconde séance de test (V3.11.0). Document indépendant de l'application — ne modifie rien dans DentalFlow.</p>
+</header>
+<main>
+
+<section>
+  <h2><span class="n">1</span>Missions à réaliser avant de répondre</h2>
+  <p class="sub">Réalisez ces missions dans DentalFlow avant de remplir le questionnaire. Aucune indication de chemin n'est donnée volontairement — notez vos hésitations dans les questions ouvertes ci-dessous.</p>
+
+  <div class="mission">
+    <b>Mission 1 — Retrouver un cabinet et un dentiste</b>
+    <div class="desc">Depuis l'espace Laboratoire, créez une nouvelle commande et retrouvez un cabinet précis, puis un dentiste précis, en tapant simplement quelques lettres de leur nom.</div>
+  </div>
+
+  <div class="mission">
+    <b>Mission 2 — Choisir une prestation et une teinte précises</b>
+    <div class="desc">Depuis l'espace Cabinet, démarrez une nouvelle commande et choisissez délibérément une prestation et une teinte différentes de celles affichées au départ. Vérifiez que la commande envoyée correspond bien à votre choix.</div>
+  </div>
+
+  <div class="mission">
+    <b>Mission 3 — Envoyer une commande sans dent</b>
+    <div class="desc">Toujours depuis l'espace Cabinet, essayez d'envoyer une commande sans sélectionner aucune dent. Observez ce qui se passe.</div>
+  </div>
+
+  <div class="mission">
+    <b>Mission 4 — Corriger une commande déjà envoyée</b>
+    <div class="desc">Depuis l'espace Cabinet, ouvrez une commande que vous venez d'envoyer et modifiez-y un ou plusieurs éléments (par exemple la prestation ou la date de livraison souhaitée). Si on vous demande une confirmation, lisez-la avant de répondre.</div>
+  </div>
+
+  <div class="mission">
+    <b>Mission 5 — Scanner une commande avec un smartphone</b>
+    <div class="desc">Sur un smartphone, ouvrez DentalFlow Scan (lien transmis par le laboratoire pour cette mission) et essayez d'enregistrer le passage d'une commande à une étape de fabrication, en utilisant l'appareil photo du téléphone — caméra en direct ou photo du QR, selon ce qui vous est proposé à l'écran.</div>
+    <div class="note warn">Important : cette mission doit se faire sur l'écran réellement destiné au smartphone — pas sur un écran de saisie manuelle qui ressemblerait à un simple formulaire. Si aucune action caméra/photo ne vous est proposée du tout, notez-le précisément en question ouverte 7 ci-dessous : c'est une information utile en soi.</div>
+  </div>
+
+  <div class="mission">
+    <b>Mission 6 — Retrouver l'historique d'une commande modifiée</b>
+    <div class="desc">Pour la commande modifiée en Mission 4, retrouvez-en l'historique côté Laboratoire et vérifiez que la modification y apparaît clairement.</div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">2</span>Notation</h2>
+  <p class="sub">Entourez ou cochez une note de 1 à 5 (1 = pas du tout, 5 = tout à fait).</p>
+  <table>
+    <thead><tr><th>Critère</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr></thead>
+    <tbody>
+      <tr><td>Facilité à retrouver un cabinet / un dentiste</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td></tr>
+      <tr><td>Fiabilité du choix de prestation / teinte (le bon choix est bien pris en compte)</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td></tr>
+      <tr><td>Clarté du refus lors d'une tentative d'envoi incomplète (sans dent)</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td></tr>
+      <tr><td>Facilité à corriger une commande déjà envoyée</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td></tr>
+      <tr><td>Clarté de la confirmation lors d'un changement de date</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td></tr>
+      <tr><td>Facilité du scan sur smartphone</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td></tr>
+      <tr><td>Facilité d'utilisation générale</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td></tr>
+      <tr><td>Confiance dans les informations affichées</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td><td>☐</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2><span class="n">3</span>Questions ouvertes</h2>
+
+  <div class="q"><label>1. Qu'est-ce qui vous a semblé le plus simple ?</label><textarea></textarea></div>
+  <div class="q"><label>2. Qu'est-ce qui vous a fait hésiter ?</label><textarea></textarea></div>
+  <div class="q"><label>3. La recherche de cabinet/dentiste par le nom vous a-t-elle semblé naturelle ? Pourquoi ?</label><textarea></textarea></div>
+  <div class="q"><label>4. Avez-vous eu un doute, à un moment, sur la prestation ou la teinte réellement envoyée ?</label><textarea></textarea></div>
+  <div class="q"><label>5. La fonction « Modifier la commande » répond-elle à un besoin réel de votre pratique ?</label><textarea></textarea></div>
+  <div class="q"><label>6. Qu'est-ce qui manque encore pour utiliser DentalFlow quotidiennement ?</label><textarea></textarea></div>
+  <div class="q"><label>7. Décrivez précisément ce qui s'est passé lors du scan smartphone (ce que l'écran proposait, ce qui a marché ou non).</label><textarea></textarea></div>
+  <div class="q"><label>8. Quelle fonction vous fait gagner le plus de temps ?</label><textarea></textarea></div>
+  <div class="q"><label>9. Quel écran faudrait-il simplifier en priorité ?</label><textarea></textarea></div>
+</section>
+
+<section>
+  <h2><span class="n">4</span>Identification</h2>
+  <div class="foot">
+    <span><label>Nom / poste</label><input type="text" placeholder="facultatif"></span>
+    <span><label>Date</label><input type="date"></span>
+  </div>
+</section>
+
+</main>
+</body>
+</html>
